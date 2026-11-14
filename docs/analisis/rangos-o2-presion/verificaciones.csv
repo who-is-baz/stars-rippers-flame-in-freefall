@@ -1,0 +1,27 @@
+id,descripcion,valor_esperado,valor_csv,coincide,nota
+Y31-<0.15,"Tabla 3.1 Yael, banda <0.15 (~0.7/~1.0/>2/sin_dato/total)","(0, 28, 0, 0, 28)","(0, 28, 0, 0, 28)",si,
+Y31-0.15-0.18,"Tabla 3.1 Yael, banda 0.15-0.18 (~0.7/~1.0/>2/sin_dato/total)","(15, 36, 0, 0, 51)","(15, 36, 0, 0, 51)",si,
+Y31-0.18-0.21,"Tabla 3.1 Yael, banda 0.18-0.21 (~0.7/~1.0/>2/sin_dato/total)","(25, 47, 0, 1, 73)","(25, 47, 0, 1, 73)",si,
+Y31-0.21-0.24,"Tabla 3.1 Yael, banda 0.21-0.24 (~0.7/~1.0/>2/sin_dato/total)","(30, 34, 9, 0, 73)","(30, 34, 9, 0, 73)",si,
+Y31-0.24-0.28,"Tabla 3.1 Yael, banda 0.24-0.28 (~0.7/~1.0/>2/sin_dato/total)","(16, 9, 0, 0, 25)","(16, 9, 0, 0, 25)",si,
+Y31->=0.28,"Tabla 3.1 Yael, banda >=0.28 (~0.7/~1.0/>2/sin_dato/total)","(17, 7, 0, 0, 24)","(17, 7, 0, 0, 24)",si,
+Y31-total,"Tabla 3.1 Yael, banda total (~0.7/~1.0/>2/sin_dato/total)","(103, 161, 9, 1, 274)","(103, 161, 9, 1, 274)",si,
+Y31c-<0.15,"Tabla 3.1 Yael sin supresor, banda <0.15 (~0.7/~1.0/>2)","(0, 23, 0)","(0, 23, 0)",si,
+Y31c-0.15-0.18,"Tabla 3.1 Yael sin supresor, banda 0.15-0.18 (~0.7/~1.0/>2)","(0, 13, 0)","(0, 13, 0)",si,
+Y31c-0.18-0.21,"Tabla 3.1 Yael sin supresor, banda 0.18-0.21 (~0.7/~1.0/>2)","(5, 7, 0)","(5, 7, 0)",si,
+Y31c-0.21-0.24,"Tabla 3.1 Yael sin supresor, banda 0.21-0.24 (~0.7/~1.0/>2)","(0, 29, 0)","(0, 29, 0)",si,
+Y31c-0.24-0.28,"Tabla 3.1 Yael sin supresor, banda 0.24-0.28 (~0.7/~1.0/>2)","(0, 0, 0)","(0, 0, 0)",si,
+Y31c->=0.28,"Tabla 3.1 Yael sin supresor, banda >=0.28 (~0.7/~1.0/>2)","(17, 7, 0)","(17, 7, 0)",si,
+Y31c-total,Sin supresor total,101,101,si,
+F-S1,Fer: Tierra ±0.01/±0.5 psi n,49,49,si,
+F-S1c,Fer: Tierra ±0.01/±0.5 psi sin supresor,29,29,si,
+F-S1-02,Fer: Tierra ±0.02 en O2 (±0.5 psi),56,56,si,O2 0.19-0.23 a ~1 atm.
+F-S2a-estricto,Fer: lunar >=30 % y <=10.2 psi sin tolerancia,0,0,si,
+F-S2a-tol,Fer: lunar con la MISMA tolerancia que Tierra (±0.01/±0.5),0,17,no,Inconsistencia: con la misma tolerancia no es 0.
+F-P-10.2-10.5 psi,Fer: rango de presión 10.2-10.5 psi,103,100,no,Rango real del nivel: ver niveles_presion.csv.
+F-P-14.5-15.0 psi,Fer: rango de presión 14.5-15.0 psi,161,161,si,Rango real del nivel: ver niveles_presion.csv.
+F-P-30-45 psi,Fer: rango de presión 30-45 psi,9,8,no,Rango real del nivel: ver niveles_presion.csv.
+F-row-178F001,"Fila 178F001: O2, atm","0.3, 1.0121","0.3, 1.0121",si,"methanol, extinction, nivel ~1.0 atm"
+F-row-196F001,"Fila 196F001: O2, atm","0.34, 0.7093","0.34, 0.7093",si,"heptane, disruption, nivel ~0.7 atm"
+F-row-C11M201,C11M201 sin presión -> 'sin_dato',sin_dato,sin_dato,si,"qc_flags=pressure_zero_set_null; O2 0.2, methanol, extinction"
+dup-193F001,193F001 filas / condiciones distintas,2 / 1,2 / 1,si,"Ambas en O2 0.15, 1.0013 atm; se cuentan ambas (n) y se informa n_dedup."

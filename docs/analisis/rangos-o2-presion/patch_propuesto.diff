@@ -1,0 +1,47 @@
+PARCHE PROPUESTO — NO APLICADO. Esquema de bandas B (decisión pendiente del equipo).
+Generado el 2026-11-14 por scripts/analysis_rangos_o2_presion.py (análisis de Yael, con IA).
+
+Qué hace: parte la banda ">=0.24" en "0.24-0.28" y ">=0.28". El borde 0.28 cae en un vacío de los datos
+(no hay pruebas FLEX entre O2 0.25 y 0.30), así que no mueve ninguna prueba de una celda a otra: solo
+corrige la etiqueta de 9 celdas de coverage_grid.json (las de O2 0.30–0.34 dejan de llamarse ">=0.24").
+
+Cómo aplicarlo (solo si el equipo elige B):
+    git apply --check docs/analisis/rangos-o2-presion/patch_propuesto.diff
+    git apply docs/analisis/rangos-o2-presion/patch_propuesto.diff
+    python scripts/build_experiments.py && python scripts/build_coverage_grid.py   # regenera coverage_grid.json
+    python -m pytest tests/        # o: python tests/test_psi_queries.py
+
+Probado en una copia temporal del repo (no en el repo): aplica limpio; 21/21 tests OK;
+coverage_grid.json = 49 celdas, 25 con n<5, 274 pruebas (igual que hoy); 9 celdas cambian de etiqueta:
+  0.24-0.28: heptane 0.7 co2 (n=7), heptane 0.7 he (1), heptane 1.0 co2 (9), methanol 0.7 co2 (6), methanol 0.7 he (2)
+  >=0.28:    heptane 0.7 none (8), heptane 1.0 none (3), methanol 0.7 none (9), methanol 1.0 none (4)
+Afecta a: mapa de Charly (etiquetas de columna), /coverage y /gaps (etiquetas), docs/data-dictionary.md.
+
+diff --git a/src/psi_queries.py b/src/psi_queries.py
+index 676ed82..5033183 100644
+--- a/src/psi_queries.py
++++ b/src/psi_queries.py
+@@ -34,7 +34,8 @@ O2_BANDS: Tuple[Tuple[float, float, str], ...] = (
+     (0.15, 0.18, "0.15-0.18"),
+     (0.18, 0.21, "0.18-0.21"),
+     (0.21, 0.24, "0.21-0.24"),
+-    (0.24, 1.01, ">=0.24"),
++    (0.24, 0.28, "0.24-0.28"),
++    (0.28, 1.01, ">=0.28"),  # borde en un vacío: no hay pruebas FLEX entre 0.25 y 0.30
+ )
+ Range = Optional[Tuple[Optional[float], Optional[float]]]
+ 
+diff --git a/docs/data-dictionary.md b/docs/data-dictionary.md
+index 75e387a..fc7f6c9 100644
+--- a/docs/data-dictionary.md
++++ b/docs/data-dictionary.md
+@@ -204,7 +204,8 @@ Generada por `scripts/build_experiments.py`. SQLite: tabla `experiments`, vistas
+   lectura. Cada fila trae `n`, `qc_flags` (lista) y `source_doi` (lista). Toda fila con `pct_*` trae
+   `pct_note = "descriptivo, no probabilidad"` y, si `n < 5`, un `warning` obligatorio.
+ - Q6 (BASS-II) **no** reporta % de extinción; solo conteos y `pct_outcome_stated`, porque el resultado es incompleto.
+-- Bandas de O₂ (fracción): [0, 0.15), [0.15, 0.18), [0.18, 0.21), [0.21, 0.24), [0.24, 1]. 0.21 (aire) abre la 4.ª banda.
++- Bandas de O₂ (fracción): [0, 0.15), [0.15, 0.18), [0.18, 0.21), [0.21, 0.24), [0.24, 0.28), [0.28, 1]. 0.21 (aire) abre la 4.ª banda.
++  El borde 0.28 cae en un vacío (no hay pruebas entre 0.25 y 0.30): separa 0.24–0.25 (todas con CO₂/He) de 0.30–0.34 (todas sin supresor).
+ - `data/processed/coverage_grid.json` (`scripts/build_coverage_grid.py`): FLEX por combustible × banda de O₂ ×
+   presión (0.1 atm; `unknown` = nula) × supresor (none/co2/he). Campos: n, K medio, diámetro de extinción medio (solo
+   extinction), `pct_extinction_descriptive_not_probability`, rangos de O₂ y supresor, conteos por resultado,

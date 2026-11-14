@@ -1,0 +1,24 @@
+seccion,afirmacion,valor_pdf,valor_csv,coincide,nota
+3,Pruebas FLEX metanol/heptano,160/114,157/117,no,El crudo PSI-69 da 157/117 según docs/VERIFICACION.md A4.1 (verificado el 14 nov con data/raw).
+3,methanol: extinction/disruption/completion,124/26/10,126/23/8,no,Totales globales CSV: 186/61/27 (VERIFICACION A4.1).
+3,heptane: extinction/disruption/completion,57/42/15,60/38/19,no,Totales globales CSV: 186/61/27 (VERIFICACION A4.1).
+3,Total FLEX extinction/disruption/completion (suma de las cifras del PDF),181/68/25,186/61/27,no,No es solo un cambio de combustible: también difieren los totales por resultado (ambos suman 274).
+7.1,"Aire ~21 % O2, ~1 atm, sin supresor (n metanol/heptano)",10/12,12/17 (O2=0.21) ; 12/17 (O2 0.20-0.22),no,Ninguna definición razonable da 10/12. Fer: 29 limpias con ±0.01.
+7.1,Aire: metanol se extingue,8/10,9/12 (O2=0.21) ; 9/12 (0.20-0.22),no,"Descriptivo, no probabilidad."
+7.1,Aire: heptano disruption / completion,7/12 ; 3/12,8/17 ; 4/17 (O2=0.21) ; 8/17 ; 4/17 (0.20-0.22),no,'Disruption' no está definido por la fuente.
+7.1,'Base lunar/rover' 30-34 % O2 ~0.70 atm (metanol/heptano),11/8,9/8,no,Total CSV 17; todas sin supresor: 17.
+7.1,'Base lunar' resultados disruption + completion (extinction),15 + 4 (0),15 + 2 (0),no,
+7.1,'Base lunar' rango de tasas mm2/s,0.53-0.90,0.53-0.9 (n con tasa=16),si,Coincide el rango aunque difiere el n.
+7.1,30 % O2 ~1 atm (metanol/heptano),4/3,4/3,si,
+7.1,30 % O2 ~1 atm: extinciones,1 (206R001),"2 (178F001, 206R001)",no,"El PDF omite 178F001 (metanol, O2 0.30, 1.0121 atm, extinction)."
+7.1,CO2 0.05-0.70 (metanol/heptano),78/51,75/48,no,Rango CSV 0.05-0.7; total 123.
+7.1,He 0.05-0.45 (metanol/heptano),36/24,28/22,no,Rango CSV 0.05-0.45; total 50. CO2 y He juntos: 0.
+7.1,'Hipoxia' 12-20 % O2 sin supresor (metanol/heptano),21/16,29/19 (cualquier presión) ; 26/17 (~1 atm) ; 26/17 (0.12-0.19),no,Definición de presión no dada en el PDF.
+BASS-II,Pruebas BASS-II,129,129,si,
+BASS-II,Pruebas con resultado (extraído por IA),26,26,si,outcome_source = ai_extracted; las 103 restantes son not_stated (≠ 'no se extinguió').
+BASS-II,"no_ignition: 1 (varilla transparente 3/8"", O2 13.6 %)","1; 3/8"" clear rod; 13.6 %","1; 3/8"" clear rod; 13.6 %",si,Prueba O12.
+BASS-II,Categorías: varillas/telas+esferas/películas/placas/vela,54/32/22/20/1,54/32/22/20/1,si,"Usa docs/material_mapping_proposal.csv, que NO está aprobada (material_category es null en experiments.csv). Telas+esferas mezcla tela (27 SIBAL + 3 Nomex) con 2 esferas de PMMA."
+BASS-II,Con resultado: varillas/películas/placa,21/4/1,21/4/1,si,Misma propuesta no aprobada.
+Conclusión,"SIBAL, Nomex, esferas y vela 'sin determinar'",sin resultado declarado,pruebas con resultado declarado en telas+esferas/vela: 0/0,si,Coincide: 0 pruebas con resultado; not_stated ≠ 'no se extinguió' ni 'no ardió'.
+Conclusión,Ningún material 'no inflamable' demostrado,ninguno demostrado,"ninguno demostrado: extinction 17, blowoff 7, no_ignition 1, not_sustained 1 (de 26 con resultado)",si,"Consistente con el CSV. Solo O12 no encendió (1 prueba, 1 condición): no basta para 'no inflamable'. No usar etiqueta binaria; lo defendible es 'ignición observada en >=1 prueba' por condición."
+Origen,El PDF dice salir de la tabla cruda PSI-69,tabla cruda,data/raw/ no existe en este disco,no_verificable,"Pendiente: comparar con 'PSI-69_Experimental table_FLEX.csv' (ver informe, comando exacto)."

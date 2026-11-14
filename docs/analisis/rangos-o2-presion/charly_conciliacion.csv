@@ -1,0 +1,67 @@
+version,combustible,banda,nivel_presion,solo_sin_supresor,n_pruebas,n_con_tasa,tasa_media_mm2_s,tasa_min,tasa_max,n_con_diametro,diam_extincion_medio_mm,pruebas_con_CO2_o_He,pruebas_extincion,gris_n_menor_5,fragil_n_menor_10,coincide_con_charly,o2_presentes,source_doi
+a_charly_reproducida_cerrada_derecha,heptane,"(0.0, 0.15]",todas,False,11,9,0.494,0.24,0.94,5,3.7,0,8,False,False,True,"0.13,0.14,0.15",10.60555/mbq8-0451
+a_charly_reproducida_cerrada_derecha,heptane,"(0.15, 0.21]",todas,False,73,68,0.517,0.05,1.06,44,2.474,48,45,False,False,True,"0.16,0.17,0.18,0.19,0.2,0.21",10.60555/mbq8-0451
+a_charly_reproducida_cerrada_derecha,heptane,"(0.21, 0.3]",todas,False,29,27,0.603,0.34,0.85,7,3.034,22,7,False,False,True,"0.23,0.24,0.25,0.3",10.60555/mbq8-0451
+a_charly_reproducida_cerrada_derecha,heptane,"(0.3, 1.01]",todas,False,4,3,0.81,0.73,0.9,0,,0,0,True,True,True,0.34,10.60555/mbq8-0451
+a_charly_reproducida_cerrada_derecha,methanol,"(0.0, 0.15]",todas,False,37,36,0.378,0.2,0.58,33,2.201,15,37,False,False,True,"0.12,0.13,0.14,0.15",10.60555/mbq8-0451
+a_charly_reproducida_cerrada_derecha,methanol,"(0.15, 0.21]",todas,False,85,80,0.469,0.27,0.7,60,1.8,66,76,False,False,True,"0.16,0.17,0.18,0.19,0.2,0.21",10.60555/mbq8-0451
+a_charly_reproducida_cerrada_derecha,methanol,"(0.21, 0.3]",todas,False,30,30,0.56,0.42,0.74,10,1.375,22,13,False,False,True,"0.23,0.24,0.25,0.3",10.60555/mbq8-0451
+a_charly_reproducida_cerrada_derecha,methanol,"(0.3, 1.01]",todas,False,5,5,0.654,0.53,0.72,0,,0,0,False,True,True,0.34,10.60555/mbq8-0451
+b_esquema_A_cerrada_izquierda,heptane,<0.15,todas,False,6,4,0.455,0.24,0.94,2,3.505,0,5,False,True,,"0.13,0.14",10.60555/mbq8-0451
+b_esquema_A_cerrada_izquierda,heptane,0.15-0.18,todas,False,19,17,0.518,0.05,1.06,13,2.775,11,14,False,False,,"0.15,0.16,0.17",10.60555/mbq8-0451
+b_esquema_A_cerrada_izquierda,heptane,0.18-0.21,todas,False,34,34,0.491,0.25,0.77,22,2.508,29,22,False,False,,"0.18,0.19,0.2",10.60555/mbq8-0451
+b_esquema_A_cerrada_izquierda,heptane,0.21-0.24,todas,False,30,27,0.551,0.33,0.79,15,2.608,13,15,False,False,,"0.21,0.23",10.60555/mbq8-0451
+b_esquema_A_cerrada_izquierda,heptane,>=0.24,todas,False,28,25,0.644,0.51,0.9,4,2.8,17,4,False,False,,"0.24,0.25,0.3,0.34",10.60555/mbq8-0451
+b_esquema_A_cerrada_izquierda,methanol,<0.15,todas,False,22,21,0.38,0.28,0.58,20,2.075,5,22,False,False,,"0.12,0.13,0.14",10.60555/mbq8-0451
+b_esquema_A_cerrada_izquierda,methanol,0.15-0.18,todas,False,32,31,0.405,0.2,0.66,26,2.365,27,32,False,False,,"0.15,0.16,0.17",10.60555/mbq8-0451
+b_esquema_A_cerrada_izquierda,methanol,0.18-0.21,todas,False,39,38,0.465,0.3,0.63,32,1.784,32,37,False,False,,"0.18,0.19,0.2",10.60555/mbq8-0451
+b_esquema_A_cerrada_izquierda,methanol,0.21-0.24,todas,False,43,40,0.503,0.27,0.73,21,1.409,31,30,False,False,,"0.21,0.23",10.60555/mbq8-0451
+b_esquema_A_cerrada_izquierda,methanol,>=0.24,todas,False,21,21,0.613,0.46,0.74,4,1.178,8,5,False,False,,"0.24,0.25,0.3,0.34",10.60555/mbq8-0451
+b_esquema_B_cerrada_izquierda,heptane,<0.15,todas,False,6,4,0.455,0.24,0.94,2,3.505,0,5,False,True,,"0.13,0.14",10.60555/mbq8-0451
+b_esquema_B_cerrada_izquierda,heptane,0.15-0.18,todas,False,19,17,0.518,0.05,1.06,13,2.775,11,14,False,False,,"0.15,0.16,0.17",10.60555/mbq8-0451
+b_esquema_B_cerrada_izquierda,heptane,0.18-0.21,todas,False,34,34,0.491,0.25,0.77,22,2.508,29,22,False,False,,"0.18,0.19,0.2",10.60555/mbq8-0451
+b_esquema_B_cerrada_izquierda,heptane,0.21-0.24,todas,False,30,27,0.551,0.33,0.79,15,2.608,13,15,False,False,,"0.21,0.23",10.60555/mbq8-0451
+b_esquema_B_cerrada_izquierda,heptane,0.24-0.28,todas,False,17,15,0.586,0.51,0.72,4,2.8,17,4,False,False,,"0.24,0.25",10.60555/mbq8-0451
+b_esquema_B_cerrada_izquierda,heptane,>=0.28,todas,False,11,10,0.73,0.58,0.9,0,,0,0,False,False,,"0.3,0.34",10.60555/mbq8-0451
+b_esquema_B_cerrada_izquierda,methanol,<0.15,todas,False,22,21,0.38,0.28,0.58,20,2.075,5,22,False,False,,"0.12,0.13,0.14",10.60555/mbq8-0451
+b_esquema_B_cerrada_izquierda,methanol,0.15-0.18,todas,False,32,31,0.405,0.2,0.66,26,2.365,27,32,False,False,,"0.15,0.16,0.17",10.60555/mbq8-0451
+b_esquema_B_cerrada_izquierda,methanol,0.18-0.21,todas,False,39,38,0.465,0.3,0.63,32,1.784,32,37,False,False,,"0.18,0.19,0.2",10.60555/mbq8-0451
+b_esquema_B_cerrada_izquierda,methanol,0.21-0.24,todas,False,43,40,0.503,0.27,0.73,21,1.409,31,30,False,False,,"0.21,0.23",10.60555/mbq8-0451
+b_esquema_B_cerrada_izquierda,methanol,0.24-0.28,todas,False,8,8,0.548,0.46,0.7,2,1.19,8,3,False,True,,"0.24,0.25",10.60555/mbq8-0451
+b_esquema_B_cerrada_izquierda,methanol,>=0.28,todas,False,13,13,0.654,0.53,0.74,2,1.165,0,2,False,False,,"0.3,0.34",10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,heptane,<0.15,~0.7 atm,True,0,0,,,,0,,0,0,True,True,,,10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,heptane,<0.15,~1.0 atm,True,6,4,0.455,0.24,0.94,2,3.505,0,5,False,True,,"0.13,0.14",10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,heptane,<0.15,>2 atm,True,0,0,,,,0,,0,0,True,True,,,10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,heptane,0.15-0.18,~0.7 atm,True,0,0,,,,0,,0,0,True,True,,,10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,heptane,0.15-0.18,~1.0 atm,True,8,7,0.484,0.34,0.77,5,3.36,0,6,False,True,,"0.15,0.16",10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,heptane,0.15-0.18,>2 atm,True,0,0,,,,0,,0,0,True,True,,,10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,heptane,0.18-0.21,~0.7 atm,True,2,2,0.49,0.44,0.54,1,2.49,0,1,True,True,,0.2,10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,heptane,0.18-0.21,~1.0 atm,True,3,3,0.5,0.39,0.6,2,2.62,0,2,True,True,,0.18,10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,heptane,0.18-0.21,>2 atm,True,0,0,,,,0,,0,0,True,True,,,10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,heptane,0.21-0.24,~0.7 atm,True,0,0,,,,0,,0,0,True,True,,,10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,heptane,0.21-0.24,~1.0 atm,True,17,15,0.559,0.42,0.79,5,2.664,0,5,False,False,,0.21,10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,heptane,0.21-0.24,>2 atm,True,0,0,,,,0,,0,0,True,True,,,10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,heptane,0.24-0.28,~0.7 atm,True,0,0,,,,0,,0,0,True,True,,,10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,heptane,0.24-0.28,~1.0 atm,True,0,0,,,,0,,0,0,True,True,,,10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,heptane,0.24-0.28,>2 atm,True,0,0,,,,0,,0,0,True,True,,,10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,heptane,>=0.28,~0.7 atm,True,8,7,0.724,0.58,0.9,0,,0,0,False,True,,"0.3,0.34",10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,heptane,>=0.28,~1.0 atm,True,3,3,0.743,0.68,0.85,0,,0,0,True,True,,0.3,10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,heptane,>=0.28,>2 atm,True,0,0,,,,0,,0,0,True,True,,,10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,methanol,<0.15,~0.7 atm,True,0,0,,,,0,,0,0,True,True,,,10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,methanol,<0.15,~1.0 atm,True,17,16,0.356,0.3,0.38,15,1.937,0,17,False,False,,"0.12,0.13,0.14",10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,methanol,<0.15,>2 atm,True,0,0,,,,0,,0,0,True,True,,,10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,methanol,0.15-0.18,~0.7 atm,True,0,0,,,,0,,0,0,True,True,,,10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,methanol,0.15-0.18,~1.0 atm,True,5,5,0.386,0.36,0.4,3,1.97,0,5,False,True,,0.15,10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,methanol,0.15-0.18,>2 atm,True,0,0,,,,0,,0,0,True,True,,,10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,methanol,0.18-0.21,~0.7 atm,True,3,3,0.44,0.41,0.46,1,1.67,0,2,True,True,,0.2,10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,methanol,0.18-0.21,~1.0 atm,True,4,4,0.428,0.41,0.45,2,1.695,0,4,True,True,,0.18,10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,methanol,0.18-0.21,>2 atm,True,0,0,,,,0,,0,0,True,True,,,10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,methanol,0.21-0.24,~0.7 atm,True,0,0,,,,0,,0,0,True,True,,,10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,methanol,0.21-0.24,~1.0 atm,True,12,12,0.501,0.27,0.6,8,1.247,0,9,False,False,,0.21,10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,methanol,0.21-0.24,>2 atm,True,0,0,,,,0,,0,0,True,True,,,10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,methanol,0.24-0.28,~0.7 atm,True,0,0,,,,0,,0,0,True,True,,,10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,methanol,0.24-0.28,~1.0 atm,True,0,0,,,,0,,0,0,True,True,,,10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,methanol,0.24-0.28,>2 atm,True,0,0,,,,0,,0,0,True,True,,,10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,methanol,>=0.28,~0.7 atm,True,9,9,0.646,0.53,0.72,0,,0,0,False,True,,"0.3,0.34",10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,methanol,>=0.28,~1.0 atm,True,4,4,0.672,0.59,0.74,2,1.165,0,2,True,True,,0.3,10.60555/mbq8-0451
+c_estratificada_esquema_B_sin_supresor,methanol,>=0.28,>2 atm,True,0,0,,,,0,,0,0,True,True,,,10.60555/mbq8-0451
