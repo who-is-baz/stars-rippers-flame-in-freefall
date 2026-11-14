@@ -34,6 +34,7 @@ Después de esto, `git status` debe seguir limpio (el CSV que se reescribe es id
 ```bash
 python -m pytest tests/                  # si instalaste pytest
 python tests/test_psi_queries.py         # sin pytest: runner con la librería estándar (debe decir OK)
+python tests/test_qc_flags.py            # sin pytest: flags de calidad de BASS-II (debe decir OK)
 ```
 Otros scripts útiles sin red:
 ```bash
@@ -53,6 +54,11 @@ python scripts/fetch_psi.py --verify-only  # solo verifica lo que ya tienes
 - `data/raw/` es **de solo lectura e intocable** y no se sube (está en `.gitignore`).
 - Luego: `python scripts/build_processed.py` → `python scripts/build_experiments.py` → `python scripts/build_coverage_grid.py`.
 - Los Science Documents (`data/reference/`) **no** los descarga `fetch_psi.py`; se bajan a mano desde la ficha PSI de cada investigación si los necesitas. Tampoco se suben.
+
+> ⚠️ **La API de PSI no es confiable en vivo.** El 14 nov 2026 el endpoint de detalle
+> (`/geode-py/ws/repo/investigations/<ID>`) devolvió **HTTP 500** en las 6 investigaciones probadas.
+> **La demo NUNCA depende de la API viva de PSI:** solo usa `data/processed/` (versionado) y `psi.sqlite`
+> regenerado con `scripts/build_experiments.py`. La red solo se usa para recrear `data/raw/`.
 
 ## 6. Flujo de trabajo
 1. Lee `CLAUDE.md`, `docs/03-analisis-datos.md`, `docs/07-api-contract.md`, `docs/data-dictionary.md` y **tu archivo en `docs/tareas/`**.
