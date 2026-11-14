@@ -150,7 +150,7 @@ Generada por `scripts/build_experiments.py`. SQLite: tabla `experiments`, vistas
 ### Cobertura y origen
 1. **Solo se procesaron las Experiment Tables.** No se usan los ~630 archivos por prueba de FLEX (Chamber/Radiometer
    Readings), ni los videos o imágenes de BASS-II (~275 GB), ni los de FLEX (~920 GB). Solo hay una muestra (20CAL10).
-2. SoFIE no está en PSI. De Combustion Science solo se procesaron BASS-II y FLEX (de 24 investigaciones).
+2. SoFIE no es una investigación en PSI (ninguna tiene esa sigla o título), pero los objetivos de BASS-II (PSI-25) la mencionan: "Provide SoFIE PIs with preliminary data to refine Science Requirements". De Combustion Science solo se procesaron BASS-II y FLEX (de 24 investigaciones).
 3. Los Science Documents consultados son 4 (FLEX DoD, FLEX Test Plan, BASS-II ReadMe, BASS-II SRD). No se revisaron los
    Engineering Documents, Presentations ni el Summary Report de BASS-II (49 MB).
 
