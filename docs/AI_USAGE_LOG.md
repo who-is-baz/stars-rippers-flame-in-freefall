@@ -164,3 +164,7 @@ Peticiones de red en esta sesión: solo GitHub (gh/git). Ninguna a psi.nasa.gov.
    0/129: O₂ máx. 22.2 % y presión no registrada). Hay 17 pruebas FLEX con O₂ 0.30–0.34 a 0.703–0.714 atm (10.33–10.50 psi),
    justo por encima del umbral; todas terminaron en disruption (15) o completion (2), sin supresor.
 7. Commits con "AI-assisted: yes" y trailer `Co-Authored-By: Claude` (pedido explícito en esta sesión).
+8. `docs/00-reglas-y-checklist.md` reemplazado por la versión actualizada de Baz (`00-reglas-y-checklist (1).md`), que ya
+   corrige lo del vie 13. Única modificación propia (aprobada por Baz): el contrato de API (07), las fichas de `docs/tareas/`,
+   3 skills y las versiones nuevas de CLAUDE.md/02/03 son del **sáb 14, 10:38–10:39** según las fechas de `paquete-equipo.zip`,
+   no del vie 13. Del vie 13 (zip viejo, 9:59–10:00) son README, CLAUDE.md, docs 00–06, DECISIONES, `.github` y 5 skills.
