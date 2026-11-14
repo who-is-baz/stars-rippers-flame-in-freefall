@@ -221,3 +221,26 @@ solo revisan y firman #7. Sin red salvo `gh`/git; sin tocar `data/raw/`.
    idénticos celda por celda. `experiments.csv` regenerado sin cambios.
 5. Tests: `test_psi_queries.py` 12/12 (3 nuevos) y `test_qc_flags.py` OK, sin pytest.
 6. Commits con "AI-assisted: yes", sin trailer `Co-Authored-By`. Peticiones de red: solo GitHub (gh/git).
+
+## 2026-11-14 (10) — Escenarios de atmósfera y datos para el frontend — Claude Code (Opus 5.5)
+
+**Pedido (Baz):** rama `feat/baz-decisiones-y-datos`, un PR sin unir; sin tocar `data/raw/`. La rama incluye #28
+(mapeo de materiales) y #29 (contrato alineado) por merge, porque `materials.json` necesita `material_category` y los
+textos en inglés del contrato.
+
+1. `src/scenarios.py`: tolerancia (O₂ ±0.01, ±0.5 psi), bandas de O₂ (las de `psi_queries`), niveles de presión
+   discretos y 5 escenarios con `source` y `verified`. Regla: los criterios puntuales se cumplen dentro de la
+   tolerancia; los límites son estrictos en `n_exact` y se relajan en `n_near`. Resultado: earth_iss 49/49,
+   lunar_challenge 0/17, lunar_nasa 0/0, exploration 0/0, suit 0/0; C11M201 excluida (sin presión). Coincide con el
+   análisis de Yael (`feat/baz-resumen-equipo`, t1_escenarios.csv), incluidas las condiciones más cercanas.
+2. Citas de NASA: leídas en una sesión anterior de solo lectura (red limitada a nasa.gov y ntrs.nasa.gov; texto
+   extraído de los PDF con `pdftotext`). NASA/TM-2013-217377 **no** se leyó; se deja como fuente porque Baz la indicó,
+   con una nota. `lunar_nasa`, `exploration` y `suit` quedan `verified: false` hasta que Fer confirme.
+3. `scripts/build_frontend_data.py` → `frontend/public/data/` (7 JSON). Todo número se calcula; textos en inglés;
+   null + `"status": "no data"` si falta un dato. Corrección detectada: con niveles discretos, la frase ">1 atm solo con
+   n<5" no es cierta por celda (metanol >2 atm tiene n = 7); `gaps.json` dice lo exacto: 9 pruebas, todas con CO₂ y
+   O₂ 0.21–0.24, y n < 5 en cada presión real (2.0, 2.7 y 3.1 atm).
+4. `docs/DECISIONES.md`: 5 entradas (tolerancia, bandas/niveles, doble definición lunar, 0/17, camino del demo).
+5. Tests: `test_scenarios.py` 7/7 y `test_frontend_data.py` 6/6 (nuevos); `test_psi_queries.py` y `test_qc_flags.py`
+   OK. Sin pytest. `data/raw/` sin cambios.
+6. Commits con "AI-assisted: yes", sin trailer `Co-Authored-By`. Peticiones de red en esta sesión: solo GitHub (gh/git).
