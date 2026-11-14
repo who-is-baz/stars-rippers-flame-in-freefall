@@ -14,6 +14,10 @@
 9. Congelar funciones el domingo a las 14:00 (ajustar al horario real).
 10. Redactar la entrega en inglés (`docs/05-entrega-draft-en.md`), con References completos: datos (DOIs), librerías, modelos y skills usadas.
 
+## Domingo (antes en `jovanny-infra.md`; issue #17)
+11. Grabación del demo (video ≤30 s con subtítulos en inglés, o ≤7 diapositivas; enlace público).
+12. Lista de verificación final de `docs/05-entrega-draft-en.md`.
+
 ## Cuidado
 - Contraseñas y tokens: nada en el repo. Revocar el token de `keygithub` si no lo hiciste.
 - No copiar código de repos de otros equipos.
