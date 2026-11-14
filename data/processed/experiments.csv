@@ -1,0 +1,404 @@
+program,test_id,date,material_or_fuel,material_category,o2_fraction,pressure_atm,co2_fraction,he_fraction,outcome,outcome_source,extinction_diameter_mm,burning_rate_mm2_s,qc_flags,source_doi
+FLEX,20CAL08,2009-03-05,methanol,liquid_fuel_droplet,0.21,0.997,0.0,0.0,disruption,observed,,0.52,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,20CAL10,2009-03-05,methanol,liquid_fuel_droplet,0.21,1.0026,0.0,0.0,extinction,observed,0.94,0.6,,10.60555/mbq8-0451
+FLEX,20CAL12,2009-03-05,methanol,liquid_fuel_droplet,0.21,1.0055,0.0,0.0,extinction,observed,0.92,0.58,,10.60555/mbq8-0451
+FLEX,30CAL02,2009-03-31,methanol,liquid_fuel_droplet,0.21,1.0,0.0,0.0,extinction,observed,,0.6,,10.60555/mbq8-0451
+FLEX,30CAL03,2009-03-31,methanol,liquid_fuel_droplet,0.21,1.0,0.0,0.0,extinction,observed,0.81,0.48,,10.60555/mbq8-0451
+FLEX,40CAL01,2009-03-31,methanol,liquid_fuel_droplet,0.21,1.0,0.0,0.0,extinction,observed,1.53,0.51,,10.60555/mbq8-0451
+FLEX,20CAL13,2009-04-10,heptane,liquid_fuel_droplet,0.21,1.0017,0.0,0.0,disruption,observed,,0.67,,10.60555/mbq8-0451
+FLEX,30CAL06,2009-04-10,heptane,liquid_fuel_droplet,0.21,1.0032,0.0,0.0,disruption,observed,,0.79,,10.60555/mbq8-0451
+FLEX,30CAL07,2009-04-10,heptane,liquid_fuel_droplet,0.21,1.0,0.0,0.0,disruption,observed,,,,10.60555/mbq8-0451
+FLEX,256F002,2009-05-22,methanol,liquid_fuel_droplet,0.21,3.0522,0.7,0.0,extinction,observed,,0.37,,10.60555/mbq8-0451
+FLEX,256R001,2009-05-22,methanol,liquid_fuel_droplet,0.21,3.0511,0.7,0.0,extinction,observed,,0.4,,10.60555/mbq8-0451
+FLEX,264F003,2009-05-22,heptane,liquid_fuel_droplet,0.21,3.0525,0.7,0.0,disruption,observed,,,,10.60555/mbq8-0451
+FLEX,256R002,2009-06-25,methanol,liquid_fuel_droplet,0.21,2.7292,0.7,0.0,extinction,observed,,0.49,,10.60555/mbq8-0451
+FLEX,256F007,2009-06-29,methanol,liquid_fuel_droplet,0.21,2.7047,0.7,0.0,extinction,observed,,,,10.60555/mbq8-0451
+FLEX,256F008,2009-06-29,methanol,liquid_fuel_droplet,0.21,2.7192,0.7,0.0,extinction,observed,,,,10.60555/mbq8-0451
+FLEX,256F009,2009-06-29,methanol,liquid_fuel_droplet,0.21,2.7264,0.7,0.0,extinction,observed,1.0,0.53,,10.60555/mbq8-0451
+FLEX,240R003,2009-07-01,methanol,liquid_fuel_droplet,0.21,2.0338,0.7,0.0,disruption,observed,,,,10.60555/mbq8-0451
+FLEX,248F001,2009-07-01,heptane,liquid_fuel_droplet,0.21,2.0445,0.7,0.0,extinction,observed,1.77,0.61,,10.60555/mbq8-0451
+FLEX,196F001,2009-08-26,heptane,liquid_fuel_droplet,0.34,0.7093,0.0,0.0,disruption,observed,,0.9,,10.60555/mbq8-0451
+FLEX,192F001,2009-10-24,methanol,liquid_fuel_droplet,0.34,0.7099,0.0,0.0,completion,observed,,0.53,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,192F002,2009-10-24,methanol,liquid_fuel_droplet,0.34,0.7113,0.0,0.0,disruption,observed,,0.66,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,192F003,2009-10-24,methanol,liquid_fuel_droplet,0.34,0.7112,0.0,0.0,disruption,observed,,0.65,,10.60555/mbq8-0451
+FLEX,196F002,2009-10-24,heptane,liquid_fuel_droplet,0.34,0.7129,0.0,0.0,disruption,observed,,0.73,,10.60555/mbq8-0451
+FLEX,196F003,2009-10-24,heptane,liquid_fuel_droplet,0.34,0.7142,0.0,0.0,disruption,observed,,,,10.60555/mbq8-0451
+FLEX,191R001,2009-11-09,methanol,liquid_fuel_droplet,0.3,0.707,0.0,0.0,completion,observed,,0.65,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,191F001,2009-11-09,methanol,liquid_fuel_droplet,0.3,0.7084,0.0,0.0,disruption,observed,,0.62,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,195F001,2009-11-09,heptane,liquid_fuel_droplet,0.3,0.7114,0.0,0.0,disruption,observed,,0.64,,10.60555/mbq8-0451
+FLEX,195F002,2009-11-09,heptane,liquid_fuel_droplet,0.3,0.7101,0.0,0.0,disruption,observed,,0.64,,10.60555/mbq8-0451
+FLEX,178R001,2009-11-13,methanol,liquid_fuel_droplet,0.3,1.0091,0.0,0.0,completion,observed,,0.74,,10.60555/mbq8-0451
+FLEX,178F001,2009-11-13,methanol,liquid_fuel_droplet,0.3,1.0121,0.0,0.0,extinction,observed,1.32,0.59,,10.60555/mbq8-0451
+FLEX,182F001,2009-11-13,heptane,liquid_fuel_droplet,0.3,1.0138,0.0,0.0,disruption,observed,,0.85,,10.60555/mbq8-0451
+FLEX,182F002,2009-11-13,heptane,liquid_fuel_droplet,0.3,1.0145,0.0,0.0,completion,observed,,0.68,,10.60555/mbq8-0451
+FLEX,177R002,2009-11-27,methanol,liquid_fuel_droplet,0.21,1.0059,0.0,0.0,extinction,observed,1.25,0.48,,10.60555/mbq8-0451
+FLEX,177F001,2009-11-27,methanol,liquid_fuel_droplet,0.21,1.0101,0.0,0.0,extinction,observed,2.0,0.44,,10.60555/mbq8-0451
+FLEX,181F001,2009-11-27,heptane,liquid_fuel_droplet,0.21,1.0107,0.0,0.0,extinction,observed,3.34,0.43,,10.60555/mbq8-0451
+FLEX,190R002,2009-12-15,methanol,liquid_fuel_droplet,0.2,0.7092,0.0,0.0,extinction,observed,1.67,0.45,,10.60555/mbq8-0451
+FLEX,220R001,2010-01-07,methanol,liquid_fuel_droplet,0.34,0.703,0.0,0.0,disruption,observed,,0.72,,10.60555/mbq8-0451
+FLEX,220R002,2010-01-07,methanol,liquid_fuel_droplet,0.34,0.7032,0.0,0.0,disruption,observed,,0.71,,10.60555/mbq8-0451
+FLEX,224F001,2010-01-07,heptane,liquid_fuel_droplet,0.34,0.7038,0.0,0.0,disruption,observed,,0.8,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,219R001,2010-01-08,methanol,liquid_fuel_droplet,0.3,0.7041,0.0,0.0,disruption,observed,,0.62,,10.60555/mbq8-0451
+FLEX,219F001,2010-01-08,methanol,liquid_fuel_droplet,0.3,0.703,0.0,0.0,disruption,observed,,0.65,,10.60555/mbq8-0451
+FLEX,223F001,2010-01-08,heptane,liquid_fuel_droplet,0.3,0.7039,0.0,0.0,disruption,observed,,0.58,,10.60555/mbq8-0451
+FLEX,223F002,2010-01-08,heptane,liquid_fuel_droplet,0.3,0.7038,0.0,0.0,disruption,observed,,0.78,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,206F001,2010-01-11,methanol,liquid_fuel_droplet,0.3,1.0089,0.0,0.0,disruption,observed,,0.63,,10.60555/mbq8-0451
+FLEX,206R001,2010-01-11,methanol,liquid_fuel_droplet,0.3,1.0109,0.0,0.0,extinction,observed,1.01,0.73,,10.60555/mbq8-0451
+FLEX,205R001,2010-01-12,methanol,liquid_fuel_droplet,0.21,1.0125,0.0,0.0,disruption,observed,,0.54,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,209F001,2010-01-12,heptane,liquid_fuel_droplet,0.21,1.0133,0.0,0.0,completion,observed,,0.5,,10.60555/mbq8-0451
+FLEX,205F001,2010-01-12,methanol,liquid_fuel_droplet,0.21,1.0114,0.0,0.0,disruption,observed,,0.27,,10.60555/mbq8-0451
+FLEX,209F003,2010-01-19,heptane,liquid_fuel_droplet,0.21,1.0064,0.0,0.0,extinction,observed,2.78,0.59,,10.60555/mbq8-0451
+FLEX,209F004,2010-01-19,heptane,liquid_fuel_droplet,0.21,1.0133,0.0,0.0,extinction,observed,2.98,0.52,,10.60555/mbq8-0451
+FLEX,209F005,2010-01-19,heptane,liquid_fuel_droplet,0.21,1.015,0.0,0.0,completion,observed,,0.65,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,210F002,2010-01-11,heptane,liquid_fuel_droplet,0.3,1.0146,0.0,0.0,disruption,observed,,0.7,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,209F002,2010-01-12,heptane,liquid_fuel_droplet,0.21,1.0134,0.0,0.0,disruption,observed,,,,10.60555/mbq8-0451
+FLEX,190F003,2010-01-29,methanol,liquid_fuel_droplet,0.2,0.7124,0.0,0.0,extinction,observed,,0.41,,10.60555/mbq8-0451
+FLEX,218F001,2010-01-29,methanol,liquid_fuel_droplet,0.2,0.7139,0.0,0.0,disruption,observed,,0.46,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,194F001,2010-01-29,heptane,liquid_fuel_droplet,0.2,0.7159,0.0,0.0,completion,observed,,0.44,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,303F001,2010-01-29,heptane,liquid_fuel_droplet,0.2,0.7163,0.0,0.0,extinction,observed,2.49,0.54,,10.60555/mbq8-0451
+FLEX,176F001,2010-02-04,methanol,liquid_fuel_droplet,0.18,1.0175,0.0,0.0,extinction,observed,,0.42,,10.60555/mbq8-0451
+FLEX,176R001,2010-02-04,methanol,liquid_fuel_droplet,0.18,1.0121,0.0,0.0,extinction,observed,1.39,0.43,,10.60555/mbq8-0451
+FLEX,204F001,2010-02-04,methanol,liquid_fuel_droplet,0.18,1.018,0.0,0.0,extinction,observed,,0.45,,10.60555/mbq8-0451
+FLEX,204R001,2010-02-04,methanol,liquid_fuel_droplet,0.18,1.0186,0.0,0.0,extinction,observed,2.0,0.41,,10.60555/mbq8-0451
+FLEX,301F001,2010-03-11,heptane,liquid_fuel_droplet,0.18,1.0024,0.0,0.0,extinction,observed,3.17,0.39,,10.60555/mbq8-0451
+FLEX,301F002,2010-03-11,heptane,liquid_fuel_droplet,0.18,1.01,0.0,0.0,completion,observed,,0.51,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,302F001,2010-03-11,heptane,liquid_fuel_droplet,0.18,1.0061,0.0,0.0,extinction,observed,2.07,0.6,,10.60555/mbq8-0451
+FLEX,189R001,2010-03-19,methanol,liquid_fuel_droplet,0.15,1.0078,0.0,0.0,extinction,observed,,0.4,,10.60555/mbq8-0451
+FLEX,189F001,2010-03-19,methanol,liquid_fuel_droplet,0.15,1.0089,0.0,0.0,extinction,observed,1.32,0.38,,10.60555/mbq8-0451
+FLEX,189F002,2010-03-19,methanol,liquid_fuel_droplet,0.15,1.0101,0.0,0.0,extinction,observed,3.3,0.36,,10.60555/mbq8-0451
+FLEX,189R003,2010-03-19,methanol,liquid_fuel_droplet,0.15,1.0116,0.0,0.0,extinction,observed,1.29,0.39,,10.60555/mbq8-0451
+FLEX,193R002,2010-03-23,heptane,liquid_fuel_droplet,0.14,1.0093,0.0,0.0,completion,observed,,0.94,mole_fractions_do_not_sum_to_1;extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,193F001,2010-03-23,heptane,liquid_fuel_droplet,0.15,1.0013,0.0,0.0,extinction,observed,4.6,0.41,duplicate_flex_id,10.60555/mbq8-0451
+FLEX,189R002,2010-03-19,methanol,liquid_fuel_droplet,0.15,1.0109,0.0,0.0,extinction,observed,,0.4,,10.60555/mbq8-0451
+FLEX,193R001,2010-03-23,heptane,liquid_fuel_droplet,0.15,1.0068,0.0,0.0,completion,observed,,0.52,,10.60555/mbq8-0451
+FLEX,193F001,2010-03-23,heptane,liquid_fuel_droplet,0.15,1.0013,0.0,0.0,extinction,observed,4.58,0.56,duplicate_flex_id,10.60555/mbq8-0451
+FLEX,221F001,2010-03-23,heptane,liquid_fuel_droplet,0.15,1.0078,0.0,0.0,completion,observed,,0.77,,10.60555/mbq8-0451
+FLEX,203R002,2010-03-29,methanol,liquid_fuel_droplet,0.13,1.0142,0.0,0.0,extinction,observed,1.78,0.37,mole_fractions_do_not_sum_to_1,10.60555/mbq8-0451
+FLEX,203F001,2010-03-29,methanol,liquid_fuel_droplet,0.13,1.0125,0.0,0.0,extinction,observed,2.78,0.37,mole_fractions_do_not_sum_to_1,10.60555/mbq8-0451
+FLEX,175R001,2010-03-29,methanol,liquid_fuel_droplet,0.14,1.0111,0.0,0.0,extinction,observed,2.91,0.34,,10.60555/mbq8-0451
+FLEX,175F001,2010-03-29,methanol,liquid_fuel_droplet,0.14,1.0079,0.0,0.0,extinction,observed,1.66,0.35,,10.60555/mbq8-0451
+FLEX,179F001,2010-03-30,heptane,liquid_fuel_droplet,0.13,1.0107,0.0,0.0,extinction,observed,2.86,0.25,mole_fractions_do_not_sum_to_1,10.60555/mbq8-0451
+FLEX,207F001,2010-03-30,heptane,liquid_fuel_droplet,0.13,1.0132,0.0,0.0,extinction,observed,,,mole_fractions_do_not_sum_to_1,10.60555/mbq8-0451
+FLEX,207F002,2010-03-30,heptane,liquid_fuel_droplet,0.13,1.0134,0.0,0.0,extinction,observed,,,mole_fractions_do_not_sum_to_1,10.60555/mbq8-0451
+FLEX,304F001,2010-04-19,methanol,liquid_fuel_droplet,0.13,1.0061,0.0,0.0,extinction,observed,2.39,0.35,,10.60555/mbq8-0451
+FLEX,304F002,2010-04-19,methanol,liquid_fuel_droplet,0.12,1.0158,0.0,0.0,extinction,observed,,,,10.60555/mbq8-0451
+FLEX,304R001,2010-04-19,methanol,liquid_fuel_droplet,0.12,1.0095,0.0,0.0,extinction,observed,1.42,0.35,,10.60555/mbq8-0451
+FLEX,304R002,2010-04-19,methanol,liquid_fuel_droplet,0.12,1.0147,0.0,0.0,extinction,observed,1.77,0.35,,10.60555/mbq8-0451
+FLEX,305F002,2010-04-19,methanol,liquid_fuel_droplet,0.12,1.0132,0.0,0.0,extinction,observed,2.56,0.35,,10.60555/mbq8-0451
+FLEX,305F003,2010-04-19,methanol,liquid_fuel_droplet,0.12,1.0147,0.0,0.0,extinction,observed,1.92,0.38,,10.60555/mbq8-0451
+FLEX,053R001,2010-05-05,methanol,liquid_fuel_droplet,0.25,0.7072,0.15,0.0,disruption,observed,,0.53,,10.60555/mbq8-0451
+FLEX,053F001,2010-05-05,methanol,liquid_fuel_droplet,0.25,0.7071,0.15,0.0,disruption,observed,,0.51,,10.60555/mbq8-0451
+FLEX,141R001,2010-05-06,methanol,liquid_fuel_droplet,0.25,0.7095,0.15,0.0,disruption,observed,,0.53,,10.60555/mbq8-0451
+FLEX,141F001,2010-05-05,methanol,liquid_fuel_droplet,0.25,0.7083,0.15,0.0,disruption,observed,,0.51,,10.60555/mbq8-0451
+FLEX,061F002,2010-06-14,heptane,liquid_fuel_droplet,0.25,0.7057,0.15,0.0,disruption,observed,,0.55,,10.60555/mbq8-0451
+FLEX,149F001,2010-06-15,heptane,liquid_fuel_droplet,0.25,0.707,0.15,0.0,disruption,observed,,0.71,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,C08H101,2010-06-15,heptane,liquid_fuel_droplet,0.24,0.7021,0.2,0.0,extinction,observed,2.76,0.51,,10.60555/mbq8-0451
+FLEX,C08H201,2010-06-15,heptane,liquid_fuel_droplet,0.24,0.7032,0.2,0.0,extinction,observed,3.04,0.58,,10.60555/mbq8-0451
+FLEX,C08H301,2010-06-15,heptane,liquid_fuel_droplet,0.24,0.7032,0.2,0.0,disruption,observed,,,,10.60555/mbq8-0451
+FLEX,C08M101,2010-06-16,methanol,liquid_fuel_droplet,0.23,0.7029,0.2,0.0,completion,observed,,0.45,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,C09M201,2010-06-21,methanol,liquid_fuel_droplet,0.23,0.7067,0.25,0.0,extinction,observed,1.74,0.47,,10.60555/mbq8-0451
+FLEX,C09M101,2010-06-21,methanol,liquid_fuel_droplet,0.23,0.7039,0.25,0.0,extinction,observed,2.32,0.42,,10.60555/mbq8-0451
+FLEX,C09H101,2010-06-29,heptane,liquid_fuel_droplet,0.23,0.7062,0.25,0.0,extinction,observed,3.98,0.34,,10.60555/mbq8-0451
+FLEX,C09H201,2010-06-29,heptane,liquid_fuel_droplet,0.23,0.7088,0.25,0.0,extinction,observed,3.45,0.5,,10.60555/mbq8-0451
+FLEX,C10H101,2010-06-29,heptane,liquid_fuel_droplet,0.21,0.7029,0.3,0.0,extinction,observed,3.43,0.33,,10.60555/mbq8-0451
+FLEX,C10H201,2010-06-29,heptane,liquid_fuel_droplet,0.21,0.703,0.3,0.0,extinction,observed,3.88,0.35,,10.60555/mbq8-0451
+FLEX,C08M201,2010-06-16,methanol,liquid_fuel_droplet,0.23,0.7028,0.2,0.0,extinction,observed,1.58,0.49,,10.60555/mbq8-0451
+FLEX,C08M301,2010-06-16,methanol,liquid_fuel_droplet,0.23,0.7034,0.2,0.0,disruption,observed,,0.47,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,C09M401,2010-06-21,methanol,liquid_fuel_droplet,0.23,0.7083,0.25,0.0,disruption,observed,,0.51,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,C08M401,2010-06-16,methanol,liquid_fuel_droplet,0.23,0.7039,0.2,0.0,disruption,observed,,0.52,,10.60555/mbq8-0451
+FLEX,C09M301,2010-06-21,methanol,liquid_fuel_droplet,0.23,0.7083,0.25,0.0,completion,observed,,0.47,,10.60555/mbq8-0451
+FLEX,C10M102,2010-08-31,methanol,liquid_fuel_droplet,0.21,0.7059,0.3,0.0,extinction,observed,1.92,0.42,,10.60555/mbq8-0451
+FLEX,C10M201,2010-08-31,methanol,liquid_fuel_droplet,0.21,0.7066,0.3,0.0,extinction,observed,1.57,0.45,,10.60555/mbq8-0451
+FLEX,C10M303,2010-08-31,methanol,liquid_fuel_droplet,0.21,0.7064,0.3,0.0,completion,observed,,0.45,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,C10M401,2010-09-01,methanol,liquid_fuel_droplet,0.21,0.6983,0.3,0.0,completion,observed,,0.43,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,C11M101,2010-09-01,methanol,liquid_fuel_droplet,0.2,0.7034,0.35,0.0,extinction,observed,2.85,0.49,,10.60555/mbq8-0451
+FLEX,C11M201,2010-09-06,methanol,liquid_fuel_droplet,0.2,,0.35,0.0,extinction,observed,1.68,0.42,pressure_zero_set_null,10.60555/mbq8-0451
+FLEX,C11M301,2010-09-01,methanol,liquid_fuel_droplet,0.2,0.705,0.35,0.0,extinction,observed,2.61,0.41,,10.60555/mbq8-0451
+FLEX,C11M401,2010-09-01,methanol,liquid_fuel_droplet,0.2,0.7057,0.35,0.0,extinction,observed,1.57,0.46,,10.60555/mbq8-0451
+FLEX,C11H101,2010-09-06,heptane,liquid_fuel_droplet,0.2,0.6988,0.35,0.0,extinction,observed,3.77,0.25,,10.60555/mbq8-0451
+FLEX,C11H201,2010-09-06,heptane,liquid_fuel_droplet,0.2,0.7011,0.35,0.0,extinction,observed,2.93,0.38,,10.60555/mbq8-0451
+FLEX,C12H103,2010-09-07,heptane,liquid_fuel_droplet,0.18,0.7008,0.4,0.0,extinction,observed,2.48,0.37,,10.60555/mbq8-0451
+FLEX,C12H201,2010-09-07,heptane,liquid_fuel_droplet,0.18,0.7007,0.4,0.0,extinction,observed,2.39,0.38,,10.60555/mbq8-0451
+FLEX,C12M101,2010-09-08,methanol,liquid_fuel_droplet,0.18,0.6925,0.4,0.0,extinction,observed,3.92,0.34,,10.60555/mbq8-0451
+FLEX,C12M201,2010-09-08,methanol,liquid_fuel_droplet,0.18,0.6989,0.4,0.0,extinction,observed,2.58,0.41,,10.60555/mbq8-0451
+FLEX,C12M301,2010-09-08,methanol,liquid_fuel_droplet,0.18,0.7,0.4,0.0,extinction,observed,3.79,0.35,,10.60555/mbq8-0451
+FLEX,C12M401,2010-09-08,methanol,liquid_fuel_droplet,0.18,0.7005,0.4,0.0,extinction,observed,2.74,0.3,,10.60555/mbq8-0451
+FLEX,C13M103,2010-09-13,methanol,liquid_fuel_droplet,0.17,0.7068,0.45,0.0,extinction,observed,3.37,0.35,,10.60555/mbq8-0451
+FLEX,C13M201,2010-09-13,methanol,liquid_fuel_droplet,0.17,0.7054,0.45,0.0,extinction,observed,1.84,0.4,,10.60555/mbq8-0451
+FLEX,C13M301,2010-09-13,methanol,liquid_fuel_droplet,0.17,0.7062,0.45,0.0,extinction,observed,2.53,0.38,,10.60555/mbq8-0451
+FLEX,C13M401,2010-09-13,methanol,liquid_fuel_droplet,0.17,0.707,0.45,0.0,extinction,observed,,0.39,,10.60555/mbq8-0451
+FLEX,C13H102,2010-09-17,heptane,liquid_fuel_droplet,0.17,0.7055,0.45,0.0,extinction,observed,3.34,0.33,,10.60555/mbq8-0451
+FLEX,C13H201,2010-09-17,heptane,liquid_fuel_droplet,0.17,0.7068,0.45,0.0,extinction,observed,2.89,0.05,,10.60555/mbq8-0451
+FLEX,C21H101,2010-10-06,heptane,liquid_fuel_droplet,0.24,1.0051,0.2,0.0,disruption,observed,,0.61,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,C21H201,2010-10-06,heptane,liquid_fuel_droplet,0.24,1.0068,0.2,0.0,disruption,observed,,0.6,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,C21H301,2010-10-06,heptane,liquid_fuel_droplet,0.24,1.0088,0.2,0.0,disruption,observed,,0.56,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,C21H401,2010-10-06,heptane,liquid_fuel_droplet,0.24,1.0095,0.2,0.0,extinction,observed,2.88,0.56,,10.60555/mbq8-0451
+FLEX,C21H501,2010-10-06,heptane,liquid_fuel_droplet,0.24,1.0108,0.2,0.0,completion,observed,,0.59,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,C21H302,2010-10-06,heptane,liquid_fuel_droplet,0.24,1.0107,0.2,0.0,completion,observed,,0.51,,10.60555/mbq8-0451
+FLEX,C21H303,2010-10-06,heptane,liquid_fuel_droplet,0.24,1.0108,0.2,0.0,disruption,observed,,0.55,,10.60555/mbq8-0451
+FLEX,C21H304,2010-10-06,heptane,liquid_fuel_droplet,0.24,1.0113,0.2,0.0,disruption,observed,,,,10.60555/mbq8-0451
+FLEX,C21H305,2010-10-06,heptane,liquid_fuel_droplet,0.24,1.0105,0.2,0.0,disruption,observed,,0.63,,10.60555/mbq8-0451
+FLEX,C14M101,2010-11-04,methanol,liquid_fuel_droplet,0.15,0.702,0.5,0.0,extinction,observed,3.95,0.2,,10.60555/mbq8-0451
+FLEX,C14M201,2010-11-04,methanol,liquid_fuel_droplet,0.15,0.7028,0.5,0.0,extinction,observed,2.73,0.3,,10.60555/mbq8-0451
+FLEX,C14M301,2010-11-04,methanol,liquid_fuel_droplet,0.15,0.7033,0.5,0.0,extinction,observed,1.48,0.39,,10.60555/mbq8-0451
+FLEX,C14M302,2010-11-04,methanol,liquid_fuel_droplet,0.15,0.7036,0.5,0.0,extinction,observed,2.06,0.36,,10.60555/mbq8-0451
+FLEX,C01M101,2010-11-16,methanol,liquid_fuel_droplet,0.2,1.0025,0.05,0.0,extinction,observed,1.53,0.45,,10.60555/mbq8-0451
+FLEX,C01M201,2010-11-16,methanol,liquid_fuel_droplet,0.2,1.0046,0.05,0.0,extinction,observed,1.61,0.45,,10.60555/mbq8-0451
+FLEX,C01M301,2010-11-16,methanol,liquid_fuel_droplet,0.2,1.0072,0.05,0.0,extinction,observed,1.95,0.41,,10.60555/mbq8-0451
+FLEX,C13M102,2010-09-13,methanol,liquid_fuel_droplet,0.17,0.7049,0.45,0.0,extinction,observed,2.49,0.4,,10.60555/mbq8-0451
+FLEX,C01H101,2010-11-18,heptane,liquid_fuel_droplet,0.2,1.0058,0.05,0.0,disruption,observed,,0.54,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,C01H201,2010-11-18,heptane,liquid_fuel_droplet,0.2,1.0082,0.05,0.0,disruption,observed,,0.53,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,C01H302,2010-11-18,heptane,liquid_fuel_droplet,0.2,1.01,0.05,0.0,extinction,observed,2.54,0.46,,10.60555/mbq8-0451
+FLEX,C03M101,2010-12-08,methanol,liquid_fuel_droplet,0.18,1.0033,0.15,0.0,completion,observed,,0.36,,10.60555/mbq8-0451
+FLEX,C03M201,2010-12-08,methanol,liquid_fuel_droplet,0.18,1.0066,0.15,0.0,extinction,observed,1.23,0.43,,10.60555/mbq8-0451
+FLEX,C03M301,2010-12-08,methanol,liquid_fuel_droplet,0.18,1.0074,0.15,0.0,extinction,observed,1.19,0.42,,10.60555/mbq8-0451
+FLEX,C03H101,2010-12-09,heptane,liquid_fuel_droplet,0.18,1.003,0.15,0.0,extinction,observed,3.6,0.34,,10.60555/mbq8-0451
+FLEX,C03H201,2010-12-09,heptane,liquid_fuel_droplet,0.18,1.0064,0.15,0.0,extinction,observed,2.52,0.39,,10.60555/mbq8-0451
+FLEX,C03H401,2010-12-09,heptane,liquid_fuel_droplet,0.18,1.0075,0.15,0.0,completion,observed,,0.48,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,C05M101,2010-12-14,methanol,liquid_fuel_droplet,0.16,1.0028,0.25,0.0,extinction,observed,3.96,0.3,,10.60555/mbq8-0451
+FLEX,C05M201,2010-12-14,methanol,liquid_fuel_droplet,0.16,1.0058,0.25,0.0,extinction,observed,3.22,0.37,,10.60555/mbq8-0451
+FLEX,C05M301,2010-12-14,methanol,liquid_fuel_droplet,0.16,1.0072,0.25,0.0,extinction,observed,1.34,0.38,,10.60555/mbq8-0451
+FLEX,C05M401,2010-12-14,methanol,liquid_fuel_droplet,0.16,1.01,0.25,0.0,extinction,observed,1.52,0.38,,10.60555/mbq8-0451
+FLEX,C06M101,2010-12-28,methanol,liquid_fuel_droplet,0.15,1.0043,0.32,0.0,extinction,observed,3.5,0.28,,10.60555/mbq8-0451
+FLEX,C06M201,2010-12-28,methanol,liquid_fuel_droplet,0.15,1.0058,0.32,0.0,extinction,observed,2.54,0.37,,10.60555/mbq8-0451
+FLEX,C06M301,2010-12-28,methanol,liquid_fuel_droplet,0.15,1.0078,0.32,0.0,extinction,observed,1.63,0.37,,10.60555/mbq8-0451
+FLEX,C06M401,2010-12-28,methanol,liquid_fuel_droplet,0.15,1.008,0.32,0.0,extinction,observed,1.79,0.42,,10.60555/mbq8-0451
+FLEX,C03H302,2010-12-09,heptane,liquid_fuel_droplet,0.18,1.0071,0.15,0.0,extinction,observed,1.39,0.54,,10.60555/mbq8-0451
+FLEX,C07M101,2011-01-12,methanol,liquid_fuel_droplet,0.14,1.0011,0.36,0.0,extinction,observed,3.08,0.28,,10.60555/mbq8-0451
+FLEX,C07M201,2011-01-12,methanol,liquid_fuel_droplet,0.14,1.0021,0.36,0.0,extinction,observed,1.84,0.37,,10.60555/mbq8-0451
+FLEX,C15M101,2011-01-18,methanol,liquid_fuel_droplet,0.21,1.0045,0.15,0.0,disruption,observed,,0.48,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,C15M201,2011-01-18,methanol,liquid_fuel_droplet,0.21,1.008,0.15,0.0,extinction,observed,1.28,0.51,,10.60555/mbq8-0451
+FLEX,C15M301,2011-01-18,methanol,liquid_fuel_droplet,0.21,1.0088,0.15,0.0,extinction,observed,1.59,0.46,,10.60555/mbq8-0451
+FLEX,C03H501,2011-02-21,heptane,liquid_fuel_droplet,0.18,0.9999,0.15,0.0,extinction,observed,3.68,0.35,,10.60555/mbq8-0451
+FLEX,C03H601,2011-02-21,heptane,liquid_fuel_droplet,0.18,1.0026,0.15,0.0,extinction,observed,1.96,0.46,,10.60555/mbq8-0451
+FLEX,C03H701,2011-02-21,heptane,liquid_fuel_droplet,0.18,1.0028,0.15,0.0,disruption,observed,,0.5,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,C08H502,2011-02-21,heptane,liquid_fuel_droplet,0.24,0.6996,0.2,0.0,disruption,observed,,0.56,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,C08H601,2011-02-21,heptane,liquid_fuel_droplet,0.24,0.7001,0.2,0.0,disruption,observed,,0.55,,10.60555/mbq8-0451
+FLEX,C08M501,2011-04-18,methanol,liquid_fuel_droplet,0.24,0.7064,0.2,0.0,extinction,observed,,0.46,,10.60555/mbq8-0451
+FLEX,C08M601,2011-04-18,methanol,liquid_fuel_droplet,0.24,0.7066,0.2,0.0,extinction,observed,1.35,0.52,,10.60555/mbq8-0451
+FLEX,C09H501,2011-04-20,heptane,liquid_fuel_droplet,0.23,0.7021,0.25,0.0,extinction,observed,2.61,0.5,,10.60555/mbq8-0451
+FLEX,C09H601,2011-04-20,heptane,liquid_fuel_droplet,0.23,0.7032,0.25,0.0,disruption,observed,,0.57,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,C02H101,2011-04-20,heptane,liquid_fuel_droplet,0.19,0.9979,0.1,0.0,extinction,observed,3.13,0.41,,10.60555/mbq8-0451
+FLEX,C02H201,2011-04-20,heptane,liquid_fuel_droplet,0.19,0.9988,0.1,0.0,extinction,observed,1.68,0.49,,10.60555/mbq8-0451
+FLEX,C02H202,2011-04-20,heptane,liquid_fuel_droplet,0.19,0.9987,0.1,0.0,disruption,observed,,0.54,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,C09M501,2011-08-08,methanol,liquid_fuel_droplet,0.23,0.7032,0.25,0.0,extinction,observed,,0.53,,10.60555/mbq8-0451
+FLEX,C09M502,2011-08-08,methanol,liquid_fuel_droplet,0.23,0.7041,0.25,0.0,extinction,observed,,0.51,,10.60555/mbq8-0451
+FLEX,C09M601,2011-08-08,methanol,liquid_fuel_droplet,0.23,0.7042,0.25,0.0,extinction,observed,1.33,0.51,,10.60555/mbq8-0451
+FLEX,C09M701,2011-08-08,methanol,liquid_fuel_droplet,0.23,0.7055,0.25,0.0,extinction,observed,1.21,0.52,,10.60555/mbq8-0451
+FLEX,C02M101,2011-08-08,methanol,liquid_fuel_droplet,0.19,0.9974,0.1,0.0,extinction,observed,1.29,0.47,,10.60555/mbq8-0451
+FLEX,C02M201,2011-08-08,methanol,liquid_fuel_droplet,0.19,0.9975,0.1,0.0,extinction,observed,1.08,0.46,,10.60555/mbq8-0451
+FLEX,C03M501,2011-08-09,methanol,liquid_fuel_droplet,0.18,1.0016,0.15,0.0,extinction,observed,1.78,0.42,,10.60555/mbq8-0451
+FLEX,C03M601,2011-08-09,methanol,liquid_fuel_droplet,0.18,1.0061,0.15,0.0,extinction,observed,0.95,0.5,,10.60555/mbq8-0451
+FLEX,C03M701,2011-08-09,methanol,liquid_fuel_droplet,0.18,1.007,0.15,0.0,extinction,observed,0.81,0.46,,10.60555/mbq8-0451
+FLEX,C04M101,2011-08-09,methanol,liquid_fuel_droplet,0.17,0.9993,0.2,0.0,extinction,observed,,0.39,,10.60555/mbq8-0451
+FLEX,C04M201,2011-08-09,methanol,liquid_fuel_droplet,0.17,0.9988,0.2,0.0,extinction,observed,1.27,0.4,,10.60555/mbq8-0451
+FLEX,C04H101,2011-08-17,heptane,liquid_fuel_droplet,0.17,0.9895,0.2,0.0,extinction,observed,3.71,0.29,,10.60555/mbq8-0451
+FLEX,C04H201,2011-08-17,heptane,liquid_fuel_droplet,0.17,0.9901,0.2,0.0,extinction,observed,2.79,0.36,,10.60555/mbq8-0451
+FLEX,C01H501,2011-08-18,heptane,liquid_fuel_droplet,0.2,0.9979,0.05,0.0,extinction,observed,2.28,0.52,,10.60555/mbq8-0451
+FLEX,C01H601,2011-08-18,heptane,liquid_fuel_droplet,0.2,0.9997,0.05,0.0,extinction,observed,2.33,0.49,,10.60555/mbq8-0451
+FLEX,C01H701,2011-08-18,heptane,liquid_fuel_droplet,0.2,1.0001,0.05,0.0,disruption,observed,,0.53,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,C01M501,2011-08-24,methanol,liquid_fuel_droplet,0.2,0.9921,0.05,0.0,extinction,observed,0.98,0.49,,10.60555/mbq8-0451
+FLEX,C01M602,2011-08-24,methanol,liquid_fuel_droplet,0.2,0.9949,0.05,0.0,extinction,observed,1.13,0.47,,10.60555/mbq8-0451
+FLEX,C01M603,2011-08-24,methanol,liquid_fuel_droplet,0.2,0.9959,0.05,0.0,extinction,observed,1.05,0.48,,10.60555/mbq8-0451
+FLEX,N01M101,2011-08-24,methanol,liquid_fuel_droplet,0.21,1.0003,0.0,0.0,extinction,observed,1.42,0.47,,10.60555/mbq8-0451
+FLEX,N01M201,2011-08-24,methanol,liquid_fuel_droplet,0.21,1.0021,0.0,0.0,extinction,observed,1.11,0.52,,10.60555/mbq8-0451
+FLEX,N01H101,2011-08-29,heptane,liquid_fuel_droplet,0.21,0.9954,0.0,0.0,disruption,observed,,0.43,,10.60555/mbq8-0451
+FLEX,N01H102,2011-08-29,heptane,liquid_fuel_droplet,0.21,0.9964,0.0,0.0,disruption,observed,,0.42,,10.60555/mbq8-0451
+FLEX,N01H201,2011-08-29,heptane,liquid_fuel_droplet,0.21,1.0003,0.0,0.0,disruption,observed,,0.5,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,N01H202,2011-08-29,heptane,liquid_fuel_droplet,0.21,1.0036,0.0,0.0,completion,observed,,0.54,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,N01H301,2011-08-29,heptane,liquid_fuel_droplet,0.21,1.0038,0.0,0.0,completion,observed,,0.69,,10.60555/mbq8-0451
+FLEX,N02H101,2011-08-29,heptane,liquid_fuel_droplet,0.16,0.9997,0.0,0.0,extinction,observed,3.18,0.34,,10.60555/mbq8-0451
+FLEX,N02H201,2011-08-29,heptane,liquid_fuel_droplet,0.16,0.9997,0.0,0.0,extinction,observed,,,,10.60555/mbq8-0451
+FLEX,N02H203,2011-08-30,heptane,liquid_fuel_droplet,0.16,0.9999,0.0,0.0,extinction,observed,2.13,0.42,,10.60555/mbq8-0451
+FLEX,N03H101,2011-09-01,heptane,liquid_fuel_droplet,0.15,1.0053,0.0,0.0,extinction,observed,2.31,0.37,,10.60555/mbq8-0451
+FLEX,N04H101,2011-09-01,heptane,liquid_fuel_droplet,0.14,0.9997,0.0,0.0,extinction,observed,4.15,0.24,,10.60555/mbq8-0451
+FLEX,N04H201,2011-09-01,heptane,liquid_fuel_droplet,0.14,0.9999,0.0,0.0,extinction,observed,,0.39,,10.60555/mbq8-0451
+FLEX,N04M101,2011-09-08,methanol,liquid_fuel_droplet,0.14,0.9968,0.0,0.0,extinction,observed,,0.3,,10.60555/mbq8-0451
+FLEX,N04M201,2011-09-08,methanol,liquid_fuel_droplet,0.14,0.9978,0.0,0.0,extinction,observed,1.27,0.38,,10.60555/mbq8-0451
+FLEX,N05M101,2011-09-08,methanol,liquid_fuel_droplet,0.13,0.9992,0.0,0.0,extinction,observed,2.96,0.36,,10.60555/mbq8-0451
+FLEX,N05M201,2011-09-08,methanol,liquid_fuel_droplet,0.13,1.0008,0.0,0.0,extinction,observed,1.46,0.35,,10.60555/mbq8-0451
+FLEX,N06M101,2011-09-09,methanol,liquid_fuel_droplet,0.12,1.0021,0.0,0.0,extinction,observed,2.09,0.36,,10.60555/mbq8-0451
+FLEX,N06M201,2011-09-09,methanol,liquid_fuel_droplet,0.12,1.0025,0.0,0.0,extinction,observed,1.05,0.35,,10.60555/mbq8-0451
+FLEX,N06M202,2011-09-09,methanol,liquid_fuel_droplet,0.12,1.0049,0.0,0.0,extinction,observed,1.04,0.38,,10.60555/mbq8-0451
+FLEX,H01M102,2011-09-09,methanol,liquid_fuel_droplet,0.2,0.9989,0.0,0.05,extinction,observed,1.12,0.51,,10.60555/mbq8-0451
+FLEX,H01M104,2011-09-09,methanol,liquid_fuel_droplet,0.2,0.9995,0.0,0.05,extinction,observed,,,burn_time_approx,10.60555/mbq8-0451
+FLEX,H01H102,2011-09-13,heptane,liquid_fuel_droplet,0.2,0.9938,0.0,0.05,completion,observed,,0.57,burn_time_approx,10.60555/mbq8-0451
+FLEX,H02M101,2011-09-21,methanol,liquid_fuel_droplet,0.19,0.9913,0.0,0.1,extinction,observed,,0.57,,10.60555/mbq8-0451
+FLEX,H03M101,2011-09-22,methanol,liquid_fuel_droplet,0.18,0.9989,0.0,0.15,extinction,observed,1.3,0.51,,10.60555/mbq8-0451
+FLEX,H03M201,2011-09-22,methanol,liquid_fuel_droplet,0.18,1.0004,0.0,0.15,extinction,observed,1.67,0.53,,10.60555/mbq8-0451
+FLEX,N01H401,2011-09-23,heptane,liquid_fuel_droplet,0.21,1.0097,0.0,0.0,extinction,observed,1.37,0.52,,10.60555/mbq8-0451
+FLEX,N01H502,2011-09-24,heptane,liquid_fuel_droplet,0.21,1.0107,0.0,0.0,disruption,observed,,0.57,,10.60555/mbq8-0451
+FLEX,N01H601,2011-09-24,heptane,liquid_fuel_droplet,0.21,1.0121,0.0,0.0,extinction,observed,2.85,0.57,,10.60555/mbq8-0451
+FLEX,H02H101,2011-09-24,heptane,liquid_fuel_droplet,0.19,0.9984,0.0,0.1,disruption,observed,,0.54,,10.60555/mbq8-0451
+FLEX,H03H101,2011-09-27,heptane,liquid_fuel_droplet,0.18,1.0049,0.0,0.15,extinction,observed,3.28,0.41,,10.60555/mbq8-0451
+FLEX,H03H201,2011-09-27,heptane,liquid_fuel_droplet,0.18,1.0078,0.0,0.15,completion,observed,,0.49,,10.60555/mbq8-0451
+FLEX,H03H202,2011-09-27,heptane,liquid_fuel_droplet,0.18,1.0086,0.0,0.15,completion,observed,,0.51,,10.60555/mbq8-0451
+FLEX,H04H101,2011-09-27,heptane,liquid_fuel_droplet,0.17,0.9991,0.0,0.2,extinction,observed,2.6,0.46,,10.60555/mbq8-0451
+FLEX,H04H201,2011-09-27,heptane,liquid_fuel_droplet,0.17,0.9991,0.0,0.2,extinction,observed,1.39,0.59,,10.60555/mbq8-0451
+FLEX,H04H302,2011-09-27,heptane,liquid_fuel_droplet,0.17,0.9995,0.0,0.2,disruption,observed,,,,10.60555/mbq8-0451
+FLEX,H04H303,2011-09-27,heptane,liquid_fuel_droplet,0.17,0.9997,0.0,0.2,completion,observed,,0.91,,10.60555/mbq8-0451
+FLEX,H04M101,2011-10-01,methanol,liquid_fuel_droplet,0.17,0.9924,0.0,0.2,extinction,observed,,0.49,,10.60555/mbq8-0451
+FLEX,H04M202,2011-10-01,methanol,liquid_fuel_droplet,0.17,0.9961,0.0,0.2,extinction,observed,1.42,0.51,,10.60555/mbq8-0451
+FLEX,H05M102,2011-10-01,methanol,liquid_fuel_droplet,0.16,0.9999,0.0,0.25,extinction,observed,2.79,0.51,,10.60555/mbq8-0451
+FLEX,H05M202,2011-10-01,methanol,liquid_fuel_droplet,0.16,1.0013,0.0,0.25,extinction,observed,,,,10.60555/mbq8-0451
+FLEX,H05H103,2011-10-05,heptane,liquid_fuel_droplet,0.16,0.9972,0.0,0.25,extinction,observed,0.69,0.6,,10.60555/mbq8-0451
+FLEX,H06M102,2011-10-07,methanol,liquid_fuel_droplet,0.15,0.9942,0.0,0.3,extinction,observed,3.47,0.43,,10.60555/mbq8-0451
+FLEX,H06M201,2011-10-07,methanol,liquid_fuel_droplet,0.15,0.9957,0.0,0.3,extinction,observed,2.06,0.56,,10.60555/mbq8-0451
+FLEX,H07M101,2011-10-07,methanol,liquid_fuel_droplet,0.14,0.9989,0.0,0.35,extinction,observed,2.26,0.56,,10.60555/mbq8-0451
+FLEX,H07M202,2011-10-07,methanol,liquid_fuel_droplet,0.14,0.9997,0.0,0.35,extinction,observed,1.73,0.58,,10.60555/mbq8-0451
+FLEX,H08M101,2011-10-11,methanol,liquid_fuel_droplet,0.13,1.0046,0.0,0.4,extinction,observed,3.54,0.51,,10.60555/mbq8-0451
+FLEX,H10H101,2011-10-12,heptane,liquid_fuel_droplet,0.24,0.7026,0.0,0.2,extinction,observed,2.52,0.72,,10.60555/mbq8-0451
+FLEX,H11H101,2011-10-12,heptane,liquid_fuel_droplet,0.23,0.7003,0.0,0.25,completion,observed,,0.71,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,H10M101,2011-11-18,methanol,liquid_fuel_droplet,0.24,0.703,0.0,0.2,extinction,observed,1.03,0.62,,10.60555/mbq8-0451
+FLEX,H10M102,2011-11-18,methanol,liquid_fuel_droplet,0.24,0.7034,0.0,0.2,disruption,observed,,0.7,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,H11M101,2011-11-18,methanol,liquid_fuel_droplet,0.23,0.6996,0.0,0.25,extinction,observed,0.86,0.6,,10.60555/mbq8-0451
+FLEX,H11M102,2011-11-18,methanol,liquid_fuel_droplet,0.23,0.6997,0.0,0.25,disruption,observed,,0.73,,10.60555/mbq8-0451
+FLEX,H12M101,2011-11-18,methanol,liquid_fuel_droplet,0.21,0.6999,0.0,0.3,extinction,observed,,0.56,,10.60555/mbq8-0451
+FLEX,H12M102,2011-11-18,methanol,liquid_fuel_droplet,0.21,0.6989,0.0,0.3,extinction,observed,1.78,0.65,,10.60555/mbq8-0451
+FLEX,H12M201,2011-11-18,methanol,liquid_fuel_droplet,0.21,0.6989,0.0,0.3,extinction,observed,1.42,0.7,,10.60555/mbq8-0451
+FLEX,H12H101,2011-11-22,heptane,liquid_fuel_droplet,0.21,0.6968,0.0,0.3,extinction,observed,2.33,0.67,,10.60555/mbq8-0451
+FLEX,H12H201,2011-11-22,heptane,liquid_fuel_droplet,0.21,0.6961,0.0,0.3,extinction,observed,0.71,0.7,,10.60555/mbq8-0451
+FLEX,H13H101,2011-11-22,heptane,liquid_fuel_droplet,0.2,0.7007,0.0,0.35,extinction,observed,3.32,0.61,,10.60555/mbq8-0451
+FLEX,H13H201,2011-11-22,heptane,liquid_fuel_droplet,0.2,0.7,0.0,0.35,extinction,observed,1.69,0.67,,10.60555/mbq8-0451
+FLEX,H13M102,2011-11-28,methanol,liquid_fuel_droplet,0.2,0.6942,0.0,0.35,extinction,observed,2.24,0.6,,10.60555/mbq8-0451
+FLEX,H13M201,2011-11-28,methanol,liquid_fuel_droplet,0.2,0.6946,0.0,0.35,extinction,observed,1.5,0.63,,10.60555/mbq8-0451
+FLEX,H14M101,2011-11-28,methanol,liquid_fuel_droplet,0.18,0.7005,0.0,0.4,extinction,observed,2.67,0.59,,10.60555/mbq8-0451
+FLEX,H14M201,2011-11-28,methanol,liquid_fuel_droplet,0.18,0.7012,0.0,0.4,extinction,observed,1.92,0.63,,10.60555/mbq8-0451
+FLEX,H14M202,2011-11-28,methanol,liquid_fuel_droplet,0.18,0.7016,0.0,0.4,extinction,observed,1.3,0.62,,10.60555/mbq8-0451
+FLEX,H14H101,2011-11-30,heptane,liquid_fuel_droplet,0.18,0.6947,0.0,0.4,extinction,observed,1.64,0.71,,10.60555/mbq8-0451
+FLEX,H14H201,2011-11-30,heptane,liquid_fuel_droplet,0.18,0.6978,0.0,0.4,extinction,observed,0.84,0.77,,10.60555/mbq8-0451
+FLEX,H15H101,2011-11-30,heptane,liquid_fuel_droplet,0.17,0.7003,0.0,0.45,extinction,observed,1.86,0.76,,10.60555/mbq8-0451
+FLEX,H15H201,2011-11-30,heptane,liquid_fuel_droplet,0.17,0.7007,0.0,0.45,completion,observed,,1.06,extinction_diameter_dropped_outcome_not_extinction,10.60555/mbq8-0451
+FLEX,H15M102,2011-12-05,methanol,liquid_fuel_droplet,0.17,0.6979,0.0,0.45,extinction,observed,2.3,0.63,,10.60555/mbq8-0451
+FLEX,H15M201,2011-12-05,methanol,liquid_fuel_droplet,0.17,0.6993,0.0,0.45,extinction,observed,2.31,0.66,,10.60555/mbq8-0451
+FLEX,H19H101,2011-12-08,heptane,liquid_fuel_droplet,0.21,1.0062,0.0,0.15,extinction,observed,2.91,0.55,,10.60555/mbq8-0451
+FLEX,H19H201,2011-12-08,heptane,liquid_fuel_droplet,0.21,1.0082,0.0,0.15,extinction,observed,0.73,0.65,,10.60555/mbq8-0451
+BASS-II,B1,2014-02-19,100 micron PMMA film 2 cm wide,,0.222,,0.0044,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,B2,2014-02-19,200 micron PMMA film 2 cm wide,,0.222,,0.0044,,,not_stated,,,o2_final_implausibly_low;material_category_pending_review,10.60555/4qc4-de67
+BASS-II,B3,2014-02-19,100 micron film 2 cm wide,,0.222,,0.0043,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,B4,2014-02-19,300 micron PMMA film 2 cm wide,,0.222,,0.0044,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,B5,2014-02-19,200 micron 2 cm wide,,0.222,,0.0043,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,B6,2014-07-07,2 cm 0.1 mm PMMA film,,0.21,,0.0033,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,B7,2014-02-19,400 micron film 2 cm wide,,0.222,,0.0045,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,B8,2014-07-07,2 cm 0.2 mm PMMA film,,0.21,,0.0033,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,B9,2014-07-07,2 cm 0.1 mm PMMA film,,0.21,,0.0033,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,B10,2014-07-07,1 cm 0.2 mm PMMA film,,0.21,,0.0033,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,B11,2014-07-07,2 cm 0.2 mm PMMA film,,0.21,,0.0033,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,B12,2014-02-19,300 micron film 2 cm wide,,0.222,,0.0051,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,B13,2014-07-07,2 cm 0.4 mm thick film,,0.21,,0.0033,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,B14,2014-07-02,1 cm wide 200 micron thick PMMA,,0.15,,0.0,,extinction,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,B15,2014-07-07,2 cm 0.1 mm PMMA film,,0.21,,0.0033,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,B16,2014-07-02,2 cm 100 micron thick PMMA,,0.173,,0.0047,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,B17,2014-07-02,1 cm wide 200 micron thick PMMA,,0.175,,0.002,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,B18,2014-07-02,1 cm wide 200 micron thick PMMA,,0.174,,0.0034,,blowoff,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,B19,2014-07-02,2 cm 100 micron thick PMMA,,0.173,,0.0051,,blowoff,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,B20,2014-07-02,2 cm 100 micron thick PMMA,,0.174,,0.0042,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,B21,2014-08-04,1 cm wide 200 micron thick PMMA,,0.208,,0.0036,,extinction,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,B22,2014-08-04,1 cm wide 200 micron thick PMMA,,0.207,,0.0041,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,F1,2014-02-19,Nomex natural (nomex III),,0.222,,0.0046,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,F2,2014-07-28,Nomex natural (nomex III),,0.21,,0.0037,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,F3,2014-08-01,Nomex natural (nomex III),,0.217,,0.0036,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,F4,2014-06-24,Japan Wax candle,,0.174,,0.0038,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,M1,2014-02-20,1 mm thick PMMA 1 sided 2 cm,,0.222,,0.0045,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,M2,2014-02-20,3 mm thick PMMA 1 sided 2 cm wide,,0.222,,0.0046,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,M3,2014-07-11,2 cm wide 5 mm thick 1 sided PMMA,,0.208,,0.0033,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,M4,2014-07-31,5 mm thick PMMA 2 cm wide,,0.218,,0.0042,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,M5,2014-02-20,3 mm thick PMMA 2 sided 2 cm thick,,0.222,,0.0044,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,M6,2014-07-31,1 mm thick PMMA 2 cm wide,,0.218,,0.0038,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,M7,2014-07-11,1 cm wide PMMA 1 mm thick,,0.189,,0.0142,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,M8,2014-07-11,1 cm wide PMMA 2 mm thick,,0.191,,0.0044,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,M9,2014-07-11,1 cm wide PMMA 3 mm thick,,0.18,,0.0026,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,M10,2014-07-23,4 mm thick 1 cm wide PMMA slab,,0.201,,0.0036,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,M11,2014-07-11,1 cm wide PMMA 5 mm thick,,0.2,,0.0058,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,M12,2014-07-31,2 mm thick PMMA 2 cm wide,,0.217,,0.0042,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,M13,2014-07-31,4 mm thick PMMA 2 cm wide,,0.208,,0.0036,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,M14,2014-02-20,2mm thick PMMA 1 sided 2 cm wide,,0.222,,0.0045,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,M15,2014-07-07,2 cm 4 mm 1 sided PMMA slab,,0.21,,0.0037,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,M16,2014-07-23,1 mm thick PMMA 2 cm wide,,0.192,,0.0095,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,M17,2014-07-15,2 cm wide PMMA 2 mm thick,,0.188,,0.0035,,extinction,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,M18,2014-07-15,2 cm wide PMMA 3 mm thick,,0.179,,0.0032,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,M19,2014-07-23,4 mm thick 2 cm 2ide PMMA slab,,0.19,,0.0035,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,M20,2014-08-01,5 mm thick PMMA 2 cm wide,,0.18,,0.003,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,O1,2014-02-18,"1/4"" clear rod",,0.222,,0.0044,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,O2,2014-02-18,"1/4"" clear rod",,0.222,,0.0044,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,O3a,2014-06-13,"1/4"" clear rod",,0.18,,0.0025,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,O3b,2014-06-13,"1/4"" clear rod",,0.18,,0.0028,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,O4,2014-07-08,"3/8""clear rod",,0.148,,0.0072,,extinction,ai_extracted,,,co_over_range_gt_1000ppm;material_category_pending_review,10.60555/4qc4-de67
+BASS-II,O5a,2014-07-21,"1/2"" clear PMMA rod",,0.151,,0.0025,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,O5b,2014-07-21,"1/2"" clear PMMA rod",,0.142,,0.0105,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,O6,2014-06-26,"1/4"" clear rod",,0.167,,0.0032,,extinction,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,O7,2014-06-26,"1/4"" clear rod",,0.16,,0.0074,,blowoff,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,O8a,2014-06-26,"1/4"" clear rod",,0.157,,0.0123,,extinction,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,O8b,2014-06-26,"1/4"" clear rod",,0.155,,0.0144,,blowoff,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,O9,2014-06-26,"1/4"" clear rod",,0.15,,0.0174,,blowoff,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,O10,2014-07-22,"1/4"" clear rod",,0.167,,0.0161,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,O11,2014-07-08,"1/4"" black rod",,0.154,,0.0027,,blowoff,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,O12,2014-07-08,"3/8"" clear rod",,0.136,,0.0172,,no_ignition,ai_extracted,,,co_over_range_gt_1000ppm;material_category_pending_review,10.60555/4qc4-de67
+BASS-II,O13a,2014-07-21,"1/2"" clear PMMA rod",,0.159,,0.0091,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,O13b,2014-07-21,"1/2"" clear PMMA rod",,0.146,,0.0185,,,not_stated,,,co_over_range_gt_1000ppm;material_category_pending_review,10.60555/4qc4-de67
+BASS-II,O14,2014-08-01,"1/4"" black rod",,0.163,,0.0029,,extinction,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,O15a,2014-07-28,"3/8"" clear rod",,0.171,,0.0027,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,O15b,2014-07-28,"3/8"" clear rod",,0.167,,0.0062,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,O16,2014-07-29,"3/8""clear rod",,0.145,,0.0027,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,O17,2014-07-22,"1/4"" clear rod",,0.151,,0.0031,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,O18,2014-07-28,"1/4"" clear rod",,0.152,,0.0145,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,O19,2014-08-01,"1/4"" clear rod",,0.153,,0.0086,,extinction,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,O20,2016-02-26,"1/4"" clear rod",,0.165,,0.002,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,O21,2016-02-26,"3/8"" clear rod",,0.159,,0.0053,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,O22,2016-02-26,"1/2"" clear rod",,0.154,,0.0092,,blowoff,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,P1,2014-06-16,"1/4"" black rod",,0.177,,0.0027,,extinction,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,P2,2014-06-16,"1/4"" black rod",,0.174,,0.0044,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,P3a,2014-06-16,"1/4"" clear rod",,0.177,,0.0027,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,P3b,2014-06-16,1/4 clear rod,,0.174,,0.0051,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,P4,2014-07-03,"3/8"" black rod",,0.185,,0.0062,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,P5,2014-07-14,"0.5"" black rod",,0.193,,0.0032,,extinction,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,P6,2014-07-03,"1/4"" black rod",,0.189,,0.003,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,P8,2014-07-03,"3/8"" black rod",,0.164,,0.0072,,not_sustained,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,P9,2014-07-14,"0.5"" black rod",,0.176,,0.0167,,extinction,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,P10,2014-07-03,"1/4"" black rod",,0.17,,0.0029,,extinction,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,P12,2014-07-29,"3/8"" black rod",,0.175,,0.0029,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,P13a,2014-07-14,"0.5"" black rod",,0.207,,0.0036,,extinction,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,P13b,2014-07-14,"0.5"" black rod",,0.206,,0.0041,,extinction,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,P14,2014-06-23,1/4 blac rod,,0.184,,0.0034,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,P15,2014-06-23,1/4 black rod,,0.18,,0.0062,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,P16,2014-07-22,"1/4"" black rod",,0.182,,0.003,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,P17,2014-07-29,"1/4"" black rod",,0.168,,0.0095,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,P18,2014-07-30,"1/4"" black rod",,0.2,,0.0034,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,P19,2014-07-22,"1/4"" black rod",,0.175,,0.009,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,P20,2014-07-30,"1/4"" black rod",,0.19,,0.0034,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,P21a,2014-06-23,1/4 black rod,,0.163,,0.0096,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,P21b,2014-06-23,"1/4"" black rod",,0.163,,0.01,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,P22a,2014-07-08,"3/8"" black rod",,0.208,,0.0032,,extinction,ai_extracted,,,o2_final_implausibly_low;material_category_pending_review,10.60555/4qc4-de67
+BASS-II,P22b,2014-07-08,"3/8"" black rod",,0.2,,,,extinction,ai_extracted,,,o2_final_implausibly_high;material_category_pending_review,10.60555/4qc4-de67
+BASS-II,P23,2014-07-30,"3/8"" black rod",,0.182,,0.0105,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,P24,2014-07-30,"3/8"" black rod",,0.19,,0.012,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,P25,2014-07-08,"3/8"" clear rod",,0.209,,0.0038,,extinction,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,T1,2014-02-14,2 cm SIBAL,,0.185,,0.0035,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,T2,2014-02-14,2 cm SIBAL,,0.185,,0.0041,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,T3,2014-06-27,4 cm spherical section,,0.172,,0.0042,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,T4,2014-02-14,2 cm SIBAL,,0.187,,0.0044,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,T5,2014-04-10,2 cm SIBAL,,0.188,,0.002,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,T6,2014-04-10,2 cm SIBAL,,0.188,,0.0024,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,T7,2014-07-09,4 cm spherical section,,0.173,,0.0032,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,T9,2018-06-24,2 cm SIBAL,,0.164,,0.003,,,not_stated,,,date_year_inconsistent_with_gmt;material_category_pending_review,10.60555/4qc4-de67
+BASS-II,T10,2014-06-24,2 cm SIBAL,,0.164,,0.0031,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,T11,2014-06-27,2 cm SIBAL,,0.171,,0.0035,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,T12,2014-06-27,2 cm SIBAL,,0.168,,0.007,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,T13,2014-04-10,2 cm SIBAL,,0.175,,0.0019,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,T14,2014-06-27,2 cm SIBAL,,0.169,,0.007,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,T15,2014-02-14,2 cm SIBAL,,0.187,,0.0045,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,T16,2014-04-10,2 cm SIBAL,,0.176,,0.0021,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,T17,2014-06-27,2 cm SIBAL,,0.169,,0.0072,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,T18,2018-06-24,2 cm SIBAL,,0.174,,0.0036,,,not_stated,,,date_year_inconsistent_with_gmt;material_category_pending_review,10.60555/4qc4-de67
+BASS-II,T19,2014-07-09,1 cm SIBAL,,0.172,,0.0029,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,T20,2014-07-09,1 cm SIBAL,,0.172,,0.0031,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,T21,2014-07-09,1 cm SIBAL,,0.172,,0.0031,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,T22,2014-07-09,1 cm SIBAL,,0.171,,0.0059,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,T23,2014-07-09,2 cm Sibal moved igniter,,0.172,,0.0032,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,T24,2014-07-09,1 cm SIBAL top side ign,,0.182,,0.0051,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,T25,2014-08-04,2 cm SIBAL,,0.208,,0.0036,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,T26,2014-08-04,2 cm SIBAL,,0.208,,0.0036,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,T27,2014-08-04,1 cm SIBAL,,0.207,,0.0041,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
+BASS-II,T28a,2014-08-04,1 cm SIBAL,,0.207,,0.0041,,,not_stated,,,o2_final_implausibly_low;material_category_pending_review,10.60555/4qc4-de67
+BASS-II,T28b,2014-08-04,1 cm SIBAL,,0.207,,,,,not_stated,,,o2_final_implausibly_high;material_category_pending_review,10.60555/4qc4-de67
+BASS-II,T29,2014-08-04,1 cm SIBAL,,0.207,,0.0041,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67

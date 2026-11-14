@@ -1,0 +1,22 @@
+# Datos locales (no se versionan; se regeneran con scripts/fetch_psi.py)
+data/raw/
+data/reference/
+
+# Artefactos generados
+*.sqlite
+*.duckdb
+dist/
+.ipynb_checkpoints/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Secretos
+.env
+.env.*
+
+# Otros
+node_modules/
+.DS_Store

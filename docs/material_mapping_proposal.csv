@@ -1,0 +1,50 @@
+material_raw,n_tests,pi,proposed_category,thickness_mm,width_cm,rod_diameter_in,color,burn_sides,needs_review,rationale,test_ids
+Nomex natural (nomex III),3,Ferkul,aramid_fabric,,,,,,False,Nomex III,"F1,F2,F3"
+1 cm SIBAL,8,T'ien,cotton_fiberglass_fabric,,1.0,,,,False,SIBAL = tela 75/25 algodón/fibra de vidrio (ReadMe),"T19,T20,T21,T22,T27,T28a,T28b,T29"
+1 cm SIBAL top side ign,1,T'ien,cotton_fiberglass_fabric,,1.0,,,,True,SIBAL = tela 75/25 algodón/fibra de vidrio (ReadMe); variante de ignición en el texto (no es material),T24
+2 cm SIBAL,17,T'ien,cotton_fiberglass_fabric,,2.0,,,,False,SIBAL = tela 75/25 algodón/fibra de vidrio (ReadMe),"T1,T2,T4,T5,T6,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T25,T26"
+2 cm Sibal moved igniter,1,T'ien,cotton_fiberglass_fabric,,2.0,,,,True,SIBAL = tela 75/25 algodón/fibra de vidrio (ReadMe); variante de ignición en el texto (no es material),T23
+"0.5"" black rod",4,Fernandez-Pello,pmma_rod,,,0.5,black,,False,varilla PMMA (ReadMe: Olson/Fernandez-Pello),"P5,P9,P13a,P13b"
+"1/2"" clear PMMA rod",4,Olson,pmma_rod,,,0.5,clear,,False,varilla PMMA (ReadMe: Olson/Fernandez-Pello),"O5a,O5b,O13a,O13b"
+"1/2"" clear rod",1,Olson,pmma_rod,,,0.5,clear,,False,varilla PMMA (ReadMe: Olson/Fernandez-Pello),O22
+1/4 blac rod,1,Fernandez-Pello,pmma_rod,,,0.25,black,,True,varilla PMMA (ReadMe: Olson/Fernandez-Pello); 'blac' = typo de black,P14
+1/4 black rod,2,Fernandez-Pello,pmma_rod,,,0.25,black,,False,varilla PMMA (ReadMe: Olson/Fernandez-Pello),"P15,P21a"
+1/4 clear rod,1,Fernandez-Pello,pmma_rod,,,0.25,clear,,False,varilla PMMA (ReadMe: Olson/Fernandez-Pello),P3b
+"1/4"" black rod",12,"Fernandez-Pello,Olson",pmma_rod,,,0.25,black,,False,varilla PMMA (ReadMe: Olson/Fernandez-Pello),"O11,O14,P1,P2,P6,P10,P16,P17,P18,P19,P20,P21b"
+"1/4"" clear rod",15,"Fernandez-Pello,Olson",pmma_rod,,,0.25,clear,,False,varilla PMMA (ReadMe: Olson/Fernandez-Pello),"O1,O2,O3a,O3b,O6,O7,O8a,O8b,O9,O10,O17,O18,O19,O20,P3a"
+"3/8"" black rod",7,Fernandez-Pello,pmma_rod,,,0.375,black,,False,varilla PMMA (ReadMe: Olson/Fernandez-Pello),"P4,P8,P12,P22a,P22b,P23,P24"
+"3/8"" clear rod",5,"Fernandez-Pello,Olson",pmma_rod,,,0.375,clear,,False,varilla PMMA (ReadMe: Olson/Fernandez-Pello),"O12,O15a,O15b,O21,P25"
+"3/8""clear rod",2,Olson,pmma_rod,,,0.375,clear,,False,varilla PMMA (ReadMe: Olson/Fernandez-Pello),"O4,O16"
+4 cm spherical section,2,T'ien,pmma_sphere,,,,,,True,ReadMe: '4 cm pmma spherical section'; el texto no dice PMMA,"T3,T7"
+1 cm wide PMMA 1 mm thick,1,Miller,pmma_thick_sheet,1.0,1.0,,,,False,PMMA plano; umbral película <=0.4 mm / placa >=1 mm,M7
+1 cm wide PMMA 2 mm thick,1,Miller,pmma_thick_sheet,2.0,1.0,,,,False,PMMA plano; umbral película <=0.4 mm / placa >=1 mm,M8
+1 cm wide PMMA 3 mm thick,1,Miller,pmma_thick_sheet,3.0,1.0,,,,False,PMMA plano; umbral película <=0.4 mm / placa >=1 mm,M9
+1 cm wide PMMA 5 mm thick,1,Miller,pmma_thick_sheet,5.0,1.0,,,,False,PMMA plano; umbral película <=0.4 mm / placa >=1 mm,M11
+1 mm thick PMMA 1 sided 2 cm,1,Miller,pmma_thick_sheet,1.0,2.0,,,1.0,False,PMMA plano; umbral película <=0.4 mm / placa >=1 mm,M1
+1 mm thick PMMA 2 cm wide,2,Miller,pmma_thick_sheet,1.0,2.0,,,,False,PMMA plano; umbral película <=0.4 mm / placa >=1 mm,"M6,M16"
+2 cm 4 mm 1 sided PMMA slab,1,Miller,pmma_thick_sheet,4.0,2.0,,,1.0,False,PMMA plano; umbral película <=0.4 mm / placa >=1 mm,M15
+2 cm wide 5 mm thick 1 sided PMMA,1,Miller,pmma_thick_sheet,5.0,2.0,,,1.0,False,PMMA plano; umbral película <=0.4 mm / placa >=1 mm,M3
+2 cm wide PMMA 2 mm thick,1,Miller,pmma_thick_sheet,2.0,2.0,,,,False,PMMA plano; umbral película <=0.4 mm / placa >=1 mm,M17
+2 cm wide PMMA 3 mm thick,1,Miller,pmma_thick_sheet,3.0,2.0,,,,False,PMMA plano; umbral película <=0.4 mm / placa >=1 mm,M18
+2 mm thick PMMA 2 cm wide,1,Miller,pmma_thick_sheet,2.0,2.0,,,,False,PMMA plano; umbral película <=0.4 mm / placa >=1 mm,M12
+2mm thick PMMA 1 sided 2 cm wide,1,Miller,pmma_thick_sheet,2.0,2.0,,,1.0,False,PMMA plano; umbral película <=0.4 mm / placa >=1 mm,M14
+3 mm thick PMMA 1 sided 2 cm wide,1,Miller,pmma_thick_sheet,3.0,2.0,,,1.0,False,PMMA plano; umbral película <=0.4 mm / placa >=1 mm,M2
+3 mm thick PMMA 2 sided 2 cm thick,1,Miller,pmma_thick_sheet,3.0,2.0,,,2.0,True,PMMA plano; umbral película <=0.4 mm / placa >=1 mm; probable typo ('2ide'→wide / '2 cm thick'→wide),M5
+4 mm thick 1 cm wide PMMA slab,1,Miller,pmma_thick_sheet,4.0,1.0,,,,False,PMMA plano; umbral película <=0.4 mm / placa >=1 mm,M10
+4 mm thick 2 cm 2ide PMMA slab,1,Miller,pmma_thick_sheet,4.0,2.0,,,,True,PMMA plano; umbral película <=0.4 mm / placa >=1 mm; probable typo ('2ide'→wide / '2 cm thick'→wide),M19
+4 mm thick PMMA 2 cm wide,1,Miller,pmma_thick_sheet,4.0,2.0,,,,False,PMMA plano; umbral película <=0.4 mm / placa >=1 mm,M13
+5 mm thick PMMA 2 cm wide,2,Miller,pmma_thick_sheet,5.0,2.0,,,,False,PMMA plano; umbral película <=0.4 mm / placa >=1 mm,"M4,M20"
+1 cm 0.2 mm PMMA film,1,Bhattacharjee,pmma_thin_film,0.2,1.0,,,,False,PMMA plano; umbral película <=0.4 mm / placa >=1 mm,B10
+1 cm wide 200 micron thick PMMA,5,Bhattacharjee,pmma_thin_film,0.2,1.0,,,,False,PMMA plano; umbral película <=0.4 mm / placa >=1 mm,"B14,B17,B18,B21,B22"
+100 micron PMMA film 2 cm wide,1,Bhattacharjee,pmma_thin_film,0.1,2.0,,,,False,PMMA plano; umbral película <=0.4 mm / placa >=1 mm,B1
+100 micron film 2 cm wide,1,Bhattacharjee,pmma_thin_film,0.1,2.0,,,,True,PMMA plano; umbral película <=0.4 mm / placa >=1 mm; texto no dice PMMA (se asume por ReadMe/PI),B3
+2 cm 0.1 mm PMMA film,3,Bhattacharjee,pmma_thin_film,0.1,2.0,,,,False,PMMA plano; umbral película <=0.4 mm / placa >=1 mm,"B6,B9,B15"
+2 cm 0.2 mm PMMA film,2,Bhattacharjee,pmma_thin_film,0.2,2.0,,,,False,PMMA plano; umbral película <=0.4 mm / placa >=1 mm,"B8,B11"
+2 cm 0.4 mm thick film,1,Bhattacharjee,pmma_thin_film,0.4,2.0,,,,True,PMMA plano; umbral película <=0.4 mm / placa >=1 mm; texto no dice PMMA (se asume por ReadMe/PI),B13
+2 cm 100 micron thick PMMA,3,Bhattacharjee,pmma_thin_film,0.1,2.0,,,,False,PMMA plano; umbral película <=0.4 mm / placa >=1 mm,"B16,B19,B20"
+200 micron 2 cm wide,1,Bhattacharjee,pmma_thin_film,0.2,2.0,,,,True,PMMA plano; umbral película <=0.4 mm / placa >=1 mm; texto no dice PMMA (se asume por ReadMe/PI),B5
+200 micron PMMA film 2 cm wide,1,Bhattacharjee,pmma_thin_film,0.2,2.0,,,,False,PMMA plano; umbral película <=0.4 mm / placa >=1 mm,B2
+300 micron PMMA film 2 cm wide,1,Bhattacharjee,pmma_thin_film,0.3,2.0,,,,False,PMMA plano; umbral película <=0.4 mm / placa >=1 mm,B4
+300 micron film 2 cm wide,1,Bhattacharjee,pmma_thin_film,0.3,2.0,,,,True,PMMA plano; umbral película <=0.4 mm / placa >=1 mm; texto no dice PMMA (se asume por ReadMe/PI),B12
+400 micron film 2 cm wide,1,Bhattacharjee,pmma_thin_film,0.4,2.0,,,,True,PMMA plano; umbral película <=0.4 mm / placa >=1 mm; texto no dice PMMA (se asume por ReadMe/PI),B7
+Japan Wax candle,1,Ferkul,wax_candle,,,,,,False,vela de cera japonesa,F4

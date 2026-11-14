@@ -1,0 +1,2 @@
+-r requirements.txt
+pytest>=8             # opcional: los tests también corren con `python tests/test_psi_queries.py`
