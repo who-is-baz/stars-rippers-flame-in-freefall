@@ -108,3 +108,35 @@ consultas; sección "Limitaciones conocidas". Reglas: no tocar data/raw/, no bor
    con n<5. El campo `pct_extinction_descriptive_not_probability` lleva una nota de método en el JSON.
 4. Punto 3 del pedido (aplicar el mapeo de materiales): **pendiente; esperando la aprobación de Fer.** No se hizo nada.
 5. `fetch_psi.py --verify-only`: 8/8. No se borró nada.
+
+## 2026-11-14 (5) — Preparación del repo para el equipo y publicación en GitHub — Claude Code (Opus 5.5)
+
+**Pedido:** integrar el paquete del equipo, definir qué se sube, revisión de seguridad, commit y push a
+`who-is-baz/stars-rippers-flame-in-freefall` (privado), `docs/SETUP.md` y verificación en un clon limpio.
+Reglas: sin force push, sin reescribir historial, sin borrar archivos, sin tocar `data/raw/` ni `data/reference/`,
+sin cambiar la config global de git.
+
+1. **Paquete.** Primero se usó por error el zip viejo (`stars-rippers-flame-in-freefall.zip`, 13 nov). Se corrigió
+   con `paquete-equipo.zip` (14 nov), extraído en `~/paquete2`: `rsync -a --ignore-existing` (sin `LEEME-PAQUETE.md`,
+   `AI_USAGE_LOG.md` ni `.gitignore`). `02-roles.md` y `03-analisis-datos.md` eran idénticos a los del zip viejo y se
+   reemplazaron por los nuevos. `CLAUDE.md`: el nuevo como base + sección "Específico de este repo" (sin duplicar reglas).
+   `README.md`: descripción en inglés del README de GitHub bajo el título + README del paquete, con "Estado del repo"
+   actualizado y filas nuevas en el mapa (07-api-contract, tareas/, data-dictionary, sql_examples, scripts/src/tests).
+2. **Qué sube.** `.gitignore` combinado (data/raw/, data/reference/, *.sqlite, .venv/, __pycache__/, .env, .env.*,
+   node_modules/, dist/, .DS_Store, …). Creados `requirements.txt` (requests 2.34.2, pandas 2.1.4, numpy 1.26.4,
+   openpyxl 3.1.2; versiones con las que corre hoy el proyecto) y `requirements-dev.txt` (pytest).
+3. **Seguridad.** Escaneo de ghp_/github_pat_/gho_/sk-/AKIA/PRIVATE KEY/password=/api_key=/token= en los 51
+   archivos: limpio. Sin llaves ni nada de ~/.ssh. Ningún archivo >1 MB (el mayor, experiments.csv, 52 KB).
+   `docs/tareas/baz-lider.md` solo menciona en texto revocar el token de `keygithub` (no contiene ninguna llave).
+4. **Commits.** El remoto NO estaba vacío (commit `323059d` "Initial commit" con un README creado desde la web). Se hizo
+   `git fetch` + `git reset origin/main` (mixed, sin --hard), se mezcló el README y se hizo push fast-forward:
+   `5aa4add` (import inicial) y `194956e` (`docs/SETUP.md`). Autor: who-is-baz con correo noreply (config local del
+   repo); push con la sesión de `gh` de who-is-baz (`credential.helper` local). Sin trailer de co-autoría de Claude.
+5. **Verificación** en un clon nuevo fuera del repo (sin red, venv con paquetes del sistema): 51 archivos = lista
+   aprobada + SETUP.md; nada de data/raw, data/reference, *.sqlite, __pycache__ ni .env. `build_experiments.py`
+   regenera `psi.sqlite` desde los CSV en <1 s y deja `git status` limpio; tests 9/9 OK con el runner de stdlib.
+   No verificable sin red: la instalación desde PyPI (`requests==2.34.2` no está en el Python del sistema) ni pytest.
+
+Excluido a propósito: `data/raw/` (8 archivos crudos, se regeneran con `fetch_psi.py`), `data/reference/` (4 Science
+Documents, se descargan a mano), `data/processed/psi.sqlite`, `.venv/`, `__pycache__/`.
+Peticiones de red en esta sesión: solo GitHub (gh/git). Ninguna a psi.nasa.gov.
