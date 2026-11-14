@@ -7,7 +7,7 @@ Cada función devuelve list[dict]. Cada fila incluye siempre:
     qc_flags     lista ordenada de flags de calidad presentes en la celda
     source_doi   lista de DOI de origen
 y, si la fila tiene un porcentaje (`pct_*`):
-    pct_note     "descriptivo, no probabilidad"
+    pct_note     "descriptive, not a probability"
     warning      texto obligatorio si n < MIN_N (si no, None)
 
 Advertencia: FLEX buscó el límite de extinción de forma iterativa (Test Plan, PDF p.4). Un % de extinción
@@ -21,16 +21,19 @@ from typing import Iterable, Optional, Sequence, Tuple
 
 DEFAULT_DB = os.path.join(os.path.dirname(__file__), "..", "data", "processed", "psi.sqlite")
 MIN_N = 5
-PCT_NOTE = "descriptivo, no probabilidad"
-SMALL_N_WARNING = "n<{min_n}: porcentaje inestable; no interpretar como tasa"
+# Mensajes que llegan a la UI y al asistente: en inglés (la entrega es en inglés). Ver docs/07-api-contract.md.
+PCT_NOTE = "descriptive, not a probability"
+SMALL_N_WARNING = "n<{min_n}: unstable percentage; do not read it as a rate"
 LOW_CONFIDENCE_FLAG = "low_confidence"
-LOW_CONFIDENCE_WARNING = ("incluye resultados extraídos por IA de baja confianza (pendientes de revisión humana); "
-                          "mostrar con advertencia")
+LOW_CONFIDENCE_WARNING = ("includes low-confidence AI-extracted outcomes (pending human review); "
+                          "show them with a warning")
 
 PROGRAMS = ("FLEX", "BASS-II")
+OUTCOMES = ("extinction", "disruption", "completion", "blowoff", "no_ignition", "not_sustained")
+MAX_LIMIT = 500
 SUPPRESSANTS = ("any", "none", "co2", "he")  # 'any' = sin filtro; 'none' = sin CO2 ni He
 O2_BANDS: Tuple[Tuple[float, float, str], ...] = (
-    (0.00, 0.15, "0.12-0.15"),
+    (0.00, 0.15, "<0.15"),
     (0.15, 0.18, "0.15-0.18"),
     (0.18, 0.21, "0.18-0.21"),
     (0.21, 0.24, "0.21-0.24"),
@@ -200,7 +203,7 @@ def bass2_outcomes_by_o2_band(con, material: Optional[str] = None, o2_range: Ran
                SUM(outcome_source='not_stated') AS n_not_stated,
                ROUND(100.0*SUM(outcome_source<>'not_stated')/COUNT(*),1) AS pct_outcome_stated
         FROM experiments WHERE {w}
-        GROUP BY 1 ORDER BY 1"""
+        GROUP BY 1 ORDER BY MIN(o2_fraction)"""  # por valor de O2, no por etiqueta ("<0.15" va primero)
     return _run(con, sql, a, min_n)
 
 
@@ -212,6 +215,62 @@ ALL_QUERIES = {
     "q5_extinction_diameter_by_pressure": extinction_diameter_by_pressure,
     "q6_bass2_outcomes_by_o2_band": bass2_outcomes_by_o2_band,
 }
+
+
+# --------------------------------------------------------------------------- filas y metadatos
+def list_experiments(con, program=None, fuel=None, o2_range: Range = None, pressure_range: Range = None,
+                     suppressant="any", outcome: Optional[str] = None, limit: int = 100, offset: int = 0):
+    """GET /experiments. Filas sin agregar de experiments, con paginación.
+
+    Devuelve {"total": n filas que cumplen los filtros, "items": [fila, ...]}. qc_flags va como lista (igual que en
+    Q1–Q6). outcome='not_stated' devuelve las filas sin resultado (BASS-II), lo que NO significa que no se extinguieran."""
+    if outcome is not None and outcome not in OUTCOMES + ("not_stated",):
+        raise ValueError(f"outcome debe ser uno de {OUTCOMES + ('not_stated',)}")
+    if not (isinstance(limit, int) and 1 <= limit <= MAX_LIMIT):
+        raise ValueError(f"limit debe ser un entero entre 1 y {MAX_LIMIT}")
+    if not (isinstance(offset, int) and offset >= 0):
+        raise ValueError("offset debe ser un entero >= 0")
+    w, a = _filters(program, fuel, o2_range, pressure_range, suppressant)
+    if outcome == "not_stated":
+        w += " AND outcome_source = 'not_stated'"
+    elif outcome is not None:
+        w += " AND outcome = ?"; a.append(outcome)
+    total = con.execute(f"SELECT COUNT(*) FROM experiments WHERE {w}", a).fetchone()[0]
+    rows = con.execute(f"SELECT * FROM experiments WHERE {w} ORDER BY program, test_id LIMIT ? OFFSET ?",
+                       a + [limit, offset]).fetchall()
+    items = []
+    for r in rows:
+        d = dict(r)
+        d["qc_flags"] = [f for f in (d["qc_flags"] or "").split(";") if f]
+        if LOW_CONFIDENCE_FLAG in d["qc_flags"]:
+            d["low_confidence_warning"] = LOW_CONFIDENCE_WARNING
+        items.append(d)
+    return {"total": total, "items": items}
+
+
+def meta(con):
+    """GET /meta. Valores válidos para los filtros y rangos de los datos (calculados, no fijos)."""
+    progs = []
+    for r in con.execute("""SELECT program, COUNT(*) AS n, MIN(o2_fraction) AS o2_min, MAX(o2_fraction) AS o2_max,
+                                   MIN(pressure_atm) AS pressure_min, MAX(pressure_atm) AS pressure_max,
+                                   MIN(source_doi) AS source_doi
+                            FROM experiments GROUP BY program ORDER BY program"""):
+        d = dict(r)
+        d["materials"] = [x[0] for x in con.execute(
+            "SELECT DISTINCT material_or_fuel FROM experiments WHERE program=? ORDER BY 1", (d["program"],))]
+        d["material_categories"] = [x[0] for x in con.execute(
+            "SELECT DISTINCT material_category FROM experiments WHERE program=? AND material_category IS NOT NULL "
+            "ORDER BY 1", (d["program"],))]
+        progs.append(d)
+    return {
+        "programs": progs,
+        "suppressants": list(SUPPRESSANTS),
+        "outcomes": list(OUTCOMES) + ["not_stated"],
+        "o2_bands": [{"label": l, "min_inclusive": lo, "max_exclusive": hi} for lo, hi, l in O2_BANDS],
+        "min_n": MIN_N,
+        "queries": sorted(ALL_QUERIES),
+        "source_doi": sorted({p["source_doi"] for p in progs}),
+    }
 
 
 # --------------------------------------------------------------------------- coverage grid
@@ -234,5 +293,5 @@ def flex_coverage_grid(con, min_n=MIN_N):
                SUM(outcome='disruption') AS n_disruption, SUM(outcome='completion') AS n_completion,
                ROUND(100.0*SUM(outcome='extinction')/COUNT(*),1) AS pct_extinction
         FROM experiments WHERE program='FLEX'
-        GROUP BY 1,2,3,4 ORDER BY 1,2,3,4"""
+        GROUP BY 1,2,3,4 ORDER BY 1, MIN(o2_fraction), 3, 4"""  # bandas por valor de O2, no por etiqueta
     return _run(con, sql, [], min_n)
