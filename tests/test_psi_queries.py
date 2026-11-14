@@ -121,6 +121,47 @@ def test_connection_is_read_only():
     raise AssertionError("la conexión permitió escribir")
 
 
+def test_messages_in_english_and_o2_band_labels():
+    """Contrato (docs/07): los textos que llegan a la UI van en inglés; la primera banda es "<0.15" y va primero."""
+    assert q.PCT_NOTE == "descriptive, not a probability"
+    assert q.SMALL_N_WARNING.format(min_n=5).startswith("n<5")
+    assert "low-confidence" in q.LOW_CONFIDENCE_WARNING
+    assert [b[2] for b in q.O2_BANDS] == ["<0.15", "0.15-0.18", "0.18-0.21", "0.21-0.24", ">=0.24"]
+    q6 = [r["o2_band"] for r in q.bass2_outcomes_by_o2_band(CON)]
+    assert q6 == sorted(q6, key=[b[2] for b in q.O2_BANDS].index), f"bandas fuera de orden: {q6}"
+
+
+def test_list_experiments_filters_and_pagination():
+    allr = q.list_experiments(CON, limit=q.MAX_LIMIT)
+    assert allr["total"] == _total(CON, "1=1") and len(allr["items"]) == min(allr["total"], q.MAX_LIMIT)
+    ext = q.list_experiments(CON, program="FLEX", outcome="extinction", limit=500)
+    assert ext["total"] == _total(CON, "program='FLEX' AND outcome='extinction'")
+    assert all(r["outcome"] == "extinction" and isinstance(r["qc_flags"], list) for r in ext["items"])
+    ns = q.list_experiments(CON, outcome="not_stated", limit=500)
+    assert ns["total"] == _total(CON, "outcome_source='not_stated'") and all(r["outcome"] is None for r in ns["items"])
+    p1 = q.list_experiments(CON, limit=10, offset=0)["items"]
+    p2 = q.list_experiments(CON, limit=10, offset=10)["items"]
+    assert len(p1) == len(p2) == 10 and not {(r["program"], r["test_id"]) for r in p1} & {(r["program"], r["test_id"]) for r in p2}
+    low = q.list_experiments(CON, program="BASS-II", limit=500)["items"]
+    assert all(("low_confidence_warning" in r) == ("low_confidence" in r["qc_flags"]) for r in low)
+    for bad in (dict(outcome="exploded"), dict(limit=0), dict(limit=q.MAX_LIMIT + 1), dict(offset=-1)):
+        try:
+            q.list_experiments(CON, **bad)
+        except ValueError:
+            continue
+        raise AssertionError(f"se aceptó un parámetro inválido: {bad}")
+
+
+def test_meta_matches_data():
+    m = q.meta(CON)
+    assert {p["program"] for p in m["programs"]} == set(q.PROGRAMS)
+    assert sum(p["n"] for p in m["programs"]) == _total(CON, "1=1")
+    flex = next(p for p in m["programs"] if p["program"] == "FLEX")
+    assert flex["materials"] == ["heptane", "methanol"] and flex["source_doi"] == FLEX_DOI
+    assert m["source_doi"] == sorted([FLEX_DOI, BASS_DOI])
+    assert m["queries"] == sorted(q.ALL_QUERIES) and len(m["queries"]) == 6
+
+
 if __name__ == "__main__":  # runner mínimo si pytest no está instalado
     failed = 0
     for name, fn in sorted(globals().items()):

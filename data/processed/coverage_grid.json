@@ -2,9 +2,9 @@
   "description": "FLEX (NASA PSI PSI-69): cobertura de pruebas por combustible × banda de O2 × presión × supresor",
   "source_doi": "10.60555/mbq8-0451",
   "license": "CC0-1.0",
-  "generated_utc": "2026-11-14T16:36:11+00:00",
+  "generated_utc": "2026-11-14T19:27:57+00:00",
   "generated_by": "scripts/build_coverage_grid.py (src/psi_queries.py:flex_coverage_grid)",
-  "pct_extinction_note": "descriptivo, no probabilidad: FLEX eligió condiciones iterativamente para acercarse al límite de extinción (FLEX Test Plan, PDF p.4). El porcentaje describe las pruebas hechas, no un riesgo.",
+  "pct_extinction_note": "descriptive, not a probability: FLEX chose test conditions iteratively to approach the extinction limit (FLEX Test Plan, PDF p.4). The percentage describes the tests performed, not a risk.",
   "min_n_for_stable_pct": 5,
   "dimensions": {
     "fuel": [
@@ -13,7 +13,7 @@
     ],
     "o2_band": [
       {
-        "label": "0.12-0.15",
+        "label": "<0.15",
         "min_inclusive": 0.0,
         "max_exclusive": 0.15
       },
@@ -45,7 +45,7 @@
     "n": "pruebas en la celda",
     "avg_burning_rate_mm2_s": "media de K (ley d²) en mm²/s sobre n_burning_rate pruebas con K",
     "avg_extinction_diameter_mm": "media del diámetro de extinción solo en pruebas con outcome = extinction (n_extinction_diameter)",
-    "pct_extinction_descriptive_not_probability": "100 × n_extinction / n",
+    "pct_extinction": "100 × n_extinction / n; siempre con pct_note (descriptivo, no probabilidad)",
     "warning": "presente si n < 5",
     "qc_flags": "flags de calidad presentes en la celda (ver docs/data-dictionary.md)"
   },
@@ -55,7 +55,7 @@
   "cells": [
     {
       "fuel": "heptane",
-      "o2_band": "0.12-0.15",
+      "o2_band": "<0.15",
       "pressure_atm_level": "1.0",
       "suppressant": "none",
       "n": 6,
@@ -70,6 +70,7 @@
       "avg_extinction_diameter_mm": 3.505,
       "n_disruption": 0,
       "n_completion": 1,
+      "pct_extinction": 83.3,
       "qc_flags": [
         "extinction_diameter_dropped_outcome_not_extinction",
         "mole_fractions_do_not_sum_to_1"
@@ -77,111 +78,8 @@
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": null,
-      "pct_extinction_descriptive_not_probability": 83.3
-    },
-    {
-      "fuel": "heptane",
-      "o2_band": "0.15-0.18",
-      "pressure_atm_level": "0.7",
-      "suppressant": "co2",
-      "n": 2,
-      "suppressant_fraction_min": 0.45,
-      "suppressant_fraction_max": 0.45,
-      "o2_fraction_min": 0.17,
-      "o2_fraction_max": 0.17,
-      "n_burning_rate": 2,
-      "avg_burning_rate_mm2_s": 0.19,
-      "n_extinction": 2,
-      "n_extinction_diameter": 2,
-      "avg_extinction_diameter_mm": 3.115,
-      "n_disruption": 0,
-      "n_completion": 0,
-      "qc_flags": [],
-      "source_doi": [
-        "10.60555/mbq8-0451"
-      ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": "n<5: porcentaje inestable; no interpretar como tasa",
-      "pct_extinction_descriptive_not_probability": 100.0
-    },
-    {
-      "fuel": "heptane",
-      "o2_band": "0.15-0.18",
-      "pressure_atm_level": "0.7",
-      "suppressant": "he",
-      "n": 2,
-      "suppressant_fraction_min": 0.45,
-      "suppressant_fraction_max": 0.45,
-      "o2_fraction_min": 0.17,
-      "o2_fraction_max": 0.17,
-      "n_burning_rate": 2,
-      "avg_burning_rate_mm2_s": 0.91,
-      "n_extinction": 1,
-      "n_extinction_diameter": 1,
-      "avg_extinction_diameter_mm": 1.86,
-      "n_disruption": 0,
-      "n_completion": 1,
-      "qc_flags": [
-        "extinction_diameter_dropped_outcome_not_extinction"
-      ],
-      "source_doi": [
-        "10.60555/mbq8-0451"
-      ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": "n<5: porcentaje inestable; no interpretar como tasa",
-      "pct_extinction_descriptive_not_probability": 50.0
-    },
-    {
-      "fuel": "heptane",
-      "o2_band": "0.15-0.18",
-      "pressure_atm_level": "1.0",
-      "suppressant": "co2",
-      "n": 2,
-      "suppressant_fraction_min": 0.2,
-      "suppressant_fraction_max": 0.2,
-      "o2_fraction_min": 0.17,
-      "o2_fraction_max": 0.17,
-      "n_burning_rate": 2,
-      "avg_burning_rate_mm2_s": 0.325,
-      "n_extinction": 2,
-      "n_extinction_diameter": 2,
-      "avg_extinction_diameter_mm": 3.25,
-      "n_disruption": 0,
-      "n_completion": 0,
-      "qc_flags": [],
-      "source_doi": [
-        "10.60555/mbq8-0451"
-      ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": "n<5: porcentaje inestable; no interpretar como tasa",
-      "pct_extinction_descriptive_not_probability": 100.0
-    },
-    {
-      "fuel": "heptane",
-      "o2_band": "0.15-0.18",
-      "pressure_atm_level": "1.0",
-      "suppressant": "he",
-      "n": 5,
-      "suppressant_fraction_min": 0.2,
-      "suppressant_fraction_max": 0.25,
-      "o2_fraction_min": 0.16,
-      "o2_fraction_max": 0.17,
-      "n_burning_rate": 4,
-      "avg_burning_rate_mm2_s": 0.64,
-      "n_extinction": 3,
-      "n_extinction_diameter": 3,
-      "avg_extinction_diameter_mm": 1.56,
-      "n_disruption": 1,
-      "n_completion": 1,
-      "qc_flags": [],
-      "source_doi": [
-        "10.60555/mbq8-0451"
-      ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": null,
-      "pct_extinction_descriptive_not_probability": 60.0
+      "pct_note": "descriptive, not a probability",
+      "warning": null
     },
     {
       "fuel": "heptane",
@@ -200,15 +98,117 @@
       "avg_extinction_diameter_mm": 3.36,
       "n_disruption": 0,
       "n_completion": 2,
+      "pct_extinction": 75.0,
       "qc_flags": [
         "duplicate_flex_id"
       ],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": null,
-      "pct_extinction_descriptive_not_probability": 75.0
+      "pct_note": "descriptive, not a probability",
+      "warning": null
+    },
+    {
+      "fuel": "heptane",
+      "o2_band": "0.15-0.18",
+      "pressure_atm_level": "1.0",
+      "suppressant": "he",
+      "n": 5,
+      "suppressant_fraction_min": 0.2,
+      "suppressant_fraction_max": 0.25,
+      "o2_fraction_min": 0.16,
+      "o2_fraction_max": 0.17,
+      "n_burning_rate": 4,
+      "avg_burning_rate_mm2_s": 0.64,
+      "n_extinction": 3,
+      "n_extinction_diameter": 3,
+      "avg_extinction_diameter_mm": 1.56,
+      "n_disruption": 1,
+      "n_completion": 1,
+      "pct_extinction": 60.0,
+      "qc_flags": [],
+      "source_doi": [
+        "10.60555/mbq8-0451"
+      ],
+      "pct_note": "descriptive, not a probability",
+      "warning": null
+    },
+    {
+      "fuel": "heptane",
+      "o2_band": "0.15-0.18",
+      "pressure_atm_level": "0.7",
+      "suppressant": "co2",
+      "n": 2,
+      "suppressant_fraction_min": 0.45,
+      "suppressant_fraction_max": 0.45,
+      "o2_fraction_min": 0.17,
+      "o2_fraction_max": 0.17,
+      "n_burning_rate": 2,
+      "avg_burning_rate_mm2_s": 0.19,
+      "n_extinction": 2,
+      "n_extinction_diameter": 2,
+      "avg_extinction_diameter_mm": 3.115,
+      "n_disruption": 0,
+      "n_completion": 0,
+      "pct_extinction": 100.0,
+      "qc_flags": [],
+      "source_doi": [
+        "10.60555/mbq8-0451"
+      ],
+      "pct_note": "descriptive, not a probability",
+      "warning": "n<5: unstable percentage; do not read it as a rate"
+    },
+    {
+      "fuel": "heptane",
+      "o2_band": "0.15-0.18",
+      "pressure_atm_level": "0.7",
+      "suppressant": "he",
+      "n": 2,
+      "suppressant_fraction_min": 0.45,
+      "suppressant_fraction_max": 0.45,
+      "o2_fraction_min": 0.17,
+      "o2_fraction_max": 0.17,
+      "n_burning_rate": 2,
+      "avg_burning_rate_mm2_s": 0.91,
+      "n_extinction": 1,
+      "n_extinction_diameter": 1,
+      "avg_extinction_diameter_mm": 1.86,
+      "n_disruption": 0,
+      "n_completion": 1,
+      "pct_extinction": 50.0,
+      "qc_flags": [
+        "extinction_diameter_dropped_outcome_not_extinction"
+      ],
+      "source_doi": [
+        "10.60555/mbq8-0451"
+      ],
+      "pct_note": "descriptive, not a probability",
+      "warning": "n<5: unstable percentage; do not read it as a rate"
+    },
+    {
+      "fuel": "heptane",
+      "o2_band": "0.15-0.18",
+      "pressure_atm_level": "1.0",
+      "suppressant": "co2",
+      "n": 2,
+      "suppressant_fraction_min": 0.2,
+      "suppressant_fraction_max": 0.2,
+      "o2_fraction_min": 0.17,
+      "o2_fraction_max": 0.17,
+      "n_burning_rate": 2,
+      "avg_burning_rate_mm2_s": 0.325,
+      "n_extinction": 2,
+      "n_extinction_diameter": 2,
+      "avg_extinction_diameter_mm": 3.25,
+      "n_disruption": 0,
+      "n_completion": 0,
+      "pct_extinction": 100.0,
+      "qc_flags": [],
+      "source_doi": [
+        "10.60555/mbq8-0451"
+      ],
+      "pct_note": "descriptive, not a probability",
+      "warning": "n<5: unstable percentage; do not read it as a rate"
     },
     {
       "fuel": "heptane",
@@ -227,13 +227,13 @@
       "avg_extinction_diameter_mm": 2.893,
       "n_disruption": 0,
       "n_completion": 0,
+      "pct_extinction": 100.0,
       "qc_flags": [],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": "n<5: porcentaje inestable; no interpretar como tasa",
-      "pct_extinction_descriptive_not_probability": 100.0
+      "pct_note": "descriptive, not a probability",
+      "warning": "n<5: unstable percentage; do not read it as a rate"
     },
     {
       "fuel": "heptane",
@@ -252,40 +252,13 @@
       "avg_extinction_diameter_mm": 1.872,
       "n_disruption": 0,
       "n_completion": 0,
+      "pct_extinction": 100.0,
       "qc_flags": [],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": "n<5: porcentaje inestable; no interpretar como tasa",
-      "pct_extinction_descriptive_not_probability": 100.0
-    },
-    {
-      "fuel": "heptane",
-      "o2_band": "0.18-0.21",
-      "pressure_atm_level": "0.7",
-      "suppressant": "none",
-      "n": 2,
-      "suppressant_fraction_min": 0.0,
-      "suppressant_fraction_max": 0.0,
-      "o2_fraction_min": 0.2,
-      "o2_fraction_max": 0.2,
-      "n_burning_rate": 2,
-      "avg_burning_rate_mm2_s": 0.49,
-      "n_extinction": 1,
-      "n_extinction_diameter": 1,
-      "avg_extinction_diameter_mm": 2.49,
-      "n_disruption": 0,
-      "n_completion": 1,
-      "qc_flags": [
-        "extinction_diameter_dropped_outcome_not_extinction"
-      ],
-      "source_doi": [
-        "10.60555/mbq8-0451"
-      ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": "n<5: porcentaje inestable; no interpretar como tasa",
-      "pct_extinction_descriptive_not_probability": 50.0
+      "pct_note": "descriptive, not a probability",
+      "warning": "n<5: unstable percentage; do not read it as a rate"
     },
     {
       "fuel": "heptane",
@@ -304,15 +277,15 @@
       "avg_extinction_diameter_mm": 2.511,
       "n_disruption": 5,
       "n_completion": 1,
+      "pct_extinction": 62.5,
       "qc_flags": [
         "extinction_diameter_dropped_outcome_not_extinction"
       ],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": null,
-      "pct_extinction_descriptive_not_probability": 62.5
+      "pct_note": "descriptive, not a probability",
+      "warning": null
     },
     {
       "fuel": "heptane",
@@ -331,15 +304,15 @@
       "avg_extinction_diameter_mm": 3.28,
       "n_disruption": 1,
       "n_completion": 3,
+      "pct_extinction": 20.0,
       "qc_flags": [
         "burn_time_approx"
       ],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": null,
-      "pct_extinction_descriptive_not_probability": 20.0
+      "pct_note": "descriptive, not a probability",
+      "warning": null
     },
     {
       "fuel": "heptane",
@@ -358,15 +331,42 @@
       "avg_extinction_diameter_mm": 2.62,
       "n_disruption": 0,
       "n_completion": 1,
+      "pct_extinction": 66.7,
       "qc_flags": [
         "extinction_diameter_dropped_outcome_not_extinction"
       ],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": "n<5: porcentaje inestable; no interpretar como tasa",
-      "pct_extinction_descriptive_not_probability": 66.7
+      "pct_note": "descriptive, not a probability",
+      "warning": "n<5: unstable percentage; do not read it as a rate"
+    },
+    {
+      "fuel": "heptane",
+      "o2_band": "0.18-0.21",
+      "pressure_atm_level": "0.7",
+      "suppressant": "none",
+      "n": 2,
+      "suppressant_fraction_min": 0.0,
+      "suppressant_fraction_max": 0.0,
+      "o2_fraction_min": 0.2,
+      "o2_fraction_max": 0.2,
+      "n_burning_rate": 2,
+      "avg_burning_rate_mm2_s": 0.49,
+      "n_extinction": 1,
+      "n_extinction_diameter": 1,
+      "avg_extinction_diameter_mm": 2.49,
+      "n_disruption": 0,
+      "n_completion": 1,
+      "pct_extinction": 50.0,
+      "qc_flags": [
+        "extinction_diameter_dropped_outcome_not_extinction"
+      ],
+      "source_doi": [
+        "10.60555/mbq8-0451"
+      ],
+      "pct_note": "descriptive, not a probability",
+      "warning": "n<5: unstable percentage; do not read it as a rate"
     },
     {
       "fuel": "heptane",
@@ -385,15 +385,15 @@
       "avg_extinction_diameter_mm": 3.47,
       "n_disruption": 1,
       "n_completion": 0,
+      "pct_extinction": 83.3,
       "qc_flags": [
         "extinction_diameter_dropped_outcome_not_extinction"
       ],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": null,
-      "pct_extinction_descriptive_not_probability": 83.3
+      "pct_note": "descriptive, not a probability",
+      "warning": null
     },
     {
       "fuel": "heptane",
@@ -412,15 +412,15 @@
       "avg_extinction_diameter_mm": 1.52,
       "n_disruption": 0,
       "n_completion": 1,
+      "pct_extinction": 66.7,
       "qc_flags": [
         "extinction_diameter_dropped_outcome_not_extinction"
       ],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": "n<5: porcentaje inestable; no interpretar como tasa",
-      "pct_extinction_descriptive_not_probability": 66.7
+      "pct_note": "descriptive, not a probability",
+      "warning": "n<5: unstable percentage; do not read it as a rate"
     },
     {
       "fuel": "heptane",
@@ -439,13 +439,13 @@
       "avg_extinction_diameter_mm": 1.82,
       "n_disruption": 0,
       "n_completion": 0,
+      "pct_extinction": 100.0,
       "qc_flags": [],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": "n<5: porcentaje inestable; no interpretar como tasa",
-      "pct_extinction_descriptive_not_probability": 100.0
+      "pct_note": "descriptive, not a probability",
+      "warning": "n<5: unstable percentage; do not read it as a rate"
     },
     {
       "fuel": "heptane",
@@ -464,15 +464,15 @@
       "avg_extinction_diameter_mm": 2.664,
       "n_disruption": 8,
       "n_completion": 4,
+      "pct_extinction": 29.4,
       "qc_flags": [
         "extinction_diameter_dropped_outcome_not_extinction"
       ],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": null,
-      "pct_extinction_descriptive_not_probability": 29.4
+      "pct_note": "descriptive, not a probability",
+      "warning": null
     },
     {
       "fuel": "heptane",
@@ -491,13 +491,13 @@
       "avg_extinction_diameter_mm": 1.77,
       "n_disruption": 0,
       "n_completion": 0,
+      "pct_extinction": 100.0,
       "qc_flags": [],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": "n<5: porcentaje inestable; no interpretar como tasa",
-      "pct_extinction_descriptive_not_probability": 100.0
+      "pct_note": "descriptive, not a probability",
+      "warning": "n<5: unstable percentage; do not read it as a rate"
     },
     {
       "fuel": "heptane",
@@ -516,13 +516,13 @@
       "avg_extinction_diameter_mm": null,
       "n_disruption": 1,
       "n_completion": 0,
+      "pct_extinction": 0.0,
       "qc_flags": [],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": "n<5: porcentaje inestable; no interpretar como tasa",
-      "pct_extinction_descriptive_not_probability": 0.0
+      "pct_note": "descriptive, not a probability",
+      "warning": "n<5: unstable percentage; do not read it as a rate"
     },
     {
       "fuel": "heptane",
@@ -541,15 +541,15 @@
       "avg_extinction_diameter_mm": 2.9,
       "n_disruption": 5,
       "n_completion": 0,
+      "pct_extinction": 28.6,
       "qc_flags": [
         "extinction_diameter_dropped_outcome_not_extinction"
       ],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": null,
-      "pct_extinction_descriptive_not_probability": 28.6
+      "pct_note": "descriptive, not a probability",
+      "warning": null
     },
     {
       "fuel": "heptane",
@@ -568,40 +568,13 @@
       "avg_extinction_diameter_mm": 2.52,
       "n_disruption": 0,
       "n_completion": 0,
+      "pct_extinction": 100.0,
       "qc_flags": [],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": "n<5: porcentaje inestable; no interpretar como tasa",
-      "pct_extinction_descriptive_not_probability": 100.0
-    },
-    {
-      "fuel": "heptane",
-      "o2_band": ">=0.24",
-      "pressure_atm_level": "0.7",
-      "suppressant": "none",
-      "n": 8,
-      "suppressant_fraction_min": 0.0,
-      "suppressant_fraction_max": 0.0,
-      "o2_fraction_min": 0.3,
-      "o2_fraction_max": 0.34,
-      "n_burning_rate": 7,
-      "avg_burning_rate_mm2_s": 0.724,
-      "n_extinction": 0,
-      "n_extinction_diameter": 0,
-      "avg_extinction_diameter_mm": null,
-      "n_disruption": 8,
-      "n_completion": 0,
-      "qc_flags": [
-        "extinction_diameter_dropped_outcome_not_extinction"
-      ],
-      "source_doi": [
-        "10.60555/mbq8-0451"
-      ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": null,
-      "pct_extinction_descriptive_not_probability": 0.0
+      "pct_note": "descriptive, not a probability",
+      "warning": "n<5: unstable percentage; do not read it as a rate"
     },
     {
       "fuel": "heptane",
@@ -620,15 +593,42 @@
       "avg_extinction_diameter_mm": 2.88,
       "n_disruption": 6,
       "n_completion": 2,
+      "pct_extinction": 11.1,
       "qc_flags": [
         "extinction_diameter_dropped_outcome_not_extinction"
       ],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": null,
-      "pct_extinction_descriptive_not_probability": 11.1
+      "pct_note": "descriptive, not a probability",
+      "warning": null
+    },
+    {
+      "fuel": "heptane",
+      "o2_band": ">=0.24",
+      "pressure_atm_level": "0.7",
+      "suppressant": "none",
+      "n": 8,
+      "suppressant_fraction_min": 0.0,
+      "suppressant_fraction_max": 0.0,
+      "o2_fraction_min": 0.3,
+      "o2_fraction_max": 0.34,
+      "n_burning_rate": 7,
+      "avg_burning_rate_mm2_s": 0.724,
+      "n_extinction": 0,
+      "n_extinction_diameter": 0,
+      "avg_extinction_diameter_mm": null,
+      "n_disruption": 8,
+      "n_completion": 0,
+      "pct_extinction": 0.0,
+      "qc_flags": [
+        "extinction_diameter_dropped_outcome_not_extinction"
+      ],
+      "source_doi": [
+        "10.60555/mbq8-0451"
+      ],
+      "pct_note": "descriptive, not a probability",
+      "warning": null
     },
     {
       "fuel": "heptane",
@@ -647,69 +647,19 @@
       "avg_extinction_diameter_mm": null,
       "n_disruption": 2,
       "n_completion": 1,
+      "pct_extinction": 0.0,
       "qc_flags": [
         "extinction_diameter_dropped_outcome_not_extinction"
       ],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": "n<5: porcentaje inestable; no interpretar como tasa",
-      "pct_extinction_descriptive_not_probability": 0.0
+      "pct_note": "descriptive, not a probability",
+      "warning": "n<5: unstable percentage; do not read it as a rate"
     },
     {
       "fuel": "methanol",
-      "o2_band": "0.12-0.15",
-      "pressure_atm_level": "1.0",
-      "suppressant": "co2",
-      "n": 2,
-      "suppressant_fraction_min": 0.36,
-      "suppressant_fraction_max": 0.36,
-      "o2_fraction_min": 0.14,
-      "o2_fraction_max": 0.14,
-      "n_burning_rate": 2,
-      "avg_burning_rate_mm2_s": 0.325,
-      "n_extinction": 2,
-      "n_extinction_diameter": 2,
-      "avg_extinction_diameter_mm": 2.46,
-      "n_disruption": 0,
-      "n_completion": 0,
-      "qc_flags": [],
-      "source_doi": [
-        "10.60555/mbq8-0451"
-      ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": "n<5: porcentaje inestable; no interpretar como tasa",
-      "pct_extinction_descriptive_not_probability": 100.0
-    },
-    {
-      "fuel": "methanol",
-      "o2_band": "0.12-0.15",
-      "pressure_atm_level": "1.0",
-      "suppressant": "he",
-      "n": 3,
-      "suppressant_fraction_min": 0.35,
-      "suppressant_fraction_max": 0.4,
-      "o2_fraction_min": 0.13,
-      "o2_fraction_max": 0.14,
-      "n_burning_rate": 3,
-      "avg_burning_rate_mm2_s": 0.55,
-      "n_extinction": 3,
-      "n_extinction_diameter": 3,
-      "avg_extinction_diameter_mm": 2.51,
-      "n_disruption": 0,
-      "n_completion": 0,
-      "qc_flags": [],
-      "source_doi": [
-        "10.60555/mbq8-0451"
-      ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": "n<5: porcentaje inestable; no interpretar como tasa",
-      "pct_extinction_descriptive_not_probability": 100.0
-    },
-    {
-      "fuel": "methanol",
-      "o2_band": "0.12-0.15",
+      "o2_band": "<0.15",
       "pressure_atm_level": "1.0",
       "suppressant": "none",
       "n": 17,
@@ -724,15 +674,65 @@
       "avg_extinction_diameter_mm": 1.937,
       "n_disruption": 0,
       "n_completion": 0,
+      "pct_extinction": 100.0,
       "qc_flags": [
         "mole_fractions_do_not_sum_to_1"
       ],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": null,
-      "pct_extinction_descriptive_not_probability": 100.0
+      "pct_note": "descriptive, not a probability",
+      "warning": null
+    },
+    {
+      "fuel": "methanol",
+      "o2_band": "<0.15",
+      "pressure_atm_level": "1.0",
+      "suppressant": "he",
+      "n": 3,
+      "suppressant_fraction_min": 0.35,
+      "suppressant_fraction_max": 0.4,
+      "o2_fraction_min": 0.13,
+      "o2_fraction_max": 0.14,
+      "n_burning_rate": 3,
+      "avg_burning_rate_mm2_s": 0.55,
+      "n_extinction": 3,
+      "n_extinction_diameter": 3,
+      "avg_extinction_diameter_mm": 2.51,
+      "n_disruption": 0,
+      "n_completion": 0,
+      "pct_extinction": 100.0,
+      "qc_flags": [],
+      "source_doi": [
+        "10.60555/mbq8-0451"
+      ],
+      "pct_note": "descriptive, not a probability",
+      "warning": "n<5: unstable percentage; do not read it as a rate"
+    },
+    {
+      "fuel": "methanol",
+      "o2_band": "<0.15",
+      "pressure_atm_level": "1.0",
+      "suppressant": "co2",
+      "n": 2,
+      "suppressant_fraction_min": 0.36,
+      "suppressant_fraction_max": 0.36,
+      "o2_fraction_min": 0.14,
+      "o2_fraction_max": 0.14,
+      "n_burning_rate": 2,
+      "avg_burning_rate_mm2_s": 0.325,
+      "n_extinction": 2,
+      "n_extinction_diameter": 2,
+      "avg_extinction_diameter_mm": 2.46,
+      "n_disruption": 0,
+      "n_completion": 0,
+      "pct_extinction": 100.0,
+      "qc_flags": [],
+      "source_doi": [
+        "10.60555/mbq8-0451"
+      ],
+      "pct_note": "descriptive, not a probability",
+      "warning": "n<5: unstable percentage; do not read it as a rate"
     },
     {
       "fuel": "methanol",
@@ -751,38 +751,13 @@
       "avg_extinction_diameter_mm": 2.556,
       "n_disruption": 0,
       "n_completion": 0,
+      "pct_extinction": 100.0,
       "qc_flags": [],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": null,
-      "pct_extinction_descriptive_not_probability": 100.0
-    },
-    {
-      "fuel": "methanol",
-      "o2_band": "0.15-0.18",
-      "pressure_atm_level": "0.7",
-      "suppressant": "he",
-      "n": 2,
-      "suppressant_fraction_min": 0.45,
-      "suppressant_fraction_max": 0.45,
-      "o2_fraction_min": 0.17,
-      "o2_fraction_max": 0.17,
-      "n_burning_rate": 2,
-      "avg_burning_rate_mm2_s": 0.645,
-      "n_extinction": 2,
-      "n_extinction_diameter": 2,
-      "avg_extinction_diameter_mm": 2.305,
-      "n_disruption": 0,
-      "n_completion": 0,
-      "qc_flags": [],
-      "source_doi": [
-        "10.60555/mbq8-0451"
-      ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": "n<5: porcentaje inestable; no interpretar como tasa",
-      "pct_extinction_descriptive_not_probability": 100.0
+      "pct_note": "descriptive, not a probability",
+      "warning": null
     },
     {
       "fuel": "methanol",
@@ -801,13 +776,13 @@
       "avg_extinction_diameter_mm": 2.308,
       "n_disruption": 0,
       "n_completion": 0,
+      "pct_extinction": 100.0,
       "qc_flags": [],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": null,
-      "pct_extinction_descriptive_not_probability": 100.0
+      "pct_note": "descriptive, not a probability",
+      "warning": null
     },
     {
       "fuel": "methanol",
@@ -826,13 +801,13 @@
       "avg_extinction_diameter_mm": 2.435,
       "n_disruption": 0,
       "n_completion": 0,
+      "pct_extinction": 100.0,
       "qc_flags": [],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": null,
-      "pct_extinction_descriptive_not_probability": 100.0
+      "pct_note": "descriptive, not a probability",
+      "warning": null
     },
     {
       "fuel": "methanol",
@@ -851,13 +826,38 @@
       "avg_extinction_diameter_mm": 1.97,
       "n_disruption": 0,
       "n_completion": 0,
+      "pct_extinction": 100.0,
       "qc_flags": [],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": null,
-      "pct_extinction_descriptive_not_probability": 100.0
+      "pct_note": "descriptive, not a probability",
+      "warning": null
+    },
+    {
+      "fuel": "methanol",
+      "o2_band": "0.15-0.18",
+      "pressure_atm_level": "0.7",
+      "suppressant": "he",
+      "n": 2,
+      "suppressant_fraction_min": 0.45,
+      "suppressant_fraction_max": 0.45,
+      "o2_fraction_min": 0.17,
+      "o2_fraction_max": 0.17,
+      "n_burning_rate": 2,
+      "avg_burning_rate_mm2_s": 0.645,
+      "n_extinction": 2,
+      "n_extinction_diameter": 2,
+      "avg_extinction_diameter_mm": 2.305,
+      "n_disruption": 0,
+      "n_completion": 0,
+      "pct_extinction": 100.0,
+      "qc_flags": [],
+      "source_doi": [
+        "10.60555/mbq8-0451"
+      ],
+      "pct_note": "descriptive, not a probability",
+      "warning": "n<5: unstable percentage; do not read it as a rate"
     },
     {
       "fuel": "methanol",
@@ -876,13 +876,13 @@
       "avg_extinction_diameter_mm": 2.866,
       "n_disruption": 0,
       "n_completion": 0,
+      "pct_extinction": 100.0,
       "qc_flags": [],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": null,
-      "pct_extinction_descriptive_not_probability": 100.0
+      "pct_note": "descriptive, not a probability",
+      "warning": null
     },
     {
       "fuel": "methanol",
@@ -901,40 +901,13 @@
       "avg_extinction_diameter_mm": 1.926,
       "n_disruption": 0,
       "n_completion": 0,
+      "pct_extinction": 100.0,
       "qc_flags": [],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": null,
-      "pct_extinction_descriptive_not_probability": 100.0
-    },
-    {
-      "fuel": "methanol",
-      "o2_band": "0.18-0.21",
-      "pressure_atm_level": "0.7",
-      "suppressant": "none",
-      "n": 3,
-      "suppressant_fraction_min": 0.0,
-      "suppressant_fraction_max": 0.0,
-      "o2_fraction_min": 0.2,
-      "o2_fraction_max": 0.2,
-      "n_burning_rate": 3,
-      "avg_burning_rate_mm2_s": 0.44,
-      "n_extinction": 2,
-      "n_extinction_diameter": 1,
-      "avg_extinction_diameter_mm": 1.67,
-      "n_disruption": 1,
-      "n_completion": 0,
-      "qc_flags": [
-        "extinction_diameter_dropped_outcome_not_extinction"
-      ],
-      "source_doi": [
-        "10.60555/mbq8-0451"
-      ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": "n<5: porcentaje inestable; no interpretar como tasa",
-      "pct_extinction_descriptive_not_probability": 66.7
+      "pct_note": "descriptive, not a probability",
+      "warning": null
     },
     {
       "fuel": "methanol",
@@ -953,13 +926,13 @@
       "avg_extinction_diameter_mm": 1.275,
       "n_disruption": 0,
       "n_completion": 1,
+      "pct_extinction": 92.9,
       "qc_flags": [],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": null,
-      "pct_extinction_descriptive_not_probability": 92.9
+      "pct_note": "descriptive, not a probability",
+      "warning": null
     },
     {
       "fuel": "methanol",
@@ -978,15 +951,15 @@
       "avg_extinction_diameter_mm": 1.363,
       "n_disruption": 0,
       "n_completion": 0,
+      "pct_extinction": 100.0,
       "qc_flags": [
         "burn_time_approx"
       ],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": null,
-      "pct_extinction_descriptive_not_probability": 100.0
+      "pct_note": "descriptive, not a probability",
+      "warning": null
     },
     {
       "fuel": "methanol",
@@ -1005,13 +978,40 @@
       "avg_extinction_diameter_mm": 1.695,
       "n_disruption": 0,
       "n_completion": 0,
+      "pct_extinction": 100.0,
       "qc_flags": [],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": "n<5: porcentaje inestable; no interpretar como tasa",
-      "pct_extinction_descriptive_not_probability": 100.0
+      "pct_note": "descriptive, not a probability",
+      "warning": "n<5: unstable percentage; do not read it as a rate"
+    },
+    {
+      "fuel": "methanol",
+      "o2_band": "0.18-0.21",
+      "pressure_atm_level": "0.7",
+      "suppressant": "none",
+      "n": 3,
+      "suppressant_fraction_min": 0.0,
+      "suppressant_fraction_max": 0.0,
+      "o2_fraction_min": 0.2,
+      "o2_fraction_max": 0.2,
+      "n_burning_rate": 3,
+      "avg_burning_rate_mm2_s": 0.44,
+      "n_extinction": 2,
+      "n_extinction_diameter": 1,
+      "avg_extinction_diameter_mm": 1.67,
+      "n_disruption": 1,
+      "n_completion": 0,
+      "pct_extinction": 66.7,
+      "qc_flags": [
+        "extinction_diameter_dropped_outcome_not_extinction"
+      ],
+      "source_doi": [
+        "10.60555/mbq8-0451"
+      ],
+      "pct_note": "descriptive, not a probability",
+      "warning": "n<5: unstable percentage; do not read it as a rate"
     },
     {
       "fuel": "methanol",
@@ -1030,15 +1030,15 @@
       "avg_extinction_diameter_mm": 1.68,
       "n_disruption": 0,
       "n_completion": 0,
+      "pct_extinction": 100.0,
       "qc_flags": [
         "pressure_zero_set_null"
       ],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": "n<5: porcentaje inestable; no interpretar como tasa",
-      "pct_extinction_descriptive_not_probability": 100.0
+      "pct_note": "descriptive, not a probability",
+      "warning": "n<5: unstable percentage; do not read it as a rate"
     },
     {
       "fuel": "methanol",
@@ -1057,15 +1057,15 @@
       "avg_extinction_diameter_mm": 1.667,
       "n_disruption": 3,
       "n_completion": 4,
+      "pct_extinction": 56.3,
       "qc_flags": [
         "extinction_diameter_dropped_outcome_not_extinction"
       ],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": null,
-      "pct_extinction_descriptive_not_probability": 56.3
+      "pct_note": "descriptive, not a probability",
+      "warning": null
     },
     {
       "fuel": "methanol",
@@ -1084,13 +1084,13 @@
       "avg_extinction_diameter_mm": 1.353,
       "n_disruption": 1,
       "n_completion": 0,
+      "pct_extinction": 80.0,
       "qc_flags": [],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": null,
-      "pct_extinction_descriptive_not_probability": 80.0
+      "pct_note": "descriptive, not a probability",
+      "warning": null
     },
     {
       "fuel": "methanol",
@@ -1109,15 +1109,15 @@
       "avg_extinction_diameter_mm": 1.435,
       "n_disruption": 1,
       "n_completion": 0,
+      "pct_extinction": 66.7,
       "qc_flags": [
         "extinction_diameter_dropped_outcome_not_extinction"
       ],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": "n<5: porcentaje inestable; no interpretar como tasa",
-      "pct_extinction_descriptive_not_probability": 66.7
+      "pct_note": "descriptive, not a probability",
+      "warning": "n<5: unstable percentage; do not read it as a rate"
     },
     {
       "fuel": "methanol",
@@ -1136,15 +1136,15 @@
       "avg_extinction_diameter_mm": 1.248,
       "n_disruption": 3,
       "n_completion": 0,
+      "pct_extinction": 75.0,
       "qc_flags": [
         "extinction_diameter_dropped_outcome_not_extinction"
       ],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": null,
-      "pct_extinction_descriptive_not_probability": 75.0
+      "pct_note": "descriptive, not a probability",
+      "warning": null
     },
     {
       "fuel": "methanol",
@@ -1163,13 +1163,13 @@
       "avg_extinction_diameter_mm": null,
       "n_disruption": 1,
       "n_completion": 0,
+      "pct_extinction": 0.0,
       "qc_flags": [],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": "n<5: porcentaje inestable; no interpretar como tasa",
-      "pct_extinction_descriptive_not_probability": 0.0
+      "pct_note": "descriptive, not a probability",
+      "warning": "n<5: unstable percentage; do not read it as a rate"
     },
     {
       "fuel": "methanol",
@@ -1188,13 +1188,13 @@
       "avg_extinction_diameter_mm": 1.0,
       "n_disruption": 0,
       "n_completion": 0,
+      "pct_extinction": 100.0,
       "qc_flags": [],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": "n<5: porcentaje inestable; no interpretar como tasa",
-      "pct_extinction_descriptive_not_probability": 100.0
+      "pct_note": "descriptive, not a probability",
+      "warning": "n<5: unstable percentage; do not read it as a rate"
     },
     {
       "fuel": "methanol",
@@ -1213,13 +1213,13 @@
       "avg_extinction_diameter_mm": null,
       "n_disruption": 0,
       "n_completion": 0,
+      "pct_extinction": 100.0,
       "qc_flags": [],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": "n<5: porcentaje inestable; no interpretar como tasa",
-      "pct_extinction_descriptive_not_probability": 100.0
+      "pct_note": "descriptive, not a probability",
+      "warning": "n<5: unstable percentage; do not read it as a rate"
     },
     {
       "fuel": "methanol",
@@ -1238,13 +1238,13 @@
       "avg_extinction_diameter_mm": 1.35,
       "n_disruption": 4,
       "n_completion": 0,
+      "pct_extinction": 33.3,
       "qc_flags": [],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": null,
-      "pct_extinction_descriptive_not_probability": 33.3
+      "pct_note": "descriptive, not a probability",
+      "warning": null
     },
     {
       "fuel": "methanol",
@@ -1263,15 +1263,15 @@
       "avg_extinction_diameter_mm": 1.03,
       "n_disruption": 1,
       "n_completion": 0,
+      "pct_extinction": 50.0,
       "qc_flags": [
         "extinction_diameter_dropped_outcome_not_extinction"
       ],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": "n<5: porcentaje inestable; no interpretar como tasa",
-      "pct_extinction_descriptive_not_probability": 50.0
+      "pct_note": "descriptive, not a probability",
+      "warning": "n<5: unstable percentage; do not read it as a rate"
     },
     {
       "fuel": "methanol",
@@ -1290,15 +1290,15 @@
       "avg_extinction_diameter_mm": null,
       "n_disruption": 7,
       "n_completion": 2,
+      "pct_extinction": 0.0,
       "qc_flags": [
         "extinction_diameter_dropped_outcome_not_extinction"
       ],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": null,
-      "pct_extinction_descriptive_not_probability": 0.0
+      "pct_note": "descriptive, not a probability",
+      "warning": null
     },
     {
       "fuel": "methanol",
@@ -1317,13 +1317,13 @@
       "avg_extinction_diameter_mm": 1.165,
       "n_disruption": 1,
       "n_completion": 1,
+      "pct_extinction": 50.0,
       "qc_flags": [],
       "source_doi": [
         "10.60555/mbq8-0451"
       ],
-      "pct_note": "descriptivo, no probabilidad",
-      "warning": "n<5: porcentaje inestable; no interpretar como tasa",
-      "pct_extinction_descriptive_not_probability": 50.0
+      "pct_note": "descriptive, not a probability",
+      "warning": "n<5: unstable percentage; do not read it as a rate"
     }
   ]
 }

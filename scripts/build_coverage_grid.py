@@ -11,9 +11,7 @@ import psi_queries as q  # noqa: E402
 OUT = "data/processed/coverage_grid.json"
 
 con = q.connect()
-cells = q.flex_coverage_grid(con)
-for c in cells:  # renombrar al campo explícito que pidió el equipo
-    c["pct_extinction_descriptive_not_probability"] = c.pop("pct_extinction")
+cells = q.flex_coverage_grid(con)  # mismos nombres de campo que devuelve la API (docs/07-api-contract.md)
 
 doc = {
     "description": "FLEX (NASA PSI PSI-69): cobertura de pruebas por combustible × banda de O2 × presión × supresor",
@@ -22,8 +20,8 @@ doc = {
     "generated_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
     "generated_by": "scripts/build_coverage_grid.py (src/psi_queries.py:flex_coverage_grid)",
     "pct_extinction_note": (
-        "descriptivo, no probabilidad: FLEX eligió condiciones iterativamente para acercarse al límite de "
-        "extinción (FLEX Test Plan, PDF p.4). El porcentaje describe las pruebas hechas, no un riesgo."),
+        f"{q.PCT_NOTE}: FLEX chose test conditions iteratively to approach the extinction limit "
+        "(FLEX Test Plan, PDF p.4). The percentage describes the tests performed, not a risk."),
     "min_n_for_stable_pct": q.MIN_N,
     "dimensions": {
         "fuel": ["heptane", "methanol"],
@@ -35,7 +33,7 @@ doc = {
         "n": "pruebas en la celda",
         "avg_burning_rate_mm2_s": "media de K (ley d²) en mm²/s sobre n_burning_rate pruebas con K",
         "avg_extinction_diameter_mm": "media del diámetro de extinción solo en pruebas con outcome = extinction (n_extinction_diameter)",
-        "pct_extinction_descriptive_not_probability": "100 × n_extinction / n",
+        "pct_extinction": "100 × n_extinction / n; siempre con pct_note (descriptivo, no probabilidad)",
         "warning": f"presente si n < {q.MIN_N}",
         "qc_flags": "flags de calidad presentes en la celda (ver docs/data-dictionary.md)",
     },
