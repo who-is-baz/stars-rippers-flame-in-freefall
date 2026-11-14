@@ -62,6 +62,6 @@ python scripts/fetch_psi.py --verify-only  # solo verifica lo que ya tienes
 
 ## 6. Flujo de trabajo
 1. Lee `CLAUDE.md`, `docs/03-analisis-datos.md`, `docs/07-api-contract.md`, `docs/data-dictionary.md` y **tu archivo en `docs/tareas/`**.
-2. Rama por tarea: `git switch -c feat/<rol>-<tema>`.
+2. Rama por issue: `git switch -c feat/<nombre>-<tema>` (p. ej. `feat/fer-material-mapping`); el PR lleva `Closes #N`.
 3. Commits pequeños; PR con la plantilla y revisión de otra persona. Nada de force push a `main`.
 4. Todo uso de IA se anota en `docs/AI_USAGE_LOG.md`. Nunca subas secretos (`.env` está ignorado).
