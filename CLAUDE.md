@@ -30,5 +30,5 @@ Python 3.12 + FastAPI · React + TypeScript (Vite) · SQLite · LLM local vía O
 Complementa las reglas 3 y 4; no las repite.
 - `data/reference/` (Science Documents) también es local: no se modifica ni se sube.
 - `data/processed/*.csv` y `coverage_grid.json` sí se versionan. `psi.sqlite` **no**: se regenera con `python scripts/build_experiments.py` a partir de los CSV (sin red ni `data/raw/`). Ver `docs/SETUP.md`.
-- `docs/material_mapping_proposal.csv` es una propuesta **no aplicada** hasta que Fer la apruebe.
+- El mapeo de materiales aprobado por Fer (#3) está en `docs/material_mapping.csv` y lo aplica `scripts/build_processed.py`; `docs/material_mapping_proposal.csv` queda como historial de la propuesta.
 - Cuando haya red autorizada, deja ≥1.1 s entre peticiones a psi.nasa.gov (`scripts/psi_client.py`).

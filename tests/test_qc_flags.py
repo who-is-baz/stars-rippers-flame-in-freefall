@@ -65,6 +65,23 @@ def test_queries_warn_when_low_confidence_rows_are_included():
         assert bool(r.get("low_confidence_warning")) == has_flag
 
 
+def test_material_mapping_applied_to_all_bass2_rows():
+    """Mapeo aprobado por Fer en el issue #3: las 129 pruebas tienen categoría y se conservan sus marcas."""
+    bass = _rows("bass2_tests.csv")
+    exp = [r for r in _rows("experiments.csv") if r["program"] == "BASS-II"]
+    assert len(bass) == len(exp) == 129
+    assert all(r["material_category"] for r in bass + exp)
+    assert {r["test_id"]: r["material_category"] for r in bass} == {r["test_id"]: r["material_category"] for r in exp}
+    assert not _with(exp, "material_category_pending_review")
+    assert _with(bass, "material_assumed_from_readme") == {"B3", "B5", "B7", "B12", "B13", "T3", "T7"}
+    assert _with(bass, "material_text_typo") == {"M5", "M19"}
+    by_id = {r["test_id"]: r for r in bass}
+    assert by_id["T23"]["material_category"] == by_id["T24"]["material_category"] == "cotton_fiberglass_fabric"
+    assert by_id["P14"]["color"] == "black"
+    assert by_id["M5"]["width_cm"] == by_id["M19"]["width_cm"] == "2.0"
+    assert all(r["color"] in ("clear", "black") for r in bass if r["material_category"] == "pmma_rod")
+
+
 if __name__ == "__main__":  # runner mínimo si pytest no está instalado
     failed = 0
     for name, fn in sorted(globals().items()):

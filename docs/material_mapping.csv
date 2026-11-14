@@ -1,0 +1,50 @@
+material_raw,material_category,thickness_mm,width_cm,rod_diameter_in,color,burn_sides,material_flag,test_ids
+Nomex natural (nomex III),aramid_fabric,,,,,,,"F1,F2,F3"
+1 cm SIBAL,cotton_fiberglass_fabric,,1.0,,,,,"T19,T20,T21,T22,T27,T28a,T28b,T29"
+1 cm SIBAL top side ign,cotton_fiberglass_fabric,,1.0,,,,,T24
+2 cm SIBAL,cotton_fiberglass_fabric,,2.0,,,,,"T1,T2,T4,T5,T6,T9,T10,T11,T12,T13,T14,T15,T16,T17,T18,T25,T26"
+2 cm Sibal moved igniter,cotton_fiberglass_fabric,,2.0,,,,,T23
+"0.5"" black rod",pmma_rod,,,0.5,black,,,"P5,P9,P13a,P13b"
+"1/2"" clear PMMA rod",pmma_rod,,,0.5,clear,,,"O5a,O5b,O13a,O13b"
+"1/2"" clear rod",pmma_rod,,,0.5,clear,,,O22
+1/4 blac rod,pmma_rod,,,0.25,black,,,P14
+1/4 black rod,pmma_rod,,,0.25,black,,,"P15,P21a"
+1/4 clear rod,pmma_rod,,,0.25,clear,,,P3b
+"1/4"" black rod",pmma_rod,,,0.25,black,,,"O11,O14,P1,P2,P6,P10,P16,P17,P18,P19,P20,P21b"
+"1/4"" clear rod",pmma_rod,,,0.25,clear,,,"O1,O2,O3a,O3b,O6,O7,O8a,O8b,O9,O10,O17,O18,O19,O20,P3a"
+"3/8"" black rod",pmma_rod,,,0.375,black,,,"P4,P8,P12,P22a,P22b,P23,P24"
+"3/8"" clear rod",pmma_rod,,,0.375,clear,,,"O12,O15a,O15b,O21,P25"
+"3/8""clear rod",pmma_rod,,,0.375,clear,,,"O4,O16"
+4 cm spherical section,pmma_sphere,,,,,,material_assumed_from_readme,"T3,T7"
+1 cm wide PMMA 1 mm thick,pmma_thick_sheet,1.0,1.0,,,,,M7
+1 cm wide PMMA 2 mm thick,pmma_thick_sheet,2.0,1.0,,,,,M8
+1 cm wide PMMA 3 mm thick,pmma_thick_sheet,3.0,1.0,,,,,M9
+1 cm wide PMMA 5 mm thick,pmma_thick_sheet,5.0,1.0,,,,,M11
+1 mm thick PMMA 1 sided 2 cm,pmma_thick_sheet,1.0,2.0,,,1,,M1
+1 mm thick PMMA 2 cm wide,pmma_thick_sheet,1.0,2.0,,,,,"M6,M16"
+2 cm 4 mm 1 sided PMMA slab,pmma_thick_sheet,4.0,2.0,,,1,,M15
+2 cm wide 5 mm thick 1 sided PMMA,pmma_thick_sheet,5.0,2.0,,,1,,M3
+2 cm wide PMMA 2 mm thick,pmma_thick_sheet,2.0,2.0,,,,,M17
+2 cm wide PMMA 3 mm thick,pmma_thick_sheet,3.0,2.0,,,,,M18
+2 mm thick PMMA 2 cm wide,pmma_thick_sheet,2.0,2.0,,,,,M12
+2mm thick PMMA 1 sided 2 cm wide,pmma_thick_sheet,2.0,2.0,,,1,,M14
+3 mm thick PMMA 1 sided 2 cm wide,pmma_thick_sheet,3.0,2.0,,,1,,M2
+3 mm thick PMMA 2 sided 2 cm thick,pmma_thick_sheet,3.0,2.0,,,2,material_text_typo,M5
+4 mm thick 1 cm wide PMMA slab,pmma_thick_sheet,4.0,1.0,,,,,M10
+4 mm thick 2 cm 2ide PMMA slab,pmma_thick_sheet,4.0,2.0,,,,material_text_typo,M19
+4 mm thick PMMA 2 cm wide,pmma_thick_sheet,4.0,2.0,,,,,M13
+5 mm thick PMMA 2 cm wide,pmma_thick_sheet,5.0,2.0,,,,,"M4,M20"
+1 cm 0.2 mm PMMA film,pmma_thin_film,0.2,1.0,,,,,B10
+1 cm wide 200 micron thick PMMA,pmma_thin_film,0.2,1.0,,,,,"B14,B17,B18,B21,B22"
+100 micron PMMA film 2 cm wide,pmma_thin_film,0.1,2.0,,,,,B1
+100 micron film 2 cm wide,pmma_thin_film,0.1,2.0,,,,material_assumed_from_readme,B3
+2 cm 0.1 mm PMMA film,pmma_thin_film,0.1,2.0,,,,,"B6,B9,B15"
+2 cm 0.2 mm PMMA film,pmma_thin_film,0.2,2.0,,,,,"B8,B11"
+2 cm 0.4 mm thick film,pmma_thin_film,0.4,2.0,,,,material_assumed_from_readme,B13
+2 cm 100 micron thick PMMA,pmma_thin_film,0.1,2.0,,,,,"B16,B19,B20"
+200 micron 2 cm wide,pmma_thin_film,0.2,2.0,,,,material_assumed_from_readme,B5
+200 micron PMMA film 2 cm wide,pmma_thin_film,0.2,2.0,,,,,B2
+300 micron PMMA film 2 cm wide,pmma_thin_film,0.3,2.0,,,,,B4
+300 micron film 2 cm wide,pmma_thin_film,0.3,2.0,,,,material_assumed_from_readme,B12
+400 micron film 2 cm wide,pmma_thin_film,0.4,2.0,,,,material_assumed_from_readme,B7
+Japan Wax candle,wax_candle,,,,,,,F4
