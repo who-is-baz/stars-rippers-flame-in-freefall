@@ -13,8 +13,7 @@
 5. QA: lista de 10 preguntas de prueba para `/ask` (con 3 trampas sin respaldo) y verifica citas.
 
 ## Domingo
-6. Grabación del demo (video ≤30 s con subtítulos en inglés, o ≤7 diapositivas; enlace público).
-7. Lista de verificación final de `docs/05-entrega-draft-en.md`.
+- La grabación del demo y la lista de verificación final pasaron a Baz (`docs/tareas/baz-lider.md`, issue #17). Apoya con el enlace público.
 
 ## Listo cuando
 Cualquiera del equipo levanta el proyecto en 10 min, la tabla del benchmark existe y el enlace público abre en incógnito.
