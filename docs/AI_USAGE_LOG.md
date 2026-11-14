@@ -204,3 +204,20 @@ sin push ni PR.
 Notas: sin peticiones de red (ni PyPI: se usó el Anaconda local, Python 3.14 + pandas 3.0.3, en lugar del venv con pandas 2.1.4).
 `data/raw/` no existe en este disco: la comparación del PDF con la tabla cruda queda pendiente (comando en el informe, sección 4).
 `build_experiments.py` se ejecutó y dejó `git status` limpio. Commits con "AI-assisted: yes".
+
+## 2026-11-14 (9) — Resumen del equipo y escenario Marte (Baz, "Juntar y decidir") — Claude Code (Opus 5.5)
+
+**Pedido (Baz, ejecutado en la PC de Yael):** rama `feat/baz-resumen-equipo`; tablas para el grupo, verificación de fuentes NASA
+para Marte (red acotada a 3 URL de ntrs.nasa.gov), resumen único y brief; sin push ni PR.
+
+| fecha | persona | herramienta/modelo | qué se generó | archivos | cómo se revisó |
+|---|---|---|---|---|---|
+| 2026-11-14 | Baz (vía Yael) | Claude Code (Opus 5.5) | Script de resumen que reutiliza el de Yael, y 7 tests | `scripts/analysis_resumen_equipo.py`, `tests/test_resumen_equipo.py` | 49/52 verificaciones coinciden; las 3 que no son errores conocidos de Fer. 28/28 tests OK. **Pendiente revisión humana** |
+| 2026-11-14 | Baz (vía Yael) | Claude Code (Opus 5.5) | Tablas T1–T5 (CSV y `tablas.txt`) | `docs/analisis/resumen-equipo/*.csv`, `tablas.txt` | Generadas por el script; suma FLEX = 274; BASS-II 26 + 103 = 129 |
+| 2026-11-14 | Baz (vía Yael) | Claude Code (Opus 5.5) + subagentes web-fetch | Verificación de NTRS 20230009095, 20170001585 y 20220015741 | `docs/analisis/resumen-equipo/escenario_marte.md` | Texto de los 2 PDF extraído localmente con zlib (script en el scratchpad, fuera del repo), con número de página; ficha 20220015741 leída por un subagente. Citas ≤15 palabras |
+| 2026-11-14 | Baz (vía Yael) | Claude Code (Opus 5.5) | Resumen, brief de reunión, decisiones propuestas (con bloque EN) | `resumen.md`, `brief-reunion.md`, `decisiones_propuestas.md` | Cifras tomadas de los CSV del script. `docs/DECISIONES.md` no se editó |
+
+Notas: red usada solo para `git fetch --all` (GitHub) y las 3 URL de NTRS autorizadas; nada contra psi.nasa.gov ni PyPI.
+Corrección: la definición lunar (≥30 % / ≤10.2 psi) y el traje 100 % O₂ / 4.3 psi **sí tienen fuente**: el texto oficial del reto
+(`docs/08`). La entrada (8) y el informe de Yael los daban por "sin fuente"; no se reescribieron. La rama está apilada sobre
+`feat/yael-rangos-o2-presion`. Commits con "AI-assisted: yes".
