@@ -204,8 +204,9 @@ def build_bass2():
     flags = add_flag(flags, df["co_initial_ppm"] < 0, "co_initial_negative")
     # Extracciones de IA ambiguas: baja confianza hasta que Fer las apruebe (docs/tareas/fer-datos.md).
     flags = add_flag(flags, df["test_id"].isin(AI_LOW_CONFIDENCE) & df["ai_outcome"].notna(), "low_confidence")
-    # Marcas del mapeo que Fer pidió conservar (#3): material asumido por el ReadMe / typo en el texto.
-    for name in ("material_assumed_from_readme", "material_text_typo"):
+    # Marcas del mapeo que Fer pidió conservar (#3): material asumido por el ReadMe / typo en el texto /
+    # valor corregido por Fer (fer_corrected: P14 "blac" -> black; el texto original no se toca).
+    for name in ("material_assumed_from_readme", "material_text_typo", "fer_corrected"):
         flags = add_flag(flags, df["material_flag"].eq(name), name)
     df = df.drop(columns="material_flag")
     df["qc_flags"] = flags

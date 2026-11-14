@@ -7,7 +7,7 @@ Nomex natural (nomex III),aramid_fabric,,,,,,,"F1,F2,F3"
 "0.5"" black rod",pmma_rod,,,0.5,black,,,"P5,P9,P13a,P13b"
 "1/2"" clear PMMA rod",pmma_rod,,,0.5,clear,,,"O5a,O5b,O13a,O13b"
 "1/2"" clear rod",pmma_rod,,,0.5,clear,,,O22
-1/4 blac rod,pmma_rod,,,0.25,black,,,P14
+1/4 blac rod,pmma_rod,,,0.25,black,,fer_corrected,P14
 1/4 black rod,pmma_rod,,,0.25,black,,,"P15,P21a"
 1/4 clear rod,pmma_rod,,,0.25,clear,,,P3b
 "1/4"" black rod",pmma_rod,,,0.25,black,,,"O11,O14,P1,P2,P6,P10,P16,P17,P18,P19,P20,P21b"

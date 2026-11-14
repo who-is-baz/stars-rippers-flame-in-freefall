@@ -359,7 +359,7 @@ BASS-II,P10,2014-07-03,"1/4"" black rod",pmma_rod,0.17,,0.0029,,extinction,ai_ex
 BASS-II,P12,2014-07-29,"3/8"" black rod",pmma_rod,0.175,,0.0029,,,not_stated,,,,10.60555/4qc4-de67
 BASS-II,P13a,2014-07-14,"0.5"" black rod",pmma_rod,0.207,,0.0036,,extinction,ai_extracted,,,low_confidence,10.60555/4qc4-de67
 BASS-II,P13b,2014-07-14,"0.5"" black rod",pmma_rod,0.206,,0.0041,,extinction,ai_extracted,,,,10.60555/4qc4-de67
-BASS-II,P14,2014-06-23,1/4 blac rod,pmma_rod,0.184,,0.0034,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,P14,2014-06-23,1/4 blac rod,pmma_rod,0.184,,0.0034,,,not_stated,,,fer_corrected,10.60555/4qc4-de67
 BASS-II,P15,2014-06-23,1/4 black rod,pmma_rod,0.18,,0.0062,,,not_stated,,,,10.60555/4qc4-de67
 BASS-II,P16,2014-07-22,"1/4"" black rod",pmma_rod,0.182,,0.003,,,not_stated,,,,10.60555/4qc4-de67
 BASS-II,P17,2014-07-29,"1/4"" black rod",pmma_rod,0.168,,0.0095,,,not_stated,,,,10.60555/4qc4-de67

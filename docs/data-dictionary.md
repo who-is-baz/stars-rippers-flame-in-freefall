@@ -71,7 +71,7 @@ Las definiciones de columnas vienen del **BASS-II ReadMe** (`PSI-25_Science Docu
 | `thickness_mm` | float | mm | Espesor de películas y láminas. Película ≤0.4 mm, lámina ≥1 mm (no hay valores intermedios). |
 | `width_cm` | float | cm | Ancho de la muestra plana o de la tela. M5 y M19 = 2 cm (errores de escritura en el texto). |
 | `rod_diameter_in` | float | pulgadas | Diámetro de las varillas (0.25, 0.375, 0.5). |
-| `color` | str | — | `clear` \| `black` (solo varillas). **No promediar varillas de distinto color juntas**: el PMMA negro absorbe radiación distinto (Fer, #3). P14 "blac" = black. |
+| `color` | str | — | `clear` \| `black` (solo varillas). **No promediar varillas de distinto color juntas**: el PMMA negro absorbe radiación distinto (Fer, #3). P14 "blac" = black (corregido por Fer; flag `fer_corrected`). |
 | `burn_sides` | int | — | 1 o 2 caras. **Vacío = no especificado**, no "2 caras" (Fer, #3). |
 | `flow_restrictor` | int | — | 0 = flujo máximo / menor restricción, 2 = flujo mínimo (ReadMe). |
 | `radiometer_gain_raw` | str | — | Ganancia **sin calibrar** (ReadMe). Valores tipo `250>50` = cambio durante la prueba. |
@@ -114,6 +114,7 @@ Claude (Opus 5.5) leyó las 129 notas una por una el 2026-11-14. Las reglas est�
 | `co_initial_negative` | B4, B21, B22, M10, O1, O2, O5a, O20, T25, T26, T27, T28a, T29 (13) | CO inicial −1 a −3 ppm (probable offset del sensor). Se conserva el valor. |
 | `material_assumed_from_readme` | B3, B5, B7, B12, B13, T3, T7 | El texto no dice "PMMA"; se asume por el ReadMe y el PI. Aprobado por Fer (#3), que pidió conservar la marca. |
 | `material_text_typo` | M5, M19 | El texto tiene un error de escritura ("2 cm thick", "2ide"); el ancho se tomó como 2 cm. Aprobado por Fer (#3), con la marca. |
+| `fer_corrected` | P14 | Fer corrigió un valor derivado del texto: "1/4 blac rod" → `color` = black. El texto original (`material_raw`) no se modifica. Toda corrección de este tipo debe llevar la marca (test `test_fer_corrected_marks_every_corrected_value`). |
 | `low_confidence` | P5, P13a, O6 | Extracción de IA ambigua (P5/P13a: pot 0 al extinguirse; O6: "out .275" sin "ext"). Pendiente de Fer; `src/psi_queries.py` añade `low_confidence_warning` a toda fila agregada que las incluya. |
 
 La tabla de BASS-II **no tiene columna de presión**: las pruebas se hicieron en la Microgravity Science Glovebox a presión de cabina.
