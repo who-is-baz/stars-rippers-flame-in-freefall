@@ -104,6 +104,9 @@ Claude (Opus 5.5) leyó las 129 notas una por una el 2026-11-14. Las reglas est�
 | `o2_final_implausibly_high` (> 30 %) | P22b (39.1), T28b (40.4) | Ídem. Los pares a/b sugieren valores corridos entre columnas. |
 | `date_year_inconsistent_with_gmt` | T9, T18 | La fecha dice 2018 pero el GMT 175 coincide con el 2014-06-24. Probable error de año. |
 | `co_over_range_gt_1000ppm` | O4, O12, O13b | CO "OR"/"over" (>1000 ppm). |
+| `co_final_censored` | M5 | CO final ">500" en el original: es una cota inferior. `co_final_ppm` queda null; no se imputa. |
+| `co_initial_negative` | B4, B21, B22, M10, O1, O2, O5a, O20, T25, T26, T27, T28a, T29 (13) | CO inicial −1 a −3 ppm (probable offset del sensor). Se conserva el valor. |
+| `low_confidence` | P5, P13a, O6 | Extracción de IA ambigua (P5/P13a: pot 0 al extinguirse; O6: "out .275" sin "ext"). Pendiente de Fer; `src/psi_queries.py` añade `low_confidence_warning` a toda fila agregada que las incluya. |
 
 La tabla de BASS-II **no tiene columna de presión**: las pruebas se hicieron en la Microgravity Science Glovebox a presión de cabina.
 

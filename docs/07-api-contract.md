@@ -6,6 +6,7 @@ Base: `/api`. FastAPI + Pydantic genera el OpenAPI. Mientras el backend no esté
 - Incluyen `sources` (DOIs) y `limitations` (lista corta de textos).
 - Nunca se imputan nulos.
 - Todo porcentaje trae `pct_note: "descriptive, not a probability"`; si `n < 5` trae `warning`.
+- Si una fila incluye extracciones de IA con el flag `low_confidence` (BASS-II P5, P13a, O6), trae `low_confidence_warning`: la UI lo muestra visible y el asistente lo menciona en su respuesta.
 - La UI y las respuestas están en **inglés** (la entrega es en inglés).
 
 ## Endpoints

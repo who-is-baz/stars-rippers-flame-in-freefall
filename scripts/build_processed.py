@@ -14,6 +14,9 @@ FLEX_CSV = f"{RAW}/FLEX/PSI-69_Experimental table_FLEX.csv"
 BASS_CSV = f"{RAW}/BASS-II/PSI-25_Experimental table_BASS-II.csv"
 BASS_XLSX = f"{RAW}/BASS-II/PSI-25_Science Documents_BASS-II_Test.Matrices.xlsx"
 MMHG_PER_ATM = 760.0
+# BASS-II: extracciones de IA con texto ambiguo (P5, P13a: pot 0 al extinguirse; O6: "out" sin "ext").
+# Se marcan `low_confidence` hasta que Fer las revise; quitarlas de aquí cuando las apruebe.
+AI_LOW_CONFIDENCE = {"P5", "P13a", "O6"}
 
 
 def num(s):
@@ -183,6 +186,13 @@ def build_bass2():
     flags = add_flag(flags, df["test_date"].map(lambda d: d is not None and not pd.isna(d) and d.year not in (2014, 2016)),
                      "date_year_inconsistent_with_gmt")
     flags = add_flag(flags, df["co_initial_over_range"] | df["co_final_over_range"], "co_over_range_gt_1000ppm")
+    # Solo se marca; los valores no cambian (verificación del 14 nov):
+    # - CO final censurado: texto ">N" en el original (M5: ">500") queda null en co_final_ppm.
+    # - CO inicial negativo (−1 a −3 ppm, probable offset del sensor): se conserva tal cual.
+    flags = add_flag(flags, co_f.str.strip().str.startswith(">"), "co_final_censored")
+    flags = add_flag(flags, df["co_initial_ppm"] < 0, "co_initial_negative")
+    # Extracciones de IA ambiguas: baja confianza hasta que Fer las apruebe (docs/tareas/fer-datos.md).
+    flags = add_flag(flags, df["test_id"].isin(AI_LOW_CONFIDENCE) & df["ai_outcome"].notna(), "low_confidence")
     df["qc_flags"] = flags
     df["source_file"] = os.path.basename(BASS_CSV) + " + " + os.path.basename(BASS_XLSX) + ":" + m["tm_sheet"]
     return df
