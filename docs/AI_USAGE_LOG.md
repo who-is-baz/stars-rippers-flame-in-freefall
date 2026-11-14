@@ -205,6 +205,23 @@ Fer. Rama `feat/baz-mapeo-materiales`, un PR sin unir; sin red salvo `gh`/git; s
 4. Tests: `test_psi_queries.py` y `test_qc_flags.py` OK (incluye el test nuevo del mapeo), sin pytest.
 5. Commits con "AI-assisted: yes", sin trailer `Co-Authored-By`. Peticiones de red: solo GitHub (gh/git).
 
+## 2026-11-14 (9) — Alinear el contrato de la API con el código (#7) — Claude Code (Opus 5.5)
+
+**Pedido (Baz):** rama `fix/alinear-contrato` desde main, un PR sin unir. Claude alinea el contrato; Yael y Charly
+solo revisan y firman #7. Sin red salvo `gh`/git; sin tocar `data/raw/`.
+
+1. `docs/07-api-contract.md` reescrito: los nombres del código/CSV son el estándar; tabla endpoint → función
+   (Q1–Q6 en `/queries/<clave de ALL_QUERIES>`); `/ranking`, `/compare` y `/gaps` PROVISIONAL (no tienen función).
+2. Decisión: `outcome`, `limit` (1–500) y `offset` se mantienen y se implementan en la función nueva
+   `list_experiments`; también se agregó `meta` para `/meta` (regla 4: sin SQL fuera de `src/psi_queries.py`).
+3. Mensajes en inglés (`PCT_NOTE`, `SMALL_N_WARNING`, `LOW_CONFIDENCE_WARNING`); banda `0.12-0.15` → `<0.15`.
+   Efecto colateral detectado y corregido: `<0.15` quedaba al final al ordenar por etiqueta; ahora Q6 y el grid ordenan
+   por valor de O₂.
+4. `coverage_grid.json` regenerado: `pct_extinction_descriptive_not_probability` → `pct_extinction`; valores
+   idénticos celda por celda. `experiments.csv` regenerado sin cambios.
+5. Tests: `test_psi_queries.py` 12/12 (3 nuevos) y `test_qc_flags.py` OK, sin pytest.
+6. Commits con "AI-assisted: yes", sin trailer `Co-Authored-By`. Peticiones de red: solo GitHub (gh/git).
+
 ## 2026-11-14 (11) — Marca fer_corrected en P14 (corrección pedida por Fer en #28) — Claude Code (Opus 5.5)
 
 **Pedido (Baz, por encargo de Fer):** en `feat/baz-mapeo-materiales` (#28), marcar la corrección de P14 antes de que Fer

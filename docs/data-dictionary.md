@@ -212,11 +212,15 @@ Generada por `scripts/build_experiments.py`. SQLite: tabla `experiments`, vistas
 - `src/psi_queries.py`: las 6 consultas como funciones parametrizadas (`program`, `fuel`/`material`, `o2_range`,
   `pressure_range`, `suppressant` ∈ {any, none, co2, he}). Solo usa sqlite3 de la stdlib y abre la base en solo
   lectura. Cada fila trae `n`, `qc_flags` (lista) y `source_doi` (lista). Toda fila con `pct_*` trae
-  `pct_note = "descriptivo, no probabilidad"` y, si `n < 5`, un `warning` obligatorio.
+  `pct_note = "descriptive, not a probability"` y `warning` (`null`, o un texto obligatorio si `n < 5`). Los textos
+  van en inglés porque llegan a la UI. Además: `list_experiments` (filas con filtros, `outcome`, `limit`, `offset`)
+  y `meta` (valores válidos y rangos), para `/experiments` y `/meta`. Cada endpoint y su función están en `docs/07-api-contract.md`.
 - Q6 (BASS-II) **no** reporta % de extinción; solo conteos y `pct_outcome_stated`, porque el resultado es incompleto.
-- Bandas de O₂ (fracción): [0, 0.15), [0.15, 0.18), [0.18, 0.21), [0.21, 0.24), [0.24, 1]. 0.21 (aire) abre la 4.ª banda.
+- Bandas de O₂ (fracción): `<0.15` = [0, 0.15), `0.15-0.18`, `0.18-0.21`, `0.21-0.24`, `>=0.24` = [0.24, 1]. 0.21 (aire)
+  abre la 4.ª banda. Las filas se ordenan por valor de O₂, no por la etiqueta.
 - `data/processed/coverage_grid.json` (`scripts/build_coverage_grid.py`): FLEX por combustible × banda de O₂ ×
-  presión (0.1 atm; `unknown` = nula) × supresor (none/co2/he). Campos: n, K medio, diámetro de extinción medio (solo
-  extinction), `pct_extinction_descriptive_not_probability`, rangos de O₂ y supresor, conteos por resultado,
-  flags, DOI. 49 celdas, **25 con n<5**.
+  presión (`pressure_atm_level`: 0.1 atm, o `unknown` = nula) × supresor (none/co2/he). Las celdas usan los mismos
+  nombres que `flex_coverage_grid()` y la API: `n`, `avg_burning_rate_mm2_s`, `avg_extinction_diameter_mm` (solo
+  extinction), `pct_extinction` + `pct_note`, rangos de O₂ y supresor, conteos por resultado, `qc_flags`, `source_doi`.
+  49 celdas, **25 con n<5**.
 - Tests: `tests/test_psi_queries.py` (con pytest, o `python3 tests/test_psi_queries.py` si pytest no está instalado).
