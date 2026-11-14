@@ -187,3 +187,20 @@ Peticiones de red en esta sesión: solo GitHub (gh/git). Ninguna a psi.nasa.gov.
    después Claude Code la contrastó con el texto en PMC5760683. Baz no la verificó personalmente.
    Cita añadida a la guía en un commit aparte con la advertencia "un solo material (PMMA); no generalizar".
 5. `docs/tareas/`: la grabación del demo y la checklist final pasaron de `jovanny-infra.md` a `baz-lider.md` (#17).
+
+## 2026-11-14 (8) — Rangos de O₂ y presión en FLEX y conciliación (Yael) — Claude Code (Opus 5.5)
+
+**Pedido (Yael):** rama `feat/yael-rangos-o2-presion`; conteos FLEX por banda de O₂ × presión, escenarios, conciliar las cifras de
+Fer, Charly y el PDF de materiales; sin red, sin tocar `data/raw/`, `psi_queries.py`, `coverage_grid.json` ni `experiments.csv`;
+sin push ni PR.
+
+| fecha | persona | herramienta/modelo | qué se generó | archivos | cómo se revisó |
+|---|---|---|---|---|---|
+| 2026-11-14 | Yael | Claude Code (Opus 5.5) | Script de análisis (solo lectura de `experiments.csv`) y 8 tests | `scripts/analysis_rangos_o2_presion.py`, `tests/test_analysis_rangos.py` | Reproduce celda a celda la tabla 3.1 de Yael, los 49/29/56 de Fer y las 8 filas de Charly; 21/21 tests OK. **Pendiente revisión humana** |
+| 2026-11-14 | Yael | Claude Code (Opus 5.5) | CSV de conteos, escenarios, conciliación y verificación del PDF | `docs/analisis/rangos-o2-presion/*.csv` | Generados por el script (reproducibles); bloque de verificación suma = 274 |
+| 2026-11-14 | Yael | Claude Code (Opus 5.5) | Parche de bandas B **no aplicado** | `docs/analisis/rangos-o2-presion/patch_propuesto.diff` | Probado solo en una copia temporal fuera del repo (`git apply` limpio, 21/21 tests, grid 49 celdas / 25 n<5) |
+| 2026-11-14 | Yael | Claude Code (Opus 5.5) | Informe (ES + párrafo EN), mensaje "YAEL v2" | `docs/analisis/rangos-o2-presion/informe.md`, `mensaje_grupo.md` | Cifras tomadas de los CSV del script. **Los valores NASA (8.2 psi/34 %, 10.2 psi/26.5 %, 4.3 psi) no se verificaron**: marcados "verificar" |
+
+Notas: sin peticiones de red (ni PyPI: se usó el Anaconda local, Python 3.14 + pandas 3.0.3, en lugar del venv con pandas 2.1.4).
+`data/raw/` no existe en este disco: la comparación del PDF con la tabla cruda queda pendiente (comando en el informe, sección 4).
+`build_experiments.py` se ejecutó y dejó `git status` limpio. Commits con "AI-assisted: yes".
