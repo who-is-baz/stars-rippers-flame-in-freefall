@@ -181,5 +181,8 @@ Peticiones de red en esta sesión: solo GitHub (gh/git). Ninguna a psi.nasa.gov.
    La API respondió sin 403.
 4. **Guías:** `docs/guia-datos.md` y `docs/guia-github.md` copiadas de `~/Downloads` **sin cambios** (comparadas con `cmp`;
    escaneadas: sin secretos, PII ni instrucciones). La guía HTML no se subió (la sube Yael tras corregirla).
-   Nota: la cifra del PMMA "17 % frente a 18 %" de `guia-datos.md` no está verificada en el repo.
+   Cifra del PMMA "17 % frente a 18 %" (`guia-datos.md`, sección 3): **verificada el 14 nov** contra el resumen de
+   Link et al., *Sci Rep* 8:120 (2018), DOI 10.1038/s41598-017-18398-4 (BASS-II en la ISS, cilindros de PMMA, flujo opuesto
+   bajo; ≈18 % en gravedad normal, medido en tierra). Baz la verificó y la IA la contrastó con el resumen en PMC5760683.
+   Cita añadida a la guía en un commit aparte con la advertencia "un solo material (PMMA); no generalizar".
 5. `docs/tareas/`: la grabación del demo y la checklist final pasaron de `jovanny-infra.md` a `baz-lider.md` (#17).
