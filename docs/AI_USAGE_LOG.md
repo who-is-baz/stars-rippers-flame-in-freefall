@@ -204,3 +204,19 @@ Fer. Rama `feat/baz-mapeo-materiales`, un PR sin unir; sin red salvo `gh`/git; s
    `flex_tests.csv` y `coverage_grid.json` sin cambios; SHA-256 de `data/raw/` idénticos antes y después.
 4. Tests: `test_psi_queries.py` y `test_qc_flags.py` OK (incluye el test nuevo del mapeo), sin pytest.
 5. Commits con "AI-assisted: yes", sin trailer `Co-Authored-By`. Peticiones de red: solo GitHub (gh/git).
+
+## 2026-11-14 (11) — Marca fer_corrected en P14 (corrección pedida por Fer en #28) — Claude Code (Opus 5.5)
+
+**Pedido (Baz, por encargo de Fer):** en `feat/baz-mapeo-materiales` (#28), marcar la corrección de P14 antes de que Fer
+apruebe. Numerada (11) porque (9) y (10) ya existen en #29 y #30.
+
+1. `docs/material_mapping.csv`: `material_flag = fer_corrected` en "1/4 blac rod" (P14). `scripts/build_processed.py`
+   lleva la marca a `qc_flags` de `bass2_tests.csv` y `experiments.csv`. Se conservan `material_raw` "1/4 blac rod" y
+   `color` "black".
+2. Test nuevo `test_fer_corrected_marks_every_corrected_value` (en `tests/test_qc_flags.py`): P14 y toda fila cuyo
+   color no aparezca en el texto original deben llevar la marca. Se comprobó que falla antes de regenerar y pasa después.
+3. `data/processed` y `psi.sqlite` regenerados: solo cambia la fila de P14. SHA-256 de `data/raw/` (9 archivos)
+   idénticos antes y después. Diccionario de datos actualizado.
+4. Después se unió esta versión de #28 en `feat/baz-decisiones-y-datos` (#30) con merge, sin force push, y se
+   regeneraron `frontend/public/data/*.json`.
+5. Commits con "AI-assisted: yes", sin trailer `Co-Authored-By`. Peticiones de red: solo GitHub (gh/git).
