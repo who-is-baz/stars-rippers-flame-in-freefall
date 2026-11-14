@@ -6,7 +6,7 @@ Hackatón NASA Space Apps 2026 (sede UNAQ, 14–15 nov). Dashboard con IA que re
 Equipo: 5 estudiantes de ITIID (UPQ), primer hackatón. Docs internos en español; **todo lo que se entrega a NASA, la UI y las respuestas del asistente van en inglés**.
 
 ## Antes de trabajar, lee
-`docs/03-analisis-datos.md` (reglas de interpretación), `docs/07-api-contract.md`, `docs/data-dictionary.md` y tu archivo en `docs/tareas/`. Al terminar una sesión: `docs/HANDOFF.md` (skill `shift-handoff`).
+`docs/08-reto-oficial.md` (texto oficial del reto), `docs/03-analisis-datos.md` (reglas de interpretación), `docs/07-api-contract.md`, `docs/data-dictionary.md` y tu archivo en `docs/tareas/`. Al terminar una sesión: `docs/HANDOFF.md` (skill `shift-handoff`).
 
 ## Reglas para Claude
 1. **Anclaje en datos:** nunca inventes valores. Toda cifra cita `source_doi` y el experimento. Sin dato → "No data available".
@@ -18,6 +18,7 @@ Equipo: 5 estudiantes de ITIID (UPQ), primer hackatón. Docs internos en españo
 7. **Buenas prácticas:** tipado, tests mínimos, sin secretos en el repo, commits pequeños, un PR por tarea.
 8. Explica brevemente el porqué de las decisiones técnicas: el equipo está aprendiendo.
 9. Sin PII; sin marca/logos NASA en imágenes generadas; no copies código de otros equipos; registra toda dependencia en References.
+10. **Terminología:** en lo que se entrega a NASA y en la UI usa "SI" (Super Intelligence), como el reto, aclarando "AI/LLM" una vez.
 
 ## Stack
 Python 3.12 + FastAPI · React + TypeScript (Vite) · SQLite · LLM local vía Ollama (niveles Low/Medium/High; `low` sin LLM).
