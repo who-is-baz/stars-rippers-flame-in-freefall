@@ -1,0 +1,37 @@
+combustible,banda_o2,nivel_presion,n,n_con_tasa,tasa_media_mm2_s,n_extinction,n_disruption,n_completion,gris,ejemplos_test_id,source_doi
+methanol,<0.15,~0.7 atm,0,0,sin dato,0,0,0,False,,10.60555/mbq8-0451
+methanol,<0.15,~1.0 atm,17,16,0.356,17,0,0,False,"175F001,175R001,203F001,203R002",10.60555/mbq8-0451
+methanol,<0.15,>2 atm,0,0,sin dato,0,0,0,False,,10.60555/mbq8-0451
+methanol,0.15-0.18,~0.7 atm,0,0,sin dato,0,0,0,False,,10.60555/mbq8-0451
+methanol,0.15-0.18,~1.0 atm,5,5,0.386,5,0,0,False,"189F001,189F002,189R001,189R002",10.60555/mbq8-0451
+methanol,0.15-0.18,>2 atm,0,0,sin dato,0,0,0,False,,10.60555/mbq8-0451
+methanol,0.18-0.21,~0.7 atm,3,3,gris (n<5),2,1,0,True,"190F003,190R002,218F001",10.60555/mbq8-0451
+methanol,0.18-0.21,~1.0 atm,4,4,gris (n<5),4,0,0,True,"176F001,176R001,204F001,204R001",10.60555/mbq8-0451
+methanol,0.18-0.21,>2 atm,0,0,sin dato,0,0,0,False,,10.60555/mbq8-0451
+methanol,0.21-0.24,~0.7 atm,0,0,sin dato,0,0,0,False,,10.60555/mbq8-0451
+methanol,0.21-0.24,~1.0 atm,12,12,0.501,9,3,0,False,"177F001,177R002,205F001,205R001",10.60555/mbq8-0451
+methanol,0.21-0.24,>2 atm,0,0,sin dato,0,0,0,False,,10.60555/mbq8-0451
+methanol,0.24-0.28,~0.7 atm,0,0,sin dato,0,0,0,False,,10.60555/mbq8-0451
+methanol,0.24-0.28,~1.0 atm,0,0,sin dato,0,0,0,False,,10.60555/mbq8-0451
+methanol,0.24-0.28,>2 atm,0,0,sin dato,0,0,0,False,,10.60555/mbq8-0451
+methanol,>=0.28,~0.7 atm,9,9,0.646,0,7,2,False,"191F001,191R001,192F001,192F002",10.60555/mbq8-0451
+methanol,>=0.28,~1.0 atm,4,4,gris (n<5),2,1,1,True,"178F001,178R001,206F001,206R001",10.60555/mbq8-0451
+methanol,>=0.28,>2 atm,0,0,sin dato,0,0,0,False,,10.60555/mbq8-0451
+heptane,<0.15,~0.7 atm,0,0,sin dato,0,0,0,False,,10.60555/mbq8-0451
+heptane,<0.15,~1.0 atm,6,4,0.455,5,0,1,False,"179F001,193R002,207F001,207F002",10.60555/mbq8-0451
+heptane,<0.15,>2 atm,0,0,sin dato,0,0,0,False,,10.60555/mbq8-0451
+heptane,0.15-0.18,~0.7 atm,0,0,sin dato,0,0,0,False,,10.60555/mbq8-0451
+heptane,0.15-0.18,~1.0 atm,8,7,0.484,6,0,2,False,"193F001,193R001,221F001,N02H101",10.60555/mbq8-0451
+heptane,0.15-0.18,>2 atm,0,0,sin dato,0,0,0,False,,10.60555/mbq8-0451
+heptane,0.18-0.21,~0.7 atm,2,2,gris (n<5),1,0,1,True,"194F001,303F001",10.60555/mbq8-0451
+heptane,0.18-0.21,~1.0 atm,3,3,gris (n<5),2,0,1,True,"301F001,301F002,302F001",10.60555/mbq8-0451
+heptane,0.18-0.21,>2 atm,0,0,sin dato,0,0,0,False,,10.60555/mbq8-0451
+heptane,0.21-0.24,~0.7 atm,0,0,sin dato,0,0,0,False,,10.60555/mbq8-0451
+heptane,0.21-0.24,~1.0 atm,17,15,0.559,5,8,4,False,"181F001,209F001,209F002,209F003",10.60555/mbq8-0451
+heptane,0.21-0.24,>2 atm,0,0,sin dato,0,0,0,False,,10.60555/mbq8-0451
+heptane,0.24-0.28,~0.7 atm,0,0,sin dato,0,0,0,False,,10.60555/mbq8-0451
+heptane,0.24-0.28,~1.0 atm,0,0,sin dato,0,0,0,False,,10.60555/mbq8-0451
+heptane,0.24-0.28,>2 atm,0,0,sin dato,0,0,0,False,,10.60555/mbq8-0451
+heptane,>=0.28,~0.7 atm,8,7,0.724,0,8,0,False,"195F001,195F002,196F001,196F002",10.60555/mbq8-0451
+heptane,>=0.28,~1.0 atm,3,3,gris (n<5),0,2,1,True,"182F001,182F002,210F002",10.60555/mbq8-0451
+heptane,>=0.28,>2 atm,0,0,sin dato,0,0,0,False,,10.60555/mbq8-0451
