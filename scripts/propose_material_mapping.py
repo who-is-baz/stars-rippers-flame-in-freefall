@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """PROPUESTA (no aplicada) de normalización de material_raw de BASS-II a categorías.
 
-Escribe docs/material_mapping_proposal.csv para revisión humana. Nada de data/processed/ usa este mapeo todavía.
+Escribe docs/material_mapping_proposal.csv para revisión humana. La versión aprobada por Fer (#3) es
+docs/material_mapping.csv, que es la que usa scripts/build_processed.py; este script ya no la sobrescribe.
 Fuente de las reglas: BASS-II ReadMe ("Bhattacharjee burned ... very thin pmma films", "Miller ... thick pmma
 slabs", "Olson ... pmma rods (mostly clear)", "Fernandez-Pello ... pmma rods (mostly black)", "T'ien ... SIBAL
 fabric (75/25 cotton/fiberglass) ... 4 cm pmma spherical section", "Ferkul ... Nomex III and a candle").

@@ -66,7 +66,13 @@ Las definiciones de columnas vienen del **BASS-II ReadMe** (`PSI-25_Science Docu
 | `test_date` | date | — | Fecha real. El video muestra un día más por un error de año bisiesto (ReadMe). |
 | `gmt_day_of_year` | int | día del año | Columna "GMT" (ReadMe: "number is day of the year"). |
 | `sample_id` | str | — | Una muestra puede usarse en varias pruebas. |
-| `material_raw` | str | — | Texto original normalizado en espacios. 49 variantes. No se estructuró. |
+| `material_raw` | str | — | Texto original normalizado en espacios. 49 variantes. No se modifica. |
+| `material_category` | str | — | De `docs/material_mapping.csv` (aprobado por Fer en el issue #3, 14 nov): `pmma_rod` (54), `cotton_fiberglass_fabric` (27, tela SIBAL), `pmma_thin_film` (22), `pmma_thick_sheet` (20), `aramid_fabric` (3, Nomex III), `pmma_sphere` (2), `wax_candle` (1). |
+| `thickness_mm` | float | mm | Espesor de películas y láminas. Película ≤0.4 mm, lámina ≥1 mm (no hay valores intermedios). |
+| `width_cm` | float | cm | Ancho de la muestra plana o de la tela. M5 y M19 = 2 cm (errores de escritura en el texto). |
+| `rod_diameter_in` | float | pulgadas | Diámetro de las varillas (0.25, 0.375, 0.5). |
+| `color` | str | — | `clear` \| `black` (solo varillas). **No promediar varillas de distinto color juntas**: el PMMA negro absorbe radiación distinto (Fer, #3). P14 "blac" = black (corregido por Fer; flag `fer_corrected`). |
+| `burn_sides` | int | — | 1 o 2 caras. **Vacío = no especificado**, no "2 caras" (Fer, #3). |
 | `flow_restrictor` | int | — | 0 = flujo máximo / menor restricción, 2 = flujo mínimo (ReadMe). |
 | `radiometer_gain_raw` | str | — | Ganancia **sin calibrar** (ReadMe). Valores tipo `250>50` = cambio durante la prueba. |
 | `total_frames_shot` | int | — | Fotos de la cámara Nikon. Textos como `video` → null. |
@@ -106,6 +112,9 @@ Claude (Opus 5.5) leyó las 129 notas una por una el 2026-11-14. Las reglas est�
 | `co_over_range_gt_1000ppm` | O4, O12, O13b | CO "OR"/"over" (>1000 ppm). |
 | `co_final_censored` | M5 | CO final ">500" en el original: es una cota inferior. `co_final_ppm` queda null; no se imputa. |
 | `co_initial_negative` | B4, B21, B22, M10, O1, O2, O5a, O20, T25, T26, T27, T28a, T29 (13) | CO inicial −1 a −3 ppm (probable offset del sensor). Se conserva el valor. |
+| `material_assumed_from_readme` | B3, B5, B7, B12, B13, T3, T7 | El texto no dice "PMMA"; se asume por el ReadMe y el PI. Aprobado por Fer (#3), que pidió conservar la marca. |
+| `material_text_typo` | M5, M19 | El texto tiene un error de escritura ("2 cm thick", "2ide"); el ancho se tomó como 2 cm. Aprobado por Fer (#3), con la marca. |
+| `fer_corrected` | P14 | Fer corrigió un valor derivado del texto: "1/4 blac rod" → `color` = black. El texto original (`material_raw`) no se modifica. Toda corrección de este tipo debe llevar la marca (test `test_fer_corrected_marks_every_corrected_value`). |
 | `low_confidence` | P5, P13a, O6 | Extracción de IA ambigua (P5/P13a: pot 0 al extinguirse; O6: "out .275" sin "ext"). Pendiente de Fer; `src/psi_queries.py` añade `low_confidence_warning` a toda fila agregada que las incluya. |
 
 La tabla de BASS-II **no tiene columna de presión**: las pruebas se hicieron en la Microgravity Science Glovebox a presión de cabina.
@@ -134,7 +143,7 @@ Generada por `scripts/build_experiments.py`. SQLite: tabla `experiments`, vistas
 | `test_id` | `flex_id` (⚠️ no es único: 193F001 aparece 2 veces) | `test_id` |
 | `date` | `test_date` | `test_date` |
 | `material_or_fuel` | `methanol` / `heptane` | `material_raw` (texto original) |
-| `material_category` | `liquid_fuel_droplet` | **null** hasta que se apruebe `docs/material_mapping_proposal.csv` |
+| `material_category` | `liquid_fuel_droplet` | `material_category` de `bass2_tests.csv` (mapeo aprobado en #3) |
 | `o2_fraction` | fracción molar **fijada** por el ensayo | `o2_initial_pct_vol / 100`: O₂ **medido** en la cámara |
 | `pressure_atm` | `pressure_atm` | null (no registrada) |
 | `co2_fraction` | fracción molar del **supresor agregado** | `co2_initial_pct_vol / 100`: CO₂ **de fondo medido** (≤1.85 %), no supresor |
@@ -143,7 +152,7 @@ Generada por `scripts/build_experiments.py`. SQLite: tabla `experiments`, vistas
 | `outcome_source` | `observed` | `ai_extracted` (26) / `not_stated` (103) |
 | `extinction_diameter_mm` | solo si `outcome = extinction`; si no, null (38 valores omitidos → flag `extinction_diameter_dropped_outcome_not_extinction`) | null |
 | `burning_rate_mm2_s` | K de la ley d² | null |
-| `qc_flags` | flags de `flex_tests.csv` + el de arriba | flags de `bass2_tests.csv` + `material_category_pending_review` |
+| `qc_flags` | flags de `flex_tests.csv` + el de arriba | flags de `bass2_tests.csv` |
 | `source_doi` | `10.60555/mbq8-0451` | `10.60555/4qc4-de67` |
 
 ---
@@ -186,8 +195,9 @@ Generada por `scripts/build_experiments.py`. SQLite: tabla `experiments`, vistas
     sí son de diseño. El CO₂ de BASS-II es de fondo (≤1.85 %), no un supresor.
 17. Valores imposibles marcados y **no corregidos**: O₂ final de B2 (1.6 %), P22a/P22b (0.6/39.1 %), T28a/T28b (0.9/40.4 %).
     T9/T18 tienen año 2018 con GMT de 2014. CO "OR" (>1000 ppm) en O4, O12, O13b.
-18. **`material_category` sigue sin aplicarse** (49 textos libres). La propuesta de 7 categorías está en
-    `docs/material_mapping_proposal.csv`, pendiente de revisión.
+18. **`material_category` agrupa 49 textos libres en 7 categorías** (`docs/material_mapping.csv`, aprobado por Fer
+    en #3). Las variantes de ignición ("moved igniter", "top side ign", T23/T24) no son material: se mapean a SIBAL.
+    7 pruebas tienen el material asumido por el ReadMe y 2 un error de escritura (ver flags arriba).
 19. No hay presión registrada; el ReadMe no explica las variantes de ignición ("top side ign", "moved igniter");
     F4 dice "see notes", pero esas notas no están en PSI.
 

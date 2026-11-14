@@ -273,132 +273,132 @@ FLEX,H15M102,2011-12-05,methanol,liquid_fuel_droplet,0.17,0.6979,0.0,0.45,extinc
 FLEX,H15M201,2011-12-05,methanol,liquid_fuel_droplet,0.17,0.6993,0.0,0.45,extinction,observed,2.31,0.66,,10.60555/mbq8-0451
 FLEX,H19H101,2011-12-08,heptane,liquid_fuel_droplet,0.21,1.0062,0.0,0.15,extinction,observed,2.91,0.55,,10.60555/mbq8-0451
 FLEX,H19H201,2011-12-08,heptane,liquid_fuel_droplet,0.21,1.0082,0.0,0.15,extinction,observed,0.73,0.65,,10.60555/mbq8-0451
-BASS-II,B1,2014-02-19,100 micron PMMA film 2 cm wide,,0.222,,0.0044,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,B2,2014-02-19,200 micron PMMA film 2 cm wide,,0.222,,0.0044,,,not_stated,,,o2_final_implausibly_low;material_category_pending_review,10.60555/4qc4-de67
-BASS-II,B3,2014-02-19,100 micron film 2 cm wide,,0.222,,0.0043,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,B4,2014-02-19,300 micron PMMA film 2 cm wide,,0.222,,0.0044,,,not_stated,,,co_initial_negative;material_category_pending_review,10.60555/4qc4-de67
-BASS-II,B5,2014-02-19,200 micron 2 cm wide,,0.222,,0.0043,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,B6,2014-07-07,2 cm 0.1 mm PMMA film,,0.21,,0.0033,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,B7,2014-02-19,400 micron film 2 cm wide,,0.222,,0.0045,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,B8,2014-07-07,2 cm 0.2 mm PMMA film,,0.21,,0.0033,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,B9,2014-07-07,2 cm 0.1 mm PMMA film,,0.21,,0.0033,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,B10,2014-07-07,1 cm 0.2 mm PMMA film,,0.21,,0.0033,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,B11,2014-07-07,2 cm 0.2 mm PMMA film,,0.21,,0.0033,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,B12,2014-02-19,300 micron film 2 cm wide,,0.222,,0.0051,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,B13,2014-07-07,2 cm 0.4 mm thick film,,0.21,,0.0033,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,B14,2014-07-02,1 cm wide 200 micron thick PMMA,,0.15,,0.0,,extinction,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,B15,2014-07-07,2 cm 0.1 mm PMMA film,,0.21,,0.0033,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,B16,2014-07-02,2 cm 100 micron thick PMMA,,0.173,,0.0047,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,B17,2014-07-02,1 cm wide 200 micron thick PMMA,,0.175,,0.002,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,B18,2014-07-02,1 cm wide 200 micron thick PMMA,,0.174,,0.0034,,blowoff,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,B19,2014-07-02,2 cm 100 micron thick PMMA,,0.173,,0.0051,,blowoff,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,B20,2014-07-02,2 cm 100 micron thick PMMA,,0.174,,0.0042,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,B21,2014-08-04,1 cm wide 200 micron thick PMMA,,0.208,,0.0036,,extinction,ai_extracted,,,co_initial_negative;material_category_pending_review,10.60555/4qc4-de67
-BASS-II,B22,2014-08-04,1 cm wide 200 micron thick PMMA,,0.207,,0.0041,,,not_stated,,,co_initial_negative;material_category_pending_review,10.60555/4qc4-de67
-BASS-II,F1,2014-02-19,Nomex natural (nomex III),,0.222,,0.0046,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,F2,2014-07-28,Nomex natural (nomex III),,0.21,,0.0037,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,F3,2014-08-01,Nomex natural (nomex III),,0.217,,0.0036,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,F4,2014-06-24,Japan Wax candle,,0.174,,0.0038,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,M1,2014-02-20,1 mm thick PMMA 1 sided 2 cm,,0.222,,0.0045,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,M2,2014-02-20,3 mm thick PMMA 1 sided 2 cm wide,,0.222,,0.0046,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,M3,2014-07-11,2 cm wide 5 mm thick 1 sided PMMA,,0.208,,0.0033,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,M4,2014-07-31,5 mm thick PMMA 2 cm wide,,0.218,,0.0042,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,M5,2014-02-20,3 mm thick PMMA 2 sided 2 cm thick,,0.222,,0.0044,,,not_stated,,,co_final_censored;material_category_pending_review,10.60555/4qc4-de67
-BASS-II,M6,2014-07-31,1 mm thick PMMA 2 cm wide,,0.218,,0.0038,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,M7,2014-07-11,1 cm wide PMMA 1 mm thick,,0.189,,0.0142,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,M8,2014-07-11,1 cm wide PMMA 2 mm thick,,0.191,,0.0044,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,M9,2014-07-11,1 cm wide PMMA 3 mm thick,,0.18,,0.0026,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,M10,2014-07-23,4 mm thick 1 cm wide PMMA slab,,0.201,,0.0036,,,not_stated,,,co_initial_negative;material_category_pending_review,10.60555/4qc4-de67
-BASS-II,M11,2014-07-11,1 cm wide PMMA 5 mm thick,,0.2,,0.0058,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,M12,2014-07-31,2 mm thick PMMA 2 cm wide,,0.217,,0.0042,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,M13,2014-07-31,4 mm thick PMMA 2 cm wide,,0.208,,0.0036,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,M14,2014-02-20,2mm thick PMMA 1 sided 2 cm wide,,0.222,,0.0045,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,M15,2014-07-07,2 cm 4 mm 1 sided PMMA slab,,0.21,,0.0037,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,M16,2014-07-23,1 mm thick PMMA 2 cm wide,,0.192,,0.0095,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,M17,2014-07-15,2 cm wide PMMA 2 mm thick,,0.188,,0.0035,,extinction,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,M18,2014-07-15,2 cm wide PMMA 3 mm thick,,0.179,,0.0032,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,M19,2014-07-23,4 mm thick 2 cm 2ide PMMA slab,,0.19,,0.0035,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,M20,2014-08-01,5 mm thick PMMA 2 cm wide,,0.18,,0.003,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,O1,2014-02-18,"1/4"" clear rod",,0.222,,0.0044,,,not_stated,,,co_initial_negative;material_category_pending_review,10.60555/4qc4-de67
-BASS-II,O2,2014-02-18,"1/4"" clear rod",,0.222,,0.0044,,,not_stated,,,co_initial_negative;material_category_pending_review,10.60555/4qc4-de67
-BASS-II,O3a,2014-06-13,"1/4"" clear rod",,0.18,,0.0025,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,O3b,2014-06-13,"1/4"" clear rod",,0.18,,0.0028,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,O4,2014-07-08,"3/8""clear rod",,0.148,,0.0072,,extinction,ai_extracted,,,co_over_range_gt_1000ppm;material_category_pending_review,10.60555/4qc4-de67
-BASS-II,O5a,2014-07-21,"1/2"" clear PMMA rod",,0.151,,0.0025,,,not_stated,,,co_initial_negative;material_category_pending_review,10.60555/4qc4-de67
-BASS-II,O5b,2014-07-21,"1/2"" clear PMMA rod",,0.142,,0.0105,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,O6,2014-06-26,"1/4"" clear rod",,0.167,,0.0032,,extinction,ai_extracted,,,low_confidence;material_category_pending_review,10.60555/4qc4-de67
-BASS-II,O7,2014-06-26,"1/4"" clear rod",,0.16,,0.0074,,blowoff,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,O8a,2014-06-26,"1/4"" clear rod",,0.157,,0.0123,,extinction,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,O8b,2014-06-26,"1/4"" clear rod",,0.155,,0.0144,,blowoff,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,O9,2014-06-26,"1/4"" clear rod",,0.15,,0.0174,,blowoff,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,O10,2014-07-22,"1/4"" clear rod",,0.167,,0.0161,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,O11,2014-07-08,"1/4"" black rod",,0.154,,0.0027,,blowoff,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,O12,2014-07-08,"3/8"" clear rod",,0.136,,0.0172,,no_ignition,ai_extracted,,,co_over_range_gt_1000ppm;material_category_pending_review,10.60555/4qc4-de67
-BASS-II,O13a,2014-07-21,"1/2"" clear PMMA rod",,0.159,,0.0091,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,O13b,2014-07-21,"1/2"" clear PMMA rod",,0.146,,0.0185,,,not_stated,,,co_over_range_gt_1000ppm;material_category_pending_review,10.60555/4qc4-de67
-BASS-II,O14,2014-08-01,"1/4"" black rod",,0.163,,0.0029,,extinction,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,O15a,2014-07-28,"3/8"" clear rod",,0.171,,0.0027,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,O15b,2014-07-28,"3/8"" clear rod",,0.167,,0.0062,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,O16,2014-07-29,"3/8""clear rod",,0.145,,0.0027,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,O17,2014-07-22,"1/4"" clear rod",,0.151,,0.0031,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,O18,2014-07-28,"1/4"" clear rod",,0.152,,0.0145,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,O19,2014-08-01,"1/4"" clear rod",,0.153,,0.0086,,extinction,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,O20,2016-02-26,"1/4"" clear rod",,0.165,,0.002,,,not_stated,,,co_initial_negative;material_category_pending_review,10.60555/4qc4-de67
-BASS-II,O21,2016-02-26,"3/8"" clear rod",,0.159,,0.0053,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,O22,2016-02-26,"1/2"" clear rod",,0.154,,0.0092,,blowoff,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,P1,2014-06-16,"1/4"" black rod",,0.177,,0.0027,,extinction,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,P2,2014-06-16,"1/4"" black rod",,0.174,,0.0044,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,P3a,2014-06-16,"1/4"" clear rod",,0.177,,0.0027,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,P3b,2014-06-16,1/4 clear rod,,0.174,,0.0051,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,P4,2014-07-03,"3/8"" black rod",,0.185,,0.0062,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,P5,2014-07-14,"0.5"" black rod",,0.193,,0.0032,,extinction,ai_extracted,,,low_confidence;material_category_pending_review,10.60555/4qc4-de67
-BASS-II,P6,2014-07-03,"1/4"" black rod",,0.189,,0.003,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,P8,2014-07-03,"3/8"" black rod",,0.164,,0.0072,,not_sustained,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,P9,2014-07-14,"0.5"" black rod",,0.176,,0.0167,,extinction,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,P10,2014-07-03,"1/4"" black rod",,0.17,,0.0029,,extinction,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,P12,2014-07-29,"3/8"" black rod",,0.175,,0.0029,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,P13a,2014-07-14,"0.5"" black rod",,0.207,,0.0036,,extinction,ai_extracted,,,low_confidence;material_category_pending_review,10.60555/4qc4-de67
-BASS-II,P13b,2014-07-14,"0.5"" black rod",,0.206,,0.0041,,extinction,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,P14,2014-06-23,1/4 blac rod,,0.184,,0.0034,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,P15,2014-06-23,1/4 black rod,,0.18,,0.0062,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,P16,2014-07-22,"1/4"" black rod",,0.182,,0.003,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,P17,2014-07-29,"1/4"" black rod",,0.168,,0.0095,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,P18,2014-07-30,"1/4"" black rod",,0.2,,0.0034,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,P19,2014-07-22,"1/4"" black rod",,0.175,,0.009,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,P20,2014-07-30,"1/4"" black rod",,0.19,,0.0034,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,P21a,2014-06-23,1/4 black rod,,0.163,,0.0096,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,P21b,2014-06-23,"1/4"" black rod",,0.163,,0.01,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,P22a,2014-07-08,"3/8"" black rod",,0.208,,0.0032,,extinction,ai_extracted,,,o2_final_implausibly_low;material_category_pending_review,10.60555/4qc4-de67
-BASS-II,P22b,2014-07-08,"3/8"" black rod",,0.2,,,,extinction,ai_extracted,,,o2_final_implausibly_high;material_category_pending_review,10.60555/4qc4-de67
-BASS-II,P23,2014-07-30,"3/8"" black rod",,0.182,,0.0105,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,P24,2014-07-30,"3/8"" black rod",,0.19,,0.012,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,P25,2014-07-08,"3/8"" clear rod",,0.209,,0.0038,,extinction,ai_extracted,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,T1,2014-02-14,2 cm SIBAL,,0.185,,0.0035,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,T2,2014-02-14,2 cm SIBAL,,0.185,,0.0041,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,T3,2014-06-27,4 cm spherical section,,0.172,,0.0042,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,T4,2014-02-14,2 cm SIBAL,,0.187,,0.0044,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,T5,2014-04-10,2 cm SIBAL,,0.188,,0.002,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,T6,2014-04-10,2 cm SIBAL,,0.188,,0.0024,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,T7,2014-07-09,4 cm spherical section,,0.173,,0.0032,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,T9,2018-06-24,2 cm SIBAL,,0.164,,0.003,,,not_stated,,,date_year_inconsistent_with_gmt;material_category_pending_review,10.60555/4qc4-de67
-BASS-II,T10,2014-06-24,2 cm SIBAL,,0.164,,0.0031,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,T11,2014-06-27,2 cm SIBAL,,0.171,,0.0035,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,T12,2014-06-27,2 cm SIBAL,,0.168,,0.007,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,T13,2014-04-10,2 cm SIBAL,,0.175,,0.0019,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,T14,2014-06-27,2 cm SIBAL,,0.169,,0.007,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,T15,2014-02-14,2 cm SIBAL,,0.187,,0.0045,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,T16,2014-04-10,2 cm SIBAL,,0.176,,0.0021,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,T17,2014-06-27,2 cm SIBAL,,0.169,,0.0072,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,T18,2018-06-24,2 cm SIBAL,,0.174,,0.0036,,,not_stated,,,date_year_inconsistent_with_gmt;material_category_pending_review,10.60555/4qc4-de67
-BASS-II,T19,2014-07-09,1 cm SIBAL,,0.172,,0.0029,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,T20,2014-07-09,1 cm SIBAL,,0.172,,0.0031,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,T21,2014-07-09,1 cm SIBAL,,0.172,,0.0031,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,T22,2014-07-09,1 cm SIBAL,,0.171,,0.0059,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,T23,2014-07-09,2 cm Sibal moved igniter,,0.172,,0.0032,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,T24,2014-07-09,1 cm SIBAL top side ign,,0.182,,0.0051,,,not_stated,,,material_category_pending_review,10.60555/4qc4-de67
-BASS-II,T25,2014-08-04,2 cm SIBAL,,0.208,,0.0036,,,not_stated,,,co_initial_negative;material_category_pending_review,10.60555/4qc4-de67
-BASS-II,T26,2014-08-04,2 cm SIBAL,,0.208,,0.0036,,,not_stated,,,co_initial_negative;material_category_pending_review,10.60555/4qc4-de67
-BASS-II,T27,2014-08-04,1 cm SIBAL,,0.207,,0.0041,,,not_stated,,,co_initial_negative;material_category_pending_review,10.60555/4qc4-de67
-BASS-II,T28a,2014-08-04,1 cm SIBAL,,0.207,,0.0041,,,not_stated,,,o2_final_implausibly_low;co_initial_negative;material_category_pending_review,10.60555/4qc4-de67
-BASS-II,T28b,2014-08-04,1 cm SIBAL,,0.207,,,,,not_stated,,,o2_final_implausibly_high;material_category_pending_review,10.60555/4qc4-de67
-BASS-II,T29,2014-08-04,1 cm SIBAL,,0.207,,0.0041,,,not_stated,,,co_initial_negative;material_category_pending_review,10.60555/4qc4-de67
+BASS-II,B1,2014-02-19,100 micron PMMA film 2 cm wide,pmma_thin_film,0.222,,0.0044,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,B2,2014-02-19,200 micron PMMA film 2 cm wide,pmma_thin_film,0.222,,0.0044,,,not_stated,,,o2_final_implausibly_low,10.60555/4qc4-de67
+BASS-II,B3,2014-02-19,100 micron film 2 cm wide,pmma_thin_film,0.222,,0.0043,,,not_stated,,,material_assumed_from_readme,10.60555/4qc4-de67
+BASS-II,B4,2014-02-19,300 micron PMMA film 2 cm wide,pmma_thin_film,0.222,,0.0044,,,not_stated,,,co_initial_negative,10.60555/4qc4-de67
+BASS-II,B5,2014-02-19,200 micron 2 cm wide,pmma_thin_film,0.222,,0.0043,,,not_stated,,,material_assumed_from_readme,10.60555/4qc4-de67
+BASS-II,B6,2014-07-07,2 cm 0.1 mm PMMA film,pmma_thin_film,0.21,,0.0033,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,B7,2014-02-19,400 micron film 2 cm wide,pmma_thin_film,0.222,,0.0045,,,not_stated,,,material_assumed_from_readme,10.60555/4qc4-de67
+BASS-II,B8,2014-07-07,2 cm 0.2 mm PMMA film,pmma_thin_film,0.21,,0.0033,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,B9,2014-07-07,2 cm 0.1 mm PMMA film,pmma_thin_film,0.21,,0.0033,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,B10,2014-07-07,1 cm 0.2 mm PMMA film,pmma_thin_film,0.21,,0.0033,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,B11,2014-07-07,2 cm 0.2 mm PMMA film,pmma_thin_film,0.21,,0.0033,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,B12,2014-02-19,300 micron film 2 cm wide,pmma_thin_film,0.222,,0.0051,,,not_stated,,,material_assumed_from_readme,10.60555/4qc4-de67
+BASS-II,B13,2014-07-07,2 cm 0.4 mm thick film,pmma_thin_film,0.21,,0.0033,,,not_stated,,,material_assumed_from_readme,10.60555/4qc4-de67
+BASS-II,B14,2014-07-02,1 cm wide 200 micron thick PMMA,pmma_thin_film,0.15,,0.0,,extinction,ai_extracted,,,,10.60555/4qc4-de67
+BASS-II,B15,2014-07-07,2 cm 0.1 mm PMMA film,pmma_thin_film,0.21,,0.0033,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,B16,2014-07-02,2 cm 100 micron thick PMMA,pmma_thin_film,0.173,,0.0047,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,B17,2014-07-02,1 cm wide 200 micron thick PMMA,pmma_thin_film,0.175,,0.002,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,B18,2014-07-02,1 cm wide 200 micron thick PMMA,pmma_thin_film,0.174,,0.0034,,blowoff,ai_extracted,,,,10.60555/4qc4-de67
+BASS-II,B19,2014-07-02,2 cm 100 micron thick PMMA,pmma_thin_film,0.173,,0.0051,,blowoff,ai_extracted,,,,10.60555/4qc4-de67
+BASS-II,B20,2014-07-02,2 cm 100 micron thick PMMA,pmma_thin_film,0.174,,0.0042,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,B21,2014-08-04,1 cm wide 200 micron thick PMMA,pmma_thin_film,0.208,,0.0036,,extinction,ai_extracted,,,co_initial_negative,10.60555/4qc4-de67
+BASS-II,B22,2014-08-04,1 cm wide 200 micron thick PMMA,pmma_thin_film,0.207,,0.0041,,,not_stated,,,co_initial_negative,10.60555/4qc4-de67
+BASS-II,F1,2014-02-19,Nomex natural (nomex III),aramid_fabric,0.222,,0.0046,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,F2,2014-07-28,Nomex natural (nomex III),aramid_fabric,0.21,,0.0037,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,F3,2014-08-01,Nomex natural (nomex III),aramid_fabric,0.217,,0.0036,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,F4,2014-06-24,Japan Wax candle,wax_candle,0.174,,0.0038,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,M1,2014-02-20,1 mm thick PMMA 1 sided 2 cm,pmma_thick_sheet,0.222,,0.0045,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,M2,2014-02-20,3 mm thick PMMA 1 sided 2 cm wide,pmma_thick_sheet,0.222,,0.0046,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,M3,2014-07-11,2 cm wide 5 mm thick 1 sided PMMA,pmma_thick_sheet,0.208,,0.0033,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,M4,2014-07-31,5 mm thick PMMA 2 cm wide,pmma_thick_sheet,0.218,,0.0042,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,M5,2014-02-20,3 mm thick PMMA 2 sided 2 cm thick,pmma_thick_sheet,0.222,,0.0044,,,not_stated,,,co_final_censored;material_text_typo,10.60555/4qc4-de67
+BASS-II,M6,2014-07-31,1 mm thick PMMA 2 cm wide,pmma_thick_sheet,0.218,,0.0038,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,M7,2014-07-11,1 cm wide PMMA 1 mm thick,pmma_thick_sheet,0.189,,0.0142,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,M8,2014-07-11,1 cm wide PMMA 2 mm thick,pmma_thick_sheet,0.191,,0.0044,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,M9,2014-07-11,1 cm wide PMMA 3 mm thick,pmma_thick_sheet,0.18,,0.0026,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,M10,2014-07-23,4 mm thick 1 cm wide PMMA slab,pmma_thick_sheet,0.201,,0.0036,,,not_stated,,,co_initial_negative,10.60555/4qc4-de67
+BASS-II,M11,2014-07-11,1 cm wide PMMA 5 mm thick,pmma_thick_sheet,0.2,,0.0058,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,M12,2014-07-31,2 mm thick PMMA 2 cm wide,pmma_thick_sheet,0.217,,0.0042,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,M13,2014-07-31,4 mm thick PMMA 2 cm wide,pmma_thick_sheet,0.208,,0.0036,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,M14,2014-02-20,2mm thick PMMA 1 sided 2 cm wide,pmma_thick_sheet,0.222,,0.0045,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,M15,2014-07-07,2 cm 4 mm 1 sided PMMA slab,pmma_thick_sheet,0.21,,0.0037,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,M16,2014-07-23,1 mm thick PMMA 2 cm wide,pmma_thick_sheet,0.192,,0.0095,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,M17,2014-07-15,2 cm wide PMMA 2 mm thick,pmma_thick_sheet,0.188,,0.0035,,extinction,ai_extracted,,,,10.60555/4qc4-de67
+BASS-II,M18,2014-07-15,2 cm wide PMMA 3 mm thick,pmma_thick_sheet,0.179,,0.0032,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,M19,2014-07-23,4 mm thick 2 cm 2ide PMMA slab,pmma_thick_sheet,0.19,,0.0035,,,not_stated,,,material_text_typo,10.60555/4qc4-de67
+BASS-II,M20,2014-08-01,5 mm thick PMMA 2 cm wide,pmma_thick_sheet,0.18,,0.003,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,O1,2014-02-18,"1/4"" clear rod",pmma_rod,0.222,,0.0044,,,not_stated,,,co_initial_negative,10.60555/4qc4-de67
+BASS-II,O2,2014-02-18,"1/4"" clear rod",pmma_rod,0.222,,0.0044,,,not_stated,,,co_initial_negative,10.60555/4qc4-de67
+BASS-II,O3a,2014-06-13,"1/4"" clear rod",pmma_rod,0.18,,0.0025,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,O3b,2014-06-13,"1/4"" clear rod",pmma_rod,0.18,,0.0028,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,O4,2014-07-08,"3/8""clear rod",pmma_rod,0.148,,0.0072,,extinction,ai_extracted,,,co_over_range_gt_1000ppm,10.60555/4qc4-de67
+BASS-II,O5a,2014-07-21,"1/2"" clear PMMA rod",pmma_rod,0.151,,0.0025,,,not_stated,,,co_initial_negative,10.60555/4qc4-de67
+BASS-II,O5b,2014-07-21,"1/2"" clear PMMA rod",pmma_rod,0.142,,0.0105,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,O6,2014-06-26,"1/4"" clear rod",pmma_rod,0.167,,0.0032,,extinction,ai_extracted,,,low_confidence,10.60555/4qc4-de67
+BASS-II,O7,2014-06-26,"1/4"" clear rod",pmma_rod,0.16,,0.0074,,blowoff,ai_extracted,,,,10.60555/4qc4-de67
+BASS-II,O8a,2014-06-26,"1/4"" clear rod",pmma_rod,0.157,,0.0123,,extinction,ai_extracted,,,,10.60555/4qc4-de67
+BASS-II,O8b,2014-06-26,"1/4"" clear rod",pmma_rod,0.155,,0.0144,,blowoff,ai_extracted,,,,10.60555/4qc4-de67
+BASS-II,O9,2014-06-26,"1/4"" clear rod",pmma_rod,0.15,,0.0174,,blowoff,ai_extracted,,,,10.60555/4qc4-de67
+BASS-II,O10,2014-07-22,"1/4"" clear rod",pmma_rod,0.167,,0.0161,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,O11,2014-07-08,"1/4"" black rod",pmma_rod,0.154,,0.0027,,blowoff,ai_extracted,,,,10.60555/4qc4-de67
+BASS-II,O12,2014-07-08,"3/8"" clear rod",pmma_rod,0.136,,0.0172,,no_ignition,ai_extracted,,,co_over_range_gt_1000ppm,10.60555/4qc4-de67
+BASS-II,O13a,2014-07-21,"1/2"" clear PMMA rod",pmma_rod,0.159,,0.0091,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,O13b,2014-07-21,"1/2"" clear PMMA rod",pmma_rod,0.146,,0.0185,,,not_stated,,,co_over_range_gt_1000ppm,10.60555/4qc4-de67
+BASS-II,O14,2014-08-01,"1/4"" black rod",pmma_rod,0.163,,0.0029,,extinction,ai_extracted,,,,10.60555/4qc4-de67
+BASS-II,O15a,2014-07-28,"3/8"" clear rod",pmma_rod,0.171,,0.0027,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,O15b,2014-07-28,"3/8"" clear rod",pmma_rod,0.167,,0.0062,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,O16,2014-07-29,"3/8""clear rod",pmma_rod,0.145,,0.0027,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,O17,2014-07-22,"1/4"" clear rod",pmma_rod,0.151,,0.0031,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,O18,2014-07-28,"1/4"" clear rod",pmma_rod,0.152,,0.0145,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,O19,2014-08-01,"1/4"" clear rod",pmma_rod,0.153,,0.0086,,extinction,ai_extracted,,,,10.60555/4qc4-de67
+BASS-II,O20,2016-02-26,"1/4"" clear rod",pmma_rod,0.165,,0.002,,,not_stated,,,co_initial_negative,10.60555/4qc4-de67
+BASS-II,O21,2016-02-26,"3/8"" clear rod",pmma_rod,0.159,,0.0053,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,O22,2016-02-26,"1/2"" clear rod",pmma_rod,0.154,,0.0092,,blowoff,ai_extracted,,,,10.60555/4qc4-de67
+BASS-II,P1,2014-06-16,"1/4"" black rod",pmma_rod,0.177,,0.0027,,extinction,ai_extracted,,,,10.60555/4qc4-de67
+BASS-II,P2,2014-06-16,"1/4"" black rod",pmma_rod,0.174,,0.0044,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,P3a,2014-06-16,"1/4"" clear rod",pmma_rod,0.177,,0.0027,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,P3b,2014-06-16,1/4 clear rod,pmma_rod,0.174,,0.0051,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,P4,2014-07-03,"3/8"" black rod",pmma_rod,0.185,,0.0062,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,P5,2014-07-14,"0.5"" black rod",pmma_rod,0.193,,0.0032,,extinction,ai_extracted,,,low_confidence,10.60555/4qc4-de67
+BASS-II,P6,2014-07-03,"1/4"" black rod",pmma_rod,0.189,,0.003,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,P8,2014-07-03,"3/8"" black rod",pmma_rod,0.164,,0.0072,,not_sustained,ai_extracted,,,,10.60555/4qc4-de67
+BASS-II,P9,2014-07-14,"0.5"" black rod",pmma_rod,0.176,,0.0167,,extinction,ai_extracted,,,,10.60555/4qc4-de67
+BASS-II,P10,2014-07-03,"1/4"" black rod",pmma_rod,0.17,,0.0029,,extinction,ai_extracted,,,,10.60555/4qc4-de67
+BASS-II,P12,2014-07-29,"3/8"" black rod",pmma_rod,0.175,,0.0029,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,P13a,2014-07-14,"0.5"" black rod",pmma_rod,0.207,,0.0036,,extinction,ai_extracted,,,low_confidence,10.60555/4qc4-de67
+BASS-II,P13b,2014-07-14,"0.5"" black rod",pmma_rod,0.206,,0.0041,,extinction,ai_extracted,,,,10.60555/4qc4-de67
+BASS-II,P14,2014-06-23,1/4 blac rod,pmma_rod,0.184,,0.0034,,,not_stated,,,fer_corrected,10.60555/4qc4-de67
+BASS-II,P15,2014-06-23,1/4 black rod,pmma_rod,0.18,,0.0062,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,P16,2014-07-22,"1/4"" black rod",pmma_rod,0.182,,0.003,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,P17,2014-07-29,"1/4"" black rod",pmma_rod,0.168,,0.0095,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,P18,2014-07-30,"1/4"" black rod",pmma_rod,0.2,,0.0034,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,P19,2014-07-22,"1/4"" black rod",pmma_rod,0.175,,0.009,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,P20,2014-07-30,"1/4"" black rod",pmma_rod,0.19,,0.0034,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,P21a,2014-06-23,1/4 black rod,pmma_rod,0.163,,0.0096,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,P21b,2014-06-23,"1/4"" black rod",pmma_rod,0.163,,0.01,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,P22a,2014-07-08,"3/8"" black rod",pmma_rod,0.208,,0.0032,,extinction,ai_extracted,,,o2_final_implausibly_low,10.60555/4qc4-de67
+BASS-II,P22b,2014-07-08,"3/8"" black rod",pmma_rod,0.2,,,,extinction,ai_extracted,,,o2_final_implausibly_high,10.60555/4qc4-de67
+BASS-II,P23,2014-07-30,"3/8"" black rod",pmma_rod,0.182,,0.0105,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,P24,2014-07-30,"3/8"" black rod",pmma_rod,0.19,,0.012,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,P25,2014-07-08,"3/8"" clear rod",pmma_rod,0.209,,0.0038,,extinction,ai_extracted,,,,10.60555/4qc4-de67
+BASS-II,T1,2014-02-14,2 cm SIBAL,cotton_fiberglass_fabric,0.185,,0.0035,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,T2,2014-02-14,2 cm SIBAL,cotton_fiberglass_fabric,0.185,,0.0041,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,T3,2014-06-27,4 cm spherical section,pmma_sphere,0.172,,0.0042,,,not_stated,,,material_assumed_from_readme,10.60555/4qc4-de67
+BASS-II,T4,2014-02-14,2 cm SIBAL,cotton_fiberglass_fabric,0.187,,0.0044,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,T5,2014-04-10,2 cm SIBAL,cotton_fiberglass_fabric,0.188,,0.002,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,T6,2014-04-10,2 cm SIBAL,cotton_fiberglass_fabric,0.188,,0.0024,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,T7,2014-07-09,4 cm spherical section,pmma_sphere,0.173,,0.0032,,,not_stated,,,material_assumed_from_readme,10.60555/4qc4-de67
+BASS-II,T9,2018-06-24,2 cm SIBAL,cotton_fiberglass_fabric,0.164,,0.003,,,not_stated,,,date_year_inconsistent_with_gmt,10.60555/4qc4-de67
+BASS-II,T10,2014-06-24,2 cm SIBAL,cotton_fiberglass_fabric,0.164,,0.0031,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,T11,2014-06-27,2 cm SIBAL,cotton_fiberglass_fabric,0.171,,0.0035,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,T12,2014-06-27,2 cm SIBAL,cotton_fiberglass_fabric,0.168,,0.007,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,T13,2014-04-10,2 cm SIBAL,cotton_fiberglass_fabric,0.175,,0.0019,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,T14,2014-06-27,2 cm SIBAL,cotton_fiberglass_fabric,0.169,,0.007,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,T15,2014-02-14,2 cm SIBAL,cotton_fiberglass_fabric,0.187,,0.0045,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,T16,2014-04-10,2 cm SIBAL,cotton_fiberglass_fabric,0.176,,0.0021,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,T17,2014-06-27,2 cm SIBAL,cotton_fiberglass_fabric,0.169,,0.0072,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,T18,2018-06-24,2 cm SIBAL,cotton_fiberglass_fabric,0.174,,0.0036,,,not_stated,,,date_year_inconsistent_with_gmt,10.60555/4qc4-de67
+BASS-II,T19,2014-07-09,1 cm SIBAL,cotton_fiberglass_fabric,0.172,,0.0029,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,T20,2014-07-09,1 cm SIBAL,cotton_fiberglass_fabric,0.172,,0.0031,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,T21,2014-07-09,1 cm SIBAL,cotton_fiberglass_fabric,0.172,,0.0031,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,T22,2014-07-09,1 cm SIBAL,cotton_fiberglass_fabric,0.171,,0.0059,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,T23,2014-07-09,2 cm Sibal moved igniter,cotton_fiberglass_fabric,0.172,,0.0032,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,T24,2014-07-09,1 cm SIBAL top side ign,cotton_fiberglass_fabric,0.182,,0.0051,,,not_stated,,,,10.60555/4qc4-de67
+BASS-II,T25,2014-08-04,2 cm SIBAL,cotton_fiberglass_fabric,0.208,,0.0036,,,not_stated,,,co_initial_negative,10.60555/4qc4-de67
+BASS-II,T26,2014-08-04,2 cm SIBAL,cotton_fiberglass_fabric,0.208,,0.0036,,,not_stated,,,co_initial_negative,10.60555/4qc4-de67
+BASS-II,T27,2014-08-04,1 cm SIBAL,cotton_fiberglass_fabric,0.207,,0.0041,,,not_stated,,,co_initial_negative,10.60555/4qc4-de67
+BASS-II,T28a,2014-08-04,1 cm SIBAL,cotton_fiberglass_fabric,0.207,,0.0041,,,not_stated,,,o2_final_implausibly_low;co_initial_negative,10.60555/4qc4-de67
+BASS-II,T28b,2014-08-04,1 cm SIBAL,cotton_fiberglass_fabric,0.207,,,,,not_stated,,,o2_final_implausibly_high,10.60555/4qc4-de67
+BASS-II,T29,2014-08-04,1 cm SIBAL,cotton_fiberglass_fabric,0.207,,0.0041,,,not_stated,,,co_initial_negative,10.60555/4qc4-de67

@@ -13,6 +13,7 @@ OUT = "data/processed"
 FLEX_CSV = f"{RAW}/FLEX/PSI-69_Experimental table_FLEX.csv"
 BASS_CSV = f"{RAW}/BASS-II/PSI-25_Experimental table_BASS-II.csv"
 BASS_XLSX = f"{RAW}/BASS-II/PSI-25_Science Documents_BASS-II_Test.Matrices.xlsx"
+MATERIAL_MAP = "docs/material_mapping.csv"  # aprobado en el issue #3
 MMHG_PER_ATM = 760.0
 # BASS-II: extracciones de IA con texto ambiguo (P5, P13a: pot 0 al extinguirse; O6: "out" sin "ext").
 # Se marcan `low_confidence` hasta que Fer las revise; quitarlas de aquí cuando las apruebe.
@@ -174,6 +175,16 @@ def build_bass2():
         "co_initial_over_range": co_i.str.strip().str.upper().isin(["OR", "OVER"]),
         "co_final_over_range": co_f.str.strip().str.upper().isin(["OR", "OVER"]),
     })
+    # Mapeo de materiales aprobado por Fer en el issue #3 (14 nov). Se une por el texto original normalizado.
+    mp = pd.read_csv(MATERIAL_MAP, dtype=str).drop(columns="test_ids")
+    df = df.merge(mp, on="material_raw", how="left", validate="many_to_one")
+    assert df["material_category"].notna().all(), "hay material_raw sin categoría en docs/material_mapping.csv"
+    for c in ("thickness_mm", "width_cm", "rod_diameter_in"):
+        df[c] = pd.to_numeric(df[c])
+    df["burn_sides"] = pd.to_numeric(df["burn_sides"]).astype("Int64")  # vacío = no especificado (no 2 caras)
+    pos = df.columns.get_loc("material_raw") + 1
+    map_cols = ["material_category", "thickness_mm", "width_cm", "rod_diameter_in", "color", "burn_sides"]
+    df = df[list(df.columns[:pos]) + map_cols + [c for c in df.columns[pos:] if c not in map_cols]]
     ai = pd.DataFrame([ai_extract(f, a) for f, a in zip(m["tm_fan"].fillna(""), m["tm_air"].fillna(""))])
     df = pd.concat([df, ai], axis=1)
     df["ai_extinguished"] = df["ai_extinguished"].astype("boolean")
@@ -193,6 +204,11 @@ def build_bass2():
     flags = add_flag(flags, df["co_initial_ppm"] < 0, "co_initial_negative")
     # Extracciones de IA ambiguas: baja confianza hasta que Fer las apruebe (docs/tareas/fer-datos.md).
     flags = add_flag(flags, df["test_id"].isin(AI_LOW_CONFIDENCE) & df["ai_outcome"].notna(), "low_confidence")
+    # Marcas del mapeo que Fer pidió conservar (#3): material asumido por el ReadMe / typo en el texto /
+    # valor corregido por Fer (fer_corrected: P14 "blac" -> black; el texto original no se toca).
+    for name in ("material_assumed_from_readme", "material_text_typo", "fer_corrected"):
+        flags = add_flag(flags, df["material_flag"].eq(name), name)
+    df = df.drop(columns="material_flag")
     df["qc_flags"] = flags
     df["source_file"] = os.path.basename(BASS_CSV) + " + " + os.path.basename(BASS_XLSX) + ":" + m["tm_sheet"]
     return df

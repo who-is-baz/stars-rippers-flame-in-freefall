@@ -188,6 +188,23 @@ Peticiones de red en esta sesión: solo GitHub (gh/git). Ninguna a psi.nasa.gov.
    Cita añadida a la guía en un commit aparte con la advertencia "un solo material (PMMA); no generalizar".
 5. `docs/tareas/`: la grabación del demo y la checklist final pasaron de `jovanny-infra.md` a `baz-lider.md` (#17).
 
+## 2026-11-14 (8) — Revisión previa al congelado (#19) y mapeo de materiales — Claude Code (Opus 5.5)
+
+**Pedido:** comprobar #3, #7, #27 y la coherencia antes de congelar el esquema; después, aplicar el mapeo aprobado por
+Fer. Rama `feat/baz-mapeo-materiales`, un PR sin unir; sin red salvo `gh`/git; sin tocar `data/raw/`.
+
+1. **Congelado (#19) NO hecho:** #7 no tiene comentarios ("Firmado" de Yael y Charly pendiente) y el contrato
+   (`docs/07`) no coincide con `src/psi_queries.py` ni con `coverage_grid.json` (nombres de campos, idioma de
+   `pct_note`/`warning`, endpoints frente a Q1–Q6). No se creó la etiqueta `schema-v1`.
+2. **Mapeo de materiales:** `docs/material_mapping.csv` es igual a la propuesta (Fer la aprobó en #3 sin cambiar
+   valores) y conserva las marcas que pidió: `material_assumed_from_readme` (7 pruebas) y `material_text_typo` (M5, M19).
+   T23/T24 ("SIBAL" en el comentario de Fer) = tela SIBAL; la variante de ignición no es material.
+3. `data/processed` regenerado: en `experiments.csv` solo cambian `material_category` y `qc_flags` de las 129 filas de
+   BASS-II (comprobado columna por columna); `bass2_tests.csv` suma 6 columnas y no cambia las anteriores;
+   `flex_tests.csv` y `coverage_grid.json` sin cambios; SHA-256 de `data/raw/` idénticos antes y después.
+4. Tests: `test_psi_queries.py` y `test_qc_flags.py` OK (incluye el test nuevo del mapeo), sin pytest.
+5. Commits con "AI-assisted: yes", sin trailer `Co-Authored-By`. Peticiones de red: solo GitHub (gh/git).
+
 ## 2026-11-14 (9) — Alinear el contrato de la API con el código (#7) — Claude Code (Opus 5.5)
 
 **Pedido (Baz):** rama `fix/alinear-contrato` desde main, un PR sin unir. Claude alinea el contrato; Yael y Charly
@@ -204,3 +221,19 @@ solo revisan y firman #7. Sin red salvo `gh`/git; sin tocar `data/raw/`.
    idénticos celda por celda. `experiments.csv` regenerado sin cambios.
 5. Tests: `test_psi_queries.py` 12/12 (3 nuevos) y `test_qc_flags.py` OK, sin pytest.
 6. Commits con "AI-assisted: yes", sin trailer `Co-Authored-By`. Peticiones de red: solo GitHub (gh/git).
+
+## 2026-11-14 (11) — Marca fer_corrected en P14 (corrección pedida por Fer en #28) — Claude Code (Opus 5.5)
+
+**Pedido (Baz, por encargo de Fer):** en `feat/baz-mapeo-materiales` (#28), marcar la corrección de P14 antes de que Fer
+apruebe. Numerada (11) porque (9) y (10) ya existen en #29 y #30.
+
+1. `docs/material_mapping.csv`: `material_flag = fer_corrected` en "1/4 blac rod" (P14). `scripts/build_processed.py`
+   lleva la marca a `qc_flags` de `bass2_tests.csv` y `experiments.csv`. Se conservan `material_raw` "1/4 blac rod" y
+   `color` "black".
+2. Test nuevo `test_fer_corrected_marks_every_corrected_value` (en `tests/test_qc_flags.py`): P14 y toda fila cuyo
+   color no aparezca en el texto original deben llevar la marca. Se comprobó que falla antes de regenerar y pasa después.
+3. `data/processed` y `psi.sqlite` regenerados: solo cambia la fila de P14. SHA-256 de `data/raw/` (9 archivos)
+   idénticos antes y después. Diccionario de datos actualizado.
+4. Después se unió esta versión de #28 en `feat/baz-decisiones-y-datos` (#30) con merge, sin force push, y se
+   regeneraron `frontend/public/data/*.json`.
+5. Commits con "AI-assisted: yes", sin trailer `Co-Authored-By`. Peticiones de red: solo GitHub (gh/git).
