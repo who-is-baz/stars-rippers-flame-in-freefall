@@ -30,7 +30,11 @@ Columnas clave: `program`, `test_id`, `material_or_fuel`, `material_category`, `
 10. No hay modelo predictivo en el MVP (sesgo de diseño + confusión).
 
 ## Qué sí se puede afirmar (a validar por Fer antes del demo)
-- A ~1 atm, la tasa de combustión sube con el O₂ (metanol ≈0.36 → 0.50 → 0.67 mm²/s para O₂ 0.12 → 0.21 → 0.30; heptano ≈0.52 → 0.56 → 0.74).
+- A ~1 atm (0.9–1.1 atm) y sin supresor, la tasa de combustión media sube con el O₂ (mm²/s):
+  - metanol ≈0.36 → 0.50 → 0.67 para O₂ 0.12 → 0.21 → 0.30 (n = 7 / 12 / 4);
+  - heptano ≈0.52 → 0.56 → 0.74 para O₂ **0.14** → 0.21 → 0.30 (n = 3 / 15 / 3). No hay pruebas de heptano con O₂ 0.12 a ~1 atm.
+    Pruebas de O₂ 0.14: 193R002 (0.94), N04H101 (0.24), N04H201 (0.39), con mucha dispersión y n<5. Pruebas de O₂ 0.30: 182F001, 182F002, 210F002.
+  - Recalculado desde `PSI-69_Experimental table_FLEX.csv` (verificación del 14 nov: `docs/VERIFICACION.md` A4.5–A4.6, en el PR #1).
 - El mapa de cobertura muestra qué combinaciones se probaron y cuáles no (49 celdas; la mayoría con n<5).
 
 ## Ranking (descriptivo, pesos ajustables)
@@ -42,5 +46,5 @@ Solo usa las funciones de `src/psi_queries.py` como herramientas (no SQL libre).
 ## Pendientes
 - [ ] Fer aprueba `docs/material_mapping_proposal.csv` (bloquea el esquema final).
 - [ ] Revisar PSI-10, 100, 101, 159 por tablas utilizables (opcional).
-- [ ] Confirmar licencia de los datos en la ficha PSI antes de subir los CSV procesados.
+- [x] Licencia de los datos: **CC0-1.0**, verificada en DataCite el 14 nov 2026 (DOIs 10.60555/mbq8-0451 y 10.60555/4qc4-de67).
 - [ ] Confirmar con la Local Lead la hora límite de entrega.
