@@ -39,10 +39,12 @@ SCENARIOS: List[yr.Scenario] = [
                 "sin % O2); NTRS 20170001585 p.4 (cabina MAV) (verificado)"),
     yr.Scenario("E4", "Traje NASA (EVA simulada): 85 % O2, 4.3 psi", 0.85, "point", 4.3, "point",
                 "NTRS 20220015741: '4.3 psia at 85% O2 for simulated EVAs' (verificado)"),
-    yr.Scenario("E5", "Traje (Fer): 100 % O2, 4.3 psi", 1.00, "point", 4.3, "point",
-                "Fer; SIN confirmar (no aparece en las fuentes revisadas)"),
-    yr.Scenario("R1", "Referencia Fer (sin fuente NASA): >=30 % O2, <=10.2 psi", 0.30, "min", 10.2, "max",
-                "Definición de Fer; 30 % no es un valor NASA. Solo referencia"),
+    yr.Scenario("E5", "Traje (texto del reto / Fer): 100 % O2, 4.3 psi", 1.00, "point", 4.3, "point",
+                "Texto oficial del reto (docs/08): 'spacesuits are filled with 100% oxygen to only 4.3 psi'. "
+                "No está en los NTRS revisados (20220015741 usa 85 % O2 a 4.3 psia en EVA simulada)"),
+    yr.Scenario("R1", "Hábitat lunar (texto del reto / Fer): >=30 % O2, <=10.2 psi", 0.30, "min", 10.2, "max",
+                "Texto oficial del reto (docs/08): 'likely be 30% or greater ... 10.2 psi or less' (estimación, "
+                "no un documento técnico NTRS). Fer la tomó de ahí"),
 ]
 
 

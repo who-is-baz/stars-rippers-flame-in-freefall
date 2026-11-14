@@ -1,0 +1,77 @@
+FLEX (NASA PSI-69, DOI 10.60555/mbq8-0451) y BASS-II (PSI-25, DOI 10.60555/4qc4-de67)
+Tolerancia: ±0.01 O2 y ±0.5 psi para TODOS los escenarios. n siempre visible; n<5 = gris (no interpretar).
+% de extinción = descriptivo, no probabilidad. CO2/He confundidos con O2. 'disruption' no definido por la fuente.
+'vecino' = condición probada más cercana: NO es el escenario.
+
+T1 · Escenarios
+---------------
+       id                                                      nombre  n_total  n_sin_supresor met/hep res(ext/dis/comp)   estado             vecino dO2(pp)/dpsi
+       E1                               Tierra/ISS: 21 % O2, 14.7 psi       49              29   23/26           29/15/5       ok                                
+       E2                           Hábitat NASA: 26.5 % O2, 10.2 psi        0               0     0/0             0/0/0 sin dato                                
+E2 vecino                           Hábitat NASA: 26.5 % O2, 10.2 psi        6               0     4/2             0/6/0   vecino O2 0.25 a ~0.7 atm   -1.5/+0.17
+       E3                  Exploración NASA / Marte: 34 % O2, 8.2 psi        0               0     0/0             0/0/0 sin dato                                
+E3 vecino                  Exploración NASA / Marte: 34 % O2, 8.2 psi        9               9     5/4             0/8/1   vecino O2 0.34 a ~0.7 atm     +0/+2.13
+       E4                 Traje NASA (EVA simulada): 85 % O2, 4.3 psi        0               0     0/0             0/0/0 sin dato                                
+E4 vecino                 Traje NASA (EVA simulada): 85 % O2, 4.3 psi        9               9     5/4             0/8/1   vecino O2 0.34 a ~0.7 atm    -51/+6.03
+       E5             Traje (texto del reto / Fer): 100 % O2, 4.3 psi        0               0     0/0             0/0/0 sin dato                                
+E5 vecino             Traje (texto del reto / Fer): 100 % O2, 4.3 psi        9               9     5/4             0/8/1   vecino O2 0.34 a ~0.7 atm    -66/+6.03
+       R1 Hábitat lunar (texto del reto / Fer): >=30 % O2, <=10.2 psi       17              17     9/8            0/15/2       ok                                
+
+T2a · O2 × presión, todas las pruebas (n)
+-----------------------------------------
+nivel_presion  ~0.7 atm  ~1.0 atm  >2 atm  sin_dato  total
+banda_o2                                                  
+<0.15                 0        28       0         0     28
+0.15-0.18            15        36       0         0     51
+0.18-0.21            25        47       0         1     73
+0.21-0.24            30        34       9         0     73
+0.24-0.28            16         9       0         0     25
+>=0.28               17         7       0         0     24
+total               103       161       9         1    274
+
+T2b · O2 × presión, sin supresor (CO2=0 y He=0)
+-----------------------------------------------
+nivel_presion  ~0.7 atm  ~1.0 atm  >2 atm  sin_dato  total
+banda_o2                                                  
+<0.15                 0        23       0         0     23
+0.15-0.18             0        13       0         0     13
+0.18-0.21             5         7       0         0     12
+0.21-0.24             0        29       0         0     29
+0.24-0.28             0         0       0         0      0
+>=0.28               17         7       0         0     24
+total                22        79       0         0    101
+
+T3 · Combustible × O2, solo sin supresor, por presión (tasa K media mm2/s solo si n>=5; celdas n=0 omitidas)
+------------------------------------------------------------------------------------------------------------
+combustible  banda_o2 nivel_presion  n  n_con_tasa tasa_media_mm2_s res(e/d/c)
+   methanol     <0.15      ~1.0 atm 17          16            0.356     17/0/0
+   methanol 0.15-0.18      ~1.0 atm  5           5            0.386      5/0/0
+   methanol 0.18-0.21      ~0.7 atm  3           3       gris (n<5)      2/1/0
+   methanol 0.18-0.21      ~1.0 atm  4           4       gris (n<5)      4/0/0
+   methanol 0.21-0.24      ~1.0 atm 12          12            0.501      9/3/0
+   methanol    >=0.28      ~0.7 atm  9           9            0.646      0/7/2
+   methanol    >=0.28      ~1.0 atm  4           4       gris (n<5)      2/1/1
+    heptane     <0.15      ~1.0 atm  6           4            0.455      5/0/1
+    heptane 0.15-0.18      ~1.0 atm  8           7            0.484      6/0/2
+    heptane 0.18-0.21      ~0.7 atm  2           2       gris (n<5)      1/0/1
+    heptane 0.18-0.21      ~1.0 atm  3           3       gris (n<5)      2/0/1
+    heptane 0.21-0.24      ~1.0 atm 17          15            0.559      5/8/4
+    heptane    >=0.28      ~0.7 atm  8           7            0.724      0/8/0
+    heptane    >=0.28      ~1.0 atm  3           3       gris (n<5)      0/2/1
+
+T4 · BASS-II por categoría de material (conteos; sin % de extinción; sin presión registrada; O2 máx 22.2 %)
+-----------------------------------------------------------------------------------------------------------
+     categoria_propuesta color  n_total  n_con_resultado_ai_extracted  n_not_stated  n_extinction  n_blowoff  n_no_ignition  n_not_sustained      ignicion_observada_en_>=1_prueba
+           aramid_fabric              3                             0             3             0          0              0                0 sin dato (ningún resultado declarado)
+cotton_fiberglass_fabric             27                             0            27             0          0              0                0 sin dato (ningún resultado declarado)
+                pmma_rod             54                            21            33            14          5              1                1                                    si
+             pmma_sphere              2                             0             2             0          0              0                0 sin dato (ningún resultado declarado)
+        pmma_thick_sheet             20                             1            19             1          0              0                0                                    si
+          pmma_thin_film             22                             4            18             2          2              0                0                                    si
+              wax_candle              1                             0             1             0          0              0                0 sin dato (ningún resultado declarado)
+                pmma_rod black       26                            11            15             9          1              0                1                                    si
+                pmma_rod clear       28                            10            18             5          4              1                0                                    si
+                   TOTAL            129                            26           103            17          7              1                1                                    si
+
+T4 nota: categorías de docs/material_mapping_proposal.csv. Fer las aprobó sin cambios en el issue #3 (rama
+feat/baz-mapeo-materiales, aún no unida a main). Resultados BASS-II extraídos por IA (ai_*), pendientes de revisión.
