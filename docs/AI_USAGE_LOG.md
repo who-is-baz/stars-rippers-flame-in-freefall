@@ -140,3 +140,31 @@ sin cambiar la config global de git.
 Excluido a propósito: `data/raw/` (8 archivos crudos, se regeneran con `fetch_psi.py`), `data/reference/` (4 Science
 Documents, se descargan a mano), `data/processed/psi.sqlite`, `.venv/`, `__pycache__/`.
 Peticiones de red en esta sesión: solo GitHub (gh/git). Ninguna a psi.nasa.gov.
+
+## 2026-11-14 (6) — Correcciones tras la verificación y texto oficial del reto — Claude Code (Opus 5.5)
+
+**Pedido:** rama `docs/correcciones-reto`, un PR sin unir; sin red (salvo `git pull`/`push`/PR); sin tocar `data/raw/`.
+
+1. `docs/08-reto-oficial.md` copiado tal cual de `~/Downloads` (texto del reto pegado por Baz). `CLAUDE.md`: 08 en "Antes de
+   trabajar, lee" + regla 10 (terminología "SI"). Nada más cambiado en CLAUDE.md.
+2. **`docs/00-reglas-y-checklist.md` NO se reemplazó:** el diff no solo cambia reglas/fechas; además afirma que "el andamio
+   del repo y el procesamiento de datos se hicieron el vie 13 nov", y la evidencia lo contradice: `data/raw/MANIFEST.csv`
+   registra las descargas el 2026-11-14 16:15 UTC (sáb 10:15 local) y los scripts tienen fecha sáb 10:12–10:36; del vie 13
+   solo es el paquete de docs. Queda pendiente la decisión de Baz.
+3. `docs/03`: el ejemplo de heptano pasó de O₂ 0.12 (no existe a ~1 atm) a O₂ 0.14 (n=3: 193R002, N04H101, N04H201), con n
+   en cada valor; pendiente de licencia cerrado (CC0-1.0, DataCite, 14 nov). `docs/data-dictionary.md`: frase de SoFIE matizada
+   (la entrada (1) de esta bitácora no se reescribió: es histórica). `docs/tareas/fer-datos.md`: T28a/T28b y P5, P13a, O6.
+4. QC (sin imputar): `co_final_censored` (M5), `co_initial_negative` (13), `low_confidence` (P5, P13a, O6) en
+   `scripts/build_processed.py`; `data/processed` regenerado: solo cambia la columna `qc_flags` en 17 filas de
+   `bass2_tests.csv`/`experiments.csv` (comprobado columna por columna); `flex_tests.csv` y `coverage_grid.json` sin cambios;
+   SHA-256 de `data/raw/` idénticos antes y después. `src/psi_queries.py` añade `low_confidence_warning`.
+   `tests/test_qc_flags.py`: 4 tests OK; prueba de mutación: sin la advertencia, el test falla. `test_psi_queries.py` 9/9 OK.
+5. `docs/SETUP.md`: la demo nunca depende de la API viva de PSI (endpoint de detalle con 500 el 14 nov).
+6. Filtro "condiciones lunares" (O₂ ≥ 0.30 y presión ≤ 0.70 atm) sobre `psi.sqlite`: **0 pruebas** (FLEX 0/274, BASS-II
+   0/129: O₂ máx. 22.2 % y presión no registrada). Hay 17 pruebas FLEX con O₂ 0.30–0.34 a 0.703–0.714 atm (10.33–10.50 psi),
+   justo por encima del umbral; todas terminaron en disruption (15) o completion (2), sin supresor.
+7. Commits con "AI-assisted: yes" y trailer `Co-Authored-By: Claude` (pedido explícito en esta sesión).
+8. `docs/00-reglas-y-checklist.md` reemplazado por la versión actualizada de Baz (`00-reglas-y-checklist (1).md`), que ya
+   corrige lo del vie 13. Única modificación propia (aprobada por Baz): el contrato de API (07), las fichas de `docs/tareas/`,
+   3 skills y las versiones nuevas de CLAUDE.md/02/03 son del **sáb 14, 10:38–10:39** según las fechas de `paquete-equipo.zip`,
+   no del vie 13. Del vie 13 (zip viejo, 9:59–10:00) son README, CLAUDE.md, docs 00–06, DECISIONES, `.github` y 5 skills.

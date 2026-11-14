@@ -104,6 +104,9 @@ Claude (Opus 5.5) leyó las 129 notas una por una el 2026-11-14. Las reglas est�
 | `o2_final_implausibly_high` (> 30 %) | P22b (39.1), T28b (40.4) | Ídem. Los pares a/b sugieren valores corridos entre columnas. |
 | `date_year_inconsistent_with_gmt` | T9, T18 | La fecha dice 2018 pero el GMT 175 coincide con el 2014-06-24. Probable error de año. |
 | `co_over_range_gt_1000ppm` | O4, O12, O13b | CO "OR"/"over" (>1000 ppm). |
+| `co_final_censored` | M5 | CO final ">500" en el original: es una cota inferior. `co_final_ppm` queda null; no se imputa. |
+| `co_initial_negative` | B4, B21, B22, M10, O1, O2, O5a, O20, T25, T26, T27, T28a, T29 (13) | CO inicial −1 a −3 ppm (probable offset del sensor). Se conserva el valor. |
+| `low_confidence` | P5, P13a, O6 | Extracción de IA ambigua (P5/P13a: pot 0 al extinguirse; O6: "out .275" sin "ext"). Pendiente de Fer; `src/psi_queries.py` añade `low_confidence_warning` a toda fila agregada que las incluya. |
 
 La tabla de BASS-II **no tiene columna de presión**: las pruebas se hicieron en la Microgravity Science Glovebox a presión de cabina.
 
@@ -150,7 +153,7 @@ Generada por `scripts/build_experiments.py`. SQLite: tabla `experiments`, vistas
 ### Cobertura y origen
 1. **Solo se procesaron las Experiment Tables.** No se usan los ~630 archivos por prueba de FLEX (Chamber/Radiometer
    Readings), ni los videos o imágenes de BASS-II (~275 GB), ni los de FLEX (~920 GB). Solo hay una muestra (20CAL10).
-2. SoFIE no está en PSI. De Combustion Science solo se procesaron BASS-II y FLEX (de 24 investigaciones).
+2. SoFIE no es una investigación en PSI (ninguna tiene esa sigla o título), pero los objetivos de BASS-II (PSI-25) la mencionan: "Provide SoFIE PIs with preliminary data to refine Science Requirements". De Combustion Science solo se procesaron BASS-II y FLEX (de 24 investigaciones).
 3. Los Science Documents consultados son 4 (FLEX DoD, FLEX Test Plan, BASS-II ReadMe, BASS-II SRD). No se revisaron los
    Engineering Documents, Presentations ni el Summary Report de BASS-II (49 MB).
 

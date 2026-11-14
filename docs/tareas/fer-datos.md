@@ -11,7 +11,10 @@ Eres el dueño de que lo que mostremos sea **cierto**. Es el criterio *Validity*
 
 ## Después
 3. Revisa a mano las **26 extracciones de resultado de BASS-II hechas por IA** (columnas `ai_*`; el CLI ya corrigió 4 errores, pero lo revisó la misma IA). Marca las que apruebas.
-4. Revisa los `qc_flags` (O₂ final imposible en P22a/P22b y B2, fechas incoherentes en T9/T18, presión 0.0 en C11M201, discrepancia 20CAL10, 14 pruebas "completion" con diámetro, ID duplicado 193F001). Decide cómo se muestran.
+   - **Dudosas, prioridad** (marcadas `ai_low_confidence` en `qc_flags` hasta que las apruebes):
+     - **P5** y **P13a**: `ai_fan_pot_at_extinction = 0` ("…0.28, 0 ext"). ¿La llama se apagó al cortar el ventilador?
+     - **O6**: "out .275" se interpretó como extinción a bajo flujo, aunque el texto no dice "ext".
+4. Revisa los `qc_flags` (O₂ final imposible en P22a/P22b, **T28a/T28b** (mismo patrón: ~0.9 % y 40.4 %) y B2, fechas incoherentes en T9/T18, presión 0.0 en C11M201, discrepancia 20CAL10, 14 pruebas "completion" con diámetro, ID duplicado 193F001). Decide cómo se muestran.
 5. Valida estas interpretaciones antes del demo:
    - ¿"Diámetro de extinción menor" = llama más persistente? (base del ranking)
    - La tendencia tasa de combustión vs O₂ (docs/03).

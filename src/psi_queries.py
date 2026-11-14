@@ -23,6 +23,9 @@ DEFAULT_DB = os.path.join(os.path.dirname(__file__), "..", "data", "processed", 
 MIN_N = 5
 PCT_NOTE = "descriptivo, no probabilidad"
 SMALL_N_WARNING = "n<{min_n}: porcentaje inestable; no interpretar como tasa"
+LOW_CONFIDENCE_FLAG = "low_confidence"
+LOW_CONFIDENCE_WARNING = ("incluye resultados extraídos por IA de baja confianza (pendientes de revisión humana); "
+                          "mostrar con advertencia")
 
 PROGRAMS = ("FLEX", "BASS-II")
 SUPPRESSANTS = ("any", "none", "co2", "he")  # 'any' = sin filtro; 'none' = sin CO2 ni He
@@ -93,6 +96,8 @@ def _finalize(rows: Iterable[sqlite3.Row], min_n: int = MIN_N) -> list:
             flags.update(f for f in chunk.split(";") if f)
         d["qc_flags"] = sorted(flags)
         d["source_doi"] = sorted(set((d.pop("_dois") or "").split(",")) - {""})
+        if LOW_CONFIDENCE_FLAG in flags:
+            d["low_confidence_warning"] = LOW_CONFIDENCE_WARNING
         if any(k.startswith("pct_") for k in d):
             d["pct_note"] = PCT_NOTE
             d["warning"] = SMALL_N_WARNING.format(min_n=min_n) if d["n"] < min_n else None
