@@ -168,3 +168,22 @@ Peticiones de red en esta sesión: solo GitHub (gh/git). Ninguna a psi.nasa.gov.
    corrige lo del vie 13. Única modificación propia (aprobada por Baz): el contrato de API (07), las fichas de `docs/tareas/`,
    3 skills y las versiones nuevas de CLAUDE.md/02/03 son del **sáb 14, 10:38–10:39** según las fechas de `paquete-equipo.zip`,
    no del vie 13. Del vie 13 (zip viejo, 9:59–10:00) son README, CLAUDE.md, docs 00–06, DECISIONES, `.github` y 5 skills.
+
+## 2026-11-14 (7) — Tablero de issues, protección de main y guías de estudio — Claude Code (Opus 5.5)
+
+**Pedido:** crear el tablero (con OK de Baz en cada paso), asignar, proteger `main` tras unir #1/#2/#26 y subir las guías.
+
+1. **Tablero:** etiquetas `task`, `lider`, `datos`, `backend`, `frontend`, `infra`, `bloqueante`, `opcional`; 4 hitos; 23 issues
+   (#3–#25) con checklist de aceptación y dependencias. Asignados según Baz (usuarios confirmados por él): Fer #3–6, Yael #7–10,
+   Charly #11–13, Jovanny #14–16, Baz #17–20; #21–25 sin asignar. #17 pasó de `infra` a `lider` (cuerpo y fuente actualizados).
+2. **Ramas:** convención `feat/<nombre>-<tema>` en README y SETUP (PR #26).
+3. **`main` protegida** (después de unir #1, #2 y #26): PR obligatorio + 1 aprobación, sin bloquear administradores, sin force push.
+   La API respondió sin 403.
+4. **Guías:** `docs/guia-datos.md` y `docs/guia-github.md` copiadas de `~/Downloads` **sin cambios** (comparadas con `cmp`;
+   escaneadas: sin secretos, PII ni instrucciones). La guía HTML no se subió (la sube Yael tras corregirla).
+   Cifra del PMMA "17 % frente a 18 %" (`guia-datos.md`, sección 3): **verificada el 14 nov** contra el resumen de
+   Link et al., *Sci Rep* 8:120 (2018), DOI 10.1038/s41598-017-18398-4 (BASS-II en la ISS, cilindros de PMMA, flujo opuesto
+   bajo; ≈18 % en gravedad normal, medido en tierra). La verificó Claude (sesión de chat) contra el resumen del artículo;
+   después Claude Code la contrastó con el texto en PMC5760683. Baz no la verificó personalmente.
+   Cita añadida a la guía en un commit aparte con la advertencia "un solo material (PMMA); no generalizar".
+5. `docs/tareas/`: la grabación del demo y la checklist final pasaron de `jovanny-infra.md` a `baz-lider.md` (#17).
