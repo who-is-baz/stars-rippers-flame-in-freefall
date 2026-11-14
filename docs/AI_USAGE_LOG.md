@@ -188,7 +188,7 @@ Peticiones de red en esta sesión: solo GitHub (gh/git). Ninguna a psi.nasa.gov.
    Cita añadida a la guía en un commit aparte con la advertencia "un solo material (PMMA); no generalizar".
 5. `docs/tareas/`: la grabación del demo y la checklist final pasaron de `jovanny-infra.md` a `baz-lider.md` (#17).
 
-## 2026-11-14 (8) — Rangos de O₂ y presión en FLEX y conciliación (Yael) — Claude Code (Opus 5.5)
+## 2026-11-14 (12) — Rangos de O₂ y presión en FLEX y conciliación (Yael) — Claude Code (Opus 5.5)
 
 **Pedido (Yael):** rama `feat/yael-rangos-o2-presion`; conteos FLEX por banda de O₂ × presión, escenarios, conciliar las cifras de
 Fer, Charly y el PDF de materiales; sin red, sin tocar `data/raw/`, `psi_queries.py`, `coverage_grid.json` ni `experiments.csv`;
