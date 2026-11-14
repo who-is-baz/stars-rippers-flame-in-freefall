@@ -244,7 +244,6 @@ textos en inglés del contrato.
 5. Tests: `test_scenarios.py` 7/7 y `test_frontend_data.py` 6/6 (nuevos); `test_psi_queries.py` y `test_qc_flags.py`
    OK. Sin pytest. `data/raw/` sin cambios.
 6. Commits con "AI-assisted: yes", sin trailer `Co-Authored-By`. Peticiones de red en esta sesión: solo GitHub (gh/git).
-
 ## 2026-11-14 (11) — Marca fer_corrected en P14 (corrección pedida por Fer en #28) — Claude Code (Opus 5.5)
 
 **Pedido (Baz, por encargo de Fer):** en `feat/baz-mapeo-materiales` (#28), marcar la corrección de P14 antes de que Fer
