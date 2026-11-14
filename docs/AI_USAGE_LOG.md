@@ -168,3 +168,20 @@ Peticiones de red en esta sesión: solo GitHub (gh/git). Ninguna a psi.nasa.gov.
    corrige lo del vie 13. Única modificación propia (aprobada por Baz): el contrato de API (07), las fichas de `docs/tareas/`,
    3 skills y las versiones nuevas de CLAUDE.md/02/03 son del **sáb 14, 10:38–10:39** según las fechas de `paquete-equipo.zip`,
    no del vie 13. Del vie 13 (zip viejo, 9:59–10:00) son README, CLAUDE.md, docs 00–06, DECISIONES, `.github` y 5 skills.
+
+## 2026-11-14 (8) — Revisión previa al congelado (#19) y mapeo de materiales — Claude Code (Opus 5.5)
+
+**Pedido:** comprobar #3, #7, #27 y la coherencia antes de congelar el esquema; después, aplicar el mapeo aprobado por
+Fer. Rama `feat/baz-mapeo-materiales`, un PR sin unir; sin red salvo `gh`/git; sin tocar `data/raw/`.
+
+1. **Congelado (#19) NO hecho:** #7 no tiene comentarios ("Firmado" de Yael y Charly pendiente) y el contrato
+   (`docs/07`) no coincide con `src/psi_queries.py` ni con `coverage_grid.json` (nombres de campos, idioma de
+   `pct_note`/`warning`, endpoints frente a Q1–Q6). No se creó la etiqueta `schema-v1`.
+2. **Mapeo de materiales:** `docs/material_mapping.csv` es igual a la propuesta (Fer la aprobó en #3 sin cambiar
+   valores) y conserva las marcas que pidió: `material_assumed_from_readme` (7 pruebas) y `material_text_typo` (M5, M19).
+   T23/T24 ("SIBAL" en el comentario de Fer) = tela SIBAL; la variante de ignición no es material.
+3. `data/processed` regenerado: en `experiments.csv` solo cambian `material_category` y `qc_flags` de las 129 filas de
+   BASS-II (comprobado columna por columna); `bass2_tests.csv` suma 6 columnas y no cambia las anteriores;
+   `flex_tests.csv` y `coverage_grid.json` sin cambios; SHA-256 de `data/raw/` idénticos antes y después.
+4. Tests: `test_psi_queries.py` y `test_qc_flags.py` OK (incluye el test nuevo del mapeo), sin pytest.
+5. Commits con "AI-assisted: yes", sin trailer `Co-Authored-By`. Peticiones de red: solo GitHub (gh/git).
