@@ -33,6 +33,7 @@
    "qc_flags": [
     "co_initial_negative",
     "co_over_range_gt_1000ppm",
+    "fer_corrected",
     "low_confidence",
     "o2_final_implausibly_high",
     "o2_final_implausibly_low"
@@ -110,6 +111,7 @@
      "classification": "flammable_demonstrated",
      "warning": null,
      "qc_flags": [
+      "fer_corrected",
       "low_confidence",
       "o2_final_implausibly_high",
       "o2_final_implausibly_low"

@@ -1403,7 +1403,9 @@
    "outcome_source": "not_stated",
    "extinction_diameter_mm": null,
    "burning_rate_mm2_s": null,
-   "qc_flags": [],
+   "qc_flags": [
+    "fer_corrected"
+   ],
    "source_doi": "10.60555/4qc4-de67"
   },
   {
