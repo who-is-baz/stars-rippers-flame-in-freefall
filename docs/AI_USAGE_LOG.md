@@ -205,7 +205,7 @@ Notas: sin peticiones de red (ni PyPI: se usó el Anaconda local, Python 3.14 + 
 `data/raw/` no existe en este disco: la comparación del PDF con la tabla cruda queda pendiente (comando en el informe, sección 4).
 `build_experiments.py` se ejecutó y dejó `git status` limpio. Commits con "AI-assisted: yes".
 
-## 2026-11-14 (9) — Resumen del equipo y escenario Marte (Baz, "Juntar y decidir") — Claude Code (Opus 5.5)
+## 2026-11-14 (13) — Resumen del equipo y escenario Marte (Baz, "Juntar y decidir") — Claude Code (Opus 5.5)
 
 **Pedido (Baz, ejecutado en la PC de Yael):** rama `feat/baz-resumen-equipo`; tablas para el grupo, verificación de fuentes NASA
 para Marte (red acotada a 3 URL de ntrs.nasa.gov), resumen único y brief; sin push ni PR.
@@ -219,5 +219,5 @@ para Marte (red acotada a 3 URL de ntrs.nasa.gov), resumen único y brief; sin p
 
 Notas: red usada solo para `git fetch --all` (GitHub) y las 3 URL de NTRS autorizadas; nada contra psi.nasa.gov ni PyPI.
 Corrección: la definición lunar (≥30 % / ≤10.2 psi) y el traje 100 % O₂ / 4.3 psi **sí tienen fuente**: el texto oficial del reto
-(`docs/08`). La entrada (8) y el informe de Yael los daban por "sin fuente"; no se reescribieron. La rama está apilada sobre
+(`docs/08`). La entrada (12) y el informe de Yael los daban por "sin fuente"; no se reescribieron. La rama está apilada sobre
 `feat/yael-rangos-o2-presion`. Commits con "AI-assisted: yes".
