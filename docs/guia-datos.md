@@ -30,7 +30,8 @@ En total son 403 filas en `data/processed/experiments.csv`. Toda cifra que muest
 
 ## 3. Lo que NO tenemos (y es parte de la historia)
 - **No hay gravedad parcial en PSI.** Ni Luna (1/6 g) ni Marte (≈3/8 g). El reto lo dice. Solo hay microgravedad.
-- **No hay datos en gravedad normal** para comparar. Por eso "¿qué ardió con menos O₂ que en la Tierra?" no se contesta con PSI; solo con un artículo citado (el de PMMA, BASS-II: 17 % frente a 18 %, **un solo material**).
+- **No hay datos en gravedad normal** para comparar. Por eso "¿qué ardió con menos O₂ que en la Tierra?" no se contesta con PSI; solo con un artículo citado: en BASS-II (ISS), con cilindros de PMMA y flujo opuesto bajo, la llama se propagó con **17 % de O₂ en microgravedad frente a ≈18 % en gravedad normal** (ensayos en tierra). **Un solo material (PMMA); no generalizar.**
+  - Fuente: Link, Huang, Fernandez-Pello, Olson y Ferkul, "The Effect of Gravity on Flame Spread over PMMA Cylinders", *Scientific Reports* 8:120 (2018), DOI [10.1038/s41598-017-18398-4](https://doi.org/10.1038/s41598-017-18398-4), [texto en PMC](https://pmc.ncbi.nlm.nih.gov/articles/PMC5760683). Verificado el 14 nov 2026 contra el resumen del artículo.
 - **Ninguna prueba cubre la atmósfera lunar prevista** (O₂ ≥ 30 % a ≤ 10.2 psi): de las 274 pruebas de FLEX, **0** cumplen las dos condiciones. BASS-II no registra presión y su O₂ máximo es 22.2 %. Hay 17 pruebas de FLEX justo por encima del umbral de presión (10.3–10.5 psi): se muestran aparte, **no** se llaman "lunares".
 - **Cohetes y propelentes** están fuera del alcance de PSI.
 - **El umbral lunar es una expectativa del reto** ("likely 30 % or greater"), no una especificación.
