@@ -82,6 +82,27 @@ def test_material_mapping_applied_to_all_bass2_rows():
     assert all(r["color"] in ("clear", "black") for r in bass if r["material_category"] == "pmma_rod")
 
 
+def test_fer_corrected_marks_every_corrected_value():
+    """P14 ("1/4 blac rod"): Fer corrigió el color a black (#28). El texto original se conserva y la corrección
+    lleva la marca fer_corrected en el mapeo, en bass2_tests.csv y en experiments.csv. Regla general: si el color
+    asignado no aparece tal cual en el texto original, la fila tiene que llevar la marca."""
+    with open(os.path.join(ROOT, "docs", "material_mapping.csv"), newline="", encoding="utf-8") as fh:
+        mapping = {r["material_raw"]: r for r in csv.DictReader(fh)}
+    assert mapping["1/4 blac rod"]["material_flag"] == "fer_corrected"
+    assert mapping["1/4 blac rod"]["color"] == "black"
+    bass = _rows("bass2_tests.csv")
+    exp = {r["test_id"]: r for r in _rows("experiments.csv") if r["program"] == "BASS-II"}
+    p14 = next(r for r in bass if r["test_id"] == "P14")
+    assert p14["material_raw"] == "1/4 blac rod", "el valor original no debe cambiar"
+    assert p14["color"] == "black"
+    assert "fer_corrected" in _flags(p14) and "fer_corrected" in _flags(exp["P14"])
+    assert exp["P14"]["material_or_fuel"] == "1/4 blac rod"
+    for r in bass:
+        if r["color"] and r["color"] not in r["material_raw"].lower():
+            assert "fer_corrected" in _flags(r), f"{r['test_id']}: color corregido sin la marca fer_corrected"
+    assert _with(bass, "fer_corrected") == {"P14"}
+
+
 if __name__ == "__main__":  # runner mínimo si pytest no está instalado
     failed = 0
     for name, fn in sorted(globals().items()):
