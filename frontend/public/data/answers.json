@@ -1,0 +1,276 @@
+{
+ "level": "low",
+ "note": "Precomputed by scripts/build_frontend_data.py; numbers come from the data files.",
+ "answers": [
+  {
+   "id": "q01",
+   "question": "How many experiments does this dashboard cover?",
+   "answer": "403 tests from NASA PSI: 274 FLEX fuel-droplet tests (heptane and methanol) and 129 BASS-II solid-material tests, all run in microgravity on the ISS.",
+   "citations": [
+    {
+     "query": "meta",
+     "params": {},
+     "source_doi": "10.60555/mbq8-0451",
+     "test_ids": []
+    },
+    {
+     "query": "meta",
+     "params": {},
+     "source_doi": "10.60555/4qc4-de67",
+     "test_ids": []
+    }
+   ],
+   "no_data": false,
+   "warnings": [],
+   "level": "low"
+  },
+  {
+   "id": "q02",
+   "question": "Which tests match Earth / ISS cabin air (21% O2, 14.7 psi)?",
+   "answer": "49 FLEX tests within ±1% O2 and ±0.5 psi of 21% / 14.7 psi (26 heptane, 23 methanol). BASS-II has no recorded pressure; 31 BASS-II tests match by O2 only.",
+   "citations": [
+    {
+     "query": "scenarios.earth_iss",
+     "params": {
+      "tolerance": {
+       "o2_fraction": 0.01,
+       "pressure_psi": 0.5
+      }
+     },
+     "source_doi": "10.60555/mbq8-0451",
+     "test_ids": [
+      "177F001",
+      "177R002",
+      "181F001",
+      "205F001",
+      "205R001",
+      "209F001",
+      "209F002",
+      "209F003",
+      "209F004",
+      "209F005",
+      "20CAL08",
+      "20CAL10",
+      "20CAL12",
+      "20CAL13",
+      "30CAL02",
+      "30CAL03",
+      "30CAL06",
+      "30CAL07",
+      "40CAL01",
+      "C01H101",
+      "C01H201",
+      "C01H302",
+      "C01H501",
+      "C01H601",
+      "C01H701",
+      "C01M101",
+      "C01M201",
+      "C01M301",
+      "C01M501",
+      "C01M602",
+      "C01M603",
+      "C15M101",
+      "C15M201",
+      "C15M301",
+      "H01H102",
+      "H01M102",
+      "H01M104",
+      "H19H101",
+      "H19H201",
+      "N01H101",
+      "N01H102",
+      "N01H201",
+      "N01H202",
+      "N01H301",
+      "N01H401",
+      "N01H502",
+      "N01H601",
+      "N01M101",
+      "N01M201"
+     ]
+    }
+   ],
+   "no_data": false,
+   "warnings": [],
+   "level": "low"
+  },
+  {
+   "id": "q03",
+   "question": "Are there tests at the expected Moon-base air (30% O2 or more, 10.2 psi or less)?",
+   "answer": "None exactly (0). With the tolerance (±0.5 psi) there are 17 FLEX tests at 10.33-10.5 psi and 30%-34% O2; outcomes: completion 2, disruption 15. The 30% / 10.2 psi figure is the challenge statement's estimate, not a NASA specification.",
+   "citations": [
+    {
+     "query": "scenarios.lunar_challenge",
+     "params": {
+      "tolerance": {
+       "o2_fraction": 0.01,
+       "pressure_psi": 0.5
+      }
+     },
+     "source_doi": "10.60555/mbq8-0451",
+     "test_ids": [
+      "191F001",
+      "191R001",
+      "192F001",
+      "192F002",
+      "192F003",
+      "195F001",
+      "195F002",
+      "196F001",
+      "196F002",
+      "196F003",
+      "219F001",
+      "219R001",
+      "220R001",
+      "220R002",
+      "223F001",
+      "223F002",
+      "224F001"
+     ]
+    }
+   ],
+   "no_data": false,
+   "warnings": [],
+   "level": "low"
+  },
+  {
+   "id": "q04",
+   "question": "Is there data for NASA's Exploration Atmosphere (8.2 psia, 34% O2)?",
+   "answer": "No data: no FLEX test is near 8.2 psi (the lowest is 10.18 psi). The closest tested condition is 34% O2 at 10.33-10.5 psi (n = 9), which is not the Exploration Atmosphere.",
+   "citations": [
+    {
+     "query": "scenarios.exploration",
+     "params": {
+      "tolerance": {
+       "o2_fraction": 0.01,
+       "pressure_psi": 0.5
+      }
+     },
+     "source_doi": "10.60555/mbq8-0451",
+     "test_ids": [
+      "192F001",
+      "192F002",
+      "192F003",
+      "196F001",
+      "196F002",
+      "196F003",
+      "220R001",
+      "220R002",
+      "224F001"
+     ]
+    }
+   ],
+   "no_data": true,
+   "warnings": [],
+   "level": "low"
+  },
+  {
+   "id": "q05",
+   "question": "Is there data for spacesuit conditions (100% O2, 4.3 psi)?",
+   "answer": "No data: the highest O2 tested is 34% and the lowest pressure is 10.18 psi.",
+   "citations": [
+    {
+     "query": "scenarios.suit",
+     "params": {
+      "tolerance": {
+       "o2_fraction": 0.01,
+       "pressure_psi": 0.5
+      }
+     },
+     "source_doi": "10.60555/mbq8-0451",
+     "test_ids": []
+    }
+   ],
+   "no_data": true,
+   "warnings": [],
+   "level": "low"
+  },
+  {
+   "id": "q06",
+   "question": "Which fuel burns faster, heptane or methanol?",
+   "answer": "Heptane has the higher mean burning rate in every O2 band (descriptive; pressures and suppressants mixed). O2 <0.15: heptane 0.455 mm2/s (n=4), methanol 0.38 mm2/s (n=21); O2 0.15-0.18: heptane 0.518 mm2/s (n=17), methanol 0.405 mm2/s (n=31); O2 0.18-0.21: heptane 0.491 mm2/s (n=34), methanol 0.465 mm2/s (n=38); O2 0.21-0.24: heptane 0.551 mm2/s (n=27), methanol 0.503 mm2/s (n=40); O2 >=0.24: heptane 0.644 mm2/s (n=25), methanol 0.613 mm2/s (n=21).",
+   "citations": [
+    {
+     "query": "q4_burning_rate_by_o2",
+     "params": {
+      "pressure_range": null,
+      "suppressant": "any"
+     },
+     "source_doi": "10.60555/mbq8-0451",
+     "test_ids": []
+    }
+   ],
+   "no_data": false,
+   "warnings": [],
+   "level": "low"
+  },
+  {
+   "id": "q07",
+   "question": "What does 'disruption' mean in FLEX?",
+   "answer": "It is not defined in the FLEX Science Documents. 61 of 274 FLEX tests ended in 'disruption'; we do not interpret it further.",
+   "citations": [
+    {
+     "query": "meta",
+     "params": {},
+     "source_doi": "10.60555/mbq8-0451",
+     "test_ids": []
+    }
+   ],
+   "no_data": false,
+   "warnings": [],
+   "level": "low"
+  },
+  {
+   "id": "q08",
+   "question": "Do CO2 or helium put out flames?",
+   "answer": "These data cannot show a causal effect: CO2 and He are confounded with O2 and FLEX chose conditions iteratively. Descriptive counts: none: 58/101 ended in extinction (57.4%), mean O2 0.207; co2: 88/123 ended in extinction (71.5%), mean O2 0.201; he: 40/50 ended in extinction (80.0%), mean O2 0.187.",
+   "citations": [
+    {
+     "query": "q2_co2_effect",
+     "params": {},
+     "source_doi": "10.60555/mbq8-0451",
+     "test_ids": []
+    },
+    {
+     "query": "q3_he_effect",
+     "params": {},
+     "source_doi": "10.60555/mbq8-0451",
+     "test_ids": []
+    }
+   ],
+   "no_data": false,
+   "warnings": [
+    "descriptive, not a probability"
+   ],
+   "level": "low"
+  },
+  {
+   "id": "q09",
+   "question": "Which BASS-II materials were shown to burn?",
+   "answer": "Flame shown in at least one test: pmma_rod (n=54, 21 with outcome), pmma_thin_film (n=22, 4 with outcome), pmma_thick_sheet (n=20, 1 with outcome). Undetermined (no stated outcome): cotton_fiberglass_fabric (n=27), aramid_fabric (n=3), pmma_sphere (n=2), wax_candle (n=1). No material can be called non-flammable from these data.",
+   "citations": [
+    {
+     "query": "q6_bass2_outcomes_by_o2_band",
+     "params": {},
+     "source_doi": "10.60555/4qc4-de67",
+     "test_ids": []
+    }
+   ],
+   "no_data": false,
+   "warnings": [
+    "Outcomes were extracted by AI; not_stated does not mean the flame did not go out."
+   ],
+   "level": "low"
+  },
+  {
+   "id": "q10",
+   "question": "What happens to a fire in lunar gravity?",
+   "answer": "No data available for that question: every test here is in microgravity, and PSI has no partial-gravity combustion data yet. ACME's E-FIELD Flames only mimicked partial gravity with an electric field; it is an analog, not lunar data.",
+   "citations": [],
+   "no_data": true,
+   "warnings": [],
+   "level": "low"
+  }
+ ]
+}

@@ -1,0 +1,183 @@
+{
+ "gaps": [
+  {
+   "id": "low_pressure",
+   "source_doi": [
+    "10.60555/mbq8-0451"
+   ],
+   "text": "No FLEX test below 10.18 psi (0.69 atm): no data at 8.2 psi or 4.3 psi.",
+   "evidence": {
+    "min_psi": 10.18,
+    "max_psi": 44.86,
+    "n_with_pressure": 273
+   }
+  },
+  {
+   "id": "high_oxygen",
+   "source_doi": [
+    "10.60555/mbq8-0451",
+    "10.60555/4qc4-de67"
+   ],
+   "text": "No test above 34% O2 (FLEX max 0.34; BASS-II max 0.222).",
+   "evidence": {
+    "flex_o2_max": 0.34,
+    "bass2_o2_max": 0.222
+   }
+  },
+  {
+   "id": "oxygen_gap",
+   "source_doi": [
+    "10.60555/mbq8-0451"
+   ],
+   "text": "No FLEX test between 25% and 30% O2.",
+   "evidence": {
+    "o2_below": 0.25,
+    "o2_above": 0.3
+   }
+  },
+  {
+   "id": "high_pressure_small_n",
+   "source_doi": [
+    "10.60555/mbq8-0451"
+   ],
+   "text": "Above 1 atm there are only 9 FLEX tests, all in O2 band(s) 0.21-0.24 and with suppressant(s) co2; at each actual pressure (2.0 atm, 2.7 atm, 3.1 atm) n < 5.",
+   "evidence": {
+    "n_tests": 9,
+    "n_by_fuel": {
+     "heptane": 2,
+     "methanol": 7
+    },
+    "n_by_pressure_atm": {
+     "2.0": 2,
+     "2.7": 4,
+     "3.1": 3
+    },
+    "cells": [
+     {
+      "fuel": "heptane",
+      "o2_band": "0.21-0.24",
+      "pressure_level": ">2 atm",
+      "n": 2
+     },
+     {
+      "fuel": "methanol",
+      "o2_band": "0.21-0.24",
+      "pressure_level": ">2 atm",
+      "n": 7
+     }
+    ]
+   }
+  },
+  {
+   "id": "empty_cells",
+   "source_doi": [
+    "10.60555/mbq8-0451"
+   ],
+   "text": "10 of 30 fuel x O2 band x pressure level cells have no tests.",
+   "evidence": {
+    "cells": [
+     {
+      "fuel": "heptane",
+      "o2_band": "<0.15",
+      "pressure_level": "~0.7 atm"
+     },
+     {
+      "fuel": "heptane",
+      "o2_band": "<0.15",
+      "pressure_level": ">2 atm"
+     },
+     {
+      "fuel": "heptane",
+      "o2_band": "0.15-0.18",
+      "pressure_level": ">2 atm"
+     },
+     {
+      "fuel": "heptane",
+      "o2_band": "0.18-0.21",
+      "pressure_level": ">2 atm"
+     },
+     {
+      "fuel": "heptane",
+      "o2_band": ">=0.24",
+      "pressure_level": ">2 atm"
+     },
+     {
+      "fuel": "methanol",
+      "o2_band": "<0.15",
+      "pressure_level": "~0.7 atm"
+     },
+     {
+      "fuel": "methanol",
+      "o2_band": "<0.15",
+      "pressure_level": ">2 atm"
+     },
+     {
+      "fuel": "methanol",
+      "o2_band": "0.15-0.18",
+      "pressure_level": ">2 atm"
+     },
+     {
+      "fuel": "methanol",
+      "o2_band": "0.18-0.21",
+      "pressure_level": ">2 atm"
+     },
+     {
+      "fuel": "methanol",
+      "o2_band": ">=0.24",
+      "pressure_level": ">2 atm"
+     }
+    ]
+   }
+  },
+  {
+   "id": "scenarios_without_tests",
+   "source_doi": [
+    "10.60555/mbq8-0451"
+   ],
+   "text": "No FLEX test matches these scenarios exactly: Expected Moon-base air (challenge statement), NASA lunar surface habitat (nominal), NASA Exploration Atmosphere, Spacesuit.",
+   "evidence": {
+    "scenarios": [
+     {
+      "id": "lunar_challenge",
+      "n_exact": 0,
+      "n_near": 17
+     },
+     {
+      "id": "lunar_nasa",
+      "n_exact": 0,
+      "n_near": 0
+     },
+     {
+      "id": "exploration",
+      "n_exact": 0,
+      "n_near": 0
+     },
+     {
+      "id": "suit",
+      "n_exact": 0,
+      "n_near": 0
+     }
+    ]
+   }
+  },
+  {
+   "id": "bass2_pressure_and_outcome",
+   "source_doi": [
+    "10.60555/4qc4-de67"
+   ],
+   "text": "BASS-II has no recorded pressure, and 103 of 129 tests have no stated outcome (not_stated does not mean the flame did not go out).",
+   "evidence": {
+    "n_tests": 129,
+    "n_not_stated": 103
+   }
+  },
+  {
+   "id": "partial_gravity",
+   "source_doi": [],
+   "text": "There is no partial-gravity combustion data in PSI: every test here is microgravity on the ISS.",
+   "evidence": {
+    "source": "Official challenge text (docs/08-reto-oficial.md): \"there is currently no partial-gravity combustion data available in PSI.\""
+   }
+  }
+ ]
+}
