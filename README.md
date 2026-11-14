@@ -35,7 +35,7 @@ Las reglas 2026 sobre trabajo previo y uso de IA deben confirmarse en las guías
 
 ## Flujo de trabajo
 1. Una tarea = un issue (plantilla en `.github/ISSUE_TEMPLATE/`).
-2. Una rama por tarea: `feat/<rol>-<tema>`. PR pequeño, revisado por otra persona.
+2. Una rama por issue: `feat/<nombre>-<tema>` (p. ej. `feat/fer-material-mapping`). Se usa el nombre propio y no el rol porque los roles se solapan (Baz y Yael hacen backend). PR pequeño con `Closes #N`, revisado por otra persona; sin push directo a `main`.
 3. Todo uso de IA se anota en `docs/AI_USAGE_LOG.md`.
 4. Congelamiento de funciones: **dom 15 nov, 2:00 PM** (ajustar al horario real de UNAQ).
 
