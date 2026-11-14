@@ -1,0 +1,100 @@
+{
+ "title": "Flame in Freefall: NASA PSI microgravity combustion data (FLEX + BASS-II)",
+ "generated_utc": "2026-11-14T22:41:47+00:00",
+ "generated_by": "scripts/build_frontend_data.py",
+ "license": "CC0-1.0",
+ "n_tests": 403,
+ "programs": [
+  {
+   "program": "FLEX",
+   "psi_id": "PSI-69",
+   "n": 274,
+   "source_doi": "10.60555/mbq8-0451",
+   "what": "fuel droplets (heptane, methanol)"
+  },
+  {
+   "program": "BASS-II",
+   "psi_id": "PSI-25",
+   "n": 129,
+   "source_doi": "10.60555/4qc4-de67",
+   "what": "solid materials in airflow"
+  }
+ ],
+ "source_doi": [
+  "10.60555/mbq8-0451",
+  "10.60555/4qc4-de67"
+ ],
+ "tolerance": {
+  "o2_fraction": 0.01,
+  "pressure_psi": 0.5
+ },
+ "o2_bands": [
+  {
+   "label": "<0.15",
+   "min_inclusive": 0.0,
+   "max_exclusive": 0.15
+  },
+  {
+   "label": "0.15-0.18",
+   "min_inclusive": 0.15,
+   "max_exclusive": 0.18
+  },
+  {
+   "label": "0.18-0.21",
+   "min_inclusive": 0.18,
+   "max_exclusive": 0.21
+  },
+  {
+   "label": "0.21-0.24",
+   "min_inclusive": 0.21,
+   "max_exclusive": 0.24
+  },
+  {
+   "label": ">=0.24",
+   "min_inclusive": 0.24,
+   "max_exclusive": 1.01
+  }
+ ],
+ "pressure_levels": [
+  {
+   "label": "~0.7 atm",
+   "atm_min": 0.6,
+   "atm_max": 0.8
+  },
+  {
+   "label": "~1.0 atm",
+   "atm_min": 0.9,
+   "atm_max": 1.1
+  },
+  {
+   "label": ">2 atm",
+   "atm_min": 2.0,
+   "atm_max": null
+  }
+ ],
+ "min_n": 5,
+ "excluded_from_pressure_views": [
+  {
+   "test_id": "C11M201",
+   "program": "FLEX",
+   "reason": "no pressure recorded"
+  }
+ ],
+ "limitations": [
+  "All tests were run in microgravity on the ISS; there is no partial-gravity (Moon or Mars) combustion data in PSI.",
+  "FLEX extinction percentages are descriptive, not probabilities: tests were chosen iteratively to approach the extinction limit.",
+  "Cells with n < 5 always carry a warning.",
+  "CO2 and He effects are confounded with O2 (average O2 differs between suppressant levels); no causal claims.",
+  "'Disruption' is not defined in the FLEX Science Documents.",
+  "BASS-II outcomes were extracted by AI from free-text notes; 'not_stated' does not mean the flame did not go out.",
+  "BASS-II has no recorded pressure and its O2 was measured, not set by design."
+ ],
+ "files": {
+  "scenarios.json": "atmosphere scenarios with n_exact / n_near",
+  "coverage.json": "FLEX grid: fuel x O2 band x pressure level",
+  "experiments.json": "all tests, one row each (API contract columns)",
+  "gaps.json": "what the data does not cover",
+  "materials.json": "BASS-II by material category",
+  "answers.json": "suggested questions with precomputed answers (assistant 'low' mode)"
+ }
+}

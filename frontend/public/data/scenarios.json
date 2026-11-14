@@ -1,0 +1,475 @@
+{
+ "program": "FLEX",
+ "tolerance": {
+  "o2_fraction": 0.01,
+  "pressure_psi": 0.5
+ },
+ "scenarios": [
+  {
+   "id": "earth_iss",
+   "label": "Earth / ISS reference air",
+   "criteria": {
+    "o2": {
+     "kind": "point",
+     "value": 0.21
+    },
+    "pressure_psi": {
+     "kind": "point",
+     "value": 14.7
+    },
+    "tolerance": {
+     "o2_fraction": 0.01,
+     "pressure_psi": 0.5
+    }
+   },
+   "n_exact": 49,
+   "n_near": 49,
+   "status": "ok",
+   "exact": {
+    "n": 49,
+    "o2_min": 0.2,
+    "o2_max": 0.21,
+    "atm_min": 0.9921,
+    "atm_max": 1.015,
+    "psi_min": 14.58,
+    "psi_max": 14.92,
+    "n_by_fuel": {
+     "heptane": 26,
+     "methanol": 23
+    },
+    "n_by_outcome": {
+     "completion": 5,
+     "disruption": 15,
+     "extinction": 29
+    },
+    "test_ids": [
+     "177F001",
+     "177R002",
+     "181F001",
+     "205F001",
+     "205R001",
+     "209F001",
+     "209F002",
+     "209F003",
+     "209F004",
+     "209F005",
+     "20CAL08",
+     "20CAL10",
+     "20CAL12",
+     "20CAL13",
+     "30CAL02",
+     "30CAL03",
+     "30CAL06",
+     "30CAL07",
+     "40CAL01",
+     "C01H101",
+     "C01H201",
+     "C01H302",
+     "C01H501",
+     "C01H601",
+     "C01H701",
+     "C01M101",
+     "C01M201",
+     "C01M301",
+     "C01M501",
+     "C01M602",
+     "C01M603",
+     "C15M101",
+     "C15M201",
+     "C15M301",
+     "H01H102",
+     "H01M102",
+     "H01M104",
+     "H19H101",
+     "H19H201",
+     "N01H101",
+     "N01H102",
+     "N01H201",
+     "N01H202",
+     "N01H301",
+     "N01H401",
+     "N01H502",
+     "N01H601",
+     "N01M101",
+     "N01M201"
+    ]
+   },
+   "near": {
+    "n": 49,
+    "o2_min": 0.2,
+    "o2_max": 0.21,
+    "atm_min": 0.9921,
+    "atm_max": 1.015,
+    "psi_min": 14.58,
+    "psi_max": 14.92,
+    "n_by_fuel": {
+     "heptane": 26,
+     "methanol": 23
+    },
+    "n_by_outcome": {
+     "completion": 5,
+     "disruption": 15,
+     "extinction": 29
+    },
+    "test_ids": [
+     "177F001",
+     "177R002",
+     "181F001",
+     "205F001",
+     "205R001",
+     "209F001",
+     "209F002",
+     "209F003",
+     "209F004",
+     "209F005",
+     "20CAL08",
+     "20CAL10",
+     "20CAL12",
+     "20CAL13",
+     "30CAL02",
+     "30CAL03",
+     "30CAL06",
+     "30CAL07",
+     "40CAL01",
+     "C01H101",
+     "C01H201",
+     "C01H302",
+     "C01H501",
+     "C01H601",
+     "C01H701",
+     "C01M101",
+     "C01M201",
+     "C01M301",
+     "C01M501",
+     "C01M602",
+     "C01M603",
+     "C15M101",
+     "C15M201",
+     "C15M301",
+     "H01H102",
+     "H01M102",
+     "H01M104",
+     "H19H101",
+     "H19H201",
+     "N01H101",
+     "N01H102",
+     "N01H201",
+     "N01H202",
+     "N01H301",
+     "N01H401",
+     "N01H502",
+     "N01H601",
+     "N01M101",
+     "N01M201"
+    ]
+   },
+   "nearest": null,
+   "bass2_o2_only": {
+    "n": 31,
+    "note": "BASS-II has no recorded pressure: count by O2 only (measured, not set), with tolerance."
+   },
+   "source": "Reference: sea-level air and ISS cabin (21% O2, 14.7 psi; 1 atm = 14.696 psi)",
+   "quote": null,
+   "verified": true,
+   "note": null,
+   "excluded": [
+    {
+     "test_id": "C11M201",
+     "reason": "no pressure recorded"
+    }
+   ],
+   "source_doi": "10.60555/mbq8-0451"
+  },
+  {
+   "id": "lunar_challenge",
+   "label": "Expected Moon-base air (challenge statement)",
+   "criteria": {
+    "o2": {
+     "kind": "min",
+     "value": 0.3
+    },
+    "pressure_psi": {
+     "kind": "max",
+     "value": 10.2
+    },
+    "tolerance": {
+     "o2_fraction": 0.01,
+     "pressure_psi": 0.5
+    }
+   },
+   "n_exact": 0,
+   "n_near": 17,
+   "status": "ok",
+   "exact": {
+    "n": 0
+   },
+   "near": {
+    "n": 17,
+    "o2_min": 0.3,
+    "o2_max": 0.34,
+    "atm_min": 0.703,
+    "atm_max": 0.7142,
+    "psi_min": 10.33,
+    "psi_max": 10.5,
+    "n_by_fuel": {
+     "heptane": 8,
+     "methanol": 9
+    },
+    "n_by_outcome": {
+     "completion": 2,
+     "disruption": 15
+    },
+    "test_ids": [
+     "191F001",
+     "191R001",
+     "192F001",
+     "192F002",
+     "192F003",
+     "195F001",
+     "195F002",
+     "196F001",
+     "196F002",
+     "196F003",
+     "219F001",
+     "219R001",
+     "220R001",
+     "220R002",
+     "223F001",
+     "223F002",
+     "224F001"
+    ]
+   },
+   "nearest": null,
+   "bass2_o2_only": {
+    "n": 0,
+    "note": "BASS-II has no recorded pressure: count by O2 only (measured, not set), with tolerance."
+   },
+   "source": "Official challenge text (docs/08-reto-oficial.md)",
+   "quote": "The intermediate oxygen concentration used on the Moon will likely be 30% or greater, with a corresponding pressure of 10.2 psi or less.",
+   "verified": true,
+   "note": "Estimate from the challenge statement, not a NASA technical specification.",
+   "excluded": [
+    {
+     "test_id": "C11M201",
+     "reason": "no pressure recorded"
+    }
+   ],
+   "source_doi": "10.60555/mbq8-0451"
+  },
+  {
+   "id": "lunar_nasa",
+   "label": "NASA lunar surface habitat (nominal)",
+   "criteria": {
+    "o2": {
+     "kind": "point",
+     "value": 0.265
+    },
+    "pressure_psi": {
+     "kind": "point",
+     "value": 10.2
+    },
+    "tolerance": {
+     "o2_fraction": 0.01,
+     "pressure_psi": 0.5
+    }
+   },
+   "n_exact": 0,
+   "n_near": 0,
+   "status": "no data",
+   "exact": {
+    "n": 0
+   },
+   "near": {
+    "n": 0
+   },
+   "nearest": {
+    "n": 6,
+    "o2_min": 0.25,
+    "o2_max": 0.25,
+    "atm_min": 0.7057,
+    "atm_max": 0.7095,
+    "psi_min": 10.37,
+    "psi_max": 10.43,
+    "n_by_fuel": {
+     "heptane": 2,
+     "methanol": 4
+    },
+    "n_by_outcome": {
+     "disruption": 6
+    },
+    "test_ids": [
+     "053F001",
+     "053R001",
+     "061F002",
+     "141F001",
+     "141R001",
+     "149F001"
+    ],
+    "pressure_level": "~0.7 atm",
+    "distance_in_tolerances": 1.54,
+    "note": "Closest tested condition; it is NOT this scenario."
+   },
+   "bass2_o2_only": {
+    "n": 0,
+    "note": "BASS-II has no recorded pressure: count by O2 only (measured, not set), with tolerance."
+   },
+   "source": "NASA/TM-20220000524, Moon to Mars (M2M) Habitation Considerations (Jan 2022), p.14; NASA SAO LAT, Evolution to Sustainable Lunar Habitation (Aug 2024, NTRS 20240010692), p.12",
+   "quote": "...a nominal operating pressure of 10.2 psia (70.3 kPa) and 26.5% Oxygen concentration and the capability to operate at 8.2 psi (56.5 kPa)and 34% Oxygen.",
+   "verified": false,
+   "note": "Pending: Fer confirms the citation.",
+   "excluded": [
+    {
+     "test_id": "C11M201",
+     "reason": "no pressure recorded"
+    }
+   ],
+   "source_doi": "10.60555/mbq8-0451"
+  },
+  {
+   "id": "exploration",
+   "label": "NASA Exploration Atmosphere",
+   "criteria": {
+    "o2": {
+     "kind": "point",
+     "value": 0.34
+    },
+    "pressure_psi": {
+     "kind": "point",
+     "value": 8.2
+    },
+    "tolerance": {
+     "o2_fraction": 0.01,
+     "pressure_psi": 0.5
+    }
+   },
+   "n_exact": 0,
+   "n_near": 0,
+   "status": "no data",
+   "exact": {
+    "n": 0
+   },
+   "near": {
+    "n": 0
+   },
+   "nearest": {
+    "n": 9,
+    "o2_min": 0.34,
+    "o2_max": 0.34,
+    "atm_min": 0.703,
+    "atm_max": 0.7142,
+    "psi_min": 10.33,
+    "psi_max": 10.5,
+    "n_by_fuel": {
+     "heptane": 4,
+     "methanol": 5
+    },
+    "n_by_outcome": {
+     "completion": 1,
+     "disruption": 8
+    },
+    "test_ids": [
+     "192F001",
+     "192F002",
+     "192F003",
+     "196F001",
+     "196F002",
+     "196F003",
+     "220R001",
+     "220R002",
+     "224F001"
+    ],
+    "pressure_level": "~0.7 atm",
+    "distance_in_tolerances": 4.26,
+    "note": "Closest tested condition; it is NOT this scenario."
+   },
+   "bass2_o2_only": {
+    "n": 0,
+    "note": "BASS-II has no recorded pressure: count by O2 only (measured, not set), with tolerance."
+   },
+   "source": "NASA/TM-2013-217377; NTRS 20150021491 (Evidence Report: Risk of Hypobaric Hypoxia from the Exploration Atmosphere, 2015), p.4",
+   "quote": "After re-evaluation in 2012, the 8/32 environment was altered to 8.2 psia and 34% O2 to reduce the hypoxic stress to a crewmember.",
+   "verified": false,
+   "note": "Pending: Fer confirms the citation. The quote is from NTRS 20150021491; NASA/TM-2013-217377 was not read in this session and its title refers to the earlier 8 psia / 32% O2 atmosphere.",
+   "excluded": [
+    {
+     "test_id": "C11M201",
+     "reason": "no pressure recorded"
+    }
+   ],
+   "source_doi": "10.60555/mbq8-0451"
+  },
+  {
+   "id": "suit",
+   "label": "Spacesuit",
+   "criteria": {
+    "o2": {
+     "kind": "point",
+     "value": 1.0
+    },
+    "pressure_psi": {
+     "kind": "point",
+     "value": 4.3
+    },
+    "tolerance": {
+     "o2_fraction": 0.01,
+     "pressure_psi": 0.5
+    }
+   },
+   "n_exact": 0,
+   "n_near": 0,
+   "status": "no data",
+   "exact": {
+    "n": 0
+   },
+   "near": {
+    "n": 0
+   },
+   "nearest": {
+    "n": 9,
+    "o2_min": 0.34,
+    "o2_max": 0.34,
+    "atm_min": 0.703,
+    "atm_max": 0.7142,
+    "psi_min": 10.33,
+    "psi_max": 10.5,
+    "n_by_fuel": {
+     "heptane": 4,
+     "methanol": 5
+    },
+    "n_by_outcome": {
+     "completion": 1,
+     "disruption": 8
+    },
+    "test_ids": [
+     "192F001",
+     "192F002",
+     "192F003",
+     "196F001",
+     "196F002",
+     "196F003",
+     "220R001",
+     "220R002",
+     "224F001"
+    ],
+    "pressure_level": "~0.7 atm",
+    "distance_in_tolerances": 67.09,
+    "note": "Closest tested condition; it is NOT this scenario."
+   },
+   "bass2_o2_only": {
+    "n": 0,
+    "note": "BASS-II has no recorded pressure: count by O2 only (measured, not set), with tolerance."
+   },
+   "source": "Official challenge text (docs/08-reto-oficial.md)",
+   "quote": "To enable flexibility, spacesuits are filled with 100% oxygen to only 4.3 psi",
+   "verified": false,
+   "note": "Other sources differ: 85% O2 at 4.3 psia (simulated EVA, NTRS 20220015741) and 100% O2 at 5.0 psi (reported by the team; source not recorded here).",
+   "excluded": [
+    {
+     "test_id": "C11M201",
+     "reason": "no pressure recorded"
+    }
+   ],
+   "source_doi": "10.60555/mbq8-0451"
+  }
+ ]
+}

@@ -1,0 +1,742 @@
+{
+ "program": "FLEX",
+ "note": "Suppressants are mixed within each cell (see n_by_suppressant); averages are descriptive. Per-suppressant cells: data/processed/coverage_grid.json.",
+ "n_tests": 273,
+ "n_cells": 30,
+ "n_cells_empty": 10,
+ "n_cells_small": 3,
+ "cells": [
+  {
+   "fuel": "heptane",
+   "o2_band": "<0.15",
+   "pressure_level": "~0.7 atm",
+   "n": 0,
+   "status": "no data",
+   "n_by_suppressant": {
+    "none": 0,
+    "co2": 0,
+    "he": 0
+   },
+   "n_burning_rate": 0,
+   "avg_burning_rate_mm2_s": null,
+   "n_extinction": 0,
+   "n_extinction_diameter": 0,
+   "avg_extinction_diameter_mm": null,
+   "pct_extinction": null,
+   "pct_note": null,
+   "warning": null,
+   "qc_flags": [],
+   "source_doi": []
+  },
+  {
+   "fuel": "heptane",
+   "o2_band": "<0.15",
+   "pressure_level": "~1.0 atm",
+   "n": 6,
+   "status": "ok",
+   "n_by_suppressant": {
+    "none": 6,
+    "co2": 0,
+    "he": 0
+   },
+   "n_burning_rate": 4,
+   "avg_burning_rate_mm2_s": 0.455,
+   "n_extinction": 5,
+   "n_extinction_diameter": 2,
+   "avg_extinction_diameter_mm": 3.505,
+   "pct_extinction": 83.3,
+   "pct_note": "descriptive, not a probability",
+   "warning": null,
+   "qc_flags": [
+    "extinction_diameter_dropped_outcome_not_extinction",
+    "mole_fractions_do_not_sum_to_1"
+   ],
+   "source_doi": [
+    "10.60555/mbq8-0451"
+   ]
+  },
+  {
+   "fuel": "heptane",
+   "o2_band": "<0.15",
+   "pressure_level": ">2 atm",
+   "n": 0,
+   "status": "no data",
+   "n_by_suppressant": {
+    "none": 0,
+    "co2": 0,
+    "he": 0
+   },
+   "n_burning_rate": 0,
+   "avg_burning_rate_mm2_s": null,
+   "n_extinction": 0,
+   "n_extinction_diameter": 0,
+   "avg_extinction_diameter_mm": null,
+   "pct_extinction": null,
+   "pct_note": null,
+   "warning": null,
+   "qc_flags": [],
+   "source_doi": []
+  },
+  {
+   "fuel": "heptane",
+   "o2_band": "0.15-0.18",
+   "pressure_level": "~0.7 atm",
+   "n": 4,
+   "status": "ok",
+   "n_by_suppressant": {
+    "none": 0,
+    "co2": 2,
+    "he": 2
+   },
+   "n_burning_rate": 4,
+   "avg_burning_rate_mm2_s": 0.55,
+   "n_extinction": 3,
+   "n_extinction_diameter": 3,
+   "avg_extinction_diameter_mm": 2.697,
+   "pct_extinction": 75.0,
+   "pct_note": "descriptive, not a probability",
+   "warning": "n<5: unstable percentage; do not read it as a rate",
+   "qc_flags": [
+    "extinction_diameter_dropped_outcome_not_extinction"
+   ],
+   "source_doi": [
+    "10.60555/mbq8-0451"
+   ]
+  },
+  {
+   "fuel": "heptane",
+   "o2_band": "0.15-0.18",
+   "pressure_level": "~1.0 atm",
+   "n": 15,
+   "status": "ok",
+   "n_by_suppressant": {
+    "none": 8,
+    "co2": 2,
+    "he": 5
+   },
+   "n_burning_rate": 13,
+   "avg_burning_rate_mm2_s": 0.508,
+   "n_extinction": 11,
+   "n_extinction_diameter": 10,
+   "avg_extinction_diameter_mm": 2.798,
+   "pct_extinction": 73.3,
+   "pct_note": "descriptive, not a probability",
+   "warning": null,
+   "qc_flags": [
+    "duplicate_flex_id"
+   ],
+   "source_doi": [
+    "10.60555/mbq8-0451"
+   ]
+  },
+  {
+   "fuel": "heptane",
+   "o2_band": "0.15-0.18",
+   "pressure_level": ">2 atm",
+   "n": 0,
+   "status": "no data",
+   "n_by_suppressant": {
+    "none": 0,
+    "co2": 0,
+    "he": 0
+   },
+   "n_burning_rate": 0,
+   "avg_burning_rate_mm2_s": null,
+   "n_extinction": 0,
+   "n_extinction_diameter": 0,
+   "avg_extinction_diameter_mm": null,
+   "pct_extinction": null,
+   "pct_note": null,
+   "warning": null,
+   "qc_flags": [],
+   "source_doi": []
+  },
+  {
+   "fuel": "heptane",
+   "o2_band": "0.18-0.21",
+   "pressure_level": "~0.7 atm",
+   "n": 10,
+   "status": "ok",
+   "n_by_suppressant": {
+    "none": 2,
+    "co2": 4,
+    "he": 4
+   },
+   "n_burning_rate": 10,
+   "avg_burning_rate_mm2_s": 0.512,
+   "n_extinction": 9,
+   "n_extinction_diameter": 9,
+   "avg_extinction_diameter_mm": 2.394,
+   "pct_extinction": 90.0,
+   "pct_note": "descriptive, not a probability",
+   "warning": null,
+   "qc_flags": [
+    "extinction_diameter_dropped_outcome_not_extinction"
+   ],
+   "source_doi": [
+    "10.60555/mbq8-0451"
+   ]
+  },
+  {
+   "fuel": "heptane",
+   "o2_band": "0.18-0.21",
+   "pressure_level": "~1.0 atm",
+   "n": 24,
+   "status": "ok",
+   "n_by_suppressant": {
+    "none": 3,
+    "co2": 16,
+    "he": 5
+   },
+   "n_burning_rate": 24,
+   "avg_burning_rate_mm2_s": 0.483,
+   "n_extinction": 13,
+   "n_extinction_diameter": 13,
+   "avg_extinction_diameter_mm": 2.587,
+   "pct_extinction": 54.2,
+   "pct_note": "descriptive, not a probability",
+   "warning": null,
+   "qc_flags": [
+    "burn_time_approx",
+    "extinction_diameter_dropped_outcome_not_extinction"
+   ],
+   "source_doi": [
+    "10.60555/mbq8-0451"
+   ]
+  },
+  {
+   "fuel": "heptane",
+   "o2_band": "0.18-0.21",
+   "pressure_level": ">2 atm",
+   "n": 0,
+   "status": "no data",
+   "n_by_suppressant": {
+    "none": 0,
+    "co2": 0,
+    "he": 0
+   },
+   "n_burning_rate": 0,
+   "avg_burning_rate_mm2_s": null,
+   "n_extinction": 0,
+   "n_extinction_diameter": 0,
+   "avg_extinction_diameter_mm": null,
+   "pct_extinction": null,
+   "pct_note": null,
+   "warning": null,
+   "qc_flags": [],
+   "source_doi": []
+  },
+  {
+   "fuel": "heptane",
+   "o2_band": "0.21-0.24",
+   "pressure_level": "~0.7 atm",
+   "n": 9,
+   "status": "ok",
+   "n_by_suppressant": {
+    "none": 0,
+    "co2": 6,
+    "he": 3
+   },
+   "n_burning_rate": 9,
+   "avg_burning_rate_mm2_s": 0.519,
+   "n_extinction": 7,
+   "n_extinction_diameter": 7,
+   "avg_extinction_diameter_mm": 2.913,
+   "pct_extinction": 77.8,
+   "pct_note": "descriptive, not a probability",
+   "warning": null,
+   "qc_flags": [
+    "extinction_diameter_dropped_outcome_not_extinction"
+   ],
+   "source_doi": [
+    "10.60555/mbq8-0451"
+   ]
+  },
+  {
+   "fuel": "heptane",
+   "o2_band": "0.21-0.24",
+   "pressure_level": "~1.0 atm",
+   "n": 19,
+   "status": "ok",
+   "n_by_suppressant": {
+    "none": 17,
+    "co2": 0,
+    "he": 2
+   },
+   "n_burning_rate": 17,
+   "avg_burning_rate_mm2_s": 0.564,
+   "n_extinction": 7,
+   "n_extinction_diameter": 7,
+   "avg_extinction_diameter_mm": 2.423,
+   "pct_extinction": 36.8,
+   "pct_note": "descriptive, not a probability",
+   "warning": null,
+   "qc_flags": [
+    "extinction_diameter_dropped_outcome_not_extinction"
+   ],
+   "source_doi": [
+    "10.60555/mbq8-0451"
+   ]
+  },
+  {
+   "fuel": "heptane",
+   "o2_band": "0.21-0.24",
+   "pressure_level": ">2 atm",
+   "n": 2,
+   "status": "ok",
+   "n_by_suppressant": {
+    "none": 0,
+    "co2": 2,
+    "he": 0
+   },
+   "n_burning_rate": 1,
+   "avg_burning_rate_mm2_s": 0.61,
+   "n_extinction": 1,
+   "n_extinction_diameter": 1,
+   "avg_extinction_diameter_mm": 1.77,
+   "pct_extinction": 50.0,
+   "pct_note": "descriptive, not a probability",
+   "warning": "n<5: unstable percentage; do not read it as a rate",
+   "qc_flags": [],
+   "source_doi": [
+    "10.60555/mbq8-0451"
+   ]
+  },
+  {
+   "fuel": "heptane",
+   "o2_band": ">=0.24",
+   "pressure_level": "~0.7 atm",
+   "n": 16,
+   "status": "ok",
+   "n_by_suppressant": {
+    "none": 8,
+    "co2": 7,
+    "he": 1
+   },
+   "n_burning_rate": 14,
+   "avg_burning_rate_mm2_s": 0.661,
+   "n_extinction": 3,
+   "n_extinction_diameter": 3,
+   "avg_extinction_diameter_mm": 2.773,
+   "pct_extinction": 18.8,
+   "pct_note": "descriptive, not a probability",
+   "warning": null,
+   "qc_flags": [
+    "extinction_diameter_dropped_outcome_not_extinction"
+   ],
+   "source_doi": [
+    "10.60555/mbq8-0451"
+   ]
+  },
+  {
+   "fuel": "heptane",
+   "o2_band": ">=0.24",
+   "pressure_level": "~1.0 atm",
+   "n": 12,
+   "status": "ok",
+   "n_by_suppressant": {
+    "none": 3,
+    "co2": 9,
+    "he": 0
+   },
+   "n_burning_rate": 11,
+   "avg_burning_rate_mm2_s": 0.622,
+   "n_extinction": 1,
+   "n_extinction_diameter": 1,
+   "avg_extinction_diameter_mm": 2.88,
+   "pct_extinction": 8.3,
+   "pct_note": "descriptive, not a probability",
+   "warning": null,
+   "qc_flags": [
+    "extinction_diameter_dropped_outcome_not_extinction"
+   ],
+   "source_doi": [
+    "10.60555/mbq8-0451"
+   ]
+  },
+  {
+   "fuel": "heptane",
+   "o2_band": ">=0.24",
+   "pressure_level": ">2 atm",
+   "n": 0,
+   "status": "no data",
+   "n_by_suppressant": {
+    "none": 0,
+    "co2": 0,
+    "he": 0
+   },
+   "n_burning_rate": 0,
+   "avg_burning_rate_mm2_s": null,
+   "n_extinction": 0,
+   "n_extinction_diameter": 0,
+   "avg_extinction_diameter_mm": null,
+   "pct_extinction": null,
+   "pct_note": null,
+   "warning": null,
+   "qc_flags": [],
+   "source_doi": []
+  },
+  {
+   "fuel": "methanol",
+   "o2_band": "<0.15",
+   "pressure_level": "~0.7 atm",
+   "n": 0,
+   "status": "no data",
+   "n_by_suppressant": {
+    "none": 0,
+    "co2": 0,
+    "he": 0
+   },
+   "n_burning_rate": 0,
+   "avg_burning_rate_mm2_s": null,
+   "n_extinction": 0,
+   "n_extinction_diameter": 0,
+   "avg_extinction_diameter_mm": null,
+   "pct_extinction": null,
+   "pct_note": null,
+   "warning": null,
+   "qc_flags": [],
+   "source_doi": []
+  },
+  {
+   "fuel": "methanol",
+   "o2_band": "<0.15",
+   "pressure_level": "~1.0 atm",
+   "n": 22,
+   "status": "ok",
+   "n_by_suppressant": {
+    "none": 17,
+    "co2": 2,
+    "he": 3
+   },
+   "n_burning_rate": 21,
+   "avg_burning_rate_mm2_s": 0.38,
+   "n_extinction": 22,
+   "n_extinction_diameter": 20,
+   "avg_extinction_diameter_mm": 2.075,
+   "pct_extinction": 100.0,
+   "pct_note": "descriptive, not a probability",
+   "warning": null,
+   "qc_flags": [
+    "mole_fractions_do_not_sum_to_1"
+   ],
+   "source_doi": [
+    "10.60555/mbq8-0451"
+   ]
+  },
+  {
+   "fuel": "methanol",
+   "o2_band": "<0.15",
+   "pressure_level": ">2 atm",
+   "n": 0,
+   "status": "no data",
+   "n_by_suppressant": {
+    "none": 0,
+    "co2": 0,
+    "he": 0
+   },
+   "n_burning_rate": 0,
+   "avg_burning_rate_mm2_s": null,
+   "n_extinction": 0,
+   "n_extinction_diameter": 0,
+   "avg_extinction_diameter_mm": null,
+   "pct_extinction": null,
+   "pct_note": null,
+   "warning": null,
+   "qc_flags": [],
+   "source_doi": []
+  },
+  {
+   "fuel": "methanol",
+   "o2_band": "0.15-0.18",
+   "pressure_level": "~0.7 atm",
+   "n": 11,
+   "status": "ok",
+   "n_by_suppressant": {
+    "none": 0,
+    "co2": 9,
+    "he": 2
+   },
+   "n_burning_rate": 11,
+   "avg_burning_rate_mm2_s": 0.405,
+   "n_extinction": 11,
+   "n_extinction_diameter": 10,
+   "avg_extinction_diameter_mm": 2.506,
+   "pct_extinction": 100.0,
+   "pct_note": "descriptive, not a probability",
+   "warning": null,
+   "qc_flags": [],
+   "source_doi": [
+    "10.60555/mbq8-0451"
+   ]
+  },
+  {
+   "fuel": "methanol",
+   "o2_band": "0.15-0.18",
+   "pressure_level": "~1.0 atm",
+   "n": 21,
+   "status": "ok",
+   "n_by_suppressant": {
+    "none": 5,
+    "co2": 10,
+    "he": 6
+   },
+   "n_burning_rate": 20,
+   "avg_burning_rate_mm2_s": 0.405,
+   "n_extinction": 21,
+   "n_extinction_diameter": 16,
+   "avg_extinction_diameter_mm": 2.276,
+   "pct_extinction": 100.0,
+   "pct_note": "descriptive, not a probability",
+   "warning": null,
+   "qc_flags": [],
+   "source_doi": [
+    "10.60555/mbq8-0451"
+   ]
+  },
+  {
+   "fuel": "methanol",
+   "o2_band": "0.15-0.18",
+   "pressure_level": ">2 atm",
+   "n": 0,
+   "status": "no data",
+   "n_by_suppressant": {
+    "none": 0,
+    "co2": 0,
+    "he": 0
+   },
+   "n_burning_rate": 0,
+   "avg_burning_rate_mm2_s": null,
+   "n_extinction": 0,
+   "n_extinction_diameter": 0,
+   "avg_extinction_diameter_mm": null,
+   "pct_extinction": null,
+   "pct_note": null,
+   "warning": null,
+   "qc_flags": [],
+   "source_doi": []
+  },
+  {
+   "fuel": "methanol",
+   "o2_band": "0.18-0.21",
+   "pressure_level": "~0.7 atm",
+   "n": 15,
+   "status": "ok",
+   "n_by_suppressant": {
+    "none": 3,
+    "co2": 7,
+    "he": 5
+   },
+   "n_burning_rate": 15,
+   "avg_burning_rate_mm2_s": 0.477,
+   "n_extinction": 14,
+   "n_extinction_diameter": 13,
+   "avg_extinction_diameter_mm": 2.412,
+   "pct_extinction": 93.3,
+   "pct_note": "descriptive, not a probability",
+   "warning": null,
+   "qc_flags": [
+    "extinction_diameter_dropped_outcome_not_extinction"
+   ],
+   "source_doi": [
+    "10.60555/mbq8-0451"
+   ]
+  },
+  {
+   "fuel": "methanol",
+   "o2_band": "0.18-0.21",
+   "pressure_level": "~1.0 atm",
+   "n": 23,
+   "status": "ok",
+   "n_by_suppressant": {
+    "none": 4,
+    "co2": 14,
+    "he": 5
+   },
+   "n_burning_rate": 22,
+   "avg_burning_rate_mm2_s": 0.459,
+   "n_extinction": 22,
+   "n_extinction_diameter": 18,
+   "avg_extinction_diameter_mm": 1.337,
+   "pct_extinction": 95.7,
+   "pct_note": "descriptive, not a probability",
+   "warning": null,
+   "qc_flags": [
+    "burn_time_approx"
+   ],
+   "source_doi": [
+    "10.60555/mbq8-0451"
+   ]
+  },
+  {
+   "fuel": "methanol",
+   "o2_band": "0.18-0.21",
+   "pressure_level": ">2 atm",
+   "n": 0,
+   "status": "no data",
+   "n_by_suppressant": {
+    "none": 0,
+    "co2": 0,
+    "he": 0
+   },
+   "n_burning_rate": 0,
+   "avg_burning_rate_mm2_s": null,
+   "n_extinction": 0,
+   "n_extinction_diameter": 0,
+   "avg_extinction_diameter_mm": null,
+   "pct_extinction": null,
+   "pct_note": null,
+   "warning": null,
+   "qc_flags": [],
+   "source_doi": []
+  },
+  {
+   "fuel": "methanol",
+   "o2_band": "0.21-0.24",
+   "pressure_level": "~0.7 atm",
+   "n": 21,
+   "status": "ok",
+   "n_by_suppressant": {
+    "none": 0,
+    "co2": 16,
+    "he": 5
+   },
+   "n_burning_rate": 21,
+   "avg_burning_rate_mm2_s": 0.517,
+   "n_extinction": 13,
+   "n_extinction_diameter": 10,
+   "avg_extinction_diameter_mm": 1.573,
+   "pct_extinction": 61.9,
+   "pct_note": "descriptive, not a probability",
+   "warning": null,
+   "qc_flags": [
+    "extinction_diameter_dropped_outcome_not_extinction"
+   ],
+   "source_doi": [
+    "10.60555/mbq8-0451"
+   ]
+  },
+  {
+   "fuel": "methanol",
+   "o2_band": "0.21-0.24",
+   "pressure_level": "~1.0 atm",
+   "n": 15,
+   "status": "ok",
+   "n_by_suppressant": {
+    "none": 12,
+    "co2": 3,
+    "he": 0
+   },
+   "n_burning_rate": 15,
+   "avg_burning_rate_mm2_s": 0.497,
+   "n_extinction": 11,
+   "n_extinction_diameter": 10,
+   "avg_extinction_diameter_mm": 1.285,
+   "pct_extinction": 73.3,
+   "pct_note": "descriptive, not a probability",
+   "warning": null,
+   "qc_flags": [
+    "extinction_diameter_dropped_outcome_not_extinction"
+   ],
+   "source_doi": [
+    "10.60555/mbq8-0451"
+   ]
+  },
+  {
+   "fuel": "methanol",
+   "o2_band": "0.21-0.24",
+   "pressure_level": ">2 atm",
+   "n": 7,
+   "status": "ok",
+   "n_by_suppressant": {
+    "none": 0,
+    "co2": 7,
+    "he": 0
+   },
+   "n_burning_rate": 4,
+   "avg_burning_rate_mm2_s": 0.448,
+   "n_extinction": 6,
+   "n_extinction_diameter": 1,
+   "avg_extinction_diameter_mm": 1.0,
+   "pct_extinction": 85.7,
+   "pct_note": "descriptive, not a probability",
+   "warning": null,
+   "qc_flags": [],
+   "source_doi": [
+    "10.60555/mbq8-0451"
+   ]
+  },
+  {
+   "fuel": "methanol",
+   "o2_band": ">=0.24",
+   "pressure_level": "~0.7 atm",
+   "n": 17,
+   "status": "ok",
+   "n_by_suppressant": {
+    "none": 9,
+    "co2": 6,
+    "he": 2
+   },
+   "n_burning_rate": 17,
+   "avg_burning_rate_mm2_s": 0.599,
+   "n_extinction": 3,
+   "n_extinction_diameter": 2,
+   "avg_extinction_diameter_mm": 1.19,
+   "pct_extinction": 17.6,
+   "pct_note": "descriptive, not a probability",
+   "warning": null,
+   "qc_flags": [
+    "extinction_diameter_dropped_outcome_not_extinction"
+   ],
+   "source_doi": [
+    "10.60555/mbq8-0451"
+   ]
+  },
+  {
+   "fuel": "methanol",
+   "o2_band": ">=0.24",
+   "pressure_level": "~1.0 atm",
+   "n": 4,
+   "status": "ok",
+   "n_by_suppressant": {
+    "none": 4,
+    "co2": 0,
+    "he": 0
+   },
+   "n_burning_rate": 4,
+   "avg_burning_rate_mm2_s": 0.672,
+   "n_extinction": 2,
+   "n_extinction_diameter": 2,
+   "avg_extinction_diameter_mm": 1.165,
+   "pct_extinction": 50.0,
+   "pct_note": "descriptive, not a probability",
+   "warning": "n<5: unstable percentage; do not read it as a rate",
+   "qc_flags": [],
+   "source_doi": [
+    "10.60555/mbq8-0451"
+   ]
+  },
+  {
+   "fuel": "methanol",
+   "o2_band": ">=0.24",
+   "pressure_level": ">2 atm",
+   "n": 0,
+   "status": "no data",
+   "n_by_suppressant": {
+    "none": 0,
+    "co2": 0,
+    "he": 0
+   },
+   "n_burning_rate": 0,
+   "avg_burning_rate_mm2_s": null,
+   "n_extinction": 0,
+   "n_extinction_diameter": 0,
+   "avg_extinction_diameter_mm": null,
+   "pct_extinction": null,
+   "pct_note": null,
+   "warning": null,
+   "qc_flags": [],
+   "source_doi": []
+  }
+ ]
+}
