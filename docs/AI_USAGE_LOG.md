@@ -323,3 +323,11 @@ Yael pidió que Claude tomara las decisiones abiertas.
 4. Sin imágenes generadas: el fondo es CSS. Sin logos ni marcas NASA.
 5. Verificación hecha por la IA: `tsc`, 28 pruebas Vitest, build de producción y capturas en Chrome a 1440 px y 360 px. No se corrió Lighthouse ni lector de pantalla.
 6. Red: solo `npm install` de las dependencias aprobadas.
+
+## 2026-11-14 (16) — Referencia visual ejecutable, consola espacial v3 y gráficas SVG honestas
+
+**Pedido (Jovanny / Yael):** aplicar la referencia visual aprobada (`flame-v3-reference.html`, `DESIGN_BRIEF.md`) y mejorar el frontend con la consola interactiva de combustión en microgravedad y las gráficas SVG honestas conectadas a `frontend/public/data/*.json`.
+
+1. Se integraron `docs/design/reference/flame-v3-reference.html`, `docs/design/DESIGN_BRIEF.md`, `docs/prompts/00-contexto-companeros.md` y la actualización de `docs/prompts/01-maquetado-frontend.md`.
+2. En `frontend/src/`: paleta grafito + menta (`#7FF5E1`) y tipografía Sora + IBM Plex Mono en `tokens.css` y `global.css`; escena interactiva `<FlameScene>` (`src/components/FlameScene.tsx`) con rotación, zoom semántico (`Chamber · Flame · Droplet`) y anotaciones con líneas guía; gráficas SVG en `src/components/charts.tsx` (`MatchRingSvg`, `KpiRingSvg`, `BurningRateChartSvg` en modos barras y líneas con alerta `n < 5`, `CoverageRadarSvg`, `OutcomePills`, `OutcomeBarsSvg`, `Bass2CountBar` sin porcentajes); consola completa en `Hero.tsx`, galería Customize, tour de 3 pasos y drawer izquierdo del `SI Assistant` con adición automática de tarjetas.
+3. Todas las cifras provienen de `frontend/public/data/*.json`; 29 pruebas en Vitest y build de producción verificados. Revisión humana pendiente.

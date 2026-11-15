@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { CoverageCell, Fuel, PressureLevel } from '../data/types';
 import { useCoverage, useMeta } from '../data/useData';
 import { Badge, Dois, Note, Provisional, Section, Segmented } from '../components/ui';
+import { BurningRateChartSvg } from '../components/charts';
 import { fmtBand, fmtDiameter, fmtRate } from '../lib/format';
 import { CONFOUND_NOTE, DESCRIPTIVE_ONLY, isSmallN } from '../lib/honesty';
 
@@ -14,12 +15,15 @@ function Value({ cell, metric, max, minN }: { cell: CoverageCell | undefined; me
   const n = cell ? (metric === 'rate' ? cell.n_burning_rate : cell.n_extinction_diameter) : 0;
   if (!cell || value == null) return <td><span className="nodata">No data</span></td>;
   const small = isSmallN(n, minN);
+  const barColor = cell.fuel === 'heptane' ? 'var(--fuel-heptane)' : 'var(--fuel-methanol)';
   return (
     <td>
       <span className="num">{metric === 'rate' ? fmtRate(value) : fmtDiameter(value)}</span>{' '}
       <span className="dim num">n = {n}</span>{' '}
       {small && <Badge tone="caution">⚠ n &lt; {minN}</Badge>}
-      <div className={`bar${small ? ' bar-muted' : ''}`} aria-hidden="true"><i style={{ width: `${Math.round((value / max) * 100)}%` }} /></div>
+      <div className={`bar${small ? ' bar-muted' : ''}`} aria-hidden="true">
+        <i style={{ width: `${Math.round((value / max) * 100)}%`, background: small ? undefined : barColor }} />
+      </div>
     </td>
   );
 }
@@ -29,6 +33,7 @@ export function FuelComparison() {
   const meta = useMeta();
   const [level, setLevel] = useState<PressureLevel>('~1.0 atm');
   const [metric, setMetric] = useState<Metric>('rate');
+  const [chartMode, setChartMode] = useState<'line' | 'bars'>('line');
   const find = (fuel: Fuel, band: string) => coverage.cells.find((c) => c.fuel === fuel && c.o2_band === band && c.pressure_level === level);
   const all = coverage.cells.map((c) => (metric === 'rate' ? c.avg_burning_rate_mm2_s : c.avg_extinction_diameter_mm)).filter((v): v is number => v != null);
   const max = Math.max(...all, Number.EPSILON);
@@ -39,12 +44,37 @@ export function FuelComparison() {
       lead={<>Mean burning rate and mean extinction diameter per tested condition, each with its own n. This is a description
         of what was measured, not a ranking and not a forecast.</>}>
       <div className="stack">
-        <div className="row">
-          <Segmented label="Measurement" value={metric} onChange={setMetric}
-            options={[{ value: 'rate', label: 'Mean burning rate' }, { value: 'diameter', label: 'Mean extinction diameter' }]} />
-          <Segmented label="Pressure level" value={level} onChange={setLevel}
-            options={meta.pressure_levels.map((p) => ({ value: p.label, label: p.label }))} />
+        <div className="row" style={{ justifyContent: 'space-between' }}>
+          <div className="row">
+            <Segmented label="Measurement" value={metric} onChange={setMetric}
+              options={[{ value: 'rate', label: 'Mean burning rate' }, { value: 'diameter', label: 'Mean extinction diameter' }]} />
+            <Segmented label="Pressure level" value={level} onChange={setLevel}
+              options={meta.pressure_levels.map((p) => ({ value: p.label, label: p.label }))} />
+          </div>
+          <Segmented label="Visual chart" value={chartMode} onChange={setChartMode}
+            options={[{ value: 'line', label: 'Line chart' }, { value: 'bars', label: 'Grouped bars' }]} />
         </div>
+
+        {/* Visual SVG Chart paired with the semantic accessible table below */}
+        <div className="glass card stack">
+          <div className="row" style={{ justifyContent: 'space-between' }}>
+            <div className="chart-key" style={{ margin: 0 }}>
+              <span><b style={{ background: 'var(--fuel-heptane)' }} /> Heptane</span>
+              <span><b style={{ background: 'var(--fuel-methanol)' }} /> Methanol</span>
+              <span><b style={{ background: 'transparent', border: '1.5px solid var(--caution)' }} /> Small sample (n &lt; {meta.min_n})</span>
+            </div>
+            <span className="src-pill">FLEX · PSI-69 · {level}</span>
+          </div>
+          <BurningRateChartSvg
+            cells={coverage.cells}
+            bands={meta.o2_bands}
+            pressureLevel={level}
+            metric={metric}
+            mode={chartMode}
+            minN={meta.min_n}
+          />
+        </div>
+
         <div className="glass card scroll-x">
           <table className="data" data-testid="fuel-table">
             <caption>

@@ -8,7 +8,13 @@ import { LEVELS, ask, type Level, type Reply } from './engine';
 const ENV_URL: string | undefined = import.meta.env.VITE_LLM_URL || undefined;
 const LOCAL_ONLY = 'Local AI — runs on the demo machine';
 
-interface Turn { id: number; question: string; reply: Reply | null; error: string | null }
+interface Turn {
+  id: number;
+  question: string;
+  reply: Reply | null;
+  error: string | null;
+  boardAction?: string | null;
+}
 
 const replyAsText = (t: Turn): string => {
   if (!t.reply) return t.question;
@@ -39,7 +45,20 @@ function ReplyCard({ turn }: { turn: Turn }) {
         {r.aiText && <Badge tone="info" title="Text written by a local language model. Check it against the citations.">AI-generated text</Badge>}
       </div>
       {r.notice && <Warn>{r.notice}</Warn>}
+      {r.noData && !r.outOfScope && (
+        <div className="co-act co-act-no" aria-hidden="true">
+          <span>∅ No matching or live data</span>
+          <span className="co-ok">no_data</span>
+        </div>
+      )}
       <p>{r.text}</p>
+      {turn.boardAction && (
+        <div className="co-act">
+          <span style={{ whiteSpace: 'nowrap' }}>⚙ Card:</span>
+          <span className="dim">{turn.boardAction}</span>
+          <span className="co-ok">✓ Added</span>
+        </div>
+      )}
       {r.outOfScope && <p className="dim">Try one of the suggested questions, or ask about a test ID, a fuel, an atmosphere or a material.</p>}
       {r.warnings.map((w) => <Warn key={w}>{w}</Warn>)}
       <div className="cites">
@@ -84,24 +103,51 @@ export interface SidebarProps {
 
 export function Sidebar({ open, onClose, pending, llmUrl = ENV_URL, fetchImpl, timeoutMs }: SidebarProps) {
   const data = useData();
+  const { setScenarioId, setExtraCard } = useUi();
   const [level, setLevel] = useState<Level>('basic');
   const [turns, setTurns] = useState<Turn[]>([]);
   const [text, setText] = useState('');
   const [busy, setBusy] = useState(false);
+  const [autoBoard, setAutoBoard] = useState(true);
   const panel = useRef<HTMLElement>(null);
   const input = useRef<HTMLInputElement>(null);
   const log = useRef<HTMLDivElement>(null);
   const nextId = useRef(1);
 
+  const applyBoardAction = (q: string): string | null => {
+    if (!autoBoard) return null;
+    if (/(heptane|methanol|faster|burn(ing)? rate|\bfuels?\b)/i.test(q)) {
+      const title = 'Does more oxygen make fuel burn faster?';
+      setExtraCard?.({ type: 'burning_rate_line', addedBy: 'si', title });
+      return title;
+    }
+    if (/(moon|lunar|habitat)/i.test(q)) {
+      setScenarioId?.('lunar_challenge');
+      const title = 'How did those tests end?';
+      setExtraCard?.({ type: 'outcomes_bars', addedBy: 'si', title });
+      return title;
+    }
+    if (/(suit|\beva\b|4\.3)/i.test(q)) {
+      setScenarioId?.('suit');
+      return null;
+    }
+    if (/(exploration|8\.2)/i.test(q)) {
+      setScenarioId?.('exploration');
+      return null;
+    }
+    return null;
+  };
+
   const send = async (question: string) => {
     const q = question.trim();
     if (!q || busy) return;
     const id = nextId.current++;
-    setTurns((t) => [...t, { id, question: q, reply: null, error: null }]);
+    setTurns((t) => [...t, { id, question: q, reply: null, error: null, boardAction: null }]);
     setText(''); setBusy(true);
     try {
       const reply = await ask(q, level, data, { url: llmUrl, fetchImpl, timeoutMs });
-      setTurns((t) => t.map((x) => (x.id === id ? { ...x, reply } : x)));
+      const boardAction = !reply.outOfScope ? applyBoardAction(q) : null;
+      setTurns((t) => t.map((x) => (x.id === id ? { ...x, reply, boardAction } : x)));
     } catch (e) {
       setTurns((t) => t.map((x) => (x.id === id ? { ...x, error: e instanceof Error ? e.message : 'unknown error' } : x)));
     } finally { setBusy(false); }
@@ -122,11 +168,11 @@ export function Sidebar({ open, onClose, pending, llmUrl = ENV_URL, fetchImpl, t
       onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }}>
       <div className="drawer-head">
         <div className="row" style={{ justifyContent: 'space-between' }}>
-          <h2><Sparkles size={15} aria-hidden="true" style={{ color: 'var(--flame)', verticalAlign: -2 }} /> SI Assistant</h2>
+          <h2><Sparkles size={15} aria-hidden="true" style={{ color: 'var(--mint)', verticalAlign: -2 }} /> SI Assistant</h2>
           <button type="button" className="btn btn-sm btn-ghost" onClick={onClose} aria-label="Close assistant"><X size={16} aria-hidden="true" /></button>
         </div>
         <p>
-          SI (&ldquo;Super Intelligence&rdquo;, i.e. an AI/LLM assistant). It answers only from predefined queries over the PSI data on this page.
+          SI (&ldquo;Super Intelligence&rdquo;, i.e. an AI/LLM assistant). Answers only from these NASA data.
           It does not calculate, predict or invent.
         </p>
         <div className="stack" style={{ gap: 6 }}>
@@ -162,15 +208,23 @@ export function Sidebar({ open, onClose, pending, llmUrl = ENV_URL, fetchImpl, t
       </div>
 
       <div className="drawer-foot">
+        <label className="co-auto-toggle">
+          <input
+            type="checkbox"
+            checked={autoBoard}
+            onChange={(e) => setAutoBoard(e.target.checked)}
+          />
+          <span>Build my board automatically</span>
+        </label>
         <span className="label">Suggested questions</span>
-        <div className="suggest" style={{ maxHeight: turns.length ? 76 : 220, overflowY: 'auto' }}>
+        <div className="suggest" style={{ maxHeight: turns.length ? 76 : 180, overflowY: 'auto' }}>
           {data.answers.answers.map((a) => a.question && (
             <button key={a.id ?? a.question} type="button" disabled={busy} onClick={() => void send(a.question ?? '')}>{a.question}</button>
           ))}
         </div>
         <form className="ask" onSubmit={onSubmit}>
           <label className="sr-only" htmlFor="assistant-q">Your question</label>
-          <input ref={input} id="assistant-q" value={text} onChange={(e) => setText(e.target.value)} placeholder="Ask about the PSI data on this page" autoComplete="off" />
+          <input ref={input} id="assistant-q" value={text} onChange={(e) => setText(e.target.value)} placeholder="Ask about the data…" autoComplete="off" />
           <button type="submit" className="btn btn-primary" disabled={busy || text.trim() === ''} aria-label="Send question">
             <SendHorizontal size={16} aria-hidden="true" />
           </button>

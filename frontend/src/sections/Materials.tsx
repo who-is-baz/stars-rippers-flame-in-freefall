@@ -2,6 +2,7 @@ import type { MaterialGroup, Outcome } from '../data/types';
 import { useMaterials } from '../data/useData';
 import { useUi } from '../state/ui';
 import { Badge, Doi, Note, QcChips, Section, Warn } from '../components/ui';
+import { Bass2CountBar } from '../components/charts';
 import { LOW_CONFIDENCE_WARNING, NOT_STATED_NOTE, outcomeLabel } from '../lib/honesty';
 
 // BASS-II is context only. Counts are shown as counts: no extinction percentage, no safety ordering.
@@ -11,10 +12,11 @@ const CLASS_LABEL: Record<string, string> = {
   undetermined: 'Undetermined: no stated outcome',
 };
 
-function Group({ g }: { g: MaterialGroup }) {
+function Group({ g, maxN }: { g: MaterialGroup; maxN: number }) {
   const outcomes = Object.entries(g.n_by_outcome) as [Outcome, number][];
   return (
     <>
+      <Bass2CountBar n={g.n} nWithOutcome={g.n_with_outcome} nNotStated={g.n_not_stated} maxN={maxN} />
       <dl className="kv">
         <dt>Tests (n)</dt><dd className="num">{g.n}</dd>
         <dt>With a stated outcome</dt><dd className="num">{g.n_with_outcome} of {g.n}</dd>
@@ -34,6 +36,7 @@ export function Materials() {
   const m = useMaterials();
   const { showTests } = useUi();
   const withOutcome = m.materials.reduce((sum, x) => sum + x.n_with_outcome, 0); // sum of counts already in the file
+  const maxN = Math.max(1, ...m.materials.map((x) => x.n));
   return (
     <Section id="materials" eyebrow="Materials · BASS-II" title="Solid materials: context only"
       lead={<>BASS-II burned solid samples in an airflow. It is shown for context and is not compared with FLEX. Only{' '}
@@ -50,7 +53,7 @@ export function Materials() {
                 {x.n_with_outcome > 0 && <Badge tone="info">AI-extracted</Badge>}
               </div>
               <p className="dim" style={{ fontSize: 'var(--fs-sm)' }}>{CLASS_LABEL[x.classification] ?? x.classification}</p>
-              <Group g={x} />
+              <Group g={x} maxN={maxN} />
               {x.by_color && (
                 <details>
                   <summary>By colour (do not average black and clear together)</summary>
@@ -58,7 +61,7 @@ export function Materials() {
                     {x.by_color.map((c) => (
                       <div key={c.color} className="match">
                         <span className="label">{c.color}</span>
-                        <Group g={c} />
+                        <Group g={c} maxN={x.n} />
                       </div>
                     ))}
                   </div>
