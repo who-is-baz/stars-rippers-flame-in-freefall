@@ -1,7 +1,8 @@
 // Cross-section actions & console state: "show these tests in the table", "open the assistant",
-// active atmosphere scenario, Explorer/Engineer mode, and Customize/SI board state.
+// active atmosphere scenario, Explorer/Engineer mode, Customize mode and the full-view panel.
 import { createContext, useContext } from 'react';
 import type { O2Band, PressureLevel, Program, Scenario } from '../data/types';
+import type { ViewId } from './board';
 
 // A preset replaces the table filters. `token` changes on every request so the same preset can be re-applied.
 export interface TablePreset {
@@ -27,7 +28,10 @@ export interface UiActions {
   setMode?: (m: ExplanationMode) => void;
   customizeOpen?: boolean;
   setCustomizeOpen?: (open: boolean) => void;
-  extraCard?: { type: BoardCardType; addedBy: 'user' | 'si'; title: string } | null;
+  view?: ViewId | null;                       // full-view panel over the console (null = console only)
+  openView?: (v: ViewId) => void;
+  closeView?: () => void;
+  // Used by the SI assistant: asks the board to add a card (null = undo the last change).
   setExtraCard?: (card: { type: BoardCardType; addedBy: 'user' | 'si'; title: string } | null) => void;
 }
 
