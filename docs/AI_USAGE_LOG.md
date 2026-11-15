@@ -429,3 +429,12 @@ Yael pidió que Claude tomara las decisiones abiertas.
 2. `frontend/src/sections/AtmosphereExplorer.tsx` (panel), `FlameScene.tsx` (prop opcional `observed`: brillo por escala global, parpadeo para resultados mixtos, apagado, gris n<5, trama vacía, anillo segmentado k de N), `Console.tsx` (pestaña Custom), `App.tsx`/`state/ui.tsx`/`Sidebar.tsx` (precargar pregunta sin enviar), estilos al final de `global.css` (sin tocar tokens), línea de método en `Sources.tsx`.
 3. Pruebas: `explorer.test.ts` (9, paridad con `scenarios.json`: Earth/ISS 49; lunar 0/17; resto 0) y `AtmosphereExplorer.test.tsx` (15). 69 Vitest en verde, build OK. Capturas de los 5 estados con playwright-core (instalado solo en el scratchpad, no es dependencia) en `docs/screenshots/`.
 4. Sin cambios en `public/data/*.json`, backend ni contrato. Revisión humana pendiente.
+
+## 2026-11-15 (29) — Cierre de entrega: arreglos, paquete en inglés, licencias y plan del demo — Claude (Opus 5.5, Claude Code)
+
+1. Frontend: inspector ligado a Custom (`state/custom.tsx`, `Cards.tsx`, `Console.tsx`), sin desborde en móvil (390/768 px), Lighthouse (favicon, `robots.txt`, nombre accesible del botón del asistente, texto ≥12 px en móvil). Lighthouse móvil 95/95/93/91 → 97/100/100/100. Verificado el sitio sin backend: 0 errores de consola, 0 sondeos al API/Ollama.
+2. `/ranking` marcado como no implementado (post-hackathon) en `docs/07`.
+3. `LICENSE` (Apache-2.0), `THIRD_PARTY.md` (license-checker y pip-licenses ejecutados fuera del repo), README con licencias y declaración de IA.
+4. `docs/submission/`: borradores en inglés de los 8 campos, `DEMO_PLAN.md` (video de 29 s / 7 diapositivas / guion de grabación) y `READINESS.md`. Licencias de modelos verificadas en las fichas de Hugging Face mediante un subagente de lectura web.
+5. Ollama no accesible: no se corrió el benchmark ni se afinaron prompts; ningún texto afirma que un modelo local funcione.
+6. Pruebas: 129 pytest + 8 saltadas, 70 Vitest, build OK. Revisión humana pendiente de los textos de entrega.
