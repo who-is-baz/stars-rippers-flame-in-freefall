@@ -1,59 +1,74 @@
-# 🔥 Stars Rippers — Flame in Freefall
+# 🔥 Stars Rippers — Flame in Freefall Explorer
 
-Stars Rippers · NASA Space Apps 2026 (UNAQ, Querétaro). Evidence-first dashboard + AI assistant for NASA microgravity combustion data (PSI: FLEX, BASS-II) to inform fire safety on spacecraft and Moon/Mars habitats. Every answer cites its source; data gaps are shown. Independent project, not endorsed by NASA.
+NASA Space Apps Challenge 2026 · UNAQ (Querétaro) · Challenge: *Flame in Freefall: AI-Powered Fire Safety Insights from Microgravity Combustion Data*.
+Independent student project (Universidad Politécnica de Querétaro). **Not endorsed by NASA.**
 
-**NASA Space Apps Challenge 2026 · Sede UNAQ (Colón, Querétaro) · 14–15 nov 2026**
-**Reto:** *Flame in Freefall: AI-Powered Fire Safety Insights from Microgravity Combustion Data*
+## What it is
+An evidence-first dashboard for NASA microgravity combustion data (NASA PSI: **FLEX** PSI-69 and **BASS-II** PSI-25, 403 ISS tests),
+organised by cabin atmosphere (oxygen and pressure). It shows how many real tests are near an atmosphere (Earth/ISS air, the expected
+Moon-base air, …), how they ended, and what is missing. For the expected Moon-base air (≥30% O₂, ≤10.2 psi) there are **0 exact tests
+and 17 near tests**. Every number carries its sample size (n) and source DOI; cells with n < 5 are flagged. An optional SI ("Super
+Intelligence", i.e. an AI/LLM) assistant answers only from these data and says "No data" otherwise.
 
-> Un dashboard interactivo con IA que resume, ordena e interpreta décadas de experimentos de combustión en microgravedad de la NASA y los convierte en **insights de seguridad contra incendios para misiones a la Luna y Marte**.
-
-## Equipo
-Estudiantes de ITIID, Universidad Politécnica de Querétaro (UPQ). Mentora: Dra. Argelia (UPQ). Primer hackatón del equipo.
-
-## Estado del repo
-Documentación del equipo + **pipeline de datos PSI** (descarga reproducible, tablas procesadas, SQLite y módulo de consultas). Para empezar: [`docs/SETUP.md`](docs/SETUP.md).
-Las reglas 2026 sobre trabajo previo y uso de IA deben confirmarse en las guías oficiales (ver `docs/00-reglas-y-checklist.md`).
-
-**Explorador de atmósfera (Overview → pestaña Custom):** recupera las pruebas FLEX observadas dentro de ±0.01 O₂ y ±0.5 psi
-de los valores elegidos (combustible, O₂, presión, supresor) y muestra conteos y medias con su n; no interpola ni predice.
-
-## Correr API + front (laptop del demo)
-```bash
-source .venv/bin/activate && pip install -r requirements-dev.txt && python scripts/build_experiments.py
-uvicorn backend.app:app --app-dir src --host 127.0.0.1 --port 8000          # API (OpenAPI en /docs)
-cd frontend && npm install && VITE_LLM_URL=http://127.0.0.1:8000 npm run dev  # front en :5173
-```
-IA local opcional (Ollama): `ollama pull llama3.2:3b`, `ollama pull qwen3:8b`, `ollama pull qwen3:14b`; luego **Connect local AI** en el panel SI.
-Sin backend ni Ollama el sitio funciona igual en modo Basic. Detalle y variables: [`docs/SETUP.md`](docs/SETUP.md) §7.
-
-## Mapa de documentos
-| Archivo | Para qué |
+| Custom explorer: observed tests only | No test within tolerance |
 |---|---|
-| `docs/00-reglas-y-checklist.md` | Reglas, fechas, requisitos de entrega, pendientes por confirmar |
-| `docs/01-roadmap-48h.md` | Plan hora por hora del hackatón |
-| `docs/02-roles.md` | Quién hace qué (5 personas) |
-| `docs/03-analisis-datos.md` | Fuente PSI, experimentos del MVP, tabla unificada, reglas de interpretación y ranking |
-| `docs/04-arquitectura.md` | Opciones de stack y arquitectura (el stack vigente está en `CLAUDE.md`) |
-| `docs/05-entrega-draft-en.md` | Borradores en inglés para el formulario de entrega |
-| `docs/06-pitch.md` | Estructura del demo (≤30 s video o ≤7 diapositivas) |
-| `docs/07-api-contract.md` | Contrato de la API entre backend y frontend |
-| `docs/tareas/` | Una ficha de tareas por persona/rol (5 archivos) |
-| `docs/AI_USAGE_LOG.md` | Bitácora de uso de IA (obligatoria para la declaración) |
-| `docs/DECISIONES.md` | Registro de decisiones |
-| `docs/data-dictionary.md` | Diccionario de datos y limitaciones conocidas |
-| `docs/sql_examples.sql` | 6 consultas de ejemplo sobre `psi.sqlite` |
-| `scripts/`, `src/`, `tests/` | Pipeline PSI, `psi_queries.py`, API en `src/backend/` y sus tests |
-| `docs/bench/` | Benchmark de modelos locales (`scripts/bench_models.py`) |
-| `docs/HANDOFF.md` | Estado al cierre de la última sesión |
-| `CLAUDE.md` + `.claude/skills/` | Instrucciones para Claude mientras programamos |
+| ![Custom explorer, mixed outcomes](docs/screenshots/explorer-mixed.png) | ![Custom explorer, no test](docs/screenshots/explorer-empty.png) |
 
-## Flujo de trabajo
-1. Una tarea = un issue (plantilla en `.github/ISSUE_TEMPLATE/`).
-2. Una rama por issue: `feat/<nombre>-<tema>` (p. ej. `feat/fer-material-mapping`). Se usa el nombre propio y no el rol porque los roles se solapan (Baz y Yael hacen backend). PR pequeño con `Closes #N`, revisado por otra persona; sin push directo a `main`.
-3. Todo uso de IA se anota en `docs/AI_USAGE_LOG.md`.
-4. Congelamiento de funciones: **dom 15 nov, 2:00 PM** (ajustar al horario real de UNAQ).
+## Run it
+**1. Static site only (what is published; no backend, no AI model)**
+```bash
+cd frontend && npm ci && npm run build      # → frontend/dist (drag it to any static host; see docs/submission/DEPLOY.md)
+npm run preview                             # http://127.0.0.1:4173
+```
+**2. With the API (demo laptop)**
+```bash
+python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements-dev.txt
+python scripts/build_experiments.py         # regenerates psi.sqlite from data/processed/*.csv (no network)
+uvicorn backend.app:app --app-dir src --host 127.0.0.1 --port 8000      # OpenAPI at /docs
+cd frontend && VITE_LLM_URL=http://127.0.0.1:8000 npm run dev           # http://127.0.0.1:5173
+```
+**3. With local models (optional, Ollama)**: `ollama pull llama3.2:3b`, `ollama pull qwen3:8b`, `ollama pull qwen3:14b`; then **Connect local AI** in
+the SI panel. These models were **not run** in our tests (see `docs/HANDOFF.md`); without them the site works in Basic mode.
+Environment variables and troubleshooting: `docs/SETUP.md` §7.
 
-## License · Data · Use of AI
+**Checks:** `python -m pytest` · `cd frontend && npm test && npm run build` · `python scripts/audit_numbers.py` ·
+`python scripts/smoke_e2e.py` · `node scripts/check_static_site.mjs` (needs `playwright-core`, not a dependency).
+
+## Folder map
+```
+frontend/            React + Vite + TypeScript site (public/data/*.json are generated, never edited by hand)
+src/psi_queries.py   the only place with SQL (read-only SQLite); src/scenarios.py atmosphere scenarios
+src/backend/         FastAPI: routes, closed tool list, scope rules, verifier, Ollama client
+scripts/             data pipeline, build_frontend_data.py, audit_numbers.py, smoke/bench/static checks
+data/processed/      versioned tables (experiments.csv, 403 rows); data/raw is local and git-ignored
+tests/               pytest (API, scope, guardrails with a fake model, data); frontend tests live in frontend/src
+docs/                data dictionary, API contract, decisions, AI log, submission/ (form drafts, demo plan, deploy)
+```
+
+## Data and licenses
+- **Data:** NASA Physical Sciences Informatics, **CC0-1.0**: FLEX DOI [10.60555/mbq8-0451](https://doi.org/10.60555/mbq8-0451), BASS-II DOI [10.60555/4qc4-de67](https://doi.org/10.60555/4qc4-de67). All tests are microgravity on the ISS.
 - **Code:** Apache-2.0 (`LICENSE`). Third-party licenses: `THIRD_PARTY.md`.
-- **Data:** NASA Physical Sciences Informatics (PSI), **CC0-1.0** — FLEX (PSI-69, DOI 10.60555/mbq8-0451) and BASS-II (PSI-25, DOI 10.60555/4qc4-de67). Not endorsed by NASA.
-- **Use of AI (SI):** a large part of the code, documentation and UI text was generated with AI assistants (Anthropic Claude: Claude Code and claude.ai); the log records, task by task, what the team reviewed and what review is still pending; BASS-II outcomes were extracted by AI from free-text notes and are labelled (`ai_*`, `extracted_by=AI`, `outcome_source = ai_extracted`). Commits with AI-generated changes carry `AI-assisted: yes`. Full log: `docs/AI_USAGE_LOG.md`; summary: `docs/submission/use_of_si.md`.
+
+## Use of AI
+Much of the code, documentation and UI text was generated with AI assistants (Anthropic Claude via Claude Code and claude.ai). The log
+records each task, the model, and what review is still pending: `docs/AI_USAGE_LOG.md`; summary: `docs/submission/use_of_si.md`.
+BASS-II outcomes were extracted by AI from free-text notes and are labelled (`ai_*`, `extracted_by=AI`, `outcome_source = ai_extracted`).
+Commits with AI-generated changes carry `AI-assisted: yes`.
+
+## Limits (read before quoting a number)
+No predictive model and no safety rating. FLEX extinction percentages are descriptive, not probabilities. There is no partial-gravity or
+normal-gravity data. CO₂/He effects are confounded with O₂. In BASS-II, "not stated" does not mean the flame did not go out. "Disruption"
+is not defined by the source. Three atmosphere sources are marked "Unverified source". Details: `docs/data-dictionary.md`, `docs/03-analisis-datos.md`.
+
+## Team documents (Spanish)
+| File | Purpose |
+|---|---|
+| `docs/00-reglas-y-checklist.md` | Rules, dates, submission requirements |
+| `docs/02-roles.md`, `docs/tareas/` | Who does what |
+| `docs/03-analisis-datos.md` | Data analysis and interpretation rules |
+| `docs/07-api-contract.md` | API contract (backend ↔ frontend) |
+| `docs/DECISIONES.md` | Decision log · `docs/HANDOFF.md` current state |
+| `docs/maintenance/CLEANUP_REPORT.md` | What was deleted and why |
+| `CLAUDE.md`, `.claude/skills/` | Instructions given to the AI assistants |
+
+Team: Stars Rippers — students of ITIID, Universidad Politécnica de Querétaro (UPQ). Mentor: Dra. Argelia.

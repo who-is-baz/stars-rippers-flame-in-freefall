@@ -438,3 +438,12 @@ Yael pidió que Claude tomara las decisiones abiertas.
 4. `docs/submission/`: borradores en inglés de los 8 campos, `DEMO_PLAN.md` (video de 29 s / 7 diapositivas / guion de grabación) y `READINESS.md`. Licencias de modelos verificadas en las fichas de Hugging Face mediante un subagente de lectura web.
 5. Ollama no accesible: no se corrió el benchmark ni se afinaron prompts; ningún texto afirma que un modelo local funcione.
 6. Pruebas: 129 pytest + 8 saltadas, 70 Vitest, build OK. Revisión humana pendiente de los textos de entrega.
+
+## 2026-11-15 (30) — Cierre final: sitio estático, limpieza, seguridad, alcance del asistente y auditoría de cifras — Claude (Opus 5.5 / Fable 5.2 / Sonnet 5.5, Claude Code)
+
+1. Sitio estático: fuentes autoalojadas, `netlify.toml`, workflow de Pages, `site.zip` (no versionado), `DEPLOY.md`, `FORTIGUARD.md`, `scripts/check_static_site.mjs` (Playwright sobre `/` y subdirectorio, 390/768/1280 px: 0 errores, 0 peticiones externas). Arreglo: el panel de vista completa quedaba bajo la barra en pantallas ≤1180 px.
+2. Limpieza: 5 `.patch` y 3 imágenes generadas con IA borrados; `docs/maintenance/CLEANUP_REPORT.md`; README reordenado; 0 enlaces .md rotos.
+3. Seguridad: escaneo de secretos del árbol y de los 111 commits (0 hallazgos), `docs/maintenance/SECURITY_REPORT.md`, límite de tasa y error 500 genérico en el backend, `npm audit` y `pip-audit` sin vulnerabilidades.
+4. Asistente: `scope.py` (negativa fija sin modelo), espejo generado para Basic, `tests/test_scope.py` y `scope.test.ts` con 78 casos compartidos.
+5. Datos: `scripts/audit_numbers.py` (182 comprobaciones, 0 discrepancias; detectó un "403 tests" escrito a mano que ahora se calcula) y 7 pruebas de reglas inmutables.
+6. Ollama sigue sin responder (disco no montado): no se corrió el benchmark ni las pruebas con modelo real. Revisión humana pendiente.
