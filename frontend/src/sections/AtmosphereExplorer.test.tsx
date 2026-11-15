@@ -147,3 +147,17 @@ describe('ask about these settings', () => {
     expect(calls).toBe(0);
   });
 });
+
+describe('inspector card while Custom is active', () => {
+  beforeEach(() => window.localStorage.clear());
+  it('mirrors the active Custom values (not the preset) and flags preset-only cards', async () => {
+    const panel = openCustom();
+    setState(panel, STATES.out);
+    const insp = await screen.findByRole('article', { name: /What air are we looking at/i });
+    await waitFor(() => expect(within(insp).getByText('Custom settings')).toBeInTheDocument());
+    expect(within(insp).getByText('methanol')).toBeInTheDocument();
+    expect(within(insp).getByText('25 · 25 tests')).toBeInTheDocument();
+    expect(within(insp).getByRole('button', { name: 'Show 25 tests' })).toBeInTheDocument();
+    expect(screen.getAllByText(/not Custom/).length).toBeGreaterThan(0);
+  });
+});

@@ -7,6 +7,7 @@ import {
 import type { Fuel, Scenario } from '../data/types';
 import { useAnswers, useCoverage, useExperiments, useGaps, useMaterials, useMeta, useScenarios } from '../data/useData';
 import { useUi } from '../state/ui';
+import { useCustom } from '../state/custom';
 import { cardMeta, sideOf, useBoard, type CardType, type ViewId } from '../state/board';
 import { Doi } from './ui';
 import { BurningRateChartSvg, CoverageRadarSvg, KpiRingSvg, MatchRingSvg, OutcomeBarsSvg, OutcomePills } from './charts';
@@ -194,9 +195,16 @@ function useCurrent() {
   return { scenarios, current: scenarios[idx] ?? scenarios[0], idx };
 }
 
+// While the Custom explorer is open, scenario cards say they still show the preset (not the Custom settings).
+function usePresetNote(current: Scenario | undefined): ReactNode {
+  const { active } = useCustom();
+  return active && current ? <span className="warn-text">Preset {SHORT_NAME[current.id]} · not Custom</span> : undefined;
+}
+
 function MatchCard() {
   const meta = useMeta();
   const { current } = useCurrent();
+  const presetNote = usePresetNote(current);
   const [detail, setDetail] = useState<'ring' | 'fuel'>('ring');
   const nearShown = useCountUp(current?.n_near ?? 0);
   const flex = meta.programs.find((p) => p.program === 'FLEX');
@@ -205,6 +213,7 @@ function MatchCard() {
   const fuels = current.n_near > 0 ? current.near.n_by_fuel : current.nearest?.n_by_fuel;
   return (
     <Frame type="scenario_match" swapKey={`${current.id}-${detail}`} icon={<Flame size={13} />} src={<>FLEX · {flex?.psi_id ?? 'PSI-69'}</>} n={`Tol. ${tol}`}
+      warn={presetNote}
       extra={<ViewToggle label="Match view" value={detail} onChange={setDetail} a={['ring', 'Ring']} b={['fuel', 'By fuel']} />}>
       {detail === 'ring' ? (
         <div className="ring-row">
@@ -235,7 +244,32 @@ function InspectorCard() {
   const { current, idx, scenarios } = useCurrent();
   const [showOutcomes, setShowOutcomes] = useState(false);
   const [inlineOpen, setInlineOpen] = useState(false);
+  const custom = useCustom();
   if (!current) return null;
+  if (custom.active && custom.summary) {
+    const c = custom.summary;
+    return (
+      <Frame type="scenario_inspector" swapKey="custom" icon={<Target size={13} />} src={<>FLEX · PSI-69</>} n="Custom">
+        <div className="insp-head">
+          <div>
+            <h3>Custom settings</h3>
+            <small>Observed FLEX tests only</small>
+          </div>
+        </div>
+        <div className="insp-kv num">
+          <div><span>Atmosphere</span><b>{c.atmosphere}</b></div>
+          <div><span>Fuel</span><b>{c.fuel}</b></div>
+          <div><span>Suppressant</span><b>{c.suppressant}</b></div>
+          <div><span>Exact · Near</span><b className={c.n === 0 ? 'warn-text' : undefined}>{c.n_exact} · {c.n} tests</b></div>
+        </div>
+        {c.n > 0 ? (
+          <button type="button" className="cta-mint" onClick={() => showTests({ ids: c.ids, label: `Custom: ${c.atmosphere}` })}>Show {c.n} tests</button>
+        ) : (
+          <p className="wc-read">No test within tolerance of these settings. No data.</p>
+        )}
+      </Frame>
+    );
+  }
   const ids = current.n_near > 0 ? current.near.test_ids : current.nearest?.test_ids;
   const count = current.n_near > 0 ? current.n_near : current.nearest?.n ?? 0;
   const out = current.n_near > 0 ? current.near.n_by_outcome : current.nearest?.n_by_outcome;
@@ -328,12 +362,13 @@ function ViewToggle<T extends string>({ value, onChange, a, b, label }: { value:
 function OutcomesCard() {
   const meta = useMeta();
   const { current } = useCurrent();
+  const presetNote = usePresetNote(current);
   const [view, setView] = useState<'bars' | 'pie'>('bars');
   if (!current) return null;
   const out = current.n_near > 0 ? current.near.n_by_outcome : current.nearest?.n_by_outcome;
   const total = current.n_near || current.nearest?.n || 0;
   return (
-    <Frame type="outcomes" swapKey={`${current.id}-${view}`} icon={<Layers size={13} />} src={<>FLEX · PSI-69</>} n={`n = ${total}`}
+    <Frame type="outcomes" swapKey={`${current.id}-${view}`} icon={<Layers size={13} />} src={<>FLEX · PSI-69</>} n={`n = ${total}`} warn={presetNote}
       extra={<ViewToggle label="Chart type" value={view} onChange={setView} a={['bars', 'Bars']} b={['pie', 'Pie']} />}>
       {total === 0 ? <p className="nodata">No data for this atmosphere.</p> : view === 'pie' ? <OutcomesDonut outcomes={out} total={total} /> : <OutcomeBarsSvg outcomes={out} total={total} minN={meta.min_n} />}
       <p className="wc-read">Observed outcomes near {SHORT_NAME[current.id]}. &ldquo;Disruption&rdquo; is not defined by the source.</p>

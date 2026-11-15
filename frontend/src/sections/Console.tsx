@@ -9,6 +9,7 @@ import { useUi, type TablePreset } from '../state/ui';
 import { MAX_PER_SIDE, useBoard, type ViewId } from '../state/board';
 import { FlameScene, type ObservedFlame } from '../components/FlameScene';
 import { AtmosphereExplorer, fmtCrit, useAtmosphere } from './AtmosphereExplorer';
+import { CustomContext, type CustomState } from '../state/custom';
 import { BoardCard, MiniFlameThumb, SHORT_NAME } from '../components/Cards';
 import { KpiRingSvg } from '../components/charts';
 import { Gallery } from '../components/Gallery';
@@ -331,6 +332,19 @@ export function Console({ preset, assistantOpen = false }: { preset: TablePreset
       : `${m.byOutcome.extinction} of ${m.n} tests ended in extinction${m.meanRate != null ? ` · Observed mean burning rate ${m.meanRate.toFixed(2)} mm²/s (n = ${m.nRate})` : ''}${atm.state === 'small_n' ? ' · n < 5' : atm.state === 'mixed' ? ' · mixed outcomes' : ''}`;
     return { state: atm.state, glow: atm.glow, k: m.byOutcome.extinction, n: m.n, atmosphere: fmtCrit(atm.filters.o2, atm.filters.pressure_psi), caption };
   }, [customOn, atm.result, atm.state, atm.glow, atm.filters.o2, atm.filters.pressure_psi]);
+  const customState = useMemo<CustomState>(() => {
+    if (!customOn) return { active: false, summary: null };
+    const f = atm.filters, m = atm.result;
+    return {
+      active: true,
+      summary: {
+        atmosphere: fmtCrit(f.o2, f.pressure_psi),
+        fuel: f.fuel === 'any' ? 'heptane and methanol' : f.fuel,
+        suppressant: f.suppressant === 'any' ? 'any suppressant' : f.suppressant === 'none' ? 'no suppressant' : `${f.suppressant === 'co2' ? 'CO₂' : 'He'} added`,
+        n: m.n, n_exact: m.n_exact, ids: [...new Set(m.tests.map((r) => r.test_id))],
+      },
+    };
+  }, [customOn, atm.filters, atm.result]);
   const [introOpen, setIntroOpen] = useState(readIntro);
   const [tour, setTour] = useState<number | null>(null);
   const [focus, setFocus] = useState(false); // hides the cards so the scene fills the screen
@@ -375,6 +389,7 @@ export function Console({ preset, assistantOpen = false }: { preset: TablePreset
   const rightFree = board.right.length < MAX_PER_SIDE.right;
 
   return (
+    <CustomContext.Provider value={customState}>
     <header className="console-section" id="top">
       <div className={`console-frame${focus ? ' is-focus' : ''}${customizeOpen ? ' is-editing' : ''}${assistantOpen ? ' is-assistant-open' : ''}${view && view !== 'overview' ? ' is-busy' : ''}${dockTab === 'explore' ? ' is-exploring' : ''}${customOn && dockTab === 'scenarios' ? ' is-custom' : ''}`}>
         {current && <FlameScene scenario={current} mode={mode} observed={observed} />}
@@ -594,5 +609,6 @@ export function Console({ preset, assistantOpen = false }: { preset: TablePreset
         {view && view !== 'overview' && <ViewPanel view={view} preset={preset} onSelectView={(v) => openView?.(v)} onClose={() => closeView?.()} />}
       </div>
     </header>
+    </CustomContext.Provider>
   );
 }
