@@ -1,1 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><defs><radialGradient id="g"><stop offset="0" stop-color="#F7F9FF"/><stop offset=".45" stop-color="#7C96FF"/><stop offset="1" stop-color="#26324F" stop-opacity="0"/></radialGradient></defs><rect width="32" height="32" rx="7" fill="#0C0E11"/><circle cx="16" cy="16" r="12" fill="url(#g)"/><circle cx="16" cy="16" r="2.4" fill="#0b0e14" stroke="#E6EAF0" stroke-width=".6"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Emblem of the header (BrandEmblem in frontend/src/App.tsx: ring, blue disc, white dot) on the dark UI background.
+       Ring and disc are slightly stronger than in the header so they stay readable at 16 px. -->
+  <rect width="64" height="64" rx="14" fill="#040506"/>
+  <g transform="translate(32 32) scale(1.95) translate(-13 -13)">
+    <circle cx="13" cy="13" r="11.5" fill="none" stroke="#C7CDD4" stroke-opacity="0.85" stroke-width="1.7"/>
+    <circle cx="13" cy="13" r="6" fill="#6F8CFF" fill-opacity="0.95"/>
+    <circle cx="13" cy="13" r="2.2" fill="#F2F4F6"/>
+  </g>
+</svg>
