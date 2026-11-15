@@ -14,6 +14,15 @@ Estudiantes de ITIID, Universidad Politécnica de Querétaro (UPQ). Mentora: Dra
 Documentación del equipo + **pipeline de datos PSI** (descarga reproducible, tablas procesadas, SQLite y módulo de consultas). Para empezar: [`docs/SETUP.md`](docs/SETUP.md).
 Las reglas 2026 sobre trabajo previo y uso de IA deben confirmarse en las guías oficiales (ver `docs/00-reglas-y-checklist.md`).
 
+## Correr API + front (laptop del demo)
+```bash
+source .venv/bin/activate && pip install -r requirements-dev.txt && python scripts/build_experiments.py
+uvicorn backend.app:app --app-dir src --host 127.0.0.1 --port 8000          # API (OpenAPI en /docs)
+cd frontend && npm install && VITE_LLM_URL=http://127.0.0.1:8000 npm run dev  # front en :5173
+```
+IA local opcional (Ollama): `ollama pull llama3.2:3b`, `ollama pull qwen3:8b`, `ollama pull qwen3:14b`; luego **Connect local AI** en el panel SI.
+Sin backend ni Ollama el sitio funciona igual en modo Basic. Detalle y variables: [`docs/SETUP.md`](docs/SETUP.md) §7.
+
 ## Mapa de documentos
 | Archivo | Para qué |
 |---|---|
@@ -30,7 +39,9 @@ Las reglas 2026 sobre trabajo previo y uso de IA deben confirmarse en las guías
 | `docs/DECISIONES.md` | Registro de decisiones |
 | `docs/data-dictionary.md` | Diccionario de datos y limitaciones conocidas |
 | `docs/sql_examples.sql` | 6 consultas de ejemplo sobre `psi.sqlite` |
-| `scripts/`, `src/`, `tests/` | Pipeline PSI, `psi_queries.py` y sus tests |
+| `scripts/`, `src/`, `tests/` | Pipeline PSI, `psi_queries.py`, API en `src/backend/` y sus tests |
+| `docs/bench/` | Benchmark de modelos locales (`scripts/bench_models.py`) |
+| `docs/HANDOFF.md` | Estado al cierre de la última sesión |
 | `CLAUDE.md` + `.claude/skills/` | Instrucciones para Claude mientras programamos |
 
 ## Flujo de trabajo

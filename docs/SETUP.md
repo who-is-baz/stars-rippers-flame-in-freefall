@@ -65,3 +65,57 @@ python scripts/fetch_psi.py --verify-only  # solo verifica lo que ya tienes
 2. Rama por issue: `git switch -c feat/<nombre>-<tema>` (p. ej. `feat/fer-material-mapping`); el PR lleva `Closes #N`.
 3. Commits pequeños; PR con la plantilla y revisión de otra persona. Nada de force push a `main`.
 4. Todo uso de IA se anota en `docs/AI_USAGE_LOG.md`. Nunca subas secretos (`.env` está ignorado).
+
+## 7. Backend (API) + frontend + IA local
+El sitio público **no** necesita nada de esto: funciona solo con Basic (`frontend/public/data/*.json`).
+Esto es para la laptop del demo y para desarrollo.
+
+```bash
+# 1) dependencias (una vez)
+source .venv/bin/activate && pip install -r requirements-dev.txt
+(cd frontend && npm install)
+# 2) base de datos (una vez, sin red)
+python scripts/build_experiments.py
+# 3) API en http://127.0.0.1:8000  (OpenAPI en /docs; rutas bajo /api y también sin prefijo)
+uvicorn backend.app:app --app-dir src --host 127.0.0.1 --port 8000
+# 4) front en http://127.0.0.1:5173 (otra terminal)
+cd frontend && VITE_LLM_URL=http://127.0.0.1:8000 npm run dev
+```
+En el panel SI: **Connect local AI** → llama a `GET /llm/status` y habilita los niveles cuyo modelo esté instalado.
+
+### Modelos (Ollama, http://localhost:11434)
+```bash
+ollama serve                 # si no corre como servicio
+ollama pull llama3.2:3b      # Flash  (~2 GB)
+ollama pull qwen3:8b         # Medium (~5 GB)
+ollama pull qwen3:14b        # Heavy  (~9 GB)
+```
+Mapa: Basic = `low` (sin modelo) · Flash = `medium` + `FLASH_MODEL` · Medium = `medium` + `MEDIUM_MODEL` · Heavy = `high` + `HEAVY_MODEL`.
+
+### Variables de entorno (todas opcionales; ningún secreto)
+| Variable | Defecto | Para qué |
+|---|---|---|
+| `OLLAMA_URL` | `http://localhost:11434` | servidor de Ollama |
+| `OLLAMA_TIMEOUT_S` | `60` | timeout por llamada al modelo |
+| `OLLAMA_KEEP_ALIVE` | `5m` | cuánto queda cargado el modelo |
+| `FLASH_MODEL` / `MEDIUM_MODEL` / `HEAVY_MODEL` | `llama3.2:3b` / `qwen3:8b` / `qwen3:14b` | etiqueta por nivel (lista permitida de `model`) |
+| `ASK_BUDGET_S` | `45` | si el router tarda más, se responde con plantilla |
+| `CORS_ORIGINS` | — | orígenes extra separados por coma (`*` se ignora) |
+| `PSI_DB` | `data/processed/psi.sqlite` | otra ruta para la base |
+| `VITE_LLM_URL` (front, alias `VITE_API_URL`) | — | URL de la API; sin ella, Connect usa `http://127.0.0.1:8000` |
+| `VITE_LLM_TIMEOUT_MS` (front) | `15000` | timeout del front; súbelo para Heavy en CPU |
+
+### Si Ollama no está
+- `/llm/status` → `available:false` (HTTP 200); `/ask` en medium/high → **503** y el front responde con Basic (lo avisa).
+- `low` nunca usa Ollama.
+- Si `ollama serve` dice `could not create directory ~/.ollama: file exists`, `~/.ollama` es un enlace a un disco no
+  montado: monta el disco o usa `OLLAMA_MODELS=/otra/ruta ollama serve`.
+
+### Comprobar
+```bash
+python -m pytest                     # todo (Ollama mockeado); las pruebas -m ollama se saltan sin Ollama
+python -m pytest -m ollama -rs       # integración con Ollama real
+python scripts/smoke_e2e.py          # levanta API + front y pregunta en cada nivel
+python scripts/bench_models.py       # benchmark → docs/bench/results.csv y RESUMEN.md
+(cd frontend && npm test)
+```

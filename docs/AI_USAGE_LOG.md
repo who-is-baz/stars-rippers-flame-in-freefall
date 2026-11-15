@@ -413,3 +413,10 @@ Yael pidió que Claude tomara las decisiones abiertas.
 2. `frontend/src/assistant/Sidebar.tsx`: botón **Connect local AI** con estados conectando / conectado (modelos) / API no detectada / Ollama no detectado / modelo no instalado (título con `ollama pull`). Sin cambios de diseño, tokens ni secciones.
 3. Fuera de `assistant/` (mínimo): campo opcional `test_ids_total` en `src/data/types.ts` y tipos de env en `src/vite-env.d.ts`.
 4. `frontend/src/assistant/connect.test.tsx` (6 pruebas; 45 Vitest en verde, build OK). `scripts/smoke_e2e.py`: API + Vite reales, una pregunta por nivel: PASSED (Basic 200; Flash/Medium/Heavy 503 porque Ollama no tiene modelos aquí). Revisión humana pendiente.
+
+## 2026-11-15 (27) — Fase 6: benchmark, documentación y handoff — Claude (Opus 5.5, Claude Code)
+
+1. `scripts/bench_models.py` (12 preguntas, métricas por modelo, RAM vía `/api/ps`) → `docs/bench/results.csv` y `docs/bench/RESUMEN.md`. **Corrido sin modelos disponibles: resultado "sin resultados", no se inventó ninguna cifra.** Lógica de puntaje probada con el cliente falso.
+2. `tests/test_ollama_integration.py` (`@pytest.mark.ollama`, se saltan sin Ollama) y `pytest.ini`.
+3. `README.md`, `docs/SETUP.md` §7 (comandos, variables, modelos, qué hacer sin Ollama), `docs/HANDOFF.md`, `docs/DECISIONES.md`.
+4. Estado final: 129 pytest + 8 saltadas, 45 Vitest, build del front y smoke e2e en verde. Revisión humana pendiente de todo el backend.
