@@ -58,6 +58,20 @@ docs/              setup, data dictionary, API, data sources, AI use, challenge 
   column definitions: [`docs/data-dictionary.md`](docs/data-dictionary.md).
 - **Code:** Apache-2.0 ([`LICENSE`](LICENSE)). Third-party software and fonts: [`THIRD_PARTY.md`](THIRD_PARTY.md).
 
+## Use of AI
+
+- **Design and code with AI assistance:** AI tools (Anthropic Claude) wrote most of the code, tests and documentation
+  under the team's direction. The logo was generated with Gemini.
+- **AI-extracted data:** BASS-II has no outcome column; AI-written rules extracted an outcome for **26 of 129** tests (and
+  air speeds) from free-text notes. These are labelled "AI-extracted" in the data and on the site.
+- **Optional local assistant:** the API can use a local model through Ollama; its text is checked by code against the
+  data and replaced by a fixed template if the check fails. The public static site does not use a model.
+- **What the team reviewed:** the data files and processing decisions, the material mapping, design decisions and
+  dependencies. Most code is checked by automated tests and an independent recomputation of every figure
+  (`scripts/audit_numbers.py`) rather than line by line.
+
+Full statement: [`docs/AI_USAGE.md`](docs/AI_USAGE.md).
+
 ## Limits
 
 Microgravity on the ISS only (no partial-gravity data in PSI). FLEX extinction shares are descriptive, not probabilities.
