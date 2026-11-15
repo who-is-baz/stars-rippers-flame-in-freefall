@@ -1,0 +1,10 @@
+.shell { min-height: 100vh; display: flex; flex-direction: column; background: radial-gradient(1200px 600px at 50% -10%, var(--graphite-8), var(--space)); }
+.main { flex: 1; padding: var(--s-8) var(--s-6); max-width: 1280px; width: 100%; margin: 0 auto; }
+.footer { padding: var(--s-4) var(--s-6); border-top: 1px solid var(--glass-border); color: var(--ink-dim); font-size: var(--fs-xs); text-align: center; }
+.notice { max-width: 60ch; padding: var(--s-6); border-radius: var(--r-panel); background: var(--glass-solid); border: 1px solid var(--glass-border); display: grid; gap: var(--s-2); }
+.notice h2 { font-family: var(--font-display); font-size: var(--fs-md); }
+.notice p { color: var(--silver); }
+.view h1 { font-family: var(--font-display); font-size: var(--fs-lg); font-weight: 400; margin-bottom: var(--s-3); }
+.view p { color: var(--silver); max-width: 60ch; }
+.stat { margin-top: var(--s-4); color: var(--ink-dim); font-size: var(--fs-sm); }
+@media (max-width: 767px) { .main { padding: var(--s-6) var(--s-4); } }
