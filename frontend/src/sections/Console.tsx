@@ -238,7 +238,7 @@ export function Console({ preset, assistantOpen = false }: { preset: TablePreset
         {customizeOpen && <Gallery onClose={() => setCustomizeOpen?.(false)} />}
 
         {/* ---- tour (the only light element) ---- */}
-        {tour != null && !view && (
+        {tour != null && (!view || view === 'overview') && (
           <div className="tour-card" role="dialog" aria-label="30-second guided tour">
             {tour === 1 && <><b>1 · Pick an atmosphere</b><p>Each button below is the air a crew could breathe. The flame and the cards update.</p></>}
             {tour === 2 && <><b>2 · Check exact vs. near matches</b><p>Moon base air has 0 exact FLEX matches, but {scenarios.find((s) => s.id === 'lunar_challenge')?.n_near ?? 0} tests within {tol}. Every card shows its n and source.</p></>}
