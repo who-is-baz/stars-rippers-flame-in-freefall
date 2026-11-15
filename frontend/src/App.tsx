@@ -75,7 +75,7 @@ function Nav({ onAssistant, open, mode, onMode, customizeOpen, onCustomize, view
           )}
           {!customizeOpen ? (
             <>
-              <button type="button" className="ask-trigger" onClick={onAssistant} aria-expanded={open} aria-controls="assistant" aria-keyshortcuts={isMac ? 'Meta+K' : 'Control+K'}>
+              <button type="button" className="ask-trigger" aria-label="Ask the SI assistant" onClick={onAssistant} aria-expanded={open} aria-controls="assistant" aria-keyshortcuts={isMac ? 'Meta+K' : 'Control+K'}>
                 <Sparkles size={14} color="var(--mint)" aria-hidden="true" />
                 <span>Ask the SI assistant…</span>
                 <span className="kbd" aria-hidden="true">{SHORTCUT}</span>

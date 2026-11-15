@@ -2197,3 +2197,11 @@ ul.plain { margin: 0; padding-left: 1.1em; display: grid; gap: var(--s-2); color
   .scene-legend { white-space: normal; flex-wrap: wrap; justify-content: center; text-align: center; max-width: calc(100% - 24px); width: max-content; row-gap: 2px; }
   .obs-caption { white-space: normal; }
 }
+
+/* Phones: no text under 12 px (Lighthouse "legible font sizes"); desktop sizes are unchanged. */
+@media (max-width: 620px) {
+  .kpi-lbl, .dock-chip, .glist li, .scene-legend, .dock-card h4, .wc-ft, .src-pill, .dock-tabs button,
+  .insp-kv span, .dock-meta, .slot-btn-sm, .insp-head small, .seg-compact button, .zlevel button,
+  .btn-sm, .rail-help, .mini-seg button, .ax-range, .ax-small, .ax-disclaimer, .ax-unverified,
+  .ax-preset, .ax-slider-head, .ax-readout, .ax-snap, .ax-seg legend, .dim, .num { font-size: 12px !important; }
+}
