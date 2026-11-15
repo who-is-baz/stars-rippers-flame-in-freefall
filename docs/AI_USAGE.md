@@ -36,7 +36,7 @@ atmosphere and show what the evidence covers) came from the team and the officia
 
 ## Logo
 The Flarefall logo and name image were provided by the team and **generated with Gemini (Google)**, per the file names of
-the originals (`frontend/public/brand/original-*.jpg`). The background was made transparent and the images resized by a
+the originals (kept by the team outside the repository; they are not published with the site). The background was made transparent and the images resized by a
 script (no redrawing). The site labels the logo "AI-generated" in Sources & credits. It contains no NASA logo, name or
 insignia.
 

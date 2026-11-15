@@ -166,10 +166,17 @@ describe('mountIntro', () => {
     act(() => { shown = mountIntro(app); });               // second call while one is on screen (e.g. StrictMode): no duplicate
     expect(shown).toBe(false);
     expect(document.querySelectorAll('#intro-root')).toHaveLength(1);
+    expect(document.documentElement).toHaveClass('intro-active');   // decorative animations of the app pause meanwhile
+    let done = 0;
+    const onDone = () => { done += 1; };
+    window.addEventListener('fif:intro-done', onDone);
     fireEvent.click(screen.getByRole('button', { name: /Skip/ }));
     tick(SKIP_FADE_MS);
+    window.removeEventListener('fif:intro-done', onDone);
     expect(document.getElementById('intro-root')).toBeNull();
     expect(app).not.toHaveAttribute('inert');
+    expect(document.documentElement).not.toHaveClass('intro-active');
+    expect(done).toBe(1);
 
     act(() => { shown = mountIntro(app); });               // next load (reload, reopen): it plays again
     expect(shown).toBe(true);

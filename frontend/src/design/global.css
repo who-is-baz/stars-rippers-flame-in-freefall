@@ -2427,3 +2427,11 @@ table.inv-table td { vertical-align: top; white-space: normal; }
 @media (min-width: 1181px) {
   .console-frame.is-custom .starfield { transform: translateY(-6%); transition: transform 0.4s var(--ease); }
 }
+
+/* ---------- light mode (perf-lite) and pause while the intro is on screen: decoration only, no data ---------- */
+html.perf-lite .sf-layer { animation: none !important; will-change: auto; }
+html.perf-lite .sf-tw { opacity: 0.75; }
+html.perf-lite .sf-meteor { display: none; }
+html.perf-lite .o2p { animation: none !important; opacity: 0.45; }
+html.intro-active .sf-layer, html.intro-active .o2p, html.intro-active .fire *, html.intro-active .fire,
+html.intro-active .flame-breath, html.intro-active .inst-flow i { animation-play-state: paused !important; }

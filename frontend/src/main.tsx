@@ -12,5 +12,6 @@ import './design/tokens.css';
 import './design/global.css';
 import App from './App';
 import './intro'; // opening intro (match → light). Delete this one line to remove it; ?intro=off disables it at runtime.
+import './perf'; // automatic light mode for slow devices (decoration only); ?perf=lite forces it, ?perf=full disables it.
 
 createRoot(document.getElementById('root')!).render(<StrictMode><App /></StrictMode>);
