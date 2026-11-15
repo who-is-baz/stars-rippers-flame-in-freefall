@@ -23,6 +23,95 @@ interface View { k: number; tx: number; ty: number; ang: number }
 const levelOf = (k: number): ZoomLevel => (k < 1.5 ? 1 : k < 2.5 ? 2 : 3);
 const clampK = (k: number) => Math.max(K_MIN, Math.min(K_MAX, k));
 
+// Deterministic multi-depth starfield with parallax drift + 5 twinkle frequencies.
+const STAR_LAYERS: { driftCls: string; groups: { cls: string; stars: [number, number, number, string?][] }[] }[] = [
+  {
+    driftCls: 'star-drift-1',
+    groups: [
+      {
+        cls: 'star-layer star-t1',
+        stars: [
+          [88, 74, 1.9, '#F2F6FF'], [246, 142, 1.5], [392, 68, 2.2, '#D3DDFF'], [520, 118, 1.4],
+          [684, 58, 1.8], [934, 64, 2.1, '#7FF5E1'], [1142, 92, 1.6], [1318, 72, 2.3, '#D3DDFF'],
+          [1488, 128, 1.5], [134, 312, 1.8], [358, 284, 1.4], [1238, 266, 2.0, '#F2F6FF'],
+          [1464, 342, 1.6], [96, 560, 2.1, '#D3DDFF'], [342, 590, 1.5], [1258, 574, 1.8],
+          [1512, 610, 2.2, '#7FF5E1'], [184, 812, 1.6], [448, 846, 1.9], [1166, 834, 1.8, '#D3DDFF'],
+          [1426, 820, 1.5],
+        ],
+      },
+      {
+        cls: 'star-layer star-t4',
+        stars: [
+          [148, 112, 2.0, '#FFF4D6'], [438, 148, 1.6, '#7FF5E1'], [598, 96, 1.9, '#D3DDFF'],
+          [1048, 88, 2.1, '#F2F6FF'], [1392, 108, 1.7, '#7FF5E1'], [288, 344, 2.0, '#D3DDFF'],
+          [492, 318, 1.5], [1118, 312, 1.8, '#FFF4D6'], [1338, 302, 2.2, '#7FF5E1'],
+          [206, 488, 1.7], [1402, 476, 1.9, '#D3DDFF'], [294, 682, 2.1, '#F2F6FF'],
+          [1224, 696, 1.7, '#7FF5E1'],
+        ],
+      },
+    ],
+  },
+  {
+    driftCls: 'star-drift-2',
+    groups: [
+      {
+        cls: 'star-layer star-t2',
+        stars: [
+          [164, 196, 1.7], [312, 218, 2.3, '#7FF5E1'], [468, 182, 1.3], [1086, 168, 1.9, '#D3DDFF'],
+          [1264, 188, 1.4], [1412, 224, 2.1], [72, 424, 1.6], [274, 446, 2.0, '#F2F6FF'],
+          [432, 398, 1.4], [1178, 412, 1.7], [1354, 448, 2.3, '#D3DDFF'], [1534, 468, 1.5],
+          [142, 694, 1.9], [318, 728, 1.6, '#7FF5E1'], [486, 742, 1.8], [1124, 736, 1.5],
+          [1308, 712, 2.2, '#F2F6FF'], [1492, 748, 1.7], [624, 868, 1.8], [984, 876, 2.0, '#D3DDFF'],
+        ],
+      },
+      {
+        cls: 'star-layer star-t5',
+        stars: [
+          [64, 254, 1.9, '#7FF5E1'], [228, 262, 1.5], [534, 218, 2.1, '#D3DDFF'],
+          [1054, 232, 1.8, '#FFF4D6'], [1478, 272, 2.2, '#7FF5E1'], [118, 504, 1.6],
+          [382, 534, 2.0, '#F2F6FF'], [1206, 518, 1.9, '#D3DDFF'], [1452, 548, 1.6],
+          [82, 764, 2.1, '#7FF5E1'], [528, 796, 1.7], [1072, 792, 2.0, '#D3DDFF'],
+          [1368, 782, 1.8, '#FFF4D6'],
+        ],
+      },
+    ],
+  },
+  {
+    driftCls: 'star-drift-3',
+    groups: [
+      {
+        cls: 'star-layer star-t3',
+        stars: [
+          [54, 148, 1.5], [218, 88, 2.2, '#D3DDFF'], [612, 134, 1.7], [768, 82, 2.0, '#F2F6FF'],
+          [856, 112, 1.5], [1018, 124, 2.4, '#7FF5E1'], [1376, 138, 1.6], [1548, 84, 1.9],
+          [212, 368, 2.2, '#D3DDFF'], [386, 492, 1.7], [1214, 344, 2.0], [1396, 536, 1.6, '#F2F6FF'],
+          [238, 636, 1.5], [412, 668, 2.2, '#D3DDFF'], [1192, 658, 1.7], [1382, 642, 2.1, '#7FF5E1'],
+          [78, 856, 1.8], [356, 862, 1.6], [742, 858, 2.1, '#F2F6FF'], [1284, 854, 1.7],
+          [1528, 858, 2.0, '#D3DDFF'],
+        ],
+      },
+    ],
+  },
+];
+
+// Four-point bright beacon stars that visibly pulse and shimmer across deep space
+const SPARKLE_STARS: [number, number, number, string, string][] = [
+  [312, 218, 8.5, '#7FF5E1', 'star-t2'],
+  [1318, 72, 9, '#D3DDFF', 'star-t1'],
+  [1018, 124, 8, '#7FF5E1', 'star-t3'],
+  [212, 368, 8.5, '#F2F6FF', 'star-t4'],
+  [1354, 448, 9, '#D3DDFF', 'star-t2'],
+  [1512, 610, 8, '#7FF5E1', 'star-t5'],
+  [412, 668, 8.5, '#D3DDFF', 'star-t3'],
+  [1308, 712, 8.5, '#F2F6FF', 'star-t1'],
+  [148, 112, 7.5, '#FFF4D6', 'star-t4'],
+  [534, 218, 7.5, '#7FF5E1', 'star-t5'],
+  [1086, 168, 8, '#D3DDFF', 'star-t2'],
+  [96, 560, 8, '#7FF5E1', 'star-t1'],
+  [1238, 266, 7.5, '#F2F6FF', 'star-t3'],
+  [1382, 642, 8, '#7FF5E1', 'star-t4'],
+];
+
 // Static background, bezel and reticle: depends on nothing, so it renders once.
 const Backdrop = memo(function Backdrop() {
   return (
@@ -54,15 +143,49 @@ const Backdrop = memo(function Backdrop() {
           <stop offset="0.35" stopColor="#8E96A0" stopOpacity="0.25" />
           <stop offset="1" stopColor="#C7CDD4" stopOpacity="0.05" />
         </linearGradient>
-        <pattern id="starsPat" width="160" height="160" patternUnits="userSpaceOnUse">
-          <circle cx="12" cy="20" r="0.8" fill="#fff" opacity="0.35" />
-          <circle cx="90" cy="60" r="0.6" fill="#fff" opacity="0.25" />
-          <circle cx="140" cy="130" r="0.9" fill="#fff" opacity="0.3" />
-          <circle cx="50" cy="110" r="0.5" fill="#fff" opacity="0.2" />
+        <pattern id="starsPat" width="220" height="220" patternUnits="userSpaceOnUse">
+          <circle cx="18" cy="28" r="0.85" fill="#fff" opacity="0.28" />
+          <circle cx="114" cy="74" r="0.7" fill="#fff" opacity="0.22" />
+          <circle cx="182" cy="164" r="0.9" fill="#fff" opacity="0.26" />
+          <circle cx="64" cy="148" r="0.65" fill="#fff" opacity="0.2" />
         </pattern>
+        <linearGradient id="meteorGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stopColor="#7FF5E1" stopOpacity="0" />
+          <stop offset="0.7" stopColor="#D3DDFF" stopOpacity="0.65" />
+          <stop offset="1" stopColor="#FFFFFF" stopOpacity="0.95" />
+        </linearGradient>
       </defs>
       <rect width="1600" height="1000" fill="url(#bgglow)" />
-      <rect width="1600" height="1000" fill="url(#starsPat)" />
+      <rect width="1600" height="1000" fill="url(#starsPat)" className="star-drift-bg" />
+      {STAR_LAYERS.map((drift) => (
+        <g key={drift.driftCls} className={drift.driftCls}>
+          {drift.groups.map((group) => (
+            <g key={group.cls} className={group.cls}>
+              {group.stars.map(([cx, cy, r, fill], idx) => (
+                <g key={idx}>
+                  {r >= 1.9 && (
+                    <circle cx={cx} cy={cy} r={r * 2.6} fill={fill ?? '#D3DDFF'} opacity="0.2" />
+                  )}
+                  <circle cx={cx} cy={cy} r={r} fill={fill ?? '#FFFFFF'} />
+                </g>
+              ))}
+            </g>
+          ))}
+        </g>
+      ))}
+      <g className="star-sparkles star-drift-2" strokeWidth="1.15" strokeLinecap="round">
+        {SPARKLE_STARS.map(([cx, cy, arm, color, cls], idx) => (
+          <g key={idx} className={`star-layer ${cls}`} stroke={color}>
+            <circle cx={cx} cy={cy} r="2.2" fill={color} stroke="none" opacity="0.85" />
+            <line x1={cx - arm} y1={cy} x2={cx + arm} y2={cy} />
+            <line x1={cx} y1={cy - arm} x2={cx} y2={cy + arm} />
+          </g>
+        ))}
+      </g>
+      <g className="shooting-stars" aria-hidden="true">
+        <line x1="210" y1="88" x2="305" y2="122" stroke="url(#meteorGrad)" strokeWidth="1.6" strokeLinecap="round" className="shooting-star shooting-star-1" />
+        <line x1="1180" y1="138" x2="1285" y2="176" stroke="url(#meteorGrad)" strokeWidth="1.5" strokeLinecap="round" className="shooting-star shooting-star-2" />
+      </g>
       <g stroke="#5B636D" strokeWidth="1" opacity="0.45">
         <path d="M 552 228 h 8 M 556 224 v 8" />
         <path d="M 1044 228 h 8 M 1048 224 v 8" />

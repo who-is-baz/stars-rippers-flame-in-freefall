@@ -201,20 +201,15 @@ function MatchCard() {
   const flex = meta.programs.find((p) => p.program === 'FLEX');
   const tol = fmtTolerance(meta.tolerance);
   if (!current) return null;
-  const reading =
-    current.n_exact > 0 ? `${current.n_exact} FLEX tests match within ${tol}.`
-    : current.n_near > 0 ? `None match exactly; ${current.n_near} are within ${tol}.`
-    : `No FLEX test matches this atmosphere, even within ${tol}.`;
   return (
-    <Frame type="scenario_match" swapKey={current.id} icon={<Flame size={13} />} src={<>FLEX · {flex?.psi_id ?? 'PSI-69'}</>} n={`n = ${current.n_near || current.n_exact}`}>
+    <Frame type="scenario_match" swapKey={current.id} icon={<Flame size={13} />} src={<>FLEX · {flex?.psi_id ?? 'PSI-69'}</>} n={`Tol. ${tol}`}>
       <div className="ring-row">
         <MatchRingSvg exact={current.n_exact} near={current.n_near} total={flex?.n ?? 274} minN={meta.min_n} />
         <div>
-          <div className="wc-big num">{nearShown} <small>{current.n_exact > 0 ? 'within tolerance' : 'near'}</small></div>
+          <div className="wc-big num">{nearShown} <small>{current.n_exact > 0 ? 'within tol.' : 'near'}</small></div>
           <div className="dim num" style={{ fontSize: 'var(--fs-xs)' }}>{current.n_exact} exact {current.n_exact === 1 ? 'match' : 'matches'}</div>
         </div>
       </div>
-      <p className="wc-read">{reading}</p>
     </Frame>
   );
 }
@@ -228,7 +223,7 @@ function InspectorCard() {
   const out = current.n_near > 0 ? current.near.n_by_outcome : current.nearest?.n_by_outcome;
   const label = `${SHORT_NAME[current.id]}: ${current.n_exact > 0 ? 'matching' : 'near-match'} tests`;
   return (
-    <Frame type="scenario_inspector" swapKey={current.id} icon={<Target size={13} />} src={<>FLEX · PSI-69</>} n={`${String(idx + 1).padStart(2, '0')} of ${String(scenarios.length).padStart(2, '0')}`}
+    <Frame type="scenario_inspector" swapKey={current.id} icon={<Target size={13} />} src={<>FLEX · PSI-69</>} n={`${String(idx + 1).padStart(2, '0')} / ${String(scenarios.length).padStart(2, '0')}`}
       extra={!current.verified ? <span className="badge badge-caution">Unverified</span> : null}>
       <div className="insp-head">
         <MiniFlameThumb o2={current.criteria.o2.value} />
@@ -240,8 +235,8 @@ function InspectorCard() {
       <div className="insp-kv num">
         <div><span>Oxygen</span><b>{fmtCriterionO2(current).replace(' O₂', '')}</b></div>
         <div><span>Pressure</span><b>{fmtCriterionP(current)}</b></div>
-        <div><span>Earth, for comparison</span><b>21% · 14.7 psi</b></div>
-        <div><span>Exact · within tolerance</span><b className={current.n_near === 0 ? 'warn-text' : undefined}>{current.n_exact} · {current.n_near} tests</b></div>
+        <div><span>Earth ref.</span><b>21% · 14.7 psi</b></div>
+        <div><span>Exact · Near</span><b className={current.n_near === 0 ? 'warn-text' : undefined}>{current.n_exact} · {current.n_near} tests</b></div>
       </div>
       <OutcomePills outcomes={out} />
       {ids && count > 0 ? (
@@ -299,10 +294,10 @@ function BurningRateCard() {
       <div className="chart-key">
         <span><b style={{ background: 'var(--fuel-heptane)' }} /> Heptane</span>
         <span><b style={{ background: 'var(--fuel-methanol)' }} /> Methanol</span>
-        <span className="mono">~1.0 atm</span>
+        <span className="mono">~1.0 atm · mm²/s</span>
       </div>
       <BurningRateChartSvg cells={coverage.cells} bands={meta.o2_bands} pressureLevel="~1.0 atm" metric="rate" mode={view} minN={meta.min_n} compact />
-      <p className="wc-read">{mode === 'engineer' ? 'Mean K (mm²/s) at ~1.0 atm. Descriptive; suppressants mixed.' : 'Heptane is higher in every band. Descriptive; pressures mixed.'}</p>
+      {mode === 'engineer' && <p className="wc-read">Mean K (mm²/s) at ~1.0 atm. Descriptive; suppressants mixed.</p>}
     </Frame>
   );
 }
@@ -354,8 +349,8 @@ function GapsCard() {
   return (
     <Frame type="gaps" icon={<span>∅</span>} src={<>PSI-69 · PSI-25</>} n={`${gaps.length} gaps · See all`}>
       <ul className="glist">
-        <li>No Moon or Mars gravity fire data (ISS microgravity only)</li>
-        <li>No test below 10.18 psi or above 34% O₂</li>
+        <li>0g ISS only — no Moon or Mars gravity data</li>
+        <li>No test below 10.2 psi or above 34% O₂</li>
       </ul>
     </Frame>
   );

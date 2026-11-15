@@ -293,23 +293,24 @@ button { cursor: pointer; background: none; border: 0; }
 
 .zoom-controls {
   position: absolute;
-  right: 372px;
-  bottom: 84px;
+  right: 316px;
+  bottom: 108px;
   z-index: 8;
   display: flex;
   flex-direction: column;
   gap: 6px;
+  transition: opacity var(--t-fast);
 }
 .zoom-controls button {
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: var(--glass), var(--glass-solid);
   border: 1px solid var(--glass-border);
   display: grid;
   place-items: center;
   color: var(--silver);
-  font-size: 16px;
+  font-size: 15px;
   transition: border-color var(--t-fast), color var(--t-fast);
 }
 .zoom-controls button:hover {
@@ -321,24 +322,45 @@ button { cursor: pointer; background: none; border: 0; }
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  bottom: 70px;
-  z-index: 6;
+  bottom: 98px;
+  z-index: 7;
   font: 400 10.5px var(--font-mono);
-  color: var(--ink-dim);
+  color: var(--ink-2);
+  background: rgba(8, 10, 14, 0.86);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  backdrop-filter: blur(8px);
+  padding: 4px 14px;
+  border-radius: var(--r-pill);
   display: flex;
-  gap: 18px;
+  gap: 14px;
   align-items: center;
   white-space: nowrap;
   pointer-events: none;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+  transition: opacity var(--t-fast), visibility var(--t-fast);
 }
 
 .console-credit {
   position: absolute;
-  left: 20px;
-  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 52px;
   z-index: 6;
-  font: 400 10px var(--font-mono);
+  font: 400 9.5px var(--font-mono);
   color: var(--ink-faint);
+  white-space: nowrap;
+  pointer-events: none;
+  transition: opacity var(--t-fast);
+}
+.console-frame.is-exploring .scene-legend,
+.console-frame.is-exploring .zoom-controls,
+.console-frame.is-busy .scene-legend,
+.console-frame.is-busy .zoom-controls,
+.console-frame.is-busy .console-credit,
+.console-frame.is-busy .zlevel,
+.console-frame.is-busy .focus-btn {
+  opacity: 0;
+  visibility: hidden;
   pointer-events: none;
 }
 
@@ -370,13 +392,13 @@ button { cursor: pointer; background: none; border: 0; }
 .console-left {
   position: absolute;
   left: 18px;
-  top: 18px;
-  width: clamp(248px, 20vw, 286px);
+  top: 14px;
+  width: clamp(244px, 19.5vw, 282px);
   z-index: var(--z-grid);
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  max-height: calc(100% - 86px);
+  gap: 8px;
+  max-height: calc(100% - 104px);
   overflow-y: auto;
   scrollbar-width: none;
   transition: width var(--t-base) var(--ease);
@@ -384,20 +406,20 @@ button { cursor: pointer; background: none; border: 0; }
 .console-right {
   position: absolute;
   right: 18px;
-  top: 18px;
-  width: clamp(252px, 20.5vw, 290px);
+  top: 14px;
+  width: clamp(248px, 20vw, 286px);
   z-index: var(--z-grid);
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  max-height: calc(100% - 86px);
+  gap: 8px;
+  max-height: calc(100% - 104px);
   overflow-y: auto;
   scrollbar-width: none;
   transition: width var(--t-base) var(--ease);
 }
 .console-frame.is-assistant-open .console-left,
 .console-frame.is-assistant-open .console-right {
-  width: clamp(226px, 17.5vw, 264px);
+  width: clamp(224px, 17.2vw, 258px);
 }
 
 .rail-header {
@@ -714,74 +736,79 @@ button { cursor: pointer; background: none; border: 0; }
   color: var(--on-mint);
 }
 
-/* ---------- Zone C: Bottom Dock ---------- */
+/* ---------- Zone C: Bottom Dock & In-Dashboard Compact Explorer ---------- */
 .console-dock {
   position: absolute;
-  left: 20px;
-  right: 20px;
-  bottom: 14px;
+  left: 18px;
+  right: 18px;
+  bottom: 10px;
   z-index: var(--z-grid);
   display: flex;
-  gap: 10px;
+  gap: 8px;
   align-items: stretch;
 }
 .dock-tabs {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
   justify-content: center;
 }
 .dock-tabs button {
-  padding: 8px 13px;
+  padding: 5px 11px;
   border-radius: var(--r-pill);
   background: var(--graphite-7);
   border: 1px solid var(--glass-border);
-  font-size: var(--fs-xs);
+  font-size: 11px;
   color: var(--ink-dim);
   text-align: left;
   white-space: nowrap;
+  transition: background var(--t-fast), color var(--t-fast), border-color var(--t-fast);
 }
+.dock-tabs button:hover { color: var(--ink); }
 .dock-tabs button.on {
   background: var(--graphite-5);
+  border-color: rgba(127, 245, 225, 0.45);
   color: var(--ink);
+  font-weight: 500;
 }
 .dock-cards {
   flex: 1;
   display: flex;
-  gap: 8px;
+  gap: 7px;
   overflow-x: auto;
-  padding: 8px;
+  padding: 6px;
   min-width: 0;
-  scrollbar-width: thin;
+  scrollbar-width: none;
 }
+.dock-cards::-webkit-scrollbar { height: 0; }
 .dock-card {
-  flex: 1 0 198px;
+  flex: 1 0 166px;
   display: flex;
-  gap: 10px;
+  gap: 8px;
   align-items: center;
-  padding: 8px 10px;
-  border-radius: 12px;
-  background: rgba(21, 24, 28, 0.78);
+  padding: 5px 9px;
+  border-radius: 11px;
+  background: rgba(21, 24, 28, 0.82);
   border: 1px solid var(--glass-border);
   text-align: left;
-  transition: border-color var(--t-fast), background var(--t-fast);
+  transition: border-color var(--t-fast), background var(--t-fast), transform var(--t-fast);
 }
 .dock-card:hover { border-color: rgba(255, 255, 255, 0.22); }
 .dock-card.on {
-  border-color: rgba(127, 245, 225, 0.68);
-  background: rgba(127, 245, 225, 0.06);
+  border-color: rgba(127, 245, 225, 0.72);
+  background: rgba(127, 245, 225, 0.08);
 }
 .dock-card .thumb {
-  width: 56px;
-  height: 56px;
-  flex: 0 0 56px;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
 }
 .dock-card-body {
   flex: 1;
   min-width: 0;
 }
 .dock-card h4 {
-  font-size: 12.5px;
+  font-size: 11.5px;
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
@@ -791,28 +818,140 @@ button { cursor: pointer; background: none; border: 0; }
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 10px;
-  color: var(--ink-dim);
-  border: 1px solid var(--glass-border);
+  font-size: 9.5px;
+  color: var(--ink-2);
+  border: 1px solid rgba(127, 245, 225, 0.28);
+  background: rgba(127, 245, 225, 0.06);
   border-radius: var(--r-pill);
   padding: 1px 7px;
-  margin: 3px 0 5px;
+  margin: 2px 0 3px;
+  white-space: nowrap;
 }
 .dock-chip i {
   width: 5px;
   height: 5px;
   border-radius: 50%;
   background: var(--mint);
+  flex: 0 0 5px;
 }
-.dock-chip.warn i { background: var(--caution); }
+.dock-chip.none {
+  border-color: rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.025);
+  color: var(--ink-dim);
+}
+.dock-chip.none i { background: var(--ink-dim); }
 .dock-meta {
-  font-size: var(--fs-xs);
+  font-size: 10.5px;
   color: var(--ink-dim);
   display: flex;
   justify-content: space-between;
   gap: 6px;
 }
 .dock-meta b { color: var(--ink); font-weight: 500; }
+
+/* In-dashboard Compact Test Explorer (slides up in the center above the dock) */
+.dock-explorer {
+  position: absolute;
+  left: clamp(274px, 21.5vw, 312px);
+  right: clamp(278px, 22vw, 316px);
+  bottom: 94px;
+  max-height: min(310px, calc(100% - 160px));
+  z-index: 32;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 12px;
+  background: rgba(12, 15, 19, 0.94);
+  border: 1px solid rgba(127, 245, 225, 0.28);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75);
+  animation: viewIn 220ms var(--ease);
+}
+.console-frame.is-assistant-open .dock-explorer {
+  left: clamp(248px, 18.5vw, 276px);
+  right: clamp(248px, 18.5vw, 276px);
+}
+.dock-exp-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--hairline);
+}
+.dock-exp-search {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 9px;
+  border-radius: var(--r-pill);
+  background: var(--graphite-8);
+  border: 1px solid var(--glass-border);
+  color: var(--ink-dim);
+  font-size: var(--fs-xs);
+}
+.dock-exp-search input {
+  border: 0;
+  background: transparent;
+  width: 125px;
+  outline: none;
+  font-size: var(--fs-xs);
+}
+.mini-test-grid {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  padding-top: 8px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+  gap: 7px;
+}
+.mini-test-card {
+  padding: 7px 9px;
+  border-radius: 10px;
+  background: rgba(21, 24, 28, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  display: grid;
+  gap: 4px;
+  font-size: 11px;
+  transition: border-color var(--t-fast), background var(--t-fast);
+}
+.mini-test-card:hover {
+  border-color: rgba(127, 245, 225, 0.35);
+  background: rgba(28, 32, 38, 0.9);
+}
+.mt-top, .mt-mid, .mt-bot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+.mt-mid {
+  color: var(--ink-2);
+  font-size: 11px;
+}
+.mt-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+.mt-bot {
+  color: var(--ink-dim);
+  font-size: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  padding-top: 3px;
+}
+.dock-exp-foot {
+  padding-top: 6px;
+  text-align: center;
+}
+.sitab-inline {
+  margin-left: 4px;
+  border-color: rgba(127, 245, 225, 0.35);
+}
 
 .dock-stats {
   align-items: center;
@@ -1555,8 +1694,8 @@ ul.plain { margin: 0; padding-left: 1.1em; display: grid; gap: var(--s-2); color
 /* full-view panel: every other part of the project, over the scene, with its own scroll */
 .view-panel {
   position: absolute;
-  inset: 12px;
-  z-index: 40;
+  inset: 8px;
+  z-index: 50;
   display: flex;
   flex-direction: column;
   background: #0A0C0F;
@@ -1572,7 +1711,10 @@ ul.plain { margin: 0; padding-left: 1.1em; display: grid; gap: var(--s-2); color
   border-bottom: 1px solid var(--hairline);
 }
 .view-body { flex: 1; min-height: 0; overflow-y: auto; scrollbar-width: thin; }
-.view-body .section { padding: var(--s-6) var(--s-6) var(--s-7); }
+.view-body .section { padding: var(--s-4) var(--s-5) var(--s-6); }
+.view-body .section-head { gap: 4px; margin-bottom: var(--s-4); max-width: 90ch; }
+.view-body .section-head h2 { font-size: var(--fs-lg); }
+.view-body .section-head p { font-size: var(--fs-sm); color: var(--ink-dim); }
 @media (prefers-reduced-motion: no-preference) {
   .view-panel { animation: rise var(--t-base) var(--ease); }
 }
@@ -1797,5 +1939,82 @@ ul.plain { margin: 0; padding-left: 1.1em; display: grid; gap: var(--s-2); color
 .console-frame.is-focus .sitab { opacity: 0.55; }
 @media (max-width: 1180px) { .focus-btn { display: none; } }
 @media (max-width: 760px) { .donut { grid-template-columns: 1fr; } }
+
+/* ---------- Twinkling & Drifting Starfield in FlameScene ---------- */
+@keyframes starTwinkle {
+  0%, 100% { opacity: 0.14; transform: scale(0.75); }
+  50% { opacity: 1; transform: scale(1.42); }
+}
+@keyframes starDrift1 {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(-18px, -10px, 0); }
+}
+@keyframes starDrift2 {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(16px, -14px, 0); }
+}
+@keyframes starDrift3 {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(-12px, 12px, 0); }
+}
+@keyframes shootingStar1 {
+  0%, 72%, 100% { opacity: 0; transform: translate3d(-30px, -12px, 0) scaleX(0.4); }
+  78% { opacity: 0.9; }
+  88% { opacity: 0; transform: translate3d(140px, 52px, 0) scaleX(1.15); }
+}
+@keyframes shootingStar2 {
+  0%, 36%, 100% { opacity: 0; transform: translate3d(-24px, -10px, 0) scaleX(0.4); }
+  42% { opacity: 0.85; }
+  52% { opacity: 0; transform: translate3d(130px, 48px, 0) scaleX(1.1); }
+}
+.star-layer {
+  will-change: opacity, transform;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.star-t1 { animation: starTwinkle 1.8s ease-in-out infinite; }
+.star-t2 { animation: starTwinkle 2.5s ease-in-out 0.6s infinite; }
+.star-t3 { animation: starTwinkle 3.2s ease-in-out 1.3s infinite; }
+.star-t4 { animation: starTwinkle 2.1s ease-in-out 1.7s infinite; }
+.star-t5 { animation: starTwinkle 2.8s ease-in-out 0.9s infinite; }
+
+.star-drift-1 { animation: starDrift1 22s ease-in-out infinite; }
+.star-drift-2 { animation: starDrift2 28s ease-in-out infinite; }
+.star-drift-3 { animation: starDrift3 34s ease-in-out infinite; }
+.star-drift-bg { animation: starDrift1 44s linear infinite; }
+
+.shooting-star {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: left center;
+}
+.shooting-star-1 { animation: shootingStar1 9.5s ease-out infinite; }
+.shooting-star-2 { animation: shootingStar2 13.5s ease-out infinite; }
+
+.console-frame.is-busy .star-layer,
+.console-frame.is-busy .star-drift-1,
+.console-frame.is-busy .star-drift-2,
+.console-frame.is-busy .star-drift-3,
+.console-frame.is-busy .shooting-star,
+.scene-svg.drag .star-layer { animation-play-state: paused; }
+@media (max-width: 1320px) {
+  .console-frame.is-assistant-open .console-dock,
+  .console-frame.is-assistant-open .dock-explorer {
+    grid-column: 1 / -1;
+    position: static;
+    max-height: none;
+  }
+}
+@media (max-width: 1180px) {
+  .console-dock, .dock-explorer {
+    grid-column: 1 / -1;
+    position: static;
+    max-height: none;
+  }
+  .dock-tabs {
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+}
 
 .wc .donut-legend span { white-space: normal; line-height: 1.2; }

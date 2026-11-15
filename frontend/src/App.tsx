@@ -10,8 +10,7 @@ import { Console } from './sections/Console';
 import { Sidebar } from './assistant/Sidebar';
 
 const MAIN_TABS: { view: ViewId; label: string }[] = [
-  { view: 'overview', label: 'Overview' },
-  { view: 'explore', label: 'Explore' },
+  { view: 'overview', label: 'Dashboard' },
   { view: 'coverage', label: 'Coverage' },
   { view: 'gaps', label: 'Gaps' },
 ];
@@ -134,8 +133,9 @@ function Page() {
 
   const showTests = useCallback((req: TableRequest) => {
     setPreset({ ...req, token: Date.now() });
-    openView('explore');
-  }, [openView]);
+    setView('overview');
+    setCustomizeOpen(false);
+  }, []);
 
   const openAssistant = useCallback((question?: string) => {
     setOpen(true);

@@ -1,16 +1,19 @@
 // The single-screen console: full-bleed scene + two card rails + atmosphere dock. Nothing scrolls here.
 // Everything else (table, coverage map, fuels, materials, scenarios, gaps, sources) opens as a full view
 // over the scene, so the whole project is reachable from one screen.
-import { lazy, Suspense, useEffect, useRef, useState, type CSSProperties } from 'react';
-import { Compass, Eye, EyeOff, HelpCircle, Plus, RotateCcw, Sparkles, X } from 'lucide-react';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import { ArrowUpRight, Compass, Eye, EyeOff, HelpCircle, Plus, RotateCcw, Search, Sparkles, X } from 'lucide-react';
 import type { Scenario } from '../data/types';
-import { useMeta, useScenarios } from '../data/useData';
+import { useCoverage, useExperiments, useMaterials, useMeta, useScenarios } from '../data/useData';
 import { useUi, type TablePreset } from '../state/ui';
 import { MAX_PER_SIDE, useBoard, type ViewId } from '../state/board';
 import { FlameScene } from '../components/FlameScene';
-import { BoardCard, SHORT_NAME } from '../components/Cards';
+import { BoardCard, MiniFlameThumb, SHORT_NAME } from '../components/Cards';
+import { KpiRingSvg } from '../components/charts';
 import { Gallery } from '../components/Gallery';
 import { fmtTolerance, fmtCriterionO2 } from '../lib/scenario';
+import { fmtO2, fmtPressure, fmtRate } from '../lib/format';
+import { outcomeLabel } from '../lib/honesty';
 import { Skeleton } from '../components/ui';
 
 // Full views are only needed when opened: they load on demand, keeping the first screen light.
@@ -81,14 +84,174 @@ function ViewPanel({ view, preset, onSelectView, onClose }: { view: ViewId; pres
   );
 }
 
+function CompactExplorer({
+  preset,
+  scenario,
+  onFullTable,
+  onClose,
+}: {
+  preset: TablePreset | null;
+  scenario: Scenario;
+  onFullTable: () => void;
+  onClose: () => void;
+}) {
+  const { items } = useExperiments();
+  const [scope, setScope] = useState<'scenario' | 'preset' | 'all' | 'FLEX' | 'BASS-II'>(() => (preset ? 'preset' : 'scenario'));
+  const [q, setQ] = useState('');
+  const [limit, setLimit] = useState(18);
+
+  useEffect(() => {
+    if (preset) {
+      setScope('preset');
+      setLimit(18);
+    }
+  }, [preset?.token]);
+
+  const scenarioIds = useMemo(() => {
+    const list = scenario.n_near > 0 ? scenario.near.test_ids : scenario.nearest?.test_ids ?? [];
+    return new Set(list);
+  }, [scenario]);
+
+  const presetIds = useMemo(() => (preset?.ids ? new Set(preset.ids) : null), [preset]);
+
+  const filtered = useMemo(() => {
+    const query = q.trim().toLowerCase();
+    return items.filter((r) => {
+      if (scope === 'scenario' && !scenarioIds.has(r.test_id)) return false;
+      if (scope === 'preset' && preset) {
+        if (presetIds && !presetIds.has(r.test_id)) return false;
+        if (preset.program && r.program !== preset.program) return false;
+        if (preset.fuel && r.material_or_fuel !== preset.fuel) return false;
+      }
+      if (scope === 'FLEX' && r.program !== 'FLEX') return false;
+      if (scope === 'BASS-II' && r.program !== 'BASS-II') return false;
+      if (query) {
+        const hay = `${r.test_id} ${r.material_or_fuel} ${r.material_category ?? ''} ${r.program} ${r.outcome ?? ''}`.toLowerCase();
+        if (!hay.includes(query)) return false;
+      }
+      return true;
+    });
+  }, [items, scope, scenarioIds, preset, presetIds, q]);
+
+  const shown = filtered.slice(0, limit);
+  const scenarioCount = scenarioIds.size;
+
+  return (
+    <section className="glass dock-explorer" aria-label="Quick test explorer">
+      <header className="dock-exp-bar">
+        <div className="row" style={{ gap: 6 }}>
+          <strong style={{ fontSize: 'var(--fs-sm)' }}>Explore tests</strong>
+          <span className="src-pill num">{filtered.length} shown</span>
+          <div className="mini-seg" role="group" aria-label="Filter test scope">
+            {preset && (
+              <button type="button" aria-pressed={scope === 'preset'} onClick={() => setScope('preset')}>
+                {preset.label ? preset.label.split(':')[0] : 'Selected'}
+              </button>
+            )}
+            <button type="button" aria-pressed={scope === 'scenario'} onClick={() => setScope('scenario')}>
+              {SHORT_NAME[scenario.id]} ({scenarioCount})
+            </button>
+            <button type="button" aria-pressed={scope === 'all'} onClick={() => setScope('all')}>
+              All ({items.length})
+            </button>
+            <button type="button" aria-pressed={scope === 'FLEX'} onClick={() => setScope('FLEX')}>
+              FLEX
+            </button>
+            <button type="button" aria-pressed={scope === 'BASS-II'} onClick={() => setScope('BASS-II')}>
+              BASS-II
+            </button>
+          </div>
+        </div>
+        <div className="row" style={{ gap: 8 }}>
+          <label className="dock-exp-search">
+            <Search size={12} aria-hidden="true" />
+            <input
+              type="search"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="ID, fuel or material…"
+              aria-label="Filter tests by ID, fuel or material"
+            />
+          </label>
+          <button type="button" className="btn btn-sm btn-ghost" onClick={onFullTable} title="Open full table with CSV export">
+            Full table <ArrowUpRight size={12} aria-hidden="true" />
+          </button>
+          <button type="button" className="icon-btn" aria-label="Close test explorer" onClick={onClose}>
+            <X size={14} aria-hidden="true" />
+          </button>
+        </div>
+      </header>
+
+      <div className="mini-test-grid">
+        {shown.map((r, idx) => (
+          <div key={`${r.test_id}-${idx}`} className="mini-test-card">
+            <div className="mt-top">
+              <strong className="mono">{r.test_id}</strong>
+              <span className={`out-pill ${r.outcome ? `o-${r.outcome}` : ''}`}>
+                {r.outcome ? outcomeLabel(r.outcome) : 'not stated'}
+              </span>
+            </div>
+            <div className="mt-mid">
+              <span>
+                <i
+                  className="mt-dot"
+                  style={{
+                    background:
+                      r.material_or_fuel === 'heptane'
+                        ? 'var(--fuel-heptane)'
+                        : r.material_or_fuel === 'methanol'
+                          ? 'var(--fuel-methanol)'
+                          : 'var(--prog-bass2)',
+                  }}
+                />
+                {r.material_category ?? r.material_or_fuel}
+              </span>
+              <small className="dim">{r.program}</small>
+            </div>
+            <div className="mt-bot num">
+              <span>{fmtO2(r.o2_fraction)}</span>
+              <span>{r.pressure_atm != null ? fmtPressure(r.pressure_atm) : 'Pressure n/r'}</span>
+              {r.burning_rate_mm2_s != null && <span>{fmtRate(r.burning_rate_mm2_s)}</span>}
+            </div>
+          </div>
+        ))}
+        {shown.length === 0 && (
+          <p className="dim" style={{ gridColumn: '1 / -1', padding: '12px 4px' }}>
+            No tests match this filter. Try switching to &ldquo;All ({items.length})&rdquo;.
+          </p>
+        )}
+      </div>
+      {filtered.length > shown.length && (
+        <div className="dock-exp-foot">
+          <button type="button" className="btn btn-sm btn-ghost" onClick={() => setLimit((l) => l + 24)}>
+            Show more ({filtered.length - shown.length} remaining)
+          </button>
+        </div>
+      )}
+    </section>
+  );
+}
+
 export function Console({ preset, assistantOpen = false }: { preset: TablePreset | null; assistantOpen?: boolean }) {
   const meta = useMeta();
+  const coverage = useCoverage();
+  const materialsData = useMaterials();
   const { scenarios } = useScenarios();
   const { board, notice, dismissNotice, undo, canUndo } = useBoard();
   const { openAssistant, scenarioId, setScenarioId, mode = 'explorer', customizeOpen = false, setCustomizeOpen, view, openView, closeView } = useUi();
   const [introOpen, setIntroOpen] = useState(readIntro);
   const [tour, setTour] = useState<number | null>(null);
   const [focus, setFocus] = useState(false); // hides the cards so the scene fills the screen
+  const [dockTab, setDockTab] = useState<'scenarios' | 'explore' | 'investigations'>('scenarios');
+
+  // Whenever "Show 17 closest tests" or a radar sector is clicked, open the compact in-dashboard explorer!
+  useEffect(() => {
+    if (preset) setDockTab('explore');
+  }, [preset?.token]);
+
+  const bassProg = meta.programs.find((p) => p.program === 'BASS-II');
+  const bassWithOutcome = materialsData.materials.reduce((acc, m) => acc + m.n_with_outcome, 0);
+  const testedCells = coverage.n_cells - coverage.n_cells_empty;
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -121,7 +284,7 @@ export function Console({ preset, assistantOpen = false }: { preset: TablePreset
 
   return (
     <header className="console-section" id="top">
-      <div className={`console-frame${focus ? ' is-focus' : ''}${customizeOpen ? ' is-editing' : ''}${assistantOpen ? ' is-assistant-open' : ''}${view && view !== 'overview' ? ' is-busy' : ''}`}>
+      <div className={`console-frame${focus ? ' is-focus' : ''}${customizeOpen ? ' is-editing' : ''}${assistantOpen ? ' is-assistant-open' : ''}${view && view !== 'overview' ? ' is-busy' : ''}${dockTab === 'explore' ? ' is-exploring' : ''}`}>
         {current && <FlameScene scenario={current} mode={mode} />}
         {customizeOpen && <div className="grid-overlay" aria-hidden="true" />}
 
@@ -139,13 +302,6 @@ export function Console({ preset, assistantOpen = false }: { preset: TablePreset
               <button type="button" className="toast-undo" onClick={undo}><RotateCcw size={12} aria-hidden="true" /> Undo</button>
             )}
           </div>
-        )}
-
-        {!assistantOpen && (
-          <button type="button" className="glass sitab" onClick={() => openAssistant()} aria-label="Open SI assistant">
-            <Sparkles size={14} color="var(--mint)" aria-hidden="true" />
-            <span>SI assistant</span>
-          </button>
         )}
 
         {/* ---- left rail ---- */}
@@ -206,19 +362,112 @@ export function Console({ preset, assistantOpen = false }: { preset: TablePreset
           </div>
         )}
 
-        {/* ---- atmosphere dock ---- */}
-        <div className="glass atmo" role="group" aria-label="Choose an atmosphere">
-          <span>Choose an atmosphere</span>
-          {scenarios.map((s) => {
-            const active = s.id === activeId;
-            return (
-              <button key={s.id} type="button" className={active ? 'on' : ''} aria-pressed={active}
-                title={`${fmtCriterionO2(s)} · ${s.n_exact} exact · ${s.n_near} near`}
-                onClick={() => setScenarioId?.(s.id as Scenario['id'])}>
-                {SHORT_NAME[s.id] ?? s.label}
+        {/* ---- In-dashboard Compact Test Explorer (replaces separate Explore page tab) ---- */}
+        {dockTab === 'explore' && current && !view && (
+          <CompactExplorer
+            preset={preset}
+            scenario={current}
+            onFullTable={() => openView?.('explore')}
+            onClose={() => setDockTab('scenarios')}
+          />
+        )}
+
+        {/* ---- Mission Dashboard Bottom Dock (Scenarios · Explore · Investigations + KPI Rings) ---- */}
+        <div className="console-dock" role="region" aria-label="Atmosphere scenarios, test explorer and dataset coverage">
+          <div className="dock-tabs" role="tablist" aria-label="Bottom dock mode">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={dockTab === 'scenarios'}
+              className={dockTab === 'scenarios' ? 'on' : ''}
+              onClick={() => setDockTab('scenarios')}
+            >
+              Scenarios
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={dockTab === 'explore'}
+              className={dockTab === 'explore' ? 'on' : ''}
+              onClick={() => setDockTab((t) => (t === 'explore' ? 'scenarios' : 'explore'))}
+            >
+              Explore tests
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={dockTab === 'investigations'}
+              className={dockTab === 'investigations' ? 'on' : ''}
+              onClick={() => setDockTab('investigations')}
+            >
+              Investigations
+            </button>
+          </div>
+
+          {dockTab !== 'investigations' ? (
+            <div className="glass dock-cards" role="group" aria-label="Choose an atmosphere">
+              {scenarios.map((s) => {
+                const active = s.id === activeId;
+                const hasMatches = s.n_exact > 0 || s.n_near > 0;
+                return (
+                  <button
+                    key={s.id}
+                    type="button"
+                    className={`dock-card${active ? ' on' : ''}`}
+                    aria-pressed={active}
+                    title={`${fmtCriterionO2(s)} · ${s.n_exact} exact · ${s.n_near} near`}
+                    onClick={() => setScenarioId?.(s.id as Scenario['id'])}
+                  >
+                    <MiniFlameThumb o2={s.criteria.o2.value} />
+                    <div className="dock-card-body">
+                      <h4>{SHORT_NAME[s.id] ?? s.label}</h4>
+                      <span className={`dock-chip${hasMatches ? ' ok' : ' none'}`}>
+                        <i aria-hidden="true" />
+                        {hasMatches ? 'Tests nearby' : 'No matching tests'}
+                      </span>
+                      <div className="dock-meta num">
+                        <span>{fmtCriterionO2(s)}</span>
+                        <b>
+                          {s.n_exact}/{s.n_near}
+                        </b>
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="glass dock-cards dock-stats" role="group" aria-label="Investigations summary">
+              {meta.programs.map((p) => (
+                <div key={p.program} className="dock-stat-item">
+                  <div className="stat-n num">{p.n}</div>
+                  <div className="stat-l">
+                    {p.program} · {p.what} ({p.psi_id})
+                  </div>
+                  <div className="stat-src">DOI: {p.source_doi}</div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="glass dock-kpis">
+            <KpiRingSvg
+              num={bassWithOutcome}
+              den={bassProg?.n ?? 129}
+              label="BASS-II outcomes stated"
+            />
+            <KpiRingSvg
+              num={testedCells}
+              den={coverage.n_cells}
+              label="FLEX conditions tested"
+            />
+            {!assistantOpen && (
+              <button type="button" className="btn btn-sm sitab-inline" onClick={() => openAssistant()} aria-label="Open SI assistant">
+                <Sparkles size={13} color="var(--mint)" aria-hidden="true" />
+                <span>SI</span>
               </button>
-            );
-          })}
+            )}
+          </div>
         </div>
 
         {view && view !== 'overview' && <ViewPanel view={view} preset={preset} onSelectView={(v) => openView?.(v)} onClose={() => closeView?.()} />}
