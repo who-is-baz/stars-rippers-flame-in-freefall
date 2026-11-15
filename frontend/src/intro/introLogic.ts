@@ -1,16 +1,8 @@
 // Opening intro: when to show it and its timeline. Pure logic (no DOM), so it is easy to test.
-export const SESSION_KEY = 'fif.intro.seen';
-
-// ?intro=on forces it, ?intro=off disables it, otherwise once per browser session.
-// `storage` is null when sessionStorage is blocked (private mode): the intro still plays, it just cannot remember.
-export function shouldShowIntro(search: string, storage: Pick<Storage, 'getItem'> | null): boolean {
-  const flag = new URLSearchParams(search).get('intro');
-  if (flag === 'off') return false;
-  if (flag === 'on') return true;
-  try { return storage?.getItem(SESSION_KEY) !== '1'; } catch { return true; }
-}
-export function markIntroSeen(storage: Pick<Storage, 'setItem'> | null): void {
-  try { storage?.setItem(SESSION_KEY, '1'); } catch { /* blocked storage: play again next load */ }
+// It plays on EVERY full page load (open the link, reload, reopen the tab, back/forward cache restore). Changing views
+// inside the app does not reload the page, so it does not play again. ?intro=off disables it; ?intro=on is accepted too.
+export function shouldShowIntro(search: string): boolean {
+  return new URLSearchParams(search).get('intro') !== 'off';
 }
 
 export const prefersReducedMotion = (): boolean => {

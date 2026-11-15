@@ -3,8 +3,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { IgnitionIntro } from './IgnitionIntro';
-import { mountIntro } from './mount';
-import { AUTO_START_MS, REDUCED_FADE_MS, SESSION_KEY, SKIP_FADE_MS, TL, markIntroSeen, shouldShowIntro } from './introLogic';
+import { mountIntro, onPageShow } from './mount';
+import { AUTO_START_MS, REDUCED_FADE_MS, SKIP_FADE_MS, TL, shouldShowIntro } from './introLogic';
 
 const END_MS = TL.end * 1000;
 let app: HTMLElement;
@@ -53,20 +53,16 @@ afterEach(() => {
 });
 
 describe('shouldShowIntro', () => {
-  it('?intro=off never shows it, ?intro=on always does, otherwise once per session', () => {
-    expect(shouldShowIntro('?intro=off', window.sessionStorage)).toBe(false);
-    expect(shouldShowIntro('', window.sessionStorage)).toBe(true);
-    markIntroSeen(window.sessionStorage);
-    expect(window.sessionStorage.getItem(SESSION_KEY)).toBe('1');
-    expect(shouldShowIntro('', window.sessionStorage)).toBe(false);
-    expect(shouldShowIntro('?intro=on', window.sessionStorage)).toBe(true);
-    expect(shouldShowIntro('?x=1&intro=off', null)).toBe(false);
+  it('?intro=off never shows it; otherwise it shows on every load (no "already seen" memory)', () => {
+    expect(shouldShowIntro('?intro=off')).toBe(false);
+    expect(shouldShowIntro('?x=1&intro=off')).toBe(false);
+    expect(shouldShowIntro('')).toBe(true);
+    expect(shouldShowIntro('')).toBe(true);
+    expect(shouldShowIntro('?intro=on')).toBe(true);
   });
-  it('blocked storage does not break it', () => {
-    const broken = { getItem: () => { throw new Error('blocked'); }, setItem: () => { throw new Error('blocked'); } };
-    expect(shouldShowIntro('', broken)).toBe(true);
-    expect(() => markIntroSeen(broken)).not.toThrow();
-    expect(shouldShowIntro('', null)).toBe(true);
+  it('does not depend on storage: a blocked or full sessionStorage changes nothing', () => {
+    window.sessionStorage.setItem('fif.intro.seen', '1');           // the old key is ignored
+    expect(shouldShowIntro('')).toBe(true);
   });
 });
 
@@ -162,23 +158,35 @@ describe('mountIntro', () => {
     expect(app).not.toHaveAttribute('inert');
   });
 
-  it('shows once per session, removes itself when skipped, and ?intro=on forces it again', () => {
+  it('shows on EVERY new mount (each page load), removes itself when skipped, and never stacks two at once', () => {
     let shown = false;
     act(() => { shown = mountIntro(app); });
     expect(shown).toBe(true);
     expect(document.getElementById('intro-root')).not.toBeNull();
+    act(() => { shown = mountIntro(app); });               // second call while one is on screen (e.g. StrictMode): no duplicate
+    expect(shown).toBe(false);
+    expect(document.querySelectorAll('#intro-root')).toHaveLength(1);
     fireEvent.click(screen.getByRole('button', { name: /Skip/ }));
     tick(SKIP_FADE_MS);
     expect(document.getElementById('intro-root')).toBeNull();
     expect(app).not.toHaveAttribute('inert');
 
-    act(() => { shown = mountIntro(app); });               // same session: not again
-    expect(shown).toBe(false);
+    act(() => { shown = mountIntro(app); });               // next load (reload, reopen): it plays again
+    expect(shown).toBe(true);
+    fireEvent.keyDown(window, { key: 'Escape' });
+    tick(SKIP_FADE_MS);
     expect(document.getElementById('intro-root')).toBeNull();
 
-    window.history.replaceState(null, '', '/?intro=on');
+    window.history.replaceState(null, '', '/?intro=off');  // and ?intro=off still disables it
     act(() => { shown = mountIntro(app); });
-    expect(shown).toBe(true);
+    expect(shown).toBe(false);
+  });
+
+  it('a page restored from the back/forward cache (pageshow persisted) replays it; a normal pageshow does not add one', () => {
+    act(() => { onPageShow({ persisted: false } as PageTransitionEvent); });
+    expect(document.getElementById('intro-root')).toBeNull();
+    act(() => { onPageShow({ persisted: true } as PageTransitionEvent); });
+    expect(document.getElementById('intro-root')).not.toBeNull();
     fireEvent.keyDown(window, { key: 'Escape' });
     tick(SKIP_FADE_MS);
     expect(document.getElementById('intro-root')).toBeNull();
