@@ -1,6 +1,6 @@
 // Board cards (widgets). One question, one view, one reading line, source + n (flame-dashboard-builder §2).
 // Every figure is read from the JSON files; the browser only counts and formats.
-import { memo, useEffect, useRef, useState, type ReactNode } from 'react';
+import { memo, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import {
   ArrowLeftRight, ArrowUpRight, ChevronDown, ChevronUp, Ellipsis, Flame, Info, Layers, Minimize2, Maximize2, Sparkles, Target, Trash2,
 } from 'lucide-react';
@@ -8,6 +8,9 @@ import type { Fuel, Scenario } from '../data/types';
 import { useAnswers, useCoverage, useExperiments, useGaps, useMaterials, useMeta, useScenarios } from '../data/useData';
 import { useUi } from '../state/ui';
 import { useCustom } from '../state/custom';
+import { useActiveAtmosphere } from '../state/atmosphere';
+import { DISCLAIMER_INTERPRETATION, describeRanked, interpret } from '../lib/interpretation';
+import { RELEVANCE_LABEL } from '../lib/relevance';
 import { cardMeta, sideOf, useBoard, type CardType, type ViewId } from '../state/board';
 import { Doi } from './ui';
 import { BurningRateChartSvg, CoverageRadarSvg, KpiRingSvg, MatchRingSvg, OutcomeBarsSvg, OutcomePills } from './charts';
@@ -52,6 +55,10 @@ export function MiniFlameThumb({ o2 }: { o2: number }) {
 
 // ---- "How to read this" text (ⓘ) ----
 const HOW: Record<CardType, { explorer: string; engineer: string }> = {
+  interpretation: {
+    explorer: 'Which recorded tests are closest to this air, what they show, and what the data cannot tell us. It describes records; it does not judge safety.',
+    engineer: 'Tests ordered by distance in tolerance units, max(|ΔO₂|/tol, |Δpsi|/tol); counts of outcomes among exact and near tests with n; the list of open uncertainties is computed from the selected atmosphere.',
+  },
   scenario_match: {
     explorer: 'Compares each ISS fire test with this atmosphere. Sensors vary a little, so we count exact matches and tests that are close.',
     engineer: 'FLEX droplet tests counted against the scenario criteria. "Close" relaxes each bound by one tolerance (see scenarios.json).',
@@ -445,6 +452,51 @@ function MaterialsCard() {
   );
 }
 
+function InterpretationCard() {
+  const { items } = useExperiments();
+  const meta = useMeta();
+  const atm = useActiveAtmosphere();
+  const { showTests, openView } = useUi();
+  const [all, setAll] = useState(false);
+  const i = useMemo(() => (atm ? interpret(items, atm, meta) : null), [items, atm, meta]);
+  if (!atm || !i) return null;
+  const shown = all ? i.unresolved : i.unresolved.slice(0, 2);
+  const link = (l: 'gaps' | 'sources') => openView?.(l);
+  const fuels = Object.entries(i.useful.byFuel).map(([f, n]) => `${f} ${n}`).join(', ');
+  return (
+    <Frame type="interpretation" swapKey={atm.label} icon={<Sparkles size={13} />} src={<>FLEX · BASS-II</>} n={atm.source === 'custom' ? 'Custom' : undefined}>
+      <section className="interp-block" aria-label="Useful evidence">
+        <h3>Useful evidence</h3>
+        {i.useful.top.length > 0 ? (
+          <>
+            <ol className="interp-list num">{i.useful.top.map((r) => <li key={`${r.row.program}${r.row.test_id}${r.row.pressure_atm}`} title={describeRanked(r)}>{r.row.test_id} · {r.row.material_or_fuel} · {RELEVANCE_LABEL[r.relevance]}</li>)}</ol>
+            <p className="dim num">{i.matched.length} FLEX tests within tolerance{fuels ? `: ${fuels}` : ''}.{i.bassO2.n > 0 ? ` ${i.bassO2.n} BASS-II at this O₂.` : ''} <button type="button" className="ind-link" onClick={() => showTests({ ids: i.matched.map((r) => r.row.test_id), label: `${atm.label}: tests within tolerance` })}>Open in Experiments</button></p>
+          </>
+        ) : (
+          <>
+            <p className="warn-text">No matching tests.</p>
+            {i.useful.closest.length > 0 && <ul className="interp-list num">{i.useful.closest.map((c) => <li key={`${c.o2}-${c.pressure_psi}`}>Closest tested: {+(c.o2 * 100).toFixed(1)}% O₂ · {c.pressure_psi.toFixed(1)} psi · n = {c.n} (not this atmosphere)</li>)}</ul>}
+          </>
+        )}
+      </section>
+      <section className="interp-block" aria-label="What the nearest tests show">
+        <h3>What the nearest tests show</h3>
+        <p className={i.nearestShows.small || i.nearestShows.n === 0 ? 'dim' : undefined}>{i.nearestShows.text}</p>
+      </section>
+      <section className="interp-block" aria-label="What remains unresolved">
+        <h3>What remains unresolved</h3>
+        <ul className="interp-list">
+          {shown.map((u) => (
+            <li key={u.id}>{u.text} <button type="button" className="ind-link" onClick={() => link(u.link)}>{u.link === 'gaps' ? 'Gaps' : 'Methods'}</button></li>
+          ))}
+        </ul>
+        {i.unresolved.length > 2 && <button type="button" className="ind-link" aria-expanded={all} onClick={() => setAll((v) => !v)}>{all ? 'Show fewer' : `+${i.unresolved.length - 2} more`}</button>}
+      </section>
+      <p className="interp-note">{DISCLAIMER_INTERPRETATION}</p>
+    </Frame>
+  );
+}
+
 function GapsCard() {
   const { gaps } = useGaps();
   return (
@@ -552,6 +604,7 @@ export const BoardCard = memo(function BoardCard({ type }: { type: CardType }) {
     case 'coverage': return <CoverageCard />;
     case 'materials': return <MaterialsCard />;
     case 'gaps': return <GapsCard />;
+    case 'interpretation': return <InterpretationCard />;
     case 'kpi': return <KpiCard />;
     case 'tests_scatter': return <ScatterCard />;
     case 'tests_mix': return <MixCard />;

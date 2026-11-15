@@ -11,6 +11,7 @@ export type CardType =
   | 'coverage'
   | 'materials'
   | 'gaps'
+  | 'interpretation'
   | 'kpi'
   | 'tests_scatter'
   | 'tests_mix'
@@ -33,6 +34,7 @@ export interface CardMeta {
 export const CATALOG: CardMeta[] = [
   { type: 'scenario_match', title: 'How many tests match this air?', sub: 'Ring · FLEX · PSI-69', cat: 'Start here', side: 'left', view: 'scenarios' },
   { type: 'scenario_inspector', title: 'What air are we looking at?', sub: 'Inspector · scenarios', cat: 'Start here', side: 'right', view: 'scenarios' },
+  { type: 'interpretation', title: 'What do these tests tell us?', sub: 'Evidence · uncertainty · FLEX + BASS-II', cat: 'Start here', side: 'left', view: 'explore' },
   { type: 'gaps', title: "What can't these data tell us?", sub: 'List · PSI-69 + PSI-25', cat: 'Coverage & gaps', side: 'left', view: 'gaps' },
   { type: 'outcomes', title: 'How did those tests end?', sub: 'Bars · FLEX · PSI-69', cat: 'Start here', side: 'right', view: 'scenarios' },
   { type: 'burning_rate', title: 'Does more oxygen make fuel burn faster?', sub: 'Line or bars · FLEX', cat: 'Compare', side: 'left', view: 'fuels' },
@@ -62,7 +64,7 @@ export const PRESETS: { id: PresetId; label: string; board: Board }[] = [
     id: 'starter',
     label: 'Essential (3)',
     board: {
-      left: ['scenario_match', 'gaps'],
+      left: ['scenario_match', 'interpretation'],
       right: ['scenario_inspector'],
       collapsed: [],
       addedBy: {},
@@ -79,7 +81,7 @@ export const PRESETS: { id: PresetId; label: string; board: Board }[] = [
     },
   },
   { id: 'engineer', label: 'Engineer', board: { left: ['burning_rate', 'tests_scatter'], right: ['coverage', 'materials'], collapsed: [], addedBy: {} } },
-  { id: 'moon', label: 'Moon-base', board: { left: ['scenario_match', 'outcomes', 'gaps'], right: ['scenario_inspector', 'coverage'], collapsed: [], addedBy: {} } },
+  { id: 'moon', label: 'Moon-base', board: { left: ['scenario_match', 'outcomes', 'interpretation'], right: ['scenario_inspector', 'coverage'], collapsed: [], addedBy: {} } },
 ];
 export const STARTER: Board = PRESETS[0].board;
 

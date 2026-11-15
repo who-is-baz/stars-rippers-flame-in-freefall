@@ -10,6 +10,7 @@ import { MAX_PER_SIDE, useBoard, type ViewId } from '../state/board';
 import { FlameScene, type ObservedFlame } from '../components/FlameScene';
 import { AtmosphereExplorer, fmtCrit, useAtmosphere } from './AtmosphereExplorer';
 import { CustomContext, type CustomState } from '../state/custom';
+import { IndicatorsStrip } from './IndicatorsStrip';
 import { BoardCard, MiniFlameThumb, SHORT_NAME } from '../components/Cards';
 import { KpiRingSvg } from '../components/charts';
 import { Gallery } from '../components/Gallery';
@@ -342,6 +343,7 @@ export function Console({ preset, assistantOpen = false }: { preset: TablePreset
         fuel: f.fuel === 'any' ? 'heptane and methanol' : f.fuel,
         suppressant: f.suppressant === 'any' ? 'any suppressant' : f.suppressant === 'none' ? 'no suppressant' : `${f.suppressant === 'co2' ? 'CO₂' : 'He'} added`,
         n: m.n, n_exact: m.n_exact, ids: [...new Set(m.tests.map((r) => r.test_id))],
+        o2: f.o2, pressure_psi: f.pressure_psi, fuelRaw: f.fuel, suppressantRaw: f.suppressant,
       },
     };
   }, [customOn, atm.filters, atm.result]);
@@ -390,6 +392,7 @@ export function Console({ preset, assistantOpen = false }: { preset: TablePreset
 
   return (
     <CustomContext.Provider value={customState}>
+    <IndicatorsStrip />
     <header className="console-section" id="top">
       <div className={`console-frame${focus ? ' is-focus' : ''}${customizeOpen ? ' is-editing' : ''}${assistantOpen ? ' is-assistant-open' : ''}${view && view !== 'overview' ? ' is-busy' : ''}${dockTab === 'explore' ? ' is-exploring' : ''}${customOn && dockTab === 'scenarios' ? ' is-custom' : ''}`}>
         {current && <FlameScene scenario={current} mode={mode} observed={observed} />}

@@ -2257,3 +2257,21 @@ html { overflow-x: clip; }
 @media (min-width: 1181px) {
   .console-frame.is-custom .scene-legend { white-space: normal; flex-wrap: wrap; justify-content: center; text-align: center; max-width: 480px; width: max-content; row-gap: 2px; }
 }
+
+/* ---------- indicators strip (under the top bar) ---------- */
+.ind-strip { display: flex; align-items: center; gap: 10px; padding: 6px 20px; border-bottom: 1px solid var(--glass-border); background: rgba(10, 12, 15, 0.92); flex: 0 0 auto; }
+.ind-list { display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 0; padding: 0; flex: 1; min-width: 0; }
+.ind-list > div { display: flex; align-items: baseline; gap: 6px; cursor: help; min-width: 0; }
+.ind-list dt { font-size: var(--fs-xs); color: var(--ink-dim); margin: 0; white-space: nowrap; }
+.ind-list dd { margin: 0; font-size: var(--fs-sm); color: var(--ink); font-weight: 500; }
+.ind-list small { font-size: var(--fs-xs); color: var(--ink-dim); font-weight: 400; }
+.ind-link { flex: none; background: none; border: 0; color: var(--mint); font-size: var(--fs-xs); cursor: pointer; text-decoration: underline; }
+.ind-link:focus-visible { outline: 2px solid var(--mint); outline-offset: 2px; }
+@media (max-width: 760px) { .ind-strip { padding: 6px 14px; } .ind-list { gap: 2px 12px; } .ind-sub { display: none; } }
+
+/* interpretation card */
+.interp-block { display: grid; gap: 4px; padding-bottom: 6px; }
+.interp-block h3 { margin: 0; font-size: var(--fs-xs); color: var(--mint); letter-spacing: 0.02em; text-transform: none; }
+.interp-block p { margin: 0; font-size: var(--fs-xs); line-height: 1.35; }
+.interp-list { margin: 0; padding-left: 16px; display: grid; gap: 3px; font-size: var(--fs-xs); line-height: 1.35; color: var(--silver); }
+.interp-note { margin: 4px 0 0; font-size: 10.5px; color: var(--ink-dim); border-top: 1px solid var(--hairline); padding-top: 4px; }

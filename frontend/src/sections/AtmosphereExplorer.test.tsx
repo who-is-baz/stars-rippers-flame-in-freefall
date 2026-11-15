@@ -78,7 +78,7 @@ describe('custom atmosphere explorer', () => {
       const panel = openCustom();
       setState(panel, s);
       await waitFor(() => expect(flame()?.getAttribute('data-obs-state')).toBe(name));
-      const text = (document.body.textContent ?? '').replace(DISCLAIMER, '');
+      const text = (document.body.textContent ?? '').replace(DISCLAIMER, '').replace('Descriptive summary of NASA test records. Not a safety assessment or a forecast.', '');
       expect(text).not.toMatch(BANNED);
     });
   }

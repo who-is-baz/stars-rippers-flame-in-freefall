@@ -120,14 +120,14 @@ describe('assistant sidebar', () => {
 describe('single-screen console & saved board', () => {
   beforeEach(() => window.localStorage.clear());
 
-  it('starts with the Starter board: honesty legend, match card (0 exact, 17 near), inspector and gaps', () => {
+  it('starts with the Starter board: honesty legend, match card (0 exact, 17 near), inspector and interpretation', () => {
     renderWithBoard(<Console preset={null} />);
     expect(screen.getByText('Illustration. Not a combustion simulation.')).toBeInTheDocument();
     const match = screen.getByRole('article', { name: 'How many tests match this air?' });
     expect(within(match).getAllByText(/0 exact matches/).length).toBeGreaterThan(0);
     expect(match).toHaveTextContent('17');
     expect(screen.getByRole('article', { name: 'What air are we looking at?' })).toBeInTheDocument();
-    expect(screen.getByRole('article', { name: "What can't these data tell us?" })).toBeInTheDocument();
+    expect(screen.getByRole('article', { name: 'What do these tests tell us?' })).toBeInTheDocument();
   });
 
   it('switching atmosphere in the dock updates the cards', () => {
@@ -147,23 +147,23 @@ describe('single-screen console & saved board', () => {
 
   it('removing a card from its menu is saved and survives a reload', () => {
     const first = renderWithBoard(<Console preset={null} />);
-    const gaps = screen.getByRole('article', { name: "What can't these data tell us?" });
+    const gaps = screen.getByRole('article', { name: 'What do these tests tell us?' });
     fireEvent.click(within(gaps).getByRole('button', { name: 'Card options' }));
     fireEvent.click(screen.getByRole('menuitem', { name: /Remove/ }));
-    expect(screen.queryByRole('article', { name: "What can't these data tell us?" })).toBeNull();
+    expect(screen.queryByRole('article', { name: 'What do these tests tell us?' })).toBeNull();
     first.unmount();
     renderWithBoard(<Console preset={null} />);
-    expect(screen.queryByRole('article', { name: "What can't these data tell us?" })).toBeNull();
+    expect(screen.queryByRole('article', { name: 'What do these tests tell us?' })).toBeNull();
   });
 
   it('a card can open its full view over the console', async () => {
     renderWithBoard(<Console preset={null} />);
-    const gaps = screen.getByRole('article', { name: "What can't these data tell us?" });
+    const gaps = screen.getByRole('article', { name: 'What do these tests tell us?' });
     fireEvent.click(within(gaps).getByRole('button', { name: 'Open full view' }));
-    expect(screen.getByRole('dialog', { name: 'Gaps & limitations' })).toBeInTheDocument();
+    expect(screen.getByRole('dialog', { name: 'Experiment table' })).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /Back to console/ }));
     // closing plays a short exit animation before the panel unmounts
-    await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Gaps & limitations' })).toBeNull());
+    await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Experiment table' })).toBeNull());
   });
 });
 
@@ -184,7 +184,7 @@ describe('board storage', () => {
   it('applies several quick actions in the same tick without losing any', () => {
     window.localStorage.clear();
     const { result } = renderHook(() => useBoardState());
-    act(() => { result.current.remove('scenario_match'); result.current.remove('burning_rate'); result.current.remove('gaps'); });
+    act(() => { result.current.remove('scenario_match'); result.current.remove('burning_rate'); result.current.remove('interpretation'); });
     expect(result.current.board.left).toEqual([]);
     act(() => { result.current.add('burning_rate'); result.current.add('materials'); });
     expect(result.current.board.left).toEqual(['burning_rate', 'materials']);
