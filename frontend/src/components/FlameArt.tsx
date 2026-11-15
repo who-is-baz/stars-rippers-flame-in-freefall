@@ -106,7 +106,7 @@ export interface FireProps {
 const HX = 800, HY = 490;                       // match head centre
 const rr = (i: number, k: number) => { const x = Math.sin(i * 127.1 + k * 311.7) * 43758.5453; return x - Math.floor(x); };
 export type FireLayer = 'outer' | 'inner';
-interface Tongue { rot: number; len: number; w: number; dur: number; delay: number; amp: number; skew: number }
+interface Tongue { rot: number; len: number; w: number; dur: number; delay: number; amp: number; skew: number; base: number; lean: number }
 /**
  * Lobes of flame around the head. Microgravity: SHORT, BROAD, round-tipped lobes spread all around (no buoyancy, so no
  * preferred direction), overlapping in an outer and an inner layer like the outer / inner zones of a flame, with small
@@ -115,31 +115,48 @@ interface Tongue { rot: number; len: number; w: number; dur: number; delay: numb
  */
 export function fireTongues(n: number, oneG: boolean, layer: FireLayer = 'outer'): Tongue[] {
   const k = layer === 'inner' ? 20 : 0;                     // different seeds per layer
-  const off = layer === 'inner' ? 180 / Math.max(1, n) : 0;  // inner lobes sit between the outer ones
+  const off = layer === 'inner' ? 11 : 0;                    // the rings do not share angles
   return Array.from({ length: n }, (_, i) => {
     const j = (a: number) => rr(i, a + k);
-    const rot = oneG
-      ? (layer === 'inner' ? -8 : -16) + ((layer === 'inner' ? 16 : 32) * i) / Math.max(1, n - 1) + (j(1) - 0.5) * 6
-      : (360 * i) / n + off + (j(1) - 0.5) * 34;
-    const len = oneG
-      ? (layer === 'inner' ? 70 + j(2) * 22 : 118 + j(2) * 34) - Math.abs(rot) * 0.8
-      : layer === 'inner' ? 62 + j(2) * 18 : 96 + j(2) * 28;     // just past the scene glow (r ≈ 95), never the old long spikes
-    const w = oneG ? (layer === 'inner' ? 15 + j(3) * 5 : 24 + j(3) * 8) : layer === 'inner' ? 27 + j(3) * 9 : 38 + j(3) * 14;
+    if (oneG) {
+      const rot = (layer === 'inner' ? -7 : -13) + ((layer === 'inner' ? 14 : 26) * i) / Math.max(1, n - 1) + (j(1) - 0.5) * 5;
+      const len = (layer === 'inner' ? 72 + j(2) * 18 : 122 + j(2) * 26) - Math.abs(rot) * 0.9;
+      const w = layer === 'inner' ? 15 + j(3) * 4 : 25 + j(3) * 7;
+      return { rot, len, w, base: 0, lean: 0, dur: 0.6 + j(4) * 0.7, delay: -j(5) * 3, amp: 0.6 + j(6) * 0.8, skew: (j(7) - 0.5) * w * 0.6 };
+    }
+    // Microgravity: a corona of short flame tongues licking out from the surface of the luminous sphere, all around.
+    // Similar sizes (small variation only), slightly irregular angles; each one leans and curls to its own side and the
+    // neighbours overlap, so the ring reads as licking fire and not as separate petals.
+    const rot = (360 * i) / n + off + (j(1) - 0.5) * (300 / n);
+    const len = layer === 'inner' ? 40 + j(2) * 13 : 56 + j(2) * 20;
+    const w = layer === 'inner' ? 14 + j(3) * 4 : 19 + j(3) * 6;
+    const side = j(7) < 0.5 ? -1 : 1;
+    const curl = side * (0.5 + j(8) * 0.45) * w;
     return {
-      rot, len, w,
-      dur: (layer === 'inner' ? 0.7 : 1.05) + j(4) * (layer === 'inner' ? 0.8 : 1.3),
-      delay: -j(5) * 3, amp: 0.55 + j(6) * 0.9, skew: (j(7) - 0.5) * w * 0.5,
+      rot, len, w, base: layer === 'inner' ? 26 : 46, lean: side * (6 + j(9) * 14),
+      dur: (layer === 'inner' ? 0.55 : 0.8) + j(4) * (layer === 'inner' ? 0.6 : 0.9),
+      delay: -j(5) * 3, amp: 0.6 + j(6) * 0.8, skew: curl,
     };
   });
 }
-/** Lobe with a ROUNDED tip (horizontal tangent at the top) and a rounded base. `tip` = how broad the dome is (0.2 candle, 0.6 round). */
+/**
+ * Flame-tongue shape pointing to −y: a wide ROUNDED base, flanks that narrow towards a soft tip, and the tip shifted by
+ * `curl` so it bends a little to one side (asymmetric flanks). No straight needle and no symmetric petal.
+ */
+export const flamePath = (L: number, w: number, curl: number) =>
+  `M${-w} 0 C${-w * 1.05} ${-L * 0.38} ${-w * 0.42 + curl * 0.35} ${-L * 0.66} ${curl} ${-L} ` +
+  `C${w * 0.3 + curl * 0.55} ${-L * 0.76} ${w * 1.08} ${-L * 0.42} ${w} 0 C${w * 0.6} ${w * 0.85} ${-w * 0.6} ${w * 0.85} ${-w} 0 Z`;
+/** Kept for reference: lobe with a round dome tip (the previous design). */
 export const lobePath = (L: number, w: number, s: number, tip: number) =>
   `M${-w} 0 C${-w} ${-L * 0.55} ${-w * tip + s} ${-L} ${s} ${-L} C${w * tip + s} ${-L} ${w} ${-L * 0.55} ${w} 0 C${w * 0.55} ${w * 0.75} ${-w * 0.55} ${w * 0.75} ${-w} 0 Z`;
-/** Lobe counts per layer: fewer on a phone, a faint few as an ember. */
+/**
+ * Tongue counts per ring: fewer on a phone, a faint few as an ember. The two microgravity rings have counts with no
+ * common divisor (15 and 7, 11 and 5), so they never share a rotational symmetry (no rosette).
+ */
 export function fireCounts(oneG: boolean, phone: boolean, ember: boolean): { outer: number; inner: number } {
-  if (ember) return { outer: 5, inner: 0 };             // 5, not 4: four evenly spaced lobes read as a cross
+  if (ember) return { outer: 7, inner: 0 };
   if (oneG) return phone ? { outer: 3, inner: 2 } : { outer: 4, inner: 3 };
-  return phone ? { outer: 5, inner: 3 } : { outer: 7, inner: 5 };
+  return phone ? { outer: 11, inner: 5 } : { outer: 15, inner: 7 };
 }
 
 export const FireTongues = memo(function FireTongues({ look, oneG, scale, mode, grayscale, strong, intensity, lifecycle, animated, paused, phone }: FireProps) {
@@ -152,13 +169,12 @@ export const FireTongues = memo(function FireTongues({ look, oneG, scale, mode, 
   const sc = ember ? scale * 0.3 : oneG ? 1 : scale;
   const sparkN = ember ? 0 : phone ? 3 : 6;
   const op = ember ? 0.32 : Math.min(0.9, 0.55 + 0.4 * intensity);
-  const tip = oneG ? 0.22 : 0.62;
   const stops = oneG ? ['#FFE9A8', '#FF9A3C', '#D8401A'] : grayscale ? ['#E6E6E6', '#A8A8A8', '#707070'] : [look.core, look.mid, look.edge];
   const lobe = (t: Tongue, i: number, layer: FireLayer) => (
-    <g key={`${layer}${i}`} transform={`rotate(${t.rot.toFixed(1)})`}>
+    <g key={`${layer}${i}`} transform={`rotate(${t.rot.toFixed(1)}) translate(0 ${-t.base}) rotate(${(ember ? t.lean * 0.25 : t.lean).toFixed(1)})${ember ? ' scale(1.15 0.55)' : ''}`}>
       <g className={animated ? `ft fl${layer === 'inner' ? ' fl-in' : ''}` : undefined}
         style={{ ['--dur' as string]: `${t.dur.toFixed(2)}s`, ['--delay' as string]: `${t.delay.toFixed(2)}s`, ['--amp' as string]: t.amp.toFixed(2) }}>
-        <path d={lobePath(t.len, t.w, t.skew, tip)} fill={layer === 'inner' ? 'url(#fireLobeIn)' : 'url(#fireLobe)'} opacity={layer === 'inner' ? 0.85 : 0.78} />
+        <path d={flamePath(t.len, t.w, t.skew)} fill={layer === 'inner' ? 'url(#fireLobeIn)' : 'url(#fireLobe)'} opacity={layer === 'inner' ? 0.85 : 0.8} />
       </g>
     </g>
   );
@@ -168,8 +184,8 @@ export const FireTongues = memo(function FireTongues({ look, oneG, scale, mode, 
       <defs>
         {/* outer zone: from the body colour at the base to a transparent edge at the rounded tip */}
         <linearGradient id="fireLobe" x1="0" y1="1" x2="0" y2="0">
-          <stop offset="0" stopColor={stops[0]} stopOpacity="0.9" /><stop offset="0.5" stopColor={stops[1]} stopOpacity="0.85" />
-          <stop offset="0.82" stopColor={stops[2]} stopOpacity="0.6" /><stop offset="1" stopColor={stops[2]} stopOpacity="0.05" />
+          <stop offset="0" stopColor={stops[0]} stopOpacity="0.9" /><stop offset="0.42" stopColor={stops[1]} stopOpacity="0.8" />
+          <stop offset="0.72" stopColor={stops[2]} stopOpacity="0.45" /><stop offset="0.95" stopColor={stops[2]} stopOpacity="0" />
         </linearGradient>
         {/* inner zone: brighter and hotter, fades sooner */}
         <linearGradient id="fireLobeIn" x1="0" y1="1" x2="0" y2="0">
@@ -179,10 +195,14 @@ export const FireTongues = memo(function FireTongues({ look, oneG, scale, mode, 
         {/* luminous sphere: core → mid → edge */}
         <radialGradient id="fireSphere"><stop offset="0" stopColor={stops[0]} /><stop offset="0.3" stopColor={stops[0]} stopOpacity="0.92" />
           <stop offset="0.65" stopColor={stops[1]} stopOpacity="0.6" /><stop offset="1" stopColor={stops[2]} stopOpacity="0" /></radialGradient>
+        {/* faint outer shell that breathes: transparent inside, a thin warm rim, fading out */}
+        <radialGradient id="fireShell"><stop offset="0.55" stopColor={stops[1]} stopOpacity="0" /><stop offset="0.8" stopColor={stops[2]} stopOpacity="0.22" />
+          <stop offset="1" stopColor={stops[2]} stopOpacity="0" /></radialGradient>
         <radialGradient id="fireCore"><stop offset="0" stopColor="#FFFFFF" /><stop offset="0.5" stopColor={stops[0]} stopOpacity="0.9" /><stop offset="1" stopColor={stops[1]} stopOpacity="0" /></radialGradient>
       </defs>
       <g transform={`translate(${HX} ${HY}) scale(${sc})`}>
-        {!oneG && <circle className={animated ? 'fire-sphere' : undefined} cx="0" cy="0" r={ember ? 40 : 58} fill="url(#fireSphere)" data-part="fire-sphere" />}
+        {!oneG && <circle className={animated ? 'fire-shell' : undefined} cx="0" cy="0" r={ember ? 70 : 104} fill="url(#fireShell)" data-part="fire-shell" />}
+        {!oneG && <circle className={animated ? 'fire-sphere' : undefined} cx="0" cy="0" r={ember ? 40 : 60} fill="url(#fireSphere)" data-part="fire-sphere" />}
         {outer.map((t, i) => lobe(t, i, 'outer'))}
         {inner.map((t, i) => lobe(t, i, 'inner'))}
         <circle className={animated ? 'fire-core' : undefined} cx="0" cy={oneG ? -16 : 0} r={oneG ? 20 : 28} fill="url(#fireCore)" />

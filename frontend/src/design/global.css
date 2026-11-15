@@ -2441,3 +2441,6 @@ table.inv-table td { vertical-align: top; white-space: normal; }
 .brand:focus-visible { outline: 2px solid var(--mint); outline-offset: 3px; }
 .brand-logo { display: block; height: 30px; width: auto; }
 @media (max-width: 760px) { .brand-logo { height: 24px; } }
+.fire .fire-shell { transform-box: fill-box; transform-origin: 50% 50%; animation: fireShell 3.6s ease-in-out infinite alternate; }
+@keyframes fireShell { 0% { transform: scale(0.93); opacity: 0.55; } 38% { transform: scale(1.04); opacity: 1; } 71% { transform: scale(0.99); opacity: 0.75; } 100% { transform: scale(1.07); opacity: 0.9; } }
+.fire .ft.fl { transform-origin: 50% 92%; }
