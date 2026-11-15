@@ -113,7 +113,9 @@ def test_rate_limit_and_generic_500():
 
 def test_prompts_have_no_user_text():
     from backend import pipeline
-    assert "{" not in pipeline.COMPOSER_SYSTEM.replace('{"answer": "..."}', "")
+    import re as _re
+    # sin marcadores de plantilla: lo único con llaves son los ejemplos JSON fijos
+    assert "{" not in _re.sub(r'\{"answer": "[^"]*"\}', "", pipeline.COMPOSER_SYSTEM)
     # el prompt del router se arma solo con el catálogo; ningún texto del usuario entra en 'system'
     assert pipeline.ROUTER_SYSTEM.count("%s") == 2
 

@@ -20,6 +20,8 @@ PSI_PER_ATM = T.PSI_PER_ATM
 ALWAYS_ALLOWED = {5.0, 14.7, 0.01, 0.5}  # MIN_N, 1 atm en psi, tolerancias de scenarios.py
 MAX_SENTENCES = 3
 MAX_CHARS = 600
+MIN_WORDS = 6   # un fragmento tipo "n<5, avg=0.52" no es una respuesta
+MIN_CHARS = 40
 URL_RE = re.compile(r"(https?://|www\.)", re.I)
 MARKDOWN_RE = re.compile(r"(\*\*|`|^#|\[[^\]]+\]\()", re.M)
 
@@ -40,6 +42,9 @@ BANNED = [
     (re.compile(r"\b(lunar|martian|moon|mars|partial|normal|earth)[- ]gravity\b", re.I), "claim about non-microgravity"),
     (re.compile(GAS + r"[^.]{0,60}?\b" + CAUSAL + r"\b", re.I), "causal claim about a single gas"),
     (re.compile(r"\b(because of|due to|thanks to)\b", re.I), "causal claim"),
+    (re.compile(r"\b" + CAUSAL + r"\b[^.]{0,60}?\b" + GAS + r"\b", re.I), "causal claim about a single gas"),
+    (re.compile(r"\b(increas\w*|decreas\w*|rises?|rising|falls?|falling|grows?|growing|drops?|dropping|climbs?)\b", re.I), "trend or effect claim (the data are descriptive)"),
+    (re.compile(r"\b(generally|typically|usually|tends? to|trends?|in general|overall|always|on the whole|rule of thumb)\b", re.I), "generalisation beyond the listed rows"),
     (re.compile(r"\bprobabilit(y|ies)\b", re.I), "probability"),
     (re.compile(r"\blunar (tests?|experiments?|conditions?|data|runs?)\b|\b\d+ lunar\b", re.I), "near tests called lunar"),
     (re.compile(r"\b(recommend\w*|should use|official)\b", re.I), "recommendation"),
@@ -128,6 +133,18 @@ def check(answer: str, results: List["T.ToolResult"]) -> List[str]:
         problems.append(f"answer longer than {MAX_CHARS} characters")
     if len(SPANISH.findall(a)) >= 2:
         problems.append("answer is not in English")
+    # Una respuesta con datos debe dar al menos una cifra que salga del resultado (si no, es texto sin respaldo).
+    if any(not tr.no_data for tr in results):
+        result_nums: Set[float] = set()
+        for tr in results:
+            result_nums |= numbers_in(tr.result)
+        text_nums = NUM_RE.findall(PSI_ID_RE.sub(" ", TESTID_RE.sub(" ", DOI_RE.sub(" ", a))))
+        if not any(_matches(n, result_nums) for n in text_nums if n not in ("5",)):
+            problems.append("answer gives no figure from the tool result")
+    if len(a.split()) < MIN_WORDS or len(a) < MIN_CHARS:
+        problems.append("answer is too short to be a sentence")
+    elif not re.match(r"^[A-Z0-9\"']", a) or a[-1] not in ".!?":
+        problems.append("answer is not written as full sentences")
     if sentences(a) > MAX_SENTENCES:
         problems.append(f"more than {MAX_SENTENCES} sentences")
     return problems

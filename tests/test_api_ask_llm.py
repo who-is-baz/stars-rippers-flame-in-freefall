@@ -234,7 +234,7 @@ def test_high_max_three_steps_and_no_repeat():
     b = ask(c, "compare fuels and then list where data is thin", level="high")
     assert len(b["tool_calls"]) == 3 and b["meta"]["mode"] == "fallback"
     c2, llm2 = make([{"tool": "meta", "args": {}, "done": False}, {"tool": "meta", "args": {}, "done": False},
-                     text("403 tests.")])
+                     text("There are 403 tests: 274 FLEX and 129 BASS-II.")])
     b2 = ask(c2, "how many tests are in the dataset", level="high")
     assert len(b2["tool_calls"]) == 1
 
@@ -265,12 +265,12 @@ def test_composer_hardening(bad):
 
 
 def test_args_as_json_string_accepted():
-    c, _ = make([{"tool": "meta", "args": "{}"}, text("403 tests.")])
+    c, _ = make([{"tool": "meta", "args": "{}"}, text("There are 403 tests: 274 FLEX and 129 BASS-II.")])
     assert ask(c, "how many tests are in the dataset")["meta"]["mode"] == "ollama"
 
 
 def test_high_later_step_invalid_keeps_first_result():
-    c, _ = make([{"tool": "meta", "args": {}, "done": False}, "garbage", "garbage again", text("403 tests.")])
+    c, _ = make([{"tool": "meta", "args": {}, "done": False}, "garbage", "garbage again", text("There are 403 tests: 274 FLEX and 129 BASS-II.")])
     b = ask(c, "how many tests in the dataset then more", level="high")
     assert b["meta"]["mode"] == "ollama" and len(b["tool_calls"]) == 1
     assert any("later tool step" in w for w in b["meta"]["warnings"])
@@ -290,3 +290,49 @@ def test_known_test_id_allowed():
     b = ask(c, "test 20cal08 details please")
     # la regla low detecta el ID, pero medium sí llama al modelo (no es una guardia)
     assert b["meta"]["mode"] == "ollama", b["meta"]["warnings"]
+
+
+# ---- hallazgos con el modelo real (llama3.2:3b): rangos puntuales y fragmentos
+def test_zero_width_range_from_the_model_is_widened():
+    c, _ = make([route("q1_extinction_rate_by_o2_pressure", fuel="heptane", pressure_min=0.7, pressure_max=0.7),
+                 text("At about 0.7 atm several heptane tests ended in extinction, with n<5 in most cells.")])
+    b = ask(c, "extinction share of heptane at 0.7 atm")
+    args = b["tool_calls"][0]["args"]
+    assert args["pressure_min"] < 0.7 < args["pressure_max"] and b["no_data"] is False
+
+
+def test_fragment_answer_is_replaced_by_the_template():
+    c, _ = make([route("q4_burning_rate_by_o2"), text("n<5, avg_burning_rate_mm2_s=0.523")])
+    b = ask(c, "Which fuel burns faster, heptane or methanol?")
+    assert b["meta"]["mode"] == "fallback" and b["answer"].startswith("FLEX burning rate")
+    assert any("too short" in w for w in b["meta"]["warnings"])
+
+
+def test_zero_filled_args_from_small_models_mean_no_filter():
+    c, _ = make([route("q1_extinction_rate_by_o2_pressure", fuel="heptane", o2_min=0.0, o2_max=1.0, pressure_min=0.0, pressure_max=0.0),
+                 text("Heptane droplets at several oxygen and pressure levels mostly ended in extinction, with n<5 in some cells.")])
+    b = ask(c, "extinction share of heptane")
+    assert set(b["tool_calls"][0]["args"]) == {"fuel", "suppressant"} and b["no_data"] is False  # sin o2_* ni pressure_*
+
+
+def test_fragment_without_capital_or_period_is_rejected():
+    c, _ = make([route("meta"), text("n<5, 50% completion, 0% extinction, 0% disruption")])
+    b = ask(c, "how many tests are in the dataset")
+    assert b["meta"]["mode"] == "fallback" and any("full sentences" in w for w in b["meta"]["warnings"])
+
+
+def test_text_with_no_figure_from_the_result_is_rejected():
+    c, _ = make([route("q4_burning_rate_by_o2", fuel="heptane"),
+                 text("Cells with n<5 have extinction diameters that dropped out of extinction outcome, and percentages are descriptive.")])
+    b = ask(c, "heptane burning rate")
+    assert b["meta"]["mode"] == "fallback" and any("no figure" in w for w in b["meta"]["warnings"])
+
+
+@pytest.mark.parametrize("bad", ["The burning rate of methanol increases with increasing oxygen fraction, from 0.12 to 0.21.",
+                                 "The extinction diameter is generally around 1.68 mm and decreasing at higher pressures.",
+                                 "Oxygen raises the burning rate to 0.36 mm2/s for these heptane tests.",
+                                 "Methanol has a mean burning rate of 0.36 mm2/s overall in these tests."])
+def test_trend_effect_and_generalisation_claims_fall_back(bad):
+    c, _ = make([route("q4_burning_rate_by_o2", fuel="methanol"), text(bad)])
+    b = ask(c, "methanol burning rate")
+    assert b["meta"]["mode"] == "fallback"

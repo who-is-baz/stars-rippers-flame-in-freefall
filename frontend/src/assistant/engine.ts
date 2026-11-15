@@ -120,13 +120,13 @@ const aboutReply = (id: string, data: DataBundle): Reply => {
 export function answerBasic(rawQuestion: string, data: DataBundle): Reply {
   const question = normalize(rawQuestion);
   if (hardBlock(question)) return refusal();
+  const test = lookupTest(question, data.experiments.items); // a test ID always wins over "about" topics
+  if (test) return test;
   const suggested = new Set(data.answers.answers.map((a) => aboutKey(a.question ?? '')));
   if (!suggested.has(aboutKey(question))) {
     const topic = matchAbout(question);
     if (topic) return aboutReply(topic, data);
   }
-  const test = lookupTest(question, data.experiments.items);
-  if (test) return test;
   if (!hasTopic(question)) return genericSite(question) ? aboutReply('site', data) : refusal();
   if (LIVE_RE.test(question)) return base(NO_LIVE_DATA, { noData: true });
   if (SAFETY_RE.test(question)) return base(SAFETY_TEXT, { noData: true, warnings: ['All tests are microgravity on the ISS; there is no partial-gravity or normal-gravity data.'] });
