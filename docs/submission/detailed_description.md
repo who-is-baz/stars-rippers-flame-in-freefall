@@ -9,7 +9,22 @@ and conditions that were chosen to find extinction limits, not to sample atmosph
 evidence actually covers.
 
 ## What the site does
+**An evidence map, not a guess: it shows what NASA's microgravity data can and cannot tell a Moon-base designer.**
+
 A one-page dashboard (works fully as a static site, with no server and no AI model):
+- **Headline finding:** a line above the console, computed from the data, states how many exact and near FLEX tests exist
+  for the Moon-base air of the challenge (30% O2 or more, 10.2 psi or less): today **0 exact and 17 near**. If the data
+  change, the sentence changes. It links to **"What NASA should test next"**: a list generated from the gaps file and the
+  scenarios with 0 exact tests (for example no FLEX test below 10.18 psi, none between 25% and 30% O2, the spacesuit
+  atmosphere untested), each item with its DOI. It also repeats what the challenge text says: there is no partial-gravity
+  data in PSI yet, and it is expected from LUCI and FM2.
+- **Investigations & fire-safety pillars:** a card and a full view arrange the investigations named in the official
+  challenge text under the three pillars of that text (prevention, detection, suppression). For each investigation it shows
+  only what the challenge text says (fuel type, hardware, pillar; "not stated" when the text is silent) and a status:
+  "Test-level data on this site" (FLEX and BASS-II, with test counts and DOI taken from our data) or "In PSI — not
+  processed yet" with a link to a PSI search; LUCI and FM2 are "Future (not in PSI yet)". Prevention: BASS-II, 129 tests
+  processed; suppression: FLEX, 274; detection: 0 processed here. The order is visible: "Ordered by evidence available on
+  this site — not a safety ranking." A line on applications on Earth quotes the challenge text.
 - **Atmosphere scenarios:** Earth/ISS air (21% O2, 14.7 psi), the challenge's expected Moon-base air, a NASA lunar habitat
   atmosphere (26.5% O2, 10.2 psi), the NASA Exploration Atmosphere (34% O2, 8.2 psi) and a spacesuit atmosphere (100% O2,
   4.3 psi). For each one the site counts exact and near FLEX tests (tolerance ±0.01 O2 and ±0.5 psi). Earth/ISS: 49 tests.
@@ -56,7 +71,7 @@ The public site does not depend on it.
 - **All data are microgravity on the ISS.** There is no partial-gravity (Moon/Mars) or normal-gravity data in PSI, so the
   site makes no claim about how fire behaves on the Moon.
 - The expected Moon-base air has **no exact test**; the 17 "near" tests are near, not lunar.
-- **There is no safety ranking and no extended catalogue of investigations:** we use only the two PSI investigations (FLEX and BASS-II); relevance and coverage count available records and never rate hazard.
+- **There is no safety ranking.** Test-level data come only from two PSI investigations (FLEX and BASS-II). The investigations catalogue repeats what the challenge text says about the others and shows no figures for them; relevance, coverage and the catalogue order count available records and never rate hazard.
 - CO2 and helium effects are confounded with oxygen; we do not attribute effects to one gas.
 - Cells with n < 5 always carry a warning. "Disruption" is not defined by the FLEX documents.
 - BASS-II has no recorded pressure, and 103 of 129 tests have no stated outcome ("not stated" does not mean the flame went out).
@@ -72,8 +87,8 @@ hand, test the local assistant with real models, and use future partial-gravity 
 
 ## Tools and languages
 Python 3.12 (pandas, numpy, openpyxl, sqlite3, FastAPI, Pydantic, httpx, pytest), TypeScript + React 18 + Vite + Vitest,
-SVG/CSS for all graphics (no 3D library), Ollama for optional local models, GitHub. AI assistants: Anthropic Claude
+SVG/CSS and canvas 2D for all graphics (no 3D library), Web Audio API for the synthesised sound of the opening animation (no audio files), Ollama for optional local models, GitHub. AI assistants: Anthropic Claude
 (Claude Code and claude.ai). Team: Stars Rippers, Universidad Politécnica de Querétaro (UPQ), NASA Space Apps 2026, UNAQ.
 
 ---
-Length: ~8,382 characters (~1349 words). No limit stated in the 2026 guide: **MANUAL — check the live form counter**; if it is shorter, cut the "Benefits" and "Tools" sections first.
+Length: ~10,172 characters (~1652 words). No limit stated in the 2026 guide: **MANUAL — check the live form counter**; if it is shorter, cut the "Benefits" and "Tools" sections first.
