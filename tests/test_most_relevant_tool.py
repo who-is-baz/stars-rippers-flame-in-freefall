@@ -1,4 +1,4 @@
-"""Herramienta del catálogo `most_relevant_tests`: usa la MISMA relevancia que la vista Experiments (paridad con la referencia independiente)."""
+"""Catalogue tool `most_relevant_tests`: uses the SAME relevance as the Experiments view (parity with the independent reference)."""
 import json
 import os
 

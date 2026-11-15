@@ -1,10 +1,10 @@
-"""Categoría de alcance "about the site": preguntas sobre la propia página (qué es, cómo se usa, qué significa cada etiqueta).
+"""Scope category "about the site": questions about the page itself (what it is, how to use it, what each label means).
 
-Se responde DETERMINISTAMENTE: texto fijo en inglés (≤ 600 caracteres) con cifras calculadas de los datos (marcadores {nombre}),
-sin modelo y sin herramientas. Cita la sección de la página, no un dataset. Es parte del módulo único de alcance (scope.py):
-backend y Basic leen lo mismo (scripts/gen_scope_ts.py genera el espejo de TypeScript).
+Answered DETERMINISTICALLY: fixed English text (≤ 600 characters) with figures computed from the data ({name} placeholders),
+with no model and no tools. It cites the page section, not a dataset. Part of the single scope module (scope.py):
+the backend and Basic read the same thing (scripts/gen_scope_ts.py generates the TypeScript mirror).
 
-Los patrones se aplican a texto preparado con prep(): minúsculas, sin acentos, errores comunes corregidos.
+Patterns run on text prepared by prep(): lower case, no accents, common typos corrected.
 """
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ from typing import Dict, List, Optional
 
 MAX_CHARS = 600
 
-# Errores de ortografía/gramática y abreviaturas frecuentes → forma estándar (se aplican en este orden).
+# Frequent spelling/grammar errors and abbreviations → standard form (applied in this order).
 TYPOS = [
     (r"\bhow's\b|\bhows\b|\bhow’s\b", "how is"), (r"\bwhat's\b|\bwhats\b|\bwhat’s\b", "what is"),
     (r"\bthat's\b|\bthats\b", "that is"), (r"\bdon't\b|\bdont\b|\bdo'nt\b", "do not"),
@@ -41,7 +41,7 @@ def prep(text: str) -> str:
 GREETING_RE = (r"^(hello|hi|hey|hiya|hola|buenas( tardes| dias| noches)?|good (morning|afternoon|evening)|yo|sup|help|ayuda|"
                r"help me|ayudame|start|begin|inicio|menu|please help|hi there|hello there|hola que tal)\W*$")
 
-# (id, sección de la página, patrón sobre texto preparado, texto con {marcadores})
+# (id, page section, pattern on prepared text, text with {placeholders})
 TOPICS: List[Dict[str, str]] = [
     {"id": "ai_numbers", "section": "SI Assistant",
      "re": r"(\b(ai|model|llm|assistant|bot|chatbot|you|answers?)\b.{0,30}\b(make up|made up|invent\w*|hallucinat\w*|fabricat\w*|lie|lies|lying|reliable|trust\w*|accurate|inventa\w*|miente)\b|"
@@ -159,14 +159,14 @@ TOPICS: List[Dict[str, str]] = [
      "text": "I can explain this page and answer questions about the NASA PSI combustion data it shows ({n_tests} ISS tests). Try one of the questions below."},
 ]
 
-# Los temas de indicadores/vistas van antes de "custom"/"coverage"/"gaps" para que "scenario coverage" no caiga en "coverage".
+# Indicator/view topics go before "custom"/"coverage"/"gaps" so that "scenario coverage" does not fall into "coverage".
 _EARLY = ["relevance_order", "complete_partial", "scenario_coverage", "no_evidence", "unresolved", "experiments_view"]
 _early = [t for t in TOPICS if t["id"] in _EARLY]
 _rest = [t for t in TOPICS if t["id"] not in _EARLY]
 _at = next(i for i, t in enumerate(_rest) if t["id"] == "custom")
 TOPICS[:] = _rest[:_at] + _early + _rest[_at:]
 
-# Duda razonable sobre la propia página → "site". Requiere un sustantivo de la página Y una palabra de pregunta/acción.
+# A reasonable question about the page itself → "site". It needs a page noun AND a question/action word.
 GENERIC_NOUN_RE = r"\b(page|pagina|site|sitio|website|web|dashboard|tablero|app|application|aplicacion|tool|herramienta|interface|interfaz|screen|pantalla|assistant|asistente|chatbot)\b"
 GENERIC_VERB_RE = (r"\b(how|what|where|why|which|who|help|explain|use|usar|work|function|mean|show|does|can|como|que|donde|por que|cual|quien|ayuda|explica|funciona|significa|sirve|"
                    r"understand|entiendo|learn|know|see|read|find|click|open)\b")
@@ -187,7 +187,7 @@ _BY_ID["greeting"] = {"id": "greeting", "section": "SI Assistant", "text": ("Hel
 
 
 def match_topic(question: str) -> Optional[str]:
-    """Id del tema "about" explícito, o None."""
+    """Id of the explicit "about" topic, or None."""
     t = prep(question)
     if _GREETING.search(t):
         return "greeting"
@@ -203,7 +203,7 @@ def generic_site(question: str) -> bool:
 
 
 def key(question: str) -> str:
-    """Clave para comparar con las preguntas sugeridas: sin acentos, minúsculas, solo letras y números."""
+    """Key to compare with the suggested questions: no accents, lower case, letters and digits only."""
     return re.sub(r"[^a-z0-9]+", " ", prep(question)).strip()
 
 

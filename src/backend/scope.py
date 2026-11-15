@@ -1,10 +1,10 @@
-"""Alcance del asistente: UN solo lugar. Lo que no sea sobre los datos PSI del sitio recibe la negativa fija y NO llega al modelo.
+"""Assistant scope: ONE place. Anything not about the site's PSI data gets the fixed refusal and does NOT reach the model.
 
-Temas permitidos: pruebas FLEX/BASS-II, atmósferas (O2, presión), combustibles, supresores, cobertura, brechas,
-escenarios y su verificación, procedencia de los datos. Todo lo demás (cultura general, código, opinión, política,
-otras misiones, jailbreaks, roleplay, pedir el prompt, traducir, resumir textos ajenos, matemáticas) → REFUSAL.
-El espejo del front está en frontend/src/assistant/engine.ts; ambos leen los mismos casos de
-frontend/src/assistant/scope_cases.json (pruebas de paridad).
+Allowed topics: FLEX/BASS-II tests, atmospheres (O2, pressure), fuels, suppressants, coverage, gaps,
+scenarios and their verification, data provenance. Everything else (general knowledge, code, opinion, politics,
+other missions, jailbreaks, role-play, asking for the prompt, translating, summarising other texts, maths) → REFUSAL.
+The front-end mirror is frontend/src/assistant/engine.ts; both read the same cases from
+frontend/src/assistant/scope_cases.json (parity tests).
 """
 from __future__ import annotations
 
@@ -20,7 +20,7 @@ _ZERO_WIDTH = dict.fromkeys(map(ord, "​‌‍⁠﻿­"), None)
 
 
 def normalize(question: str) -> str:
-    """NFKC, sin caracteres de control/ancho cero, espacios colapsados. Es lo único que ve el router/regex."""
+    """NFKC, no control/zero-width characters, collapsed spaces. It is the only thing the router/regex sees."""
     q = unicodedata.normalize("NFKC", question).translate(_ZERO_WIDTH)
     q = "".join(ch if (ch.isprintable() or ch in "\n\t") else " " for ch in q)
     return re.sub(r"\s+", " ", q).strip()
@@ -36,7 +36,7 @@ TOPIC_RE = re.compile(
     r"moon|lunar|luna|mars|marte|iss\b|space station|microgravity|microgravedad|gravity|gravedad|habitat|spacesuit|suit|eva\b|"
     r"exploration|tolerance|tolerancia|qc|flag|n\s*<\s*5|extraction|extra[ií]d|ai-extracted|not[_ ]stated)", re.I)
 
-# Tareas ajenas aunque mencionen una palabra del tema ("traduce el dataset", "escribe código para…").
+# Unrelated tasks even when they mention a topic word ("translate the dataset", "write code for…").
 DISALLOWED_RE = re.compile(
     r"(translat|traduc|summari[sz]e (this|the following|that|these)|resume (este|el siguiente)|"
     r"write (me )?(a |an |some )?(poem|code|script|essay|story|song|email|program|function)|escribe (un |una )?(poema|c[oó]digo|ensayo|cuento|canci[oó]n|programa|funci[oó]n)|"
@@ -64,7 +64,7 @@ SAFETY_RE = re.compile(r"\b(safe|safer|safest|unsafe|seguro|segura|seguros|m[aá
 
 
 def hard_block(question: str) -> Optional[str]:
-    """'injection' | 'off_topic' (tarea ajena prohibida) | None. Corre antes de todo lo demás."""
+    """'injection' | 'off_topic' (forbidden unrelated task) | None. Runs before everything else."""
     q = normalize(question)
     if not q:
         return "off_topic"
@@ -81,7 +81,7 @@ def has_topic(question: str) -> bool:
 
 
 def classify(question: str) -> str:
-    """'injection' | 'off_topic' | 'about' | 'in_scope'. 'about' = pregunta sobre la propia página (se responde con texto fijo)."""
+    """'injection' | 'off_topic' | 'about' | 'in_scope'. 'about' = question about the page itself (answered with fixed text)."""
     hb = hard_block(question)
     if hb:
         return hb

@@ -1,68 +1,69 @@
 # API contract (aligned with `src/psi_queries.py`)
 
-Base: `/api`. FastAPI + Pydantic genera el OpenAPI (`/docs`). Implementación: `src/backend/` (`uvicorn backend.app:app --app-dir src`).
-Las mismas rutas responden también **sin** `/api` (alias oculto del OpenAPI) porque el frontend llama a `<VITE_LLM_URL>/ask`. Mientras el backend no esté, el frontend usa un **mock** servido desde
-`data/processed/experiments.csv` y `coverage_grid.json`.
+Base: `/api`. FastAPI + Pydantic generate the OpenAPI document (`/docs`). Implementation: `src/backend/` (`uvicorn backend.app:app --app-dir src`).
+The same routes also answer **without** `/api` (an alias hidden from OpenAPI) because the front end calls `<VITE_LLM_URL>/ask`.
+Without the backend, the front end reads its static files (`frontend/public/data/*.json`), built from
+`data/processed/experiments.csv` and `coverage_grid.json`.
 
-**Estándar de nombres:** los campos se llaman igual que en `src/psi_queries.py`, `experiments.csv` y `coverage_grid.json`.
-La API **no renombra** nada; si un nombre cambia, cambia primero en el código y después aquí. Así el mock y la API
-devuelven lo mismo.
+**Naming standard:** fields have the same names as in `src/psi_queries.py`, `experiments.csv` and `coverage_grid.json`.
+The API **renames** nothing; if a name changes, it changes in the code first and then here, so the static files and
+the API return the same thing.
 
-## Reglas de todas las respuestas
-- Cada respuesta es un objeto con los datos del endpoint más dos campos comunes que agrega la capa de API:
-  - `sources`: lista de DOIs (unión de los `source_doi` de las filas devueltas).
-  - `limitations`: lista corta de textos en inglés (de `docs/data-dictionary.md`, "Limitaciones conocidas").
-- Cada fila trae su propio `source_doi` (lista en las filas agregadas, texto en las filas de `/experiments`) y `qc_flags` (lista).
-- Nunca se imputan nulos.
-- Toda fila con un campo `pct_*` trae `pct_note: "descriptive, not a probability"` y `warning`: `null` si `n ≥ 5`, o
-  `"n<5: unstable percentage; do not read it as a rate"` si `n < 5`.
-- Si una fila incluye extracciones de IA con el flag `low_confidence` (BASS-II P5, P13a, O6), trae
+## Rules for every response
+- Each response is an object with the endpoint data plus two common fields added by the API layer:
+  - `sources`: list of DOIs (union of the `source_doi` of the returned rows).
+  - `limitations`: a short list of English texts (from `docs/data-dictionary.md`, "Known limitations").
+- Every row carries its own `source_doi` (a list in aggregated rows, text in `/experiments` rows) and `qc_flags` (list).
+- Nulls are never imputed.
+- Every row with a `pct_*` field carries `pct_note: "descriptive, not a probability"` and `warning`: `null` if `n ≥ 5`, or
+  `"n<5: unstable percentage; do not read it as a rate"` if `n < 5`.
+- If a row includes AI extractions flagged `low_confidence` (BASS-II P5, P13a, O6), it carries
   `low_confidence_warning: "includes low-confidence AI-extracted outcomes (pending human review); show them with a warning"`.
-  La UI lo muestra visible y el asistente lo menciona en su respuesta.
-- La UI y todos los textos de las respuestas están en **inglés** (la entrega es en inglés). Los textos salen de las
-  constantes `PCT_NOTE`, `SMALL_N_WARNING` y `LOW_CONFIDENCE_WARNING` de `src/psi_queries.py`, no se escriben en la API.
+  The UI shows it and the assistant mentions it in its answer.
+- The UI and every response text are in **English**. The texts come from the constants `PCT_NOTE`, `SMALL_N_WARNING` and
+  `LOW_CONFIDENCE_WARNING` in `src/psi_queries.py`; they are never typed in the API.
 
-## Bandas de O₂ (fracción)
-`<0.15` = [0, 0.15) · `0.15-0.18` · `0.18-0.21` · `0.21-0.24` (0.21 = aire abre esta banda) · `>=0.24`.
-Las filas salen ordenadas por valor de O₂, no por orden alfabético de la etiqueta.
+## O₂ bands (fraction)
+`<0.15` = [0, 0.15) · `0.15-0.18` · `0.18-0.21` · `0.21-0.24` (0.21 = air opens this band) · `>=0.24`.
+Rows are ordered by O₂ value, not alphabetically by label.
 
-## Endpoints → funciones
-Rango → tupla: `o2_min`/`o2_max` → `o2_range=(o2_min, o2_max)` y `pressure_min`/`pressure_max` → `pressure_range`
-(cualquiera de los dos extremos puede faltar). `con` lo pone la API (`psi_queries.connect()`, solo lectura).
+## Endpoints → functions
+Range → tuple: `o2_min`/`o2_max` → `o2_range=(o2_min, o2_max)` and `pressure_min`/`pressure_max` → `pressure_range`
+(either end may be missing). `con` is supplied by the API (`psi_queries.connect()`, read only).
 
-| Método | Ruta | Función | Parámetros | Devuelve |
+| Method | Route | Function | Parameters | Returns |
 |---|---|---|---|---|
 | GET | `/meta` | `meta(con)` | — | `{programs:[{program, n, o2_min, o2_max, pressure_min, pressure_max, source_doi, materials, material_categories}], suppressants, outcomes, o2_bands, min_n, queries, source_doi}` |
-| GET | `/experiments` | `list_experiments(con, …)` | `program`, `fuel`, `o2_min`, `o2_max`, `pressure_min`, `pressure_max`, `suppressant`, `outcome`, `limit`, `offset` | `{total, items:[fila de experiments.csv]}`; en cada fila `qc_flags` es lista y, si aplica, `low_confidence_warning` |
-| GET | `/coverage` | `flex_coverage_grid(con)` | `fuel`, `suppressant` ∈ `none`,`co2`,`he`,`co2+he` (la API filtra en memoria las celdas devueltas) | `{program:"FLEX", cells:[…]}`, ver abajo |
-| GET | `/queries/q1_extinction_rate_by_o2_pressure` | Q1 `extinction_rate_by_o2_pressure` | `program`=FLEX, `fuel`=methanol, `o2_*`, `pressure_*`, `suppressant`=none | `{pressure_atm, o2_fraction, n, n_extinction, pct_extinction, …comunes}` |
-| GET | `/queries/q2_co2_effect` | Q2 `co2_effect` | `fuel`, `o2_*`, `pressure_*` (por defecto 0.9–1.1) | `{fuel, pressure_atm, co2_fraction, n, pct_extinction, avg_o2_fraction, avg_burning_rate_mm2_s, …comunes}` |
-| GET | `/queries/q3_he_effect` | Q3 `he_effect` | `fuel`, `o2_*`, `pressure_*` (por defecto todas) | igual que Q2 con `he_fraction` |
-| GET | `/queries/q4_burning_rate_by_o2` | Q4 `burning_rate_by_o2` | `fuel`, `o2_*`, `pressure_*` (por defecto 0.9–1.1), `suppressant`=none | `{fuel, o2_fraction, n, n_k, min_burning_rate_mm2_s, avg_burning_rate_mm2_s, max_burning_rate_mm2_s, …comunes}` |
-| GET | `/queries/q5_extinction_diameter_by_pressure` | Q5 `extinction_diameter_by_pressure` | `fuel`, `o2_*`, `pressure_*`, `suppressant`=any | `{fuel, pressure_atm, n, n_d, avg_extinction_diameter_mm, min_extinction_diameter_mm, max_extinction_diameter_mm, …comunes}` |
-| GET | `/queries/q6_bass2_outcomes_by_o2_band` | Q6 `bass2_outcomes_by_o2_band` | `material`, `o2_*` | `{o2_band, n, n_low_flow_extinction, n_blowoff, n_no_ignition_or_not_sustained, n_not_stated, pct_outcome_stated, …comunes}`. **Sin % de extinción.** |
-| GET | `/queries/{name}` | Q1–Q6 por nombre (forma real implementada) | los de cada fila de arriba; un parámetro que la consulta no acepta → 400 | `{query, params, rows:[…], sources, limitations}` |
-| GET | `/ranking` | **No implementado (post-hackathon).** El frontend no lo usa (verificado el 2026-11-15) | `fuel`, `w_burning_rate`, `w_ext_diameter`, `w_confidence` (propuesta) | — |
-| GET | `/compare` | `get_experiment(con, test_id, program)` | `a`, `b` = `test_id` o `PROGRAM:test_id` (193F001 está repetido en FLEX: vienen ambas filas) | `{a:[filas], b:[filas], same, different}` (`same`/`different` comparan la primera fila de cada lado); 404 si no existe |
-| GET | `/gaps` | `build_gaps` de `scripts/build_frontend_data.py` (mismo contenido que `gaps.json`) | — | `{gaps:[{id, text, evidence, source_doi}]}` |
-| POST | `/ask` | elige entre las herramientas de `src/backend/tools.py` (Q1–Q6, `list_experiments`, `get_experiment`, `scenario`, `meta`) | `{question (1–500 car.), level: "low"\|"medium"\|"high", model?: string}` | `{answer, citations:[{query, params, source_doi, test_ids, test_ids_total}], tool_calls, no_data, meta:{level, model, mode, ms, warnings}}`; `query` es la clave de la herramienta (p. ej. `q4_burning_rate_by_o2`) |
-| GET | `/llm/status` | consulta `GET /api/tags` de Ollama (timeout 1.5 s) | — | `{available, ollama_url, models:[{tag, tier: "flash"\|"medium"\|"heavy", installed}]}`; si Ollama no responde: `available:false` con **200** |
+| GET | `/experiments` | `list_experiments(con, …)` | `program`, `fuel`, `o2_min`, `o2_max`, `pressure_min`, `pressure_max`, `suppressant`, `outcome`, `limit`, `offset` | `{total, items:[row of experiments.csv]}`; in each row `qc_flags` is a list and, when it applies, `low_confidence_warning` |
+| GET | `/coverage` | `flex_coverage_grid(con)` | `fuel`, `suppressant` ∈ `none`,`co2`,`he`,`co2+he` (the API filters the returned cells in memory) | `{program:"FLEX", cells:[…]}`, see below |
+| GET | `/queries/q1_extinction_rate_by_o2_pressure` | Q1 `extinction_rate_by_o2_pressure` | `program`=FLEX, `fuel`=methanol, `o2_*`, `pressure_*`, `suppressant`=none | `{pressure_atm, o2_fraction, n, n_extinction, pct_extinction, …common}` |
+| GET | `/queries/q2_co2_effect` | Q2 `co2_effect` | `fuel`, `o2_*`, `pressure_*` (default 0.9–1.1) | `{fuel, pressure_atm, co2_fraction, n, pct_extinction, avg_o2_fraction, avg_burning_rate_mm2_s, …common}` |
+| GET | `/queries/q3_he_effect` | Q3 `he_effect` | `fuel`, `o2_*`, `pressure_*` (default: all) | same as Q2 with `he_fraction` |
+| GET | `/queries/q4_burning_rate_by_o2` | Q4 `burning_rate_by_o2` | `fuel`, `o2_*`, `pressure_*` (default 0.9–1.1), `suppressant`=none | `{fuel, o2_fraction, n, n_k, min_burning_rate_mm2_s, avg_burning_rate_mm2_s, max_burning_rate_mm2_s, …common}` |
+| GET | `/queries/q5_extinction_diameter_by_pressure` | Q5 `extinction_diameter_by_pressure` | `fuel`, `o2_*`, `pressure_*`, `suppressant`=any | `{fuel, pressure_atm, n, n_d, avg_extinction_diameter_mm, min_extinction_diameter_mm, max_extinction_diameter_mm, …common}` |
+| GET | `/queries/q6_bass2_outcomes_by_o2_band` | Q6 `bass2_outcomes_by_o2_band` | `material`, `o2_*` | `{o2_band, n, n_low_flow_extinction, n_blowoff, n_no_ignition_or_not_sustained, n_not_stated, pct_outcome_stated, …common}`. **No extinction %.** |
+| GET | `/queries/{name}` | Q1–Q6 by name (the shape actually implemented) | those of each row above; a parameter the query does not accept → 400 | `{query, params, rows:[…], sources, limitations}` |
+| GET | `/ranking` | **Not implemented.** The front end does not use it | `fuel`, `w_burning_rate`, `w_ext_diameter`, `w_confidence` (proposal) | — |
+| GET | `/compare` | `get_experiment(con, test_id, program)` | `a`, `b` = `test_id` or `PROGRAM:test_id` (193F001 is repeated in FLEX: both rows are returned) | `{a:[rows], b:[rows], same, different}` (`same`/`different` compare the first row of each side); 404 if it does not exist |
+| GET | `/gaps` | `build_gaps` from `scripts/build_frontend_data.py` (same content as `gaps.json`) | — | `{gaps:[{id, text, evidence, source_doi}]}` |
+| POST | `/ask` | picks among the tools of `src/backend/tools.py` (Q1–Q6, `list_experiments`, `get_experiment`, `scenario`, `meta`) | `{question (1–500 chars), level: "low"\|"medium"\|"high", model?: string}` | `{answer, citations:[{query, params, source_doi, test_ids, test_ids_total}], tool_calls, no_data, meta:{level, model, mode, ms, warnings}}`; `query` is the tool key (e.g. `q4_burning_rate_by_o2`) |
+| GET | `/llm/status` | queries Ollama's `GET /api/tags` (1.5 s timeout) | — | `{available, ollama_url, models:[{tag, tier: "flash"\|"medium"\|"heavy", installed}]}`; if Ollama does not answer: `available:false` with **200** |
 
-"…comunes" = `n`, `qc_flags`, `source_doi`, y cuando aplica `pct_note`, `warning` y `low_confidence_warning`.
+"…common" = `n`, `qc_flags`, `source_doi` and, when they apply, `pct_note`, `warning` and `low_confidence_warning`.
 
-**PROVISIONAL** = la ruta y la forma pueden cambiar sin que cuente como cambio de contrato. Antes de implementarla,
-hay que agregar su función a `src/psi_queries.py` (no hay SQL fuera de ese archivo) y quitar la marca aquí.
+**PROVISIONAL** = the route and its shape may change without counting as a contract change. Before implementing it,
+its function must be added to `src/psi_queries.py` (there is no SQL outside that file) and the mark removed here.
 
-### `outcome`, `limit` y `offset` en `/experiments` (decisión)
-Se mantienen e implementan en `list_experiments`:
+### `outcome`, `limit` and `offset` in `/experiments`
+They are implemented in `list_experiments`:
 - `outcome` ∈ `extinction`, `disruption`, `completion`, `blowoff`, `no_ignition`, `not_sustained`, `not_stated`.
-  `not_stated` devuelve las pruebas de BASS-II sin resultado en las notas: **no significa que no se extinguieran**.
-- `limit` entre 1 y 500 (por defecto 100); `offset` ≥ 0 (por defecto 0). Orden estable: `program`, `test_id`.
-- `total` cuenta todas las filas que cumplen los filtros, no solo la página.
+  `not_stated` returns the BASS-II tests whose notes state no outcome: **it does not mean they did not go out**.
+- `limit` between 1 and 500 (default 100); `offset` ≥ 0 (default 0). Stable order: `program`, `test_id`.
+- `total` counts every row that matches the filters, not only the page.
 
-Motivo: la tabla del frontend necesita filtrar por resultado y paginar, y con la regla 4 la API no puede hacerlo con SQL propio.
+Reason: the front-end table needs to filter by outcome and paginate, and the API cannot do it with SQL of its own.
 
-## Ejemplo de celda de `/coverage` (real, de `coverage_grid.json`)
+## Example `/coverage` cell (real, from `coverage_grid.json`)
 ```json
 {
   "fuel": "methanol", "o2_band": "0.21-0.24", "pressure_atm_level": "1.0", "suppressant": "none",
@@ -75,36 +76,36 @@ Motivo: la tabla del frontend necesita filtrar por resultado y paginar, y con la
   "qc_flags": ["extinction_diameter_dropped_outcome_not_extinction"], "source_doi": ["10.60555/mbq8-0451"]
 }
 ```
-`pressure_atm_level` es texto: presión redondeada a 0.1 atm o `"unknown"` si es nula (C11M201).
+`pressure_atm_level` is text: pressure rounded to 0.1 atm, or `"unknown"` when it is null (C11M201).
 
 ## `/ask`
-- `low`: sin LLM; la pregunta se enruta con reglas a una de las funciones Q1–Q6 y se responde con plantilla.
-- `medium`: un modelo pequeño elige la función y sus parámetros; redacta con citas.
-- `high`: un modelo mayor, en varios pasos, y verifica que cada cita exista.
-- Si no hay evidencia: `{"answer": "No data available for that question.", "no_data": true}`.
-- **El modo `low` debe funcionar sin Ollama** (el enlace público no tendrá modelo local).
+- `low`: no LLM; the question is routed by rules to one of the Q1–Q6 functions and answered with a template.
+- `medium`: a small model picks the function and its parameters; it writes with citations.
+- `high`: a larger model, in several steps, and every citation is checked to exist.
+- No evidence: `{"answer": "No data available for that question.", "no_data": true}`.
+- **The `low` mode must work without Ollama** (the public link has no local model).
 
-### Extensión aditiva (2026-11-15, no rompe a quien consume)
-- **`model`** (opcional) en la petición: etiqueta de Ollama. Debe ser una de las de `/llm/status`
-  (`FLASH_MODEL`=llama3.2:3b, `MEDIUM_MODEL`=qwen3:8b, `HEAVY_MODEL`=qwen3:14b por defecto); si no, **400**.
-  Sin `model`: `medium` usa `MEDIUM_MODEL` y `high` usa `HEAVY_MODEL`. En `low` se ignora.
-- **`meta`** (aditivo) en la respuesta: `level`, `model` (null en low), `mode` (`low` = reglas sin modelo,
-  `ollama` = texto redactado por el modelo y verificado, `fallback` = el modelo falló la verificación o no dio una
-  llamada válida y se muestra la plantilla), `ms`, `warnings` (avisos obligatorios: n<5, no es probabilidad,
-  confundido CO₂/He–O₂, `not_stated`, baja confianza, motivo del fallback).
-- **`test_ids`**: máximo 20 por cita; **`test_ids_total`** da el total (p. ej. Earth/ISS: 20 de 49).
-- `citations`, `test_ids` y `no_data` los calcula **el código**, nunca el modelo. Sin pruebas → `citations: []`.
-- Fuera de tema → `"That is not in the PSI data shown on this page."` con `no_data: true`.
-- Mapa de la interfaz: Basic=`low`; Flash=`medium`+`FLASH_MODEL`; Medium=`medium`+`MEDIUM_MODEL`;
+### Additive extension (does not break consumers)
+- **`model`** (optional) in the request: an Ollama tag. It must be one of those in `/llm/status`
+  (`FLASH_MODEL`=llama3.2:3b, `MEDIUM_MODEL`=qwen3:8b, `HEAVY_MODEL`=qwen3:14b by default); otherwise **400**.
+  Without `model`: `medium` uses `MEDIUM_MODEL` and `high` uses `HEAVY_MODEL`. Ignored in `low`.
+- **`meta`** (additive) in the response: `level`, `model` (null in low), `mode` (`low` = rules without a model,
+  `ollama` = text written by the model and verified, `fallback` = the model failed verification or gave no valid call
+  and the template is shown), `ms`, `warnings` (mandatory notices: n<5, not a probability, CO₂/He–O₂ confounding,
+  `not_stated`, low confidence, reason for the fallback).
+- **`test_ids`**: at most 20 per citation; **`test_ids_total`** gives the total (e.g. Earth/ISS: 20 of 49).
+- `citations`, `test_ids` and `no_data` are computed by **code**, never by the model. No tests → `citations: []`.
+- Off topic → `"That is not in the PSI data shown on this page."` with `no_data: true`.
+- Interface map: Basic=`low`; Flash=`medium`+`FLASH_MODEL`; Medium=`medium`+`MEDIUM_MODEL`;
   Heavy=`high`+`HEAVY_MODEL`.
-- **`meta.kind`** (`"about"` | null), **`meta.section`** y **`meta.suggestions`** (lista de preguntas sugeridas): aditivos (2026-11-15). Una pregunta sobre la propia página se responde con texto fijo (`tool_calls: [{tool: "about", id}]`, `citations: []`, `no_data: false`, sin modelo); la negativa fija ("I can only answer questions about the NASA PSI combustion data shown on this site.", `no_data: true`) trae `meta.suggestions`.
-- `503` si Ollama no responde, el modelo no está instalado o la llamada falla; el frontend cae a Basic.
+- **`meta.kind`** (`"about"` | null), **`meta.section`** and **`meta.suggestions`** (list of suggested questions): additive. A question about the page itself is answered with fixed text (`tool_calls: [{tool: "about", id}]`, `citations: []`, `no_data: false`, no model); the fixed refusal ("I can only answer questions about the NASA PSI combustion data shown on this site.", `no_data: true`) carries `meta.suggestions`.
+- `503` if Ollama does not answer, the model is not installed or the call fails; the front end falls back to Basic.
 
-## Errores
-`400` parámetros inválidos: las funciones lanzan `ValueError` con el motivo y la API lo devuelve tal cual (`{"detail": "…"}`).
-Los errores de validación de FastAPI/Pydantic (tipo, rango) también salen como `400`, no `422`.
-`503` también si falta `psi.sqlite` (el `detail` dice qué script correr).
-`404` test_id inexistente. `503` LLM no disponible (el cliente cae a `low`).
+## Errors
+`400` invalid parameters: the functions raise `ValueError` with the reason and the API returns it as is (`{"detail": "…"}`).
+FastAPI/Pydantic validation errors (type, range) are also returned as `400`, not `422`.
+`503` also when `psi.sqlite` is missing (the `detail` says which script to run).
+`404` unknown test_id. `503` LLM not available (the client falls back to `low`).
 
-## Cambios a este contrato
-Cualquier cambio de este contrato debe actualizar a la vez el backend (`src/backend/`) y el frontend (`frontend/src/data/types.ts`).
+## Changes to this contract
+Any change to this contract must update the backend (`src/backend/`) and the front end (`frontend/src/data/types.ts`) together.

@@ -1,4 +1,4 @@
-"""Backend FastAPI de Flame in Freefall. Ver docs/API.md.
+"""FastAPI backend of Flarefall (Flame in Freefall challenge). See docs/API.md.
 
-Correr (desde la raíz del repo):  uvicorn backend.app:app --app-dir src --port 8000
+Run (from the repository root):  uvicorn backend.app:app --app-dir src --port 8000
 """

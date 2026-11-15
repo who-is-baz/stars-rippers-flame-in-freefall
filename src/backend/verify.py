@@ -1,13 +1,13 @@
-"""Verificación posterior (en código) del texto que redacta el modelo. Si algo falla, se usa la plantilla.
+"""Post-hoc verification (in code) of the text the model writes. If anything fails, the template is used.
 
-(a) Números: todo número del texto debe salir del resultado de la herramienta. Tolerancia de redondeo: un número
-    escrito con d decimales coincide con un valor v si round(v, d) == número (así "75%" acepta 75.0 y "0.5 mm2/s"
-    acepta 0.501, pero "0.6" no acepta 0.501). También se aceptan v×100 (fracción → %) y v×14.6959 (atm → psi).
-    Se ignoran los dígitos pegados a letras (O2, CO2, mm2), los DOI y los test_id.
-(b) Frases prohibidas: seguridad, predicción, futuro, gravedad lunar/marciana, causalidad de un solo gas.
-(c) Las pruebas del escenario se llaman "near", nunca "lunar".
-(d) n<5: si hay filas con n<5 y el texto da un porcentaje, el texto debe decir n<5 (o "small sample").
-(e) Inglés y ≤ 3 frases. Citas y no_data no se verifican aquí porque nunca vienen del modelo.
+(a) Numbers: every number in the text must come from the tool result. Rounding tolerance: a number written with
+    d decimals matches a value v if round(v, d) == number (so "75%" accepts 75.0 and "0.5 mm2/s" accepts 0.501,
+    but "0.6" does not accept 0.501). v×100 (fraction → %) and v×14.6959 (atm → psi) are also accepted.
+    Digits attached to letters (O2, CO2, mm2), DOIs and test_ids are ignored.
+(b) Forbidden phrases: safety, prediction, future, lunar/Martian gravity, single-gas causality.
+(c) Scenario tests are called "near", never "lunar".
+(d) n<5: if rows have n<5 and the text gives a percentage, the text must say n<5 (or "small sample").
+(e) English and ≤ 3 sentences. Citations and no_data are not checked here because they never come from the model.
 """
 from __future__ import annotations
 
@@ -17,10 +17,10 @@ from typing import Iterable, List, Set
 from . import tools as T
 
 PSI_PER_ATM = T.PSI_PER_ATM
-ALWAYS_ALLOWED = {5.0, 14.7, 0.01, 0.5}  # MIN_N, 1 atm en psi, tolerancias de scenarios.py
+ALWAYS_ALLOWED = {5.0, 14.7, 0.01, 0.5}  # MIN_N, 1 atm in psi, tolerances of scenarios.py
 MAX_SENTENCES = 3
 MAX_CHARS = 600
-MIN_WORDS = 6   # un fragmento tipo "n<5, avg=0.52" no es una respuesta
+MIN_WORDS = 6   # a fragment like "n<5, avg=0.52" is not an answer
 MIN_CHARS = 40
 URL_RE = re.compile(r"(https?://|www\.)", re.I)
 MARKDOWN_RE = re.compile(r"(\*\*|`|^#|\[[^\]]+\]\()", re.M)
@@ -99,7 +99,7 @@ def sentences(answer: str) -> int:
 
 
 def check(answer: str, results: List["T.ToolResult"]) -> List[str]:
-    """Lista de problemas (vacía = aprobado)."""
+    """List of problems (empty = approved)."""
     problems: List[str] = []
     a = (answer or "").strip()
     if not a:
@@ -133,7 +133,7 @@ def check(answer: str, results: List["T.ToolResult"]) -> List[str]:
         problems.append(f"answer longer than {MAX_CHARS} characters")
     if len(SPANISH.findall(a)) >= 2:
         problems.append("answer is not in English")
-    # Una respuesta con datos debe dar al menos una cifra que salga del resultado (si no, es texto sin respaldo).
+    # An answer with data must give at least one figure from the result (otherwise it is unsupported text).
     if any(not tr.no_data for tr in results):
         result_nums: Set[float] = set()
         for tr in results:

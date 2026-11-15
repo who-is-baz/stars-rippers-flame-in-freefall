@@ -1,226 +1,226 @@
 # Data dictionary — `data/processed/`
 
-Generado por `scripts/build_processed.py` a partir de `data/raw/`, que no se modifica.
-Los crudos se descargan y verifican con `scripts/fetch_psi.py`.
-Fuente: NASA Physical Sciences Informatics (PSI), licencia CC0-1.0.
+Built by `scripts/build_processed.py` from `data/raw/`, which is never modified.
+The raw files are downloaded and verified with `scripts/fetch_psi.py`.
+Source: NASA Physical Sciences Informatics (PSI), licence CC0-1.0.
 
-Convenciones:
-- Los nombres van en snake_case, con la unidad al final (`_mm`, `_mm2_s`, `_mmhg`, `_pct_vol`, `_ppm`, `_cm_s`).
-- Las celdas vacías son null. Un texto no numérico en una columna numérica ("–", "none", "OR") se convierte en null.
-- `qc_flags` lista problemas separados por `;`. Vacío = sin problemas detectados. Nunca se descarta una fila.
+Conventions:
+- Names are snake_case, with the unit at the end (`_mm`, `_mm2_s`, `_mmhg`, `_pct_vol`, `_ppm`, `_cm_s`).
+- Empty cells are null. Non-numeric text in a numeric column ("–", "none", "OR") becomes null.
+- `qc_flags` lists issues separated by `;`. Empty = no issue detected. No row is ever dropped.
 
 ---
 
-## `flex_tests.csv` — FLEX (PSI-69), 274 pruebas, una fila por prueba
+## `flex_tests.csv` — FLEX (PSI-69), 274 tests, one row per test
 
-Origen: `PSI-69_Experimental table_FLEX.csv` (cp1252).
+Source: `PSI-69_Experimental table_FLEX.csv` (cp1252).
 
-| Columna | Tipo | Unidad | Columna original | Notas |
+| Column | Type | Unit | Original column | Notes |
 |---|---|---|---|---|
 | `flex_test_number` | int | — | FLEX Test # | |
-| `flex_id` | str | — | FLEX Identifier | Ej. `20CAL10`. Las pruebas `*CAL*` están en la carpeta *Calibration* de PSI; las demás en *Raw Data*. |
-| `test_date` | date ISO | — | Test Date | El original mezcla `m/d/YYYY` y `m/d/YY`; se aceptan ambos. |
-| `test_time_gmt` | str HH:MM:SS | GMT | Test GMT | 1 nulo (30CAL07). |
+| `flex_id` | str | — | FLEX Identifier | E.g. `20CAL10`. The `*CAL*` tests are in the PSI *Calibration* folder; the others in *Raw Data*. |
+| `test_date` | ISO date | — | Test Date | The original mixes `m/d/YYYY` and `m/d/YY`; both are accepted. |
+| `test_time_gmt` | str HH:MM:SS | GMT | Test GMT | 1 null (30CAL07). |
 | `fuel` | str | — | Fuel | `methanol` \| `heptane` |
-| `pressure_mmhg` | float | mmHg | Ambient pressure; mmHg | **C11M201 traía 0.0 → se puso null** (flag `pressure_zero_set_null`). |
-| `pressure_atm` | float | atm | *(derivada)* | `pressure_mmhg / 760`. |
-| `o2_mole_fraction` | float | fracción molar | **"O** initial ambient composition" | En el CSV se perdieron los subíndices: "O" = O₂. |
-| `n2_mole_fraction` | float | fracción molar | **"N** initial …" | "N" = N₂ (diluyente). |
-| `co2_mole_fraction` | float | fracción molar | **"CO** initial …" | **"CO" = CO₂** (supresor), no monóxido de carbono. Ver *Evidencia* abajo. |
-| `he_mole_fraction` | float | fracción molar | He initial … | Helio (supresor). |
+| `pressure_mmhg` | float | mmHg | Ambient pressure; mmHg | **C11M201 had 0.0 → set to null** (flag `pressure_zero_set_null`). |
+| `pressure_atm` | float | atm | *(derived)* | `pressure_mmhg / 760`. |
+| `o2_mole_fraction` | float | mole fraction | **"O** initial ambient composition" | The subscripts were lost in the CSV: "O" = O₂. |
+| `n2_mole_fraction` | float | mole fraction | **"N** initial …" | "N" = N₂ (diluent). |
+| `co2_mole_fraction` | float | mole fraction | **"CO** initial …" | **"CO" = CO₂** (suppressant), not carbon monoxide. See *Evidence* below. |
+| `he_mole_fraction` | float | mole fraction | He initial … | Helium (suppressant). |
 | `droplet_initial_diameter_mm` | float | mm | Droplet initial diameter; mm | `–` → null. |
-| `flame_extinction_diameter_mm` | float | mm | Visible flame extinction diameter; mm | Nulos: 13/27 completion, 37/61 disruption, 27/186 extinction. ⚠️ 14 pruebas `completion` **sí** tienen valor, lo que no cuadra con "se quemó completa": revisar antes de usarlo. |
-| `burning_rate_mm2_s` | float | **mm²/s** | Burning rate; **mm** | **Unidad corregida.** Ver abajo. |
-| `burn_time_s` | float | s | Burn time; s | `~6` → 6 con `burn_time_is_approx = true`. |
-| `burn_time_is_approx` | bool | — | *(derivada)* | True si el original tenía `~`. |
-| `test_end` | str | — | Test end | `extinction` \| `disruption` \| `completion`. Ver definiciones abajo. |
-| `qc_flags` | str | — | — | `pressure_zero_set_null`, `mole_fractions_do_not_sum_to_1` (\|Σ−1\| > 0.015; 6 filas), `burn_time_approx`, `test_date_unparsed`, `duplicate_flex_id` (193F001). |
+| `flame_extinction_diameter_mm` | float | mm | Visible flame extinction diameter; mm | Nulls: 13/27 completion, 37/61 disruption, 27/186 extinction. ⚠️ 14 `completion` tests **do** have a value, which does not fit "burned to completion": check before using it. |
+| `burning_rate_mm2_s` | float | **mm²/s** | Burning rate; **mm** | **Unit corrected.** See below. |
+| `burn_time_s` | float | s | Burn time; s | `~6` → 6 with `burn_time_is_approx = true`. |
+| `burn_time_is_approx` | bool | — | *(derived)* | True if the original had `~`. |
+| `test_end` | str | — | Test end | `extinction` \| `disruption` \| `completion`. See the definitions below. |
+| `qc_flags` | str | — | — | `pressure_zero_set_null`, `mole_fractions_do_not_sum_to_1` (\|Σ−1\| > 0.015; 6 rows), `burn_time_approx`, `test_date_unparsed`, `duplicate_flex_id` (193F001). |
 | `source_file` | str | — | — | |
 
-### Corrección de unidades: `burning_rate`
-El original etiqueta la tasa de combustión como **"mm"**. Es la constante de la ley d² (K = −d(D²)/dt) y su unidad es **mm²/s**:
-1. Los archivos de resultados por prueba del mismo repositorio (`PSI-69_Raw Data_Test 002 Results.xls`, `…30CAL07-Test009 Results.xls`) la llaman `Burning Rate (mm2/s)` y grafican `t/D0² (mm²/s)`.
-2. Los valores (0.05–1.06) están en el rango típico de K para gotas de metanol y heptano (~0.4–0.8 mm²/s).
-3. Una longitud en mm no tiene sentido como "tasa".
+### Unit correction: `burning_rate`
+The original labels the burning rate as **"mm"**. It is the d²-law constant (K = −d(D²)/dt) and its unit is **mm²/s**:
+1. The per-test result files of the same repository (`PSI-69_Raw Data_Test 002 Results.xls`, `…30CAL07-Test009 Results.xls`) call it `Burning Rate (mm2/s)` and plot `t/D0² (mm²/s)`.
+2. The values (0.05–1.06) are in the typical K range for methanol and heptane droplets (~0.4–0.8 mm²/s).
+3. A length in mm makes no sense as a "rate".
 
-**Solo se corrigió el nombre y la unidad; los valores numéricos no cambian.**
+**Only the name and the unit were corrected; the numeric values do not change.**
 
-⚠️ **Discrepancia sin resolver:** para 20CAL10, el CSV dice K = 0.60, D₀ = 1.86 y D_ext = 0.94. El `.xls` de esa misma prueba dice K = 0.5356, D₀ = 1.850 y D_ext = 0.920. No se corrigió: se usa el valor del CSV (la Experiment Table oficial). Conviene revisarlo si se usa K de forma cuantitativa.
+⚠️ **Unresolved discrepancy:** for 20CAL10 the CSV says K = 0.60, D₀ = 1.86 and D_ext = 0.94. The `.xls` of the same test says K = 0.5356, D₀ = 1.850 and D_ext = 0.920. It was not corrected: the CSV value (the official Experiment Table) is used. Worth checking if K is used quantitatively.
 
-### Definición de `test_end`
-- `completion`: la gota se quemó completa, "as opposed to extinguishing at a finite droplet size" (FLEX Test Plan, PDF p.4 / impresa p.44, paso 3).
-- `extinction`: la flama se apagó con la gota todavía de tamaño finito (mismo pasaje, pasos 5–6).
-- `disruption`: **no está definido en los Science Documents.** En la literatura de gotas, "disruption" suele referirse a microexplosión o fragmentación de la gota. Es una **interpretación no confirmada**.
+### Definition of `test_end`
+- `completion`: the droplet burned completely, "as opposed to extinguishing at a finite droplet size" (FLEX Test Plan, PDF p.4 / printed p.44, step 3).
+- `extinction`: the flame went out while the droplet still had a finite size (same passage, steps 5–6).
+- `disruption`: **not defined in the Science Documents.** In the droplet literature "disruption" usually means micro-explosion or fragmentation of the droplet. This is an **unconfirmed interpretation**.
 
 ---
 
-## `bass2_tests.csv` — BASS-II (PSI-25), 129 pruebas, una fila por prueba
+## `bass2_tests.csv` — BASS-II (PSI-25), 129 tests, one row per test
 
-Origen: `PSI-25_Experimental table_BASS-II.csv` unida 1:1 por `Test #` con las hojas de `PSI-25_Science Documents_BASS-II_Test.Matrices.xlsx`. Las 129 filas coinciden.
-Las definiciones de columnas vienen del **BASS-II ReadMe** (`PSI-25_Science Documents_BASS-II_ReadMe.docx`, sección "Columns in test matrix"; el documento no tiene paginación).
+Source: `PSI-25_Experimental table_BASS-II.csv` joined 1:1 on `Test #` with the sheets of `PSI-25_Science Documents_BASS-II_Test.Matrices.xlsx`. All 129 rows match.
+Column definitions come from the **BASS-II ReadMe** (`PSI-25_Science Documents_BASS-II_ReadMe.docx`, section "Columns in test matrix"; the document has no page numbers).
 
-| Columna | Tipo | Unidad | Notas |
+| Column | Type | Unit | Notes |
 |---|---|---|---|
-| `pi` | str | — | Investigador principal (una hoja por PI en Test.Matrices). |
-| `test_id` | str | — | Inicial del PI + número; `a`/`b` = varias corridas con la misma muestra el mismo día. |
-| `test_date` | date | — | Fecha real. El video muestra un día más por un error de año bisiesto (ReadMe). |
-| `gmt_day_of_year` | int | día del año | Columna "GMT" (ReadMe: "number is day of the year"). |
-| `sample_id` | str | — | Una muestra puede usarse en varias pruebas. |
-| `material_raw` | str | — | Texto original normalizado en espacios. 49 variantes. No se modifica. |
-| `material_category` | str | — | De `docs/material_mapping.csv` (aprobado por el responsable de datos del equipo, 14 nov): `pmma_rod` (54), `cotton_fiberglass_fabric` (27, tela SIBAL), `pmma_thin_film` (22), `pmma_thick_sheet` (20), `aramid_fabric` (3, Nomex III), `pmma_sphere` (2), `wax_candle` (1). |
-| `thickness_mm` | float | mm | Espesor de películas y láminas. Película ≤0.4 mm, lámina ≥1 mm (no hay valores intermedios). |
-| `width_cm` | float | cm | Ancho de la muestra plana o de la tela. M5 y M19 = 2 cm (errores de escritura en el texto). |
-| `rod_diameter_in` | float | pulgadas | Diámetro de las varillas (0.25, 0.375, 0.5). |
-| `color` | str | — | `clear` \| `black` (solo varillas). **No promediar varillas de distinto color juntas**: el PMMA negro absorbe radiación distinto (decisión del equipo). P14 "blac" = black (corregido por Fer; flag `fer_corrected`). |
-| `burn_sides` | int | — | 1 o 2 caras. **Vacío = no especificado**, no "2 caras" (decisión del equipo). |
-| `flow_restrictor` | int | — | 0 = flujo máximo / menor restricción, 2 = flujo mínimo (ReadMe). |
-| `radiometer_gain_raw` | str | — | Ganancia **sin calibrar** (ReadMe). Valores tipo `250>50` = cambio durante la prueba. |
-| `total_frames_shot` | int | — | Fotos de la cámara Nikon. Textos como `video` → null. |
-| `o2_initial_pct_vol`, `o2_final_pct_vol` | float | % vol | O₂ calibrado con offset contra el MCA de la ISS (ReadMe). |
-| `co2_initial_pct_vol`, `co2_final_pct_vol` | float | % vol | Sensor CDM. |
-| `co_initial_ppm`, `co_final_ppm` | float | ppm | Sensor CSA-CP. `OR`/`over` = fuera de rango (>1000 ppm) → null + `co_*_over_range = true`. |
+| `pi` | str | — | Principal investigator (one sheet per PI in Test.Matrices). |
+| `test_id` | str | — | PI initial + number; `a`/`b` = several runs with the same sample on the same day. |
+| `test_date` | date | — | Real date. The video shows one day more because of a leap-year error (ReadMe). |
+| `gmt_day_of_year` | int | day of year | "GMT" column (ReadMe: "number is day of the year"). |
+| `sample_id` | str | — | A sample can be used in several tests. |
+| `material_raw` | str | — | Original text with normalised spaces. 49 variants. Not modified. |
+| `material_category` | str | — | From `docs/material_mapping.csv` (approved by the team's data lead, 14 Nov): `pmma_rod` (54), `cotton_fiberglass_fabric` (27, SIBAL fabric), `pmma_thin_film` (22), `pmma_thick_sheet` (20), `aramid_fabric` (3, Nomex III), `pmma_sphere` (2), `wax_candle` (1). |
+| `thickness_mm` | float | mm | Thickness of films and sheets. Film ≤0.4 mm, sheet ≥1 mm (there are no values in between). |
+| `width_cm` | float | cm | Width of the flat sample or the fabric. M5 and M19 = 2 cm (typos in the text). |
+| `rod_diameter_in` | float | inches | Rod diameter (0.25, 0.375, 0.5). |
+| `color` | str | — | `clear` \| `black` (rods only). **Do not average rods of different colours together**: black PMMA absorbs radiation differently (team decision). P14 "blac" = black (corrected by the data lead; flag `fer_corrected`). |
+| `burn_sides` | int | — | 1 or 2 sides. **Empty = not specified**, not "2 sides" (team decision). |
+| `flow_restrictor` | int | — | 0 = maximum flow / least restriction, 2 = minimum flow (ReadMe). |
+| `radiometer_gain_raw` | str | — | **Uncalibrated** gain (ReadMe). Values like `250>50` = changed during the test. |
+| `total_frames_shot` | int | — | Nikon camera photos. Texts such as `video` → null. |
+| `o2_initial_pct_vol`, `o2_final_pct_vol` | float | % vol | O₂ calibrated with an offset against the ISS MCA (ReadMe). |
+| `co2_initial_pct_vol`, `co2_final_pct_vol` | float | % vol | CDM sensor. |
+| `co_initial_ppm`, `co_final_ppm` | float | ppm | CSA-CP sensor. `OR`/`over` = over range (>1000 ppm) → null + `co_*_over_range = true`. |
 | `co_initial_over_range`, `co_final_over_range` | bool | — | |
-| **`ai_outcome`** | str | — | **Extraído por IA.** `extinction` \| `blowoff` \| `no_ignition` \| `not_sustained` \| null |
-| **`ai_extinguished`** | bool | — | **IA.** True si el texto menciona extinción o blowoff. **Null ≠ "no se extinguió"**: solo indica que la nota no lo dice. |
-| **`ai_extinction_mode`** | str | — | **IA.** `low_flow` (se bajó el flujo hasta extinguir) \| `blowoff_high_flow` |
-| **`ai_fan_pot_at_extinction`** | float | posición del pot (0–10) | **IA.** Posición del potenciómetro del ventilador escrita junto a "ext"/"blowoff". `0` = ventilador apagado. Es una **posición del control, no una velocidad**; para pasar a cm/s se necesita `Fan calibration data.xlsx` (no aplicado). |
-| **`ai_initial_air_speed_cm_s`** | float | cm/s | **IA.** Primer valor de *Air display* ("flow speed measured in the duct in cm/s", ReadMe; respuesta lenta, ~1 min). Si el primer número es > 40, es una lectura del ventilador → se usa el valor junto a `cm/s` o entre paréntesis (O5b, O13a). |
-| `extracted_by` | str | — | `AI`; aplica a todas las columnas `ai_*`. |
-| `raw_note` | str | — | Texto original: `Fan display: … \| Air display: …` (de Test.Matrices). |
-| `qc_flags` | str | — | Ver abajo. |
+| **`ai_outcome`** | str | — | **Extracted by AI.** `extinction` \| `blowoff` \| `no_ignition` \| `not_sustained` \| null |
+| **`ai_extinguished`** | bool | — | **AI.** True if the text mentions extinction or blowoff. **Null ≠ "it did not go out"**: it only means the note does not say. |
+| **`ai_extinction_mode`** | str | — | **AI.** `low_flow` (the flow was lowered until extinction) \| `blowoff_high_flow` |
+| **`ai_fan_pot_at_extinction`** | float | pot position (0–10) | **AI.** Fan potentiometer position written next to "ext"/"blowoff". `0` = fan off. It is a **control position, not a speed**; converting it to cm/s needs `Fan calibration data.xlsx` (not applied). |
+| **`ai_initial_air_speed_cm_s`** | float | cm/s | **AI.** First *Air display* value ("flow speed measured in the duct in cm/s", ReadMe; slow response, ~1 min). If the first number is > 40 it is a fan reading → the value next to `cm/s` or in brackets is used (O5b, O13a). |
+| `extracted_by` | str | — | `AI`; applies to every `ai_*` column. |
+| `raw_note` | str | — | Original text: `Fan display: … \| Air display: …` (from Test.Matrices). |
+| `qc_flags` | str | — | See below. |
 | `source_file` | str | — | |
 
-### Reglas de la extracción por IA (`ai_*`)
-Claude (Opus 5.5) leyó las 129 notas una por una el 2026-11-14. Las reglas están en `ai_extract()` dentro de `scripts/build_processed.py` y las 26 filas con resultado se revisaron a mano contra `raw_note`.
+### AI extraction rules (`ai_*`)
+Claude (Opus 5.5) read the 129 notes one by one on 2026-11-14. The rules are in `ai_extract()` in `scripts/build_processed.py`, and the 26 rows with an outcome were checked by hand against `raw_note`.
 - `no ign` → `no_ignition` (O12)
 - `would not stay lit` → `not_sustained` (P8)
 - `blowoff` / `blow off` → `blowoff` (B18, B19, O7, O8b, O9, O11, O22)
-- `ext`, `extinguished`, `out` → `extinction` (17 pruebas)
-- Se dejaron en **null** a propósito por ser ambiguos:
-  - P4 y P6 ("pots … off": no queda claro si se apagó la flama o el ventilador).
+- `ext`, `extinguished`, `out` → `extinction` (17 tests)
+- Left **null** on purpose because they are ambiguous:
+  - P4 and P6 ("pots … off": it is unclear whether the flame or the fan went off).
   - O13b ("7, 4? (49, ?)").
-  - F4 ("see notes": las notas no están en PSI).
-  - Todas las pruebas sin palabra clave (103).
-- `ai_fan_pot_at_extinction` queda null cuando el pot de extinción no está explícito (B14, B21, O14, O19, P1: "5 down to ext"; B18/B19: "incr to 7.0 / 6.0" sin decir en qué valor ocurrió el blowoff).
+  - F4 ("see notes": the notes are not in PSI).
+  - Every test without a keyword (103).
+- `ai_fan_pot_at_extinction` stays null when the extinction pot is not explicit (B14, B21, O14, O19, P1: "5 down to ext"; B18/B19: "incr to 7.0 / 6.0" without saying at which value the blowoff happened).
 
-### `qc_flags` de BASS-II (no se corrigieron valores; solo se marcaron)
-| Flag | Pruebas | Motivo |
+### BASS-II `qc_flags` (no value was corrected; they were only flagged)
+| Flag | Tests | Reason |
 |---|---|---|
-| `o2_final_implausibly_low` (< 5 %) | B2 (1.6), P22a (0.6), T28a (0.9) | Imposible en cabina ISS; probable error de captura. |
-| `o2_final_implausibly_high` (> 30 %) | P22b (39.1), T28b (40.4) | Ídem. Los pares a/b sugieren valores corridos entre columnas. |
-| `date_year_inconsistent_with_gmt` | T9, T18 | La fecha dice 2018 pero el GMT 175 coincide con el 2014-06-24. Probable error de año. |
+| `o2_final_implausibly_low` (< 5 %) | B2 (1.6), P22a (0.6), T28a (0.9) | Impossible in the ISS cabin; probably an entry error. |
+| `o2_final_implausibly_high` (> 30 %) | P22b (39.1), T28b (40.4) | Same. The a/b pairs suggest values shifted between columns. |
+| `date_year_inconsistent_with_gmt` | T9, T18 | The date says 2018 but GMT 175 matches 2014-06-24. Probably a year error. |
 | `co_over_range_gt_1000ppm` | O4, O12, O13b | CO "OR"/"over" (>1000 ppm). |
-| `co_final_censored` | M5 | CO final ">500" en el original: es una cota inferior. `co_final_ppm` queda null; no se imputa. |
-| `co_initial_negative` | B4, B21, B22, M10, O1, O2, O5a, O20, T25, T26, T27, T28a, T29 (13) | CO inicial −1 a −3 ppm (probable offset del sensor). Se conserva el valor. |
-| `material_assumed_from_readme` | B3, B5, B7, B12, B13, T3, T7 | El texto no dice "PMMA"; se asume por el ReadMe y el PI. Aprobado por Fer (#3), que pidió conservar la marca. |
-| `material_text_typo` | M5, M19 | El texto tiene un error de escritura ("2 cm thick", "2ide"); el ancho se tomó como 2 cm. Aprobado por Fer (#3), con la marca. |
-| `fer_corrected` | P14 | El responsable de datos corrigió un valor derivado del texto: "1/4 blac rod" → `color` = black. El texto original (`material_raw`) no se modifica. Toda corrección de este tipo debe llevar la marca (test `test_fer_corrected_marks_every_corrected_value`). |
-| `low_confidence` | P5, P13a, O6 | Extracción de IA ambigua (P5/P13a: pot 0 al extinguirse; O6: "out .275" sin "ext"). Pendiente de Fer; `src/psi_queries.py` añade `low_confidence_warning` a toda fila agregada que las incluya. |
+| `co_final_censored` | M5 | Final CO ">500" in the original: it is a lower bound. `co_final_ppm` stays null; nothing is imputed. |
+| `co_initial_negative` | B4, B21, B22, M10, O1, O2, O5a, O20, T25, T26, T27, T28a, T29 (13) | Initial CO −1 to −3 ppm (probably a sensor offset). The value is kept. |
+| `material_assumed_from_readme` | B3, B5, B7, B12, B13, T3, T7 | The text does not say "PMMA"; it is assumed from the ReadMe and the PI. Approved by the team's data lead, who asked to keep the flag. |
+| `material_text_typo` | M5, M19 | The text has a typo ("2 cm thick", "2ide"); the width was taken as 2 cm. Approved by the data lead, with the flag. |
+| `fer_corrected` | P14 | The data lead corrected a value derived from the text: "1/4 blac rod" → `color` = black. The original text (`material_raw`) is not modified. Every correction of this kind must carry the flag (test `test_fer_corrected_marks_every_corrected_value`). |
+| `low_confidence` | P5, P13a, O6 | Ambiguous AI extraction (P5/P13a: pot 0 at extinction; O6: "out .275" without "ext"). Pending human review; `src/psi_queries.py` adds `low_confidence_warning` to every aggregated row that includes them. |
 
-La tabla de BASS-II **no tiene columna de presión**: las pruebas se hicieron en la Microgravity Science Glovebox a presión de cabina.
+The BASS-II table **has no pressure column**: the tests ran in the Microgravity Science Glovebox at cabin pressure.
 
 ---
 
-## Evidencia de los Science Documents
-| Pregunta | Respuesta | Fuente |
+## Evidence from the Science Documents
+| Question | Answer | Source |
 |---|---|---|
-| ¿"CO" en FLEX es CO₂? | Sí. El plan define las matrices de supresor con fracciones molares X_O2, X_CO2 y X_He, con `X_N2 = 1.0 − X_O2 − X_CO2`. No se menciona CO como variable de prueba. | *FLEX_Test_Plan.pdf*, Tabla 8 (PDF p.8 / impresa p.48) y Tabla 9 He (PDF p.10 / impresa p.50) |
-| ¿Unidad de He / CO₂? | Fracción molar | Mismas tablas |
-| ¿Qué es "Disruption"? | **No aparece en los Science Documents** (Test Plan, DoD). Solo se definen burn-to-completion y extinction. | *FLEX_Test_Plan.pdf* PDF p.4 / impresa p.44 |
-| ¿Unidades del radiómetro de FLEX? | **No aparecen en los Science Documents.** En `Radiometer_Readings.txt` las muestras vienen con unidad vacía `()`. | — |
-| ¿Unidades del radiómetro de BASS-II? | "Uncalibrated radiometer gain … useful for relative flame intensity": relativas, sin calibrar. | *BASS-II_ReadMe.docx*, "Columns in test matrix" |
+| Is "CO" in FLEX CO₂? | Yes. The plan defines the suppressant matrices with mole fractions X_O2, X_CO2 and X_He, with `X_N2 = 1.0 − X_O2 − X_CO2`. CO is not mentioned as a test variable. | *FLEX_Test_Plan.pdf*, Table 8 (PDF p.8 / printed p.48) and Table 9 He (PDF p.10 / printed p.50) |
+| Unit of He / CO₂? | Mole fraction | Same tables |
+| What is "Disruption"? | **It does not appear in the Science Documents** (Test Plan, DoD). Only burn-to-completion and extinction are defined. | *FLEX_Test_Plan.pdf* PDF p.4 / printed p.44 |
+| Units of the FLEX radiometer? | **They do not appear in the Science Documents.** In `Radiometer_Readings.txt` the samples have an empty unit `()`. | — |
+| Units of the BASS-II radiometer? | "Uncalibrated radiometer gain … useful for relative flame intensity": relative, uncalibrated. | *BASS-II_ReadMe.docx*, "Columns in test matrix" |
 
 ---
 
-## `experiments.csv` / `psi.sqlite` — tabla unificada FLEX + BASS-II (403 filas)
+## `experiments.csv` / `psi.sqlite` — unified FLEX + BASS-II table (403 rows)
 
-Generada por `scripts/build_experiments.py`. SQLite: tabla `experiments`, vistas `v_flex` y `v_bass2`, e índice no único
-`(program, test_id)`. Ejemplos de consultas en `docs/sql_examples.sql` (ejecutar con `scripts/run_sql_examples.py`).
+Built by `scripts/build_experiments.py`. SQLite: table `experiments`, views `v_flex` and `v_bass2`, and a non-unique index
+on `(program, test_id)`. Example queries in `docs/sql_examples.sql` (run with `scripts/run_sql_examples.py`).
 
-| Columna | FLEX | BASS-II |
+| Column | FLEX | BASS-II |
 |---|---|---|
 | `program` | `FLEX` | `BASS-II` |
-| `test_id` | `flex_id` (⚠️ no es único: 193F001 aparece 2 veces) | `test_id` |
+| `test_id` | `flex_id` (⚠️ not unique: 193F001 appears twice) | `test_id` |
 | `date` | `test_date` | `test_date` |
-| `material_or_fuel` | `methanol` / `heptane` | `material_raw` (texto original) |
-| `material_category` | `liquid_fuel_droplet` | `material_category` de `bass2_tests.csv` (mapeo aprobado en #3) |
-| `o2_fraction` | fracción molar **fijada** por el ensayo | `o2_initial_pct_vol / 100`: O₂ **medido** en la cámara |
-| `pressure_atm` | `pressure_atm` | null (no registrada) |
-| `co2_fraction` | fracción molar del **supresor agregado** | `co2_initial_pct_vol / 100`: CO₂ **de fondo medido** (≤1.85 %), no supresor |
-| `he_fraction` | fracción molar del supresor | null |
+| `material_or_fuel` | `methanol` / `heptane` | `material_raw` (original text) |
+| `material_category` | `liquid_fuel_droplet` | `material_category` from `bass2_tests.csv` (approved mapping) |
+| `o2_fraction` | mole fraction **set** by the test | `o2_initial_pct_vol / 100`: O₂ **measured** in the chamber |
+| `pressure_atm` | `pressure_atm` | null (not recorded) |
+| `co2_fraction` | mole fraction of the **added suppressant** | `co2_initial_pct_vol / 100`: **measured background** CO₂ (≤1.85 %), not a suppressant |
+| `he_fraction` | suppressant mole fraction | null |
 | `outcome` | `extinction` / `disruption` / `completion` | `extinction` / `blowoff` / `no_ignition` / `not_sustained` / null |
 | `outcome_source` | `observed` | `ai_extracted` (26) / `not_stated` (103) |
-| `extinction_diameter_mm` | solo si `outcome = extinction`; si no, null (38 valores omitidos → flag `extinction_diameter_dropped_outcome_not_extinction`) | null |
-| `burning_rate_mm2_s` | K de la ley d² | null |
-| `qc_flags` | flags de `flex_tests.csv` + el de arriba | flags de `bass2_tests.csv` |
+| `extinction_diameter_mm` | only if `outcome = extinction`; otherwise null (38 values dropped → flag `extinction_diameter_dropped_outcome_not_extinction`) | null |
+| `burning_rate_mm2_s` | d²-law K | null |
+| `qc_flags` | flags of `flex_tests.csv` + the one above | flags of `bass2_tests.csv` |
 | `source_doi` | `10.60555/mbq8-0451` | `10.60555/4qc4-de67` |
 
 ---
 
-## Limitaciones conocidas
+## Known limitations
 
-### Cobertura y origen
-1. **Solo se procesaron las Experiment Tables.** No se usan los ~630 archivos por prueba de FLEX (Chamber/Radiometer
-   Readings), ni los videos o imágenes de BASS-II (~275 GB), ni los de FLEX (~920 GB). Solo hay una muestra (20CAL10).
-2. SoFIE no es una investigación en PSI (ninguna tiene esa sigla o título), pero los objetivos de BASS-II (PSI-25) la mencionan: "Provide SoFIE PIs with preliminary data to refine Science Requirements". De Combustion Science solo se procesaron BASS-II y FLEX (de 24 investigaciones).
-3. Los Science Documents consultados son 4 (FLEX DoD, FLEX Test Plan, BASS-II ReadMe, BASS-II SRD). No se revisaron los
-   Engineering Documents, Presentations ni el Summary Report de BASS-II (49 MB).
+### Coverage and origin
+1. **Only the Experiment Tables were processed.** The ~630 FLEX per-test files (Chamber/Radiometer Readings) are not
+   used, nor the BASS-II videos or images (~275 GB), nor the FLEX ones (~920 GB). There is only one sample (20CAL10).
+2. SoFIE is not an investigation in PSI (none has that acronym or title), but the BASS-II (PSI-25) objectives mention it: "Provide SoFIE PIs with preliminary data to refine Science Requirements". Of Combustion Science, only BASS-II and FLEX were processed (out of 24 investigations).
+3. 4 Science Documents were consulted (FLEX DoD, FLEX Test Plan, BASS-II ReadMe, BASS-II SRD). The Engineering
+   Documents, Presentations and the BASS-II Summary Report (49 MB) were not reviewed.
 
 ### FLEX
-4. **Unidad de `burning_rate` corregida** de "mm" a mm²/s, solo en el nombre (ver arriba). La evidencia es indirecta
-   (archivos `.xls` y rango físico); ningún Science Document lo dice explícitamente.
-5. **"CO" se interpretó como CO₂**, con apoyo del Test Plan (Tablas 8–9). Los encabezados "O/N/CO" perdieron los subíndices.
-6. **"Disruption" no está definido** en los Science Documents. La interpretación "microexplosión/fragmentación" no está confirmada.
-7. **Unidades del radiómetro de FLEX desconocidas:** el `.txt` trae `()` vacío y no aparecen en los Science Documents.
-8. La Experiment Table y los `.xls` por prueba **no coinciden** (20CAL10: K 0.60 vs 0.536; D₀ 1.86 vs 1.850; D_ext 0.94 vs 0.920).
-   Se usa la Experiment Table.
-9. **14 pruebas `completion` y 24 `disruption` tienen diámetro de extinción**, lo que contradice su resultado. En
-   `experiments.csv` se omiten (regla "solo si extinction") con un flag; en `flex_tests.csv` se conservan.
-10. `flex_id` **193F001 duplicado** (#70 y #73, misma fecha y hora, distinto D₀/K). Se conservan ambas filas con el flag `duplicate_flex_id`.
-11. C11M201 tenía presión 0.0 mmHg → null. 6 pruebas tienen fracciones molares que no suman 1 (±0.015).
-    Fechas en dos formatos (m/d/YYYY y m/d/YY). 2 tiempos de quemado aproximados (`~`).
-12. **El diseño no es aleatorio ni balanceado:** el Test Plan (PDF p.4 / impresa p.44) describe un procedimiento
-    iterativo que se acerca al límite de extinción. Los "% de extinción" por celda **no son probabilidades** y los
-    efectos de CO₂/He están **confundidos con el O₂** (el O₂ promedio cambia entre niveles de supresor). Varias
-    celdas tienen n ≤ 5.
+4. **`burning_rate` unit corrected** from "mm" to mm²/s, in the name only (see above). The evidence is indirect
+   (`.xls` files and physical range); no Science Document states it explicitly.
+5. **"CO" was read as CO₂**, supported by the Test Plan (Tables 8–9). The "O/N/CO" headers lost their subscripts.
+6. **"Disruption" is not defined** in the Science Documents. The "micro-explosion/fragmentation" reading is not confirmed.
+7. **FLEX radiometer units unknown:** the `.txt` has an empty `()` and they do not appear in the Science Documents.
+8. The Experiment Table and the per-test `.xls` files **do not match** (20CAL10: K 0.60 vs 0.536; D₀ 1.86 vs 1.850; D_ext 0.94 vs 0.920).
+   The Experiment Table is used.
+9. **14 `completion` and 24 `disruption` tests have an extinction diameter**, which contradicts their outcome. In
+   `experiments.csv` they are dropped (rule "only if extinction") with a flag; in `flex_tests.csv` they are kept.
+10. `flex_id` **193F001 duplicated** (#70 and #73, same date and time, different D₀/K). Both rows are kept with the flag `duplicate_flex_id`.
+11. C11M201 had a pressure of 0.0 mmHg → null. 6 tests have mole fractions that do not add up to 1 (±0.015).
+    Dates in two formats (m/d/YYYY and m/d/YY). 2 approximate burn times (`~`).
+12. **The design is neither random nor balanced:** the Test Plan (PDF p.4 / printed p.44) describes an iterative
+    procedure that approaches the extinction limit. The per-cell "extinction %" values **are not probabilities** and the
+    CO₂/He effects are **confounded with O₂** (the average O₂ changes between suppressant levels). Several
+    cells have n ≤ 5.
 
 ### BASS-II
-13. **El resultado de BASS-II no está registrado como dato**; se extrajo con IA del texto de *Fan/Air display*
-    (26/129). 103 pruebas quedan `not_stated`, lo que **no** significa que no hubo extinción. Las tasas de
-    extinción de BASS-II no son comparables con las de FLEX.
-14. `ai_fan_pot_at_extinction` es una **posición del potenciómetro (0–10)**, no una velocidad. No se aplicó
-    `Fan calibration data.xlsx` para convertirla a cm/s.
-15. *Air display* tiene respuesta lenta (~1 min, ReadMe) y a veces contiene lecturas del ventilador (O5b, O13a).
-16. El O₂ y el CO₂ de BASS-II son **medidos**, no fijados. En `experiments.csv` comparten columna con los de FLEX, que
-    sí son de diseño. El CO₂ de BASS-II es de fondo (≤1.85 %), no un supresor.
-17. Valores imposibles marcados y **no corregidos**: O₂ final de B2 (1.6 %), P22a/P22b (0.6/39.1 %), T28a/T28b (0.9/40.4 %).
-    T9/T18 tienen año 2018 con GMT de 2014. CO "OR" (>1000 ppm) en O4, O12, O13b.
-18. **`material_category` agrupa 49 textos libres en 7 categorías** (`docs/material_mapping.csv`, aprobado por el responsable de datos
-    en #3). Las variantes de ignición ("moved igniter", "top side ign", T23/T24) no son material: se mapean a SIBAL.
-    7 pruebas tienen el material asumido por el ReadMe y 2 un error de escritura (ver flags arriba).
-19. No hay presión registrada; el ReadMe no explica las variantes de ignición ("top side ign", "moved igniter");
-    F4 dice "see notes", pero esas notas no están en PSI.
+13. **The BASS-II outcome is not recorded as data**; it was extracted by AI from the *Fan/Air display* text
+    (26/129). 103 tests remain `not_stated`, which does **not** mean there was no extinction. BASS-II extinction rates
+    are not comparable with FLEX ones.
+14. `ai_fan_pot_at_extinction` is a **potentiometer position (0–10)**, not a speed. `Fan calibration data.xlsx` was not
+    applied to convert it to cm/s.
+15. *Air display* responds slowly (~1 min, ReadMe) and sometimes contains fan readings (O5b, O13a).
+16. BASS-II O₂ and CO₂ are **measured**, not set. In `experiments.csv` they share a column with the FLEX ones, which
+    are set by design. BASS-II CO₂ is background (≤1.85 %), not a suppressant.
+17. Impossible values flagged and **not corrected**: final O₂ of B2 (1.6 %), P22a/P22b (0.6/39.1 %), T28a/T28b (0.9/40.4 %).
+    T9/T18 have the year 2018 with a 2014 GMT. CO "OR" (>1000 ppm) in O4, O12, O13b.
+18. **`material_category` groups 49 free texts into 7 categories** (`docs/material_mapping.csv`, approved by the team's
+    data lead). The ignition variants ("moved igniter", "top side ign", T23/T24) are not materials: they map to SIBAL.
+    7 tests have their material assumed from the ReadMe and 2 have a typo (see the flags above).
+19. No pressure is recorded; the ReadMe does not explain the ignition variants ("top side ign", "moved igniter");
+    F4 says "see notes", but those notes are not in PSI.
 
-### Proceso
-20. Toda transformación es reproducible con `fetch_psi.py` → `build_processed.py` → `build_experiments.py`, pero
-    las reglas de extracción con IA se ajustaron revisando a mano estos 129 textos; no están validadas con otros datos.
+### Process
+20. Every transformation is reproducible with `fetch_psi.py` → `build_processed.py` → `build_experiments.py`, but
+    the AI extraction rules were tuned by reviewing these 129 texts by hand; they are not validated on other data.
 
 ---
 
-## `src/psi_queries.py` y `coverage_grid.json`
+## `src/psi_queries.py` and `coverage_grid.json`
 
-- `src/psi_queries.py`: las 6 consultas como funciones parametrizadas (`program`, `fuel`/`material`, `o2_range`,
-  `pressure_range`, `suppressant` ∈ {any, none, co2, he}). Solo usa sqlite3 de la stdlib y abre la base en solo
-  lectura. Cada fila trae `n`, `qc_flags` (lista) y `source_doi` (lista). Toda fila con `pct_*` trae
-  `pct_note = "descriptive, not a probability"` y `warning` (`null`, o un texto obligatorio si `n < 5`). Los textos
-  van en inglés porque llegan a la UI. Además: `list_experiments` (filas con filtros, `outcome`, `limit`, `offset`)
-  y `meta` (valores válidos y rangos), para `/experiments` y `/meta`. Cada endpoint y su función están en `docs/API.md`.
-- Q6 (BASS-II) **no** reporta % de extinción; solo conteos y `pct_outcome_stated`, porque el resultado es incompleto.
-- Bandas de O₂ (fracción): `<0.15` = [0, 0.15), `0.15-0.18`, `0.18-0.21`, `0.21-0.24`, `>=0.24` = [0.24, 1]. 0.21 (aire)
-  abre la 4.ª banda. Las filas se ordenan por valor de O₂, no por la etiqueta.
-- `data/processed/coverage_grid.json` (`scripts/build_coverage_grid.py`): FLEX por combustible × banda de O₂ ×
-  presión (`pressure_atm_level`: 0.1 atm, o `unknown` = nula) × supresor (none/co2/he). Las celdas usan los mismos
-  nombres que `flex_coverage_grid()` y la API: `n`, `avg_burning_rate_mm2_s`, `avg_extinction_diameter_mm` (solo
-  extinction), `pct_extinction` + `pct_note`, rangos de O₂ y supresor, conteos por resultado, `qc_flags`, `source_doi`.
-  49 celdas, **25 con n<5**.
-- Tests: `tests/test_psi_queries.py` (con pytest, o `python3 tests/test_psi_queries.py` si pytest no está instalado).
+- `src/psi_queries.py`: the 6 queries as parameterised functions (`program`, `fuel`/`material`, `o2_range`,
+  `pressure_range`, `suppressant` ∈ {any, none, co2, he}). It uses only the stdlib sqlite3 and opens the database read
+  only. Every row carries `n`, `qc_flags` (list) and `source_doi` (list). Every row with `pct_*` carries
+  `pct_note = "descriptive, not a probability"` and `warning` (`null`, or a mandatory text if `n < 5`). The texts are
+  in English because they reach the UI. Also: `list_experiments` (rows with filters, `outcome`, `limit`, `offset`)
+  and `meta` (valid values and ranges), for `/experiments` and `/meta`. Each endpoint and its function are in `docs/API.md`.
+- Q6 (BASS-II) does **not** report an extinction %; only counts and `pct_outcome_stated`, because the outcome is incomplete.
+- O₂ bands (fraction): `<0.15` = [0, 0.15), `0.15-0.18`, `0.18-0.21`, `0.21-0.24`, `>=0.24` = [0.24, 1]. 0.21 (air)
+  opens the 4th band. Rows are ordered by O₂ value, not by label.
+- `data/processed/coverage_grid.json` (`scripts/build_coverage_grid.py`): FLEX by fuel × O₂ band ×
+  pressure (`pressure_atm_level`: 0.1 atm, or `unknown` = null) × suppressant (none/co2/he). Cells use the same
+  names as `flex_coverage_grid()` and the API: `n`, `avg_burning_rate_mm2_s`, `avg_extinction_diameter_mm` (extinction
+  only), `pct_extinction` + `pct_note`, O₂ and suppressant ranges, counts by outcome, `qc_flags`, `source_doi`.
+  49 cells, **25 with n<5**.
+- Tests: `tests/test_psi_queries.py` (with pytest, or `python3 tests/test_psi_queries.py` if pytest is not installed).

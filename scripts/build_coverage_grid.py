@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Genera data/processed/coverage_grid.json: cobertura de FLEX por combustible × banda de O2 × presión × supresor.
+"""Builds data/processed/coverage_grid.json: FLEX coverage by fuel × O2 band × pressure × suppressant.
 
-Uso: python3 scripts/build_coverage_grid.py   (después de scripts/build_experiments.py)
+Usage: python3 scripts/build_coverage_grid.py   (after scripts/build_experiments.py)
 """
 import datetime, json, os, sys
 
@@ -11,7 +11,7 @@ import psi_queries as q  # noqa: E402
 OUT = "data/processed/coverage_grid.json"
 
 con = q.connect()
-cells = q.flex_coverage_grid(con)  # mismos nombres de campo que devuelve la API (docs/API.md)
+cells = q.flex_coverage_grid(con)  # same field names the API returns (docs/API.md)
 
 doc = {
     "description": "FLEX (NASA PSI PSI-69): cobertura de pruebas por combustible × banda de O2 × presión × supresor",
@@ -44,4 +44,4 @@ doc = {
 }
 with open(OUT, "w", encoding="utf-8") as f:
     json.dump(doc, f, ensure_ascii=False, indent=2)
-print(f"{OUT}: {doc['n_cells']} celdas ({doc['n_cells_small']} con n<{q.MIN_N}), {doc['n_tests']} pruebas")
+print(f"{OUT}: {doc['n_cells']} cells ({doc['n_cells_small']} with n<{q.MIN_N}), {doc['n_tests']} tests")

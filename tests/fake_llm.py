@@ -1,4 +1,4 @@
-"""Cliente LLM falso para las pruebas: devuelve respuestas guionadas y registra las llamadas."""
+"""Fake LLM client for the tests: returns scripted answers and records the calls."""
 import json
 
 from backend.llm import LlmUnavailable

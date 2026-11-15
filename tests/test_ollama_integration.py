@@ -1,8 +1,8 @@
-"""Integración con Ollama REAL. Se saltan solas si Ollama no responde o el modelo no está descargado.
+"""Integration with a REAL Ollama. Skipped automatically if Ollama does not answer or the model is not downloaded.
 
 Correr:  python -m pytest -m ollama -v        (con `ollama serve` y `ollama pull llama3.2:3b` etc.)
-No afirman calidad del modelo: verifican que el pipeline real devuelve la forma del contrato y que ningún texto
-marcado como `ollama` contiene números inventados o frases prohibidas (el verificador corre de nuevo aquí).
+They make no claim about model quality: they check that the real pipeline returns the contract shape and that no
+text marked `ollama` contains invented numbers or forbidden phrases (the verifier runs again here).
 """
 import pytest
 from fastapi.testclient import TestClient
@@ -49,7 +49,7 @@ def test_real_model_answer_is_grounded(client, tier, level, question):
     assert b["meta"]["model"] == tag and b["meta"]["mode"] in ("ollama", "fallback", "low")
     assert all(len(c["test_ids"]) <= 20 for c in b["citations"])
     if b["meta"]["mode"] == "ollama":
-        # re-ejecuta las herramientas que usó y vuelve a verificar el texto
+        # re-runs the tools it used and verifies the text again
         from backend import data
         con = data.connect()
         trs = [T.execute(con, c["tool"], c["args"]) for c in b["tool_calls"] if c.get("tool") in T.TOOLS]

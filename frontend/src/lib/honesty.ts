@@ -1,7 +1,7 @@
-// Las reglas de honestidad de los datos hechas código. El texto viene de aquí, nunca escrito a mano en componentes.
+// The data honesty rules as code. The text comes from here, never typed by hand in components.
 import type { ExperimentRow, Outcome } from '../data/types';
 
-// n<5 siempre con advertencia; el umbral sale de meta.min_n.
+// n<5 always carries a warning; the threshold comes from meta.min_n.
 export const isSmallN = (n: number, minN: number): boolean => n < minN;
 export const smallNLabel = (n: number): string => `Small sample (n = ${n})`;
 
@@ -11,11 +11,11 @@ const OUTCOMES: Record<Outcome, string> = {
 };
 export const DISRUPTION_NOTE = 'Not defined in the FLEX Science Documents';
 
-// En BASS-II outcome=null + outcome_source=not_stated significa "el texto no lo dice", NO "no se extinguió".
+// In BASS-II outcome=null + outcome_source=not_stated means "the text does not say", NOT "it did not go out".
 export const outcomeLabel = (outcome: Outcome | null): string =>
   outcome == null ? 'Not stated in notes' : OUTCOMES[outcome];
 
-// not_stated jamás cuenta como "sin extinción": solo una extinción observada/extraída cuenta, y lo demás es "desconocido".
+// not_stated never counts as "no extinction": only an observed/extracted extinction counts; everything else is "unknown".
 export const isNoExtinction = (row: Pick<ExperimentRow, 'outcome' | 'outcome_source'>): boolean =>
   row.outcome_source !== 'not_stated' && row.outcome != null && row.outcome !== 'extinction';
 
@@ -36,10 +36,10 @@ const FLAGS: Record<string, string> = {
   fer_corrected: 'Value corrected by team data reviewer (original text kept)',
   pressure_zero_set_null: 'Pressure of 0 treated as not recorded',
 };
-// Flag desconocido → se muestra el código crudo (no se inventa una traducción).
+// Unknown flag → its raw code is shown (no translation is invented).
 export const flagLabel = (flag: string): string => FLAGS[flag] ?? flag;
 
-// Lo extraído por IA lleva insignia hasta revisión humana.
+// AI-extracted values carry a badge until human review.
 export const needsAiBadge = (row: Pick<ExperimentRow, 'outcome_source' | 'qc_flags'>): boolean =>
   row.outcome_source === 'ai_extracted' || row.qc_flags.includes('low_confidence');
 

@@ -1,8 +1,8 @@
-// Recorre el sitio ESTÁTICO (frontend/dist servido sin backend) y falla si hay errores de consola, peticiones
-// fallidas, peticiones a otro origen (API, Ollama, CDNs) o desborde horizontal.
-// Uso:  (cd frontend/dist && python3 -m http.server 8099) &
-//       NODE_PATH=<carpeta con playwright-core>/node_modules node scripts/check_static_site.mjs http://127.0.0.1:8099/
-// playwright-core NO es dependencia del repo (npm i --prefix /tmp/pw playwright-core); usa el Chrome del sistema.
+// Walks the STATIC site (frontend/dist served without a backend) and fails on console errors, failed requests,
+// requests to another origin (API, Ollama, CDNs) or horizontal overflow.
+// Usage:  (cd frontend/dist && python3 -m http.server 8099) &
+//       NODE_PATH=<folder with playwright-core>/node_modules node scripts/check_static_site.mjs http://127.0.0.1:8099/
+// playwright-core is NOT a dependency of the repository (npm i --prefix /tmp/pw playwright-core); it uses the system Chrome.
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');

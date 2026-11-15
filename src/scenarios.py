@@ -1,18 +1,18 @@
-"""Escenarios de atmósfera, tolerancias, bandas de O2 y niveles de presión: definidos UNA sola vez, como datos.
+"""Atmosphere scenarios, tolerances, O2 bands and pressure levels: defined ONCE, as data.
 
-Todo lo demás (API, scripts del frontend, tests, docs) importa de aquí. Para cambiar un escenario o la tolerancia,
-se cambia este archivo (y se regeneran los JSON del frontend).
+Everything else (API, front-end scripts, tests, docs) imports from here. To change a scenario or the tolerance,
+change this file (and rebuild the front-end JSON files).
 
-Reglas de conteo (n_exact / n_near):
-- Un criterio de valor puntual ("21 % O2", "14.7 psi") se cumple si el dato está dentro de la tolerancia: una medida
-  nunca es idéntica al valor nominal, así que la tolerancia ES la definición de "en ese punto". Para esos criterios,
+Counting rules (n_exact / n_near):
+- A point criterion ("21 % O2", "14.7 psi") is met if the value is within tolerance: a measurement is never
+  identical to the nominal value, so the tolerance IS the definition of "at that point". For those criteria,
   exacto y cercano coinciden.
-- Un criterio de límite ("O2 >= 30 %", "<= 10.2 psi") es estricto en n_exact y se relaja con la tolerancia en n_near.
-- Si n_near = 0 se informa la condición más cercana (`nearest`), que NO es el escenario.
-- Solo FLEX tiene presión. BASS-II no registra presión: se informa aparte un conteo solo por O2.
-- Las pruebas sin presión (C11M201) se excluyen y se listan en `excluded`.
+- A bound criterion ("O2 >= 30 %", "<= 10.2 psi") is strict for n_exact and relaxed by the tolerance for n_near.
+- If n_near = 0 the closest condition (`nearest`) is reported, which is NOT the scenario.
+- Only FLEX has pressure. BASS-II records no pressure: an O2-only count is reported separately.
+- Tests without pressure (C11M201) are excluded and listed in `excluded`.
 
-Acceso a datos solo por src/psi_queries.py: aquí no hay SQL.
+Data access only through src/psi_queries.py: no SQL here.
 """
 from __future__ import annotations
 
@@ -22,14 +22,14 @@ from typing import Dict, List, Optional
 import psi_queries as q
 
 PSI_PER_ATM = 14.6959
-EPS = 1e-9  # evita que 0.21 - 0.01 quede fuera por redondeo binario
+EPS = 1e-9  # keeps 0.21 - 0.01 from falling outside through binary rounding
 
 TOLERANCE = {"o2_fraction": 0.01, "pressure_psi": 0.5}
 
-# Bandas de O2: las mismas de psi_queries (una sola definición); aquí solo se re-exportan.
+# O2 bands: the same as psi_queries (a single definition); only re-exported here.
 O2_BANDS = q.O2_BANDS
 
-# Niveles de presión DISCRETOS (FLEX solo se probó en tres niveles; no son rangos continuos).
+# DISCRETE pressure levels (FLEX was tested at only three levels; they are not continuous ranges).
 PRESSURE_LEVELS = (
     {"label": "~0.7 atm", "atm_min": 0.6, "atm_max": 0.8},
     {"label": "~1.0 atm", "atm_min": 0.9, "atm_max": 1.1},
@@ -135,7 +135,7 @@ def _ok(x: float, crit: Dict, tol: float, relaxed: bool) -> bool:
 
 
 def _shortfall(x: float, crit: Dict) -> float:
-    """Distancia al criterio (0 si se cumple estrictamente), en las unidades del dato."""
+    """Distance to the criterion (0 if strictly met), in the units of the value."""
     v = crit["value"]
     if crit["kind"] == "point":
         return abs(x - v)
@@ -167,7 +167,7 @@ def _rows(con, program: str) -> List[Dict]:
 
 # --------------------------------------------------------------------------- conteo
 def evaluate(con, scenario: Dict) -> Dict:
-    """n_exact, n_near y el detalle de un escenario (FLEX), más el conteo solo por O2 de BASS-II."""
+    """n_exact, n_near and the detail of a scenario (FLEX), plus the O2-only count of BASS-II."""
     flex = _rows(con, "FLEX")
     excluded = [r for r in flex if r["pressure_atm"] is None]
     usable = [r for r in flex if r["pressure_atm"] is not None]
@@ -191,7 +191,7 @@ def evaluate(con, scenario: Dict) -> Dict:
         "excluded": [{"test_id": r["test_id"], "reason": "no pressure recorded"} for r in excluded],
     })
     if not near and usable:
-        # Distancia en "tolerancias" (Euclídea); se agrupa por O2 (0.01) y nivel de presión de la prueba más cercana.
+        # Distance in "tolerances" (Euclidean); grouped by O2 (0.01) and pressure level of the closest test.
         dist = lambda r: math.hypot(_shortfall(r["o2_fraction"], o2c) / tol_o2,
                                     _shortfall(psi(r["pressure_atm"]), pc) / tol_p)
         best = min(usable, key=dist)

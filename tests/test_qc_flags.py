@@ -1,8 +1,8 @@
-"""Tests de los qc_flags de BASS-II añadidos tras la verificación del 14 nov (verificación del 14 nov).
+"""Tests of the BASS-II qc_flags added after the check of 14 Nov.
 
-Solo leen data/processed/ (no necesitan data/raw ni red). Requieren psi.sqlite (scripts/build_experiments.py).
+They only read data/processed/ (no data/raw or network needed). They need psi.sqlite (scripts/build_experiments.py).
 Con pytest:      python -m pytest tests/
-Sin pytest:      python3 tests/test_qc_flags.py
+Without pytest:  python3 tests/test_qc_flags.py
 """
 import csv
 import os
@@ -33,7 +33,7 @@ def test_co_final_censored_only_m5_and_value_not_imputed():
     rows = _rows("bass2_tests.csv")
     assert _with(rows, "co_final_censored") == {"M5"}
     m5 = next(r for r in rows if r["test_id"] == "M5")
-    assert m5["co_final_ppm"] == "", "el valor censurado '>500' no debe imputarse"
+    assert m5["co_final_ppm"] == "", "the censored value '>500' must not be imputed"
     assert "M5" in _with(_rows("experiments.csv"), "co_final_censored")
 
 
@@ -42,7 +42,7 @@ def test_co_initial_negative_flagged_and_values_kept():
     assert _with(rows, "co_initial_negative") == NEGATIVE_CO
     for r in rows:
         if r["test_id"] in NEGATIVE_CO:
-            assert float(r["co_initial_ppm"]) < 0, "el valor negativo debe conservarse tal cual"
+            assert float(r["co_initial_ppm"]) < 0, "the negative value must be kept as is"
     assert NEGATIVE_CO <= _with(_rows("experiments.csv"), "co_initial_negative")
 
 
@@ -51,7 +51,7 @@ def test_low_confidence_extractions_flagged_and_outcome_kept():
     assert _with(rows, "low_confidence") == LOW_CONFIDENCE
     for r in rows:
         if r["test_id"] in LOW_CONFIDENCE:
-            assert r["ai_outcome"], "se marca, no se borra el resultado extraído"
+            assert r["ai_outcome"], "the extracted outcome is flagged, not deleted"
     assert _with(_rows("experiments.csv"), "low_confidence") == LOW_CONFIDENCE
 
 
@@ -59,14 +59,14 @@ def test_queries_warn_when_low_confidence_rows_are_included():
     con = q.connect()
     rows = q.bass2_outcomes_by_o2_band(con)
     warned = [r for r in rows if r.get("low_confidence_warning")]
-    assert warned, "ninguna fila agregada avisó de extracciones de baja confianza"
+    assert warned, "no aggregated row warned about low-confidence extractions"
     for r in rows:
         has_flag = "low_confidence" in r["qc_flags"]
         assert bool(r.get("low_confidence_warning")) == has_flag
 
 
 def test_material_mapping_applied_to_all_bass2_rows():
-    """Mapeo aprobado por el equipo: las 129 pruebas tienen categoría y se conservan sus marcas."""
+    """Mapping approved by the team: all 129 tests have a category and their flags are kept."""
     bass = _rows("bass2_tests.csv")
     exp = [r for r in _rows("experiments.csv") if r["program"] == "BASS-II"]
     assert len(bass) == len(exp) == 129
@@ -83,9 +83,9 @@ def test_material_mapping_applied_to_all_bass2_rows():
 
 
 def test_fer_corrected_marks_every_corrected_value():
-    """P14 ("1/4 blac rod"): el equipo corrigió el color a black. El texto original se conserva y la corrección
-    lleva la marca fer_corrected en el mapeo, en bass2_tests.csv y en experiments.csv. Regla general: si el color
-    asignado no aparece tal cual en el texto original, la fila tiene que llevar la marca."""
+    """P14 ("1/4 blac rod"): the team corrected the colour to black. The original text is kept and the correction
+    carries the fer_corrected flag in the mapping, in bass2_tests.csv and in experiments.csv. General rule: if the colour
+    assigned does not appear as is in the original text, the row must carry the flag."""
     with open(os.path.join(ROOT, "docs", "material_mapping.csv"), newline="", encoding="utf-8") as fh:
         mapping = {r["material_raw"]: r for r in csv.DictReader(fh)}
     assert mapping["1/4 blac rod"]["material_flag"] == "fer_corrected"
@@ -93,17 +93,17 @@ def test_fer_corrected_marks_every_corrected_value():
     bass = _rows("bass2_tests.csv")
     exp = {r["test_id"]: r for r in _rows("experiments.csv") if r["program"] == "BASS-II"}
     p14 = next(r for r in bass if r["test_id"] == "P14")
-    assert p14["material_raw"] == "1/4 blac rod", "el valor original no debe cambiar"
+    assert p14["material_raw"] == "1/4 blac rod", "the original value must not change"
     assert p14["color"] == "black"
     assert "fer_corrected" in _flags(p14) and "fer_corrected" in _flags(exp["P14"])
     assert exp["P14"]["material_or_fuel"] == "1/4 blac rod"
     for r in bass:
         if r["color"] and r["color"] not in r["material_raw"].lower():
-            assert "fer_corrected" in _flags(r), f"{r['test_id']}: color corregido sin la marca fer_corrected"
+            assert "fer_corrected" in _flags(r), f"{r['test_id']}: colour corrected without the fer_corrected flag"
     assert _with(bass, "fer_corrected") == {"P14"}
 
 
-if __name__ == "__main__":  # runner mínimo si pytest no está instalado
+if __name__ == "__main__":  # minimal runner if pytest is not installed
     failed = 0
     for name, fn in sorted(globals().items()):
         if name.startswith("test_") and callable(fn):

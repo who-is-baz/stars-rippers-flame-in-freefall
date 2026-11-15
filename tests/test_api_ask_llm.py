@@ -52,19 +52,19 @@ def test_env_models(monkeypatch):
 def test_medium_happy_path_citations_by_code():
     c, llm = make([route("q4_burning_rate_by_o2", fuel="heptane"),
                    text("At about 1 atm with no suppressant, heptane at O2 0.21 had a mean burning rate of 0.73 mm2/s.")])
-    # el número 0.73 debe existir en el resultado real; si no, la prueba de abajo cubre el caso
+    # the number 0.73 must exist in the real result; otherwise the test below covers the case
     b = ask(c, "How fast does heptane burn?", model="llama3.2:3b")
     assert b["meta"]["model"] == "llama3.2:3b" and len(llm.calls) == 2
     assert b["tool_calls"][0]["tool"] == "q4_burning_rate_by_o2"
     assert b["citations"] and all(x["source_doi"] == "10.60555/mbq8-0451" for x in b["citations"])
     assert b["citations"][0]["test_ids_total"] >= len(b["citations"][0]["test_ids"])
     assert b["meta"]["mode"] in ("ollama", "fallback")
-    # el redactor nunca ve la pregunta del usuario
+    # the writer never sees the user's question
     assert "How fast does heptane burn?" not in str(llm.calls[1]["messages"])
 
 
 def _real_number():
-    """Un número que sí está en el resultado de q4 para heptano."""
+    """A number that is in the q4 result for heptane."""
     import backend.tools as T
     from backend import data
     tr = T.execute(data.connect(), "q4_burning_rate_by_o2", {"fuel": "heptane"})
@@ -133,7 +133,7 @@ def test_unknown_args_are_dropped_with_warning():
 
 def test_router_none_is_out_of_scope_without_more_calls():
     c, llm = make([route("none")])
-    b = ask(c, "Tell me about oxygen sensors used in hospitals")  # tema aparente, el router dice "none"
+    b = ask(c, "Tell me about oxygen sensors used in hospitals")  # looks on topic, the router says "none"
     assert b["answer"] == "I can only answer questions about the NASA PSI combustion data shown on this site." and b["no_data"] is True
     assert len(llm.calls) == 1
 
@@ -242,11 +242,11 @@ def test_high_max_three_steps_and_no_repeat():
 # --------------------------------------------------------------------------- verificador
 @pytest.mark.parametrize("answer,allowed,ok", [
     ("75% ended in extinction", {75.0}, True),
-    ("75% ended in extinction", {0.75}, True),            # fracción → %
+    ("75% ended in extinction", {0.75}, True),            # fraction → %
     ("mean 0.5 mm2/s", {0.501}, True),                     # redondeo a 1 decimal
     ("mean 0.6 mm2/s", {0.501}, False),
     ("10.3 psi", {0.703}, True),                           # atm → psi
-    ("O2 and CO2 at 1 atm", {0.997}, True),                # dígitos pegados a letras se ignoran
+    ("O2 and CO2 at 1 atm", {0.997}, True),                # digits attached to letters are ignored
     ("test 20CAL08 from doi 10.60555/mbq8-0451", set(), True),
     ("42 tests", {41.0, 43.0}, False),
     ("n<5", set(), True),
@@ -288,11 +288,11 @@ def test_known_test_id_allowed():
     c, _ = make([route("get_experiment", test_id="20CAL08"),
                  text("Test 20CAL08 used methanol at O2 0.21 and 0.997 atm.")])
     b = ask(c, "test 20cal08 details please")
-    # la regla low detecta el ID, pero medium sí llama al modelo (no es una guardia)
+    # the low rule detects the ID, but medium still calls the model (it is not a guard)
     assert b["meta"]["mode"] == "ollama", b["meta"]["warnings"]
 
 
-# ---- hallazgos con el modelo real (llama3.2:3b): rangos puntuales y fragmentos
+# ---- findings with the real model (llama3.2:3b): point ranges and fragments
 def test_zero_width_range_from_the_model_is_widened():
     c, _ = make([route("q1_extinction_rate_by_o2_pressure", fuel="heptane", pressure_min=0.7, pressure_max=0.7),
                  text("At about 0.7 atm several heptane tests ended in extinction, with n<5 in most cells.")])
@@ -312,7 +312,7 @@ def test_zero_filled_args_from_small_models_mean_no_filter():
     c, _ = make([route("q1_extinction_rate_by_o2_pressure", fuel="heptane", o2_min=0.0, o2_max=1.0, pressure_min=0.0, pressure_max=0.0),
                  text("Heptane droplets at several oxygen and pressure levels mostly ended in extinction, with n<5 in some cells.")])
     b = ask(c, "extinction share of heptane")
-    assert set(b["tool_calls"][0]["args"]) == {"fuel", "suppressant"} and b["no_data"] is False  # sin o2_* ni pressure_*
+    assert set(b["tool_calls"][0]["args"]) == {"fuel", "suppressant"} and b["no_data"] is False  # no o2_* or pressure_*
 
 
 def test_fragment_without_capital_or_period_is_rejected():

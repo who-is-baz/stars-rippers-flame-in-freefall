@@ -1,6 +1,6 @@
-# Publica frontend/dist en GitHub Pages. Solo manual (workflow_dispatch) y solo sirve si el repo es PÚBLICO y
-# Pages está activado en Settings → Pages → Source: "GitHub Actions". El sitio usa rutas relativas (base "./"),
-# así que funciona en https://<usuario>.github.io/<repo>/ sin definir VITE_BASE.
+# Publishes frontend/dist to GitHub Pages. Manual only (workflow_dispatch); it works only if the repository is PUBLIC and
+# Pages is enabled in Settings → Pages → Source: "GitHub Actions". The site uses relative paths (base "./"),
+# so it works at https://<user>.github.io/<repo>/ without setting VITE_BASE.
 name: pages
 on:
   workflow_dispatch:
@@ -23,7 +23,7 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - run: npm ci
         working-directory: frontend
-      - run: npm run build   # sin VITE_LLM_URL ni VITE_API_URL: sitio estático, asistente en modo Basic
+      - run: npm run build   # no VITE_LLM_URL or VITE_API_URL: static site, assistant in Basic mode
         working-directory: frontend
       - uses: actions/upload-pages-artifact@v3
         with:

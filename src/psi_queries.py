@@ -1,17 +1,17 @@
-"""Consultas parametrizadas sobre data/processed/psi.sqlite (FLEX + BASS-II de NASA PSI).
+"""Parameterised queries over data/processed/psi.sqlite (FLEX + BASS-II from NASA PSI).
 
-Solo usa la librería estándar (sqlite3). La base se abre en modo de solo lectura.
+Uses only the standard library (sqlite3). The database is opened read only.
 
-Cada función devuelve list[dict]. Cada fila incluye siempre:
-    n            número de pruebas en la celda
-    qc_flags     lista ordenada de flags de calidad presentes en la celda
-    source_doi   lista de DOI de origen
-y, si la fila tiene un porcentaje (`pct_*`):
+Each function returns list[dict]. Every row always includes:
+    n            number of tests in the cell
+    qc_flags     sorted list of the quality flags present in the cell
+    source_doi   list of source DOIs
+and, if the row has a percentage (`pct_*`):
     pct_note     "descriptive, not a probability"
     warning      texto obligatorio si n < MIN_N (si no, None)
 
-Advertencia: FLEX buscó el límite de extinción de forma iterativa (Test Plan, PDF p.4). Un % de extinción
-describe las pruebas realizadas; no estima una probabilidad. Los efectos de CO2/He están confundidos con el O2.
+Warning: FLEX sought the extinction limit iteratively (Test Plan, PDF p.4). An extinction % describes the tests
+that were run; it does not estimate a probability. CO2/He effects are confounded with O2.
 """
 from __future__ import annotations
 
@@ -21,7 +21,7 @@ from typing import Iterable, Optional, Sequence, Tuple
 
 DEFAULT_DB = os.path.join(os.path.dirname(__file__), "..", "data", "processed", "psi.sqlite")
 MIN_N = 5
-# Mensajes que llegan a la UI y al asistente: en inglés (la entrega es en inglés). Ver docs/API.md.
+# Messages that reach the UI and the assistant are in English. See docs/API.md.
 PCT_NOTE = "descriptive, not a probability"
 SMALL_N_WARNING = "n<{min_n}: unstable percentage; do not read it as a rate"
 LOW_CONFIDENCE_FLAG = "low_confidence"
@@ -31,7 +31,7 @@ LOW_CONFIDENCE_WARNING = ("includes low-confidence AI-extracted outcomes (pendin
 PROGRAMS = ("FLEX", "BASS-II")
 OUTCOMES = ("extinction", "disruption", "completion", "blowoff", "no_ignition", "not_sustained")
 MAX_LIMIT = 500
-SUPPRESSANTS = ("any", "none", "co2", "he")  # 'any' = sin filtro; 'none' = sin CO2 ni He
+SUPPRESSANTS = ("any", "none", "co2", "he")  # 'any' = no filter; 'none' = neither CO2 nor He
 O2_BANDS: Tuple[Tuple[float, float, str], ...] = (
     (0.00, 0.15, "<0.15"),
     (0.15, 0.18, "0.15-0.18"),
@@ -66,11 +66,11 @@ def o2_band_sql(col: str = "o2_fraction") -> str:
 
 def _filters(program: Optional[str] = None, fuel: Optional[str] = None, o2_range: Range = None,
              pressure_range: Range = None, suppressant: str = "any") -> Tuple[str, list]:
-    """Arma el WHERE con placeholders. Valida los valores enumerados."""
+    """Builds the WHERE clause with placeholders. Validates enumerated values."""
     where, args = [], []
     if program is not None:
         if program not in PROGRAMS:
-            raise ValueError(f"program debe ser uno de {PROGRAMS}")
+            raise ValueError(f"program must be one of {PROGRAMS}")
         where.append("program = ?"); args.append(program)
     if fuel is not None:
         where.append("material_or_fuel = ?"); args.append(fuel)
@@ -82,7 +82,7 @@ def _filters(program: Optional[str] = None, fuel: Optional[str] = None, o2_range
             if hi is not None:
                 where.append(f"{col} <= ?"); args.append(hi)
     if suppressant not in SUPPRESSANTS:
-        raise ValueError(f"suppressant debe ser uno de {SUPPRESSANTS}")
+        raise ValueError(f"suppressant must be one of {SUPPRESSANTS}")
     where.append(_SUPPRESSANT_SQL[suppressant])
     return " AND ".join(where) or "1=1", args
 
@@ -115,7 +115,7 @@ def _run(con: sqlite3.Connection, sql: str, args: Sequence, min_n: int = MIN_N) 
 # --------------------------------------------------------------------------- Q1–Q6
 def extinction_rate_by_o2_pressure(con, program="FLEX", fuel="methanol", o2_range: Range = None,
                                    pressure_range: Range = None, suppressant="none", min_n=MIN_N):
-    """Q1. % de pruebas que terminaron en extinción, por presión (0.1 atm) y X_O2 (0.01)."""
+    """Q1. % of tests that ended in extinction, by pressure (0.1 atm) and X_O2 (0.01)."""
     w, a = _filters(program, fuel, o2_range, pressure_range, suppressant)
     sql = f"""
         SELECT ROUND(pressure_atm,1) AS pressure_atm, ROUND(o2_fraction,2) AS o2_fraction, {_META_SQL},
@@ -128,11 +128,11 @@ def extinction_rate_by_o2_pressure(con, program="FLEX", fuel="methanol", o2_rang
 
 def suppressant_effect(con, suppressant: str, program="FLEX", fuel=None, o2_range: Range = None,
                        pressure_range: Range = (0.9, 1.1), min_n=MIN_N):
-    """Q2/Q3 (genérica). Por combustible, presión y nivel de supresor; incluye el nivel 0 como referencia.
+    """Q2/Q3 (generic). By fuel, pressure and suppressant level; includes level 0 as the reference.
 
-    Incluye avg_o2_fraction para hacer visible el confundido con O2."""
+    Includes avg_o2_fraction so the confounding with O2 is visible."""
     if suppressant not in ("co2", "he"):
-        raise ValueError("suppressant debe ser 'co2' o 'he'")
+        raise ValueError("suppressant must be 'co2' or 'he'")
     other = "he_fraction" if suppressant == "co2" else "co2_fraction"
     col = f"{suppressant}_fraction"
     w, a = _filters(program, fuel, o2_range, pressure_range, "any")
@@ -148,19 +148,19 @@ def suppressant_effect(con, suppressant: str, program="FLEX", fuel=None, o2_rang
 
 
 def co2_effect(con, **kw):
-    """Q2. Efecto del CO2 (por defecto ~1 atm)."""
+    """Q2. CO2 effect (default ~1 atm)."""
     return suppressant_effect(con, "co2", **kw)
 
 
 def he_effect(con, **kw):
-    """Q3. Efecto del He (por defecto todas las presiones, porque el He se probó sobre todo a 0.7 atm)."""
+    """Q3. He effect (default: all pressures, because He was tested mostly at 0.7 atm)."""
     kw.setdefault("pressure_range", None)
     return suppressant_effect(con, "he", **kw)
 
 
 def burning_rate_by_o2(con, program="FLEX", fuel=None, o2_range: Range = None,
                        pressure_range: Range = (0.9, 1.1), suppressant="none", min_n=MIN_N):
-    """Q4. K (mm²/s) por combustible y X_O2. n cuenta las pruebas; n_k, las que tienen K."""
+    """Q4. K (mm²/s) by fuel and X_O2. n counts the tests; n_k, those with K."""
     w, a = _filters(program, fuel, o2_range, pressure_range, suppressant)
     sql = f"""
         SELECT material_or_fuel AS fuel, ROUND(o2_fraction,2) AS o2_fraction, {_META_SQL},
@@ -175,7 +175,7 @@ def burning_rate_by_o2(con, program="FLEX", fuel=None, o2_range: Range = None,
 
 def extinction_diameter_by_pressure(con, program="FLEX", fuel=None, o2_range: Range = None,
                                     pressure_range: Range = None, suppressant="any", min_n=MIN_N):
-    """Q5. Diámetro de extinción (solo outcome = extinction) por combustible y presión."""
+    """Q5. Extinction diameter (outcome = extinction only) by fuel and pressure."""
     w, a = _filters(program, fuel, o2_range, pressure_range, suppressant)
     sql = f"""
         SELECT material_or_fuel AS fuel, ROUND(pressure_atm,1) AS pressure_atm, {_META_SQL},
@@ -189,21 +189,21 @@ def extinction_diameter_by_pressure(con, program="FLEX", fuel=None, o2_range: Ra
 
 
 def bass2_outcomes_by_o2_band(con, material: Optional[str] = None, o2_range: Range = None, min_n=MIN_N):
-    """Q6. BASS-II: conteo de resultados por banda de O2.
+    """Q6. BASS-II: outcome counts by O2 band.
 
-    El outcome de BASS-II se extrajo con IA de notas; 'not_stated' NO significa que no hubo extinción.
-    Por eso se reportan conteos y pct_outcome_stated, y no un % de extinción."""
+    The BASS-II outcome was extracted by AI from notes; 'not_stated' does NOT mean there was no extinction.
+    That is why counts and pct_outcome_stated are reported, and not an extinction %."""
     w, a = _filters("BASS-II", material, o2_range, None, "any")
     sql = f"""
         SELECT {o2_band_sql()} AS o2_band, {_META_SQL},
-               -- COALESCE: outcome es NULL en 'not_stated'; SUM de puros NULL daría NULL, no 0
+               -- COALESCE: outcome is NULL for 'not_stated'; SUM over only NULLs would give NULL, not 0
                SUM(COALESCE(outcome,'')='extinction') AS n_low_flow_extinction,
                SUM(COALESCE(outcome,'')='blowoff') AS n_blowoff,
                SUM(COALESCE(outcome,'') IN ('no_ignition','not_sustained')) AS n_no_ignition_or_not_sustained,
                SUM(outcome_source='not_stated') AS n_not_stated,
                ROUND(100.0*SUM(outcome_source<>'not_stated')/COUNT(*),1) AS pct_outcome_stated
         FROM experiments WHERE {w}
-        GROUP BY 1 ORDER BY MIN(o2_fraction)"""  # por valor de O2, no por etiqueta ("<0.15" va primero)
+        GROUP BY 1 ORDER BY MIN(o2_fraction)"""  # by O2 value, not by label ("<0.15" comes first)
     return _run(con, sql, a, min_n)
 
 
@@ -220,16 +220,16 @@ ALL_QUERIES = {
 # --------------------------------------------------------------------------- filas y metadatos
 def list_experiments(con, program=None, fuel=None, o2_range: Range = None, pressure_range: Range = None,
                      suppressant="any", outcome: Optional[str] = None, limit: int = 100, offset: int = 0):
-    """GET /experiments. Filas sin agregar de experiments, con paginación.
+    """GET /experiments. Unaggregated rows of experiments, paginated.
 
-    Devuelve {"total": n filas que cumplen los filtros, "items": [fila, ...]}. qc_flags va como lista (igual que en
-    Q1–Q6). outcome='not_stated' devuelve las filas sin resultado (BASS-II), lo que NO significa que no se extinguieran."""
+    Returns {"total": n rows that match the filters, "items": [row, ...]}. qc_flags is a list (as in Q1–Q6).
+    outcome='not_stated' returns the rows without an outcome (BASS-II), which does NOT mean they did not go out."""
     if outcome is not None and outcome not in OUTCOMES + ("not_stated",):
-        raise ValueError(f"outcome debe ser uno de {OUTCOMES + ('not_stated',)}")
+        raise ValueError(f"outcome must be one of {OUTCOMES + ('not_stated',)}")
     if not (isinstance(limit, int) and 1 <= limit <= MAX_LIMIT):
-        raise ValueError(f"limit debe ser un entero entre 1 y {MAX_LIMIT}")
+        raise ValueError(f"limit must be an integer between 1 and {MAX_LIMIT}")
     if not (isinstance(offset, int) and offset >= 0):
-        raise ValueError("offset debe ser un entero >= 0")
+        raise ValueError("offset must be an integer >= 0")
     w, a = _filters(program, fuel, o2_range, pressure_range, suppressant)
     if outcome == "not_stated":
         w += " AND outcome_source = 'not_stated'"
@@ -249,7 +249,7 @@ def list_experiments(con, program=None, fuel=None, o2_range: Range = None, press
 
 
 def get_experiment(con, test_id: str, program: Optional[str] = None) -> list:
-    """GET /compare (y /ask). Todas las filas con ese test_id (193F001 está repetido en FLEX). [] si no existe."""
+    """GET /compare (and /ask). Every row with that test_id (193F001 is repeated in FLEX). [] if it does not exist."""
     w, a = _filters(program, None, None, None, "any")
     rows = con.execute(f"SELECT * FROM experiments WHERE {w} AND test_id = ? ORDER BY program, test_id",
                        a + [test_id]).fetchall()
@@ -264,12 +264,12 @@ def get_experiment(con, test_id: str, program: Optional[str] = None) -> list:
 
 
 def query_test_ids(con, query: str, **kw) -> dict:
-    """test_id de las pruebas que entran en una consulta Q1–Q6 con esos parámetros, por DOI.
+    """test_id of the tests included in a Q1–Q6 query with those parameters, by DOI.
 
-    Lo usa /ask para las citas: el código (no el modelo) pone los test_id. Repite los filtros de cada consulta;
-    los valores por defecto son los de la función correspondiente. Devuelve {source_doi: [test_id, ...]}."""
+    Used by /ask for citations: code (not the model) sets the test_ids. It repeats each query's filters;
+    defaults are those of the matching function. Returns {source_doi: [test_id, ...]}."""
     if query not in ALL_QUERIES:
-        raise ValueError(f"query debe ser una de {sorted(ALL_QUERIES)}")
+        raise ValueError(f"query must be one of {sorted(ALL_QUERIES)}")
     kw = dict(kw)
     kw.pop("min_n", None)
     o2, pr = kw.get("o2_range"), kw.get("pressure_range")
@@ -303,7 +303,7 @@ def query_test_ids(con, query: str, **kw) -> dict:
 
 
 def meta(con):
-    """GET /meta. Valores válidos para los filtros y rangos de los datos (calculados, no fijos)."""
+    """GET /meta. Valid filter values and data ranges (computed, not fixed)."""
     progs = []
     for r in con.execute("""SELECT program, COUNT(*) AS n, MIN(o2_fraction) AS o2_min, MAX(o2_fraction) AS o2_max,
                                    MIN(pressure_atm) AS pressure_min, MAX(pressure_atm) AS pressure_max,
@@ -329,7 +329,7 @@ def meta(con):
 
 # --------------------------------------------------------------------------- coverage grid
 def flex_coverage_grid(con, min_n=MIN_N):
-    """Celdas de FLEX por combustible × banda de O2 × presión × supresor."""
+    """FLEX cells by fuel × O2 band × pressure × suppressant."""
     supp = ("CASE WHEN COALESCE(co2_fraction,0)>0 AND COALESCE(he_fraction,0)>0 THEN 'co2+he' "
             "WHEN co2_fraction>0 THEN 'co2' WHEN he_fraction>0 THEN 'he' ELSE 'none' END")
     sql = f"""
@@ -347,5 +347,5 @@ def flex_coverage_grid(con, min_n=MIN_N):
                SUM(outcome='disruption') AS n_disruption, SUM(outcome='completion') AS n_completion,
                ROUND(100.0*SUM(outcome='extinction')/COUNT(*),1) AS pct_extinction
         FROM experiments WHERE program='FLEX'
-        GROUP BY 1,2,3,4 ORDER BY 1, MIN(o2_fraction), 3, 4"""  # bandas por valor de O2, no por etiqueta
+        GROUP BY 1,2,3,4 ORDER BY 1, MIN(o2_fraction), 3, 4"""  # bands by O2 value, not by label
     return _run(con, sql, [], min_n)

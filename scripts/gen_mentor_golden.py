@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
-"""Valores de referencia de los indicadores, la cobertura, las condiciones sin evidencia y el orden de relevancia, recalculados desde
-data/processed/experiments.csv con una implementación INDEPENDIENTE (no usa psi_queries ni src/backend).
-Salida: frontend/src/lib/mentor_golden.json. Lo comparan: los tests de Vitest (TypeScript), tests/test_relevance_parity.py (Python del
-backend) y scripts/audit_numbers.py (que falla si el archivo no coincide con los datos).
-Uso: python scripts/gen_mentor_golden.py"""
+"""Reference values for the indicators, coverage, conditions without evidence and relevance order, recomputed from
+data/processed/experiments.csv with an INDEPENDENT implementation (it uses neither psi_queries nor src/backend).
+Output: frontend/src/lib/mentor_golden.json. Compared by: the Vitest tests (TypeScript), tests/test_relevance_parity.py (backend
+Python) and scripts/audit_numbers.py (which fails if the file does not match the data).
+Usage: python scripts/gen_mentor_golden.py"""
 from __future__ import annotations
 
 import csv
 import json
 import os
-import statistics  # noqa: F401  (mantenido por si se amplía)
+import statistics  # noqa: F401  (kept in case it is extended)
 import sys
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))

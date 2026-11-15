@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Auditoría de cifras: recalcula TODO desde data/processed/experiments.csv (sin psi_queries ni SQLite, a propósito: es una
-segunda implementación independiente) y falla si algo no coincide con frontend/public/data/*.json, con las cifras
-fijas de README.md y docs públicos o si hay cifras de datos escritas a mano en frontend/src.
-Uso: python scripts/audit_numbers.py        (sale con código 1 si hay una discrepancia)"""
+"""Figure audit: recomputes EVERYTHING from data/processed/experiments.csv (without psi_queries or SQLite, on purpose: it is a
+second, independent implementation) and fails if anything differs from frontend/public/data/*.json, from the figures
+stated in README.md and the public docs, or if a data figure is typed by hand in frontend/src.
+Usage: python scripts/audit_numbers.py        (exits with code 1 on any discrepancy)"""
 from __future__ import annotations
 
 import csv
@@ -72,7 +72,7 @@ def main():
     check("tolerance in meta", meta["tolerance"], {"o2_fraction": TOL_O2, "pressure_psi": TOL_P})
     check("10.2 psi in atm (2 decimals)", round(10.2 / PSI, 2), 0.69)
 
-    # ---- cobertura FLEX: combustible x banda de O2 x nivel de presión
+    # ---- FLEX coverage: fuel x O2 band x pressure level
     bands = [(l["min_inclusive"], l["max_exclusive"], l["label"]) for l in meta["o2_bands"]]
     levels = meta["pressure_levels"]
     band = lambda o2: next(l for lo, hi, l in bands if lo <= o2 < hi)
@@ -139,7 +139,7 @@ def main():
     check("lunar near suppressant none", all(supp(r) == "none" for r in lun), True)
     check("unverified scenarios", sorted(s for s, v in scen.items() if not v["verified"]), ["exploration", "lunar_nasa", "suit"])
 
-    # ---- globales FLEX usados en textos
+    # ---- FLEX totals used in texts
     check("FLEX outcomes", dict(Counter(r["outcome"] for r in flex)), {"extinction": 186, "disruption": 61, "completion": 27})
     check("FLEX by fuel", dict(Counter(r["material_or_fuel"] for r in flex)), {"heptane": sum(r["material_or_fuel"] == "heptane" for r in flex), "methanol": sum(r["material_or_fuel"] == "methanol" for r in flex)})
     check("FLEX by suppressant", dict(Counter(supp(r) for r in flex)), {s: sum(supp(r) == s for r in flex) for s in ("none", "co2", "he")})
@@ -150,7 +150,7 @@ def main():
     hp = [r for r in flex_p if r["pressure_atm"] > 1.5]
     check("gap >1 atm tests", gaps["high_pressure_small_n"]["evidence"]["n_tests"], len(hp))
 
-    # ---- cifras fijas en README y docs públicos (cada frase debe seguir cierta)
+    # ---- figures stated in README and the public docs (each sentence must stay true)
     # public texts that state figures (the submission drafts were moved out of the repository)
     sub = {n: open(os.path.join(ROOT, n), encoding="utf-8").read() for n in ("README.md", "docs/AI_USAGE.md", "docs/DATA_SOURCES.md") if os.path.exists(os.path.join(ROOT, n))}
     allsub = "\n".join(sub.values())
@@ -161,19 +161,19 @@ def main():
     }
     for pat in must:
         if not re.search(pat, allsub):
-            continue  # la frase no aparece: no hay nada que verificar
-    # cifras concretas: si aparecen, deben ser las calculadas
+            continue  # the sentence does not appear: nothing to check
+    # concrete figures: if they appear, they must be the computed ones
     for m in re.finditer(r"\b(\d+) (?:of|/) (\d+) (?:tests|cells)", allsub):
         pass
     for bad in re.findall(r"\b(?:18|19|21|22|23|24|31|32) of 30 cells", allsub):
-        FAILS.append(f"docs: cifra de cobertura incorrecta: {bad}")
+        FAILS.append(f"docs: wrong coverage figure: {bad}")
     for bad in re.findall(r"\b(?:16|18|19|20|21) near tests?", allsub):
-        FAILS.append(f"docs: cifra de pruebas cercanas incorrecta: {bad}")
+        FAILS.append(f"docs: wrong near-test figure: {bad}")
     for pat, val in {r"(\d+) FLEX fuel-droplet tests": len(flex), r"(\d+) BASS-II solid-material tests": len(bass), r"(\d+) of 30 cells have tests": 20, r"(\d+) of 129 tests have no stated outcome": 103, r"(\d+) ISS tests": 403}.items():
         for m in re.finditer(pat, allsub):
             check(f"docs «{m.group(0)}»", int(m.group(1)), val)
 
-    # ---- cifras de datos escritas a mano en frontend/src (no tests)
+    # ---- data figures typed by hand in frontend/src (not tests)
     lit = re.compile(r"""(['"`>])[^'"`<>\n]*?\b(\d{2,3}(?:\.\d+)?)\s*(tests?|pruebas|FLEX|BASS-II|cells|experiments|of 30|of 129|of 274)\b""")
     skip = re.compile(r"\.test\.|test/|generated|scope_cases")
     hard = []
@@ -188,42 +188,42 @@ def main():
                 for m in lit.finditer(line):
                     hard.append(f"{os.path.relpath(path, ROOT)}:{i}: {line.strip()[:110]}")
     for h in hard:
-        FAILS.append(f"cifra de datos escrita a mano (debe calcularse del dato): {h}")
+        FAILS.append(f"data figure typed by hand (it must be computed from the data): {h}")
 
-    # ---- indicadores: completo/parcial, cobertura del escenario, condiciones sin evidencia, relevancia, flujo de aire
+    # ---- indicators: complete/partial, scenario coverage, conditions without evidence, relevance, airflow
     sys.path.insert(0, os.path.join(ROOT, "scripts"))
     import gen_mentor_golden as gm
-    gold = gm.main()                                          # recomputación independiente desde experiments.csv
+    gold = gm.main()                                          # independent recomputation from experiments.csv
     on_disk = json.load(open(os.path.join(ROOT, "frontend", "src", "lib", "mentor_golden.json"), encoding="utf-8"))
-    check("mentor_golden.json está al día (lo comprueban el front y el backend; regenera con scripts/gen_mentor_golden.py)", on_disk == json.loads(json.dumps(gold)), True)
+    check("mentor_golden.json is up to date (checked by the front end and the backend; regenerate with scripts/gen_mentor_golden.py)", on_disk == json.loads(json.dumps(gold)), True)
     c = gold["completeness"]
-    check("completos / parciales", (c["complete"], c["partial"], c["tests"]), (283, 120, 403))
-    check("FLEX completas", c["by_program"]["FLEX"]["complete"], 257); check("BASS-II completas", c["by_program"]["BASS-II"]["complete"], 26)
-    check("completas AI-extracted", c["complete_ai_extracted"], 26)
+    check("complete / partial", (c["complete"], c["partial"], c["tests"]), (283, 120, 403))
+    check("FLEX complete", c["by_program"]["FLEX"]["complete"], 257); check("BASS-II complete", c["by_program"]["BASS-II"]["complete"], 26)
+    check("complete AI-extracted", c["complete_ai_extracted"], 26)
     for sid, g in gold["scenarios"].items():
         rc = g["relevance_counts"]
         check(f"{sid} relevancia exact/near = scenarios.json", (rc["exact"], rc["exact"] + rc["near"]), (scen[sid]["n_exact"], scen[sid]["n_near"]))
-        check(f"{sid} sin presión (BASS-II + C11M201)", rc["no_pressure"], 130)
-        check(f"{sid} suma de clases", sum(rc.values()), 403)
-        check(f"{sid} cobertura y ≤ 9 grupos", g["coverage"]["y"], 9)
-        check(f"{sid} sin evidencia total", g["no_evidence"]["total"], 6)
-    check("cobertura Earth/ISS", (gold["scenarios"]["earth_iss"]["coverage"]["x"], gold["scenarios"]["earth_iss"]["coverage"]["y"]), (7, 9))
-    check("sin evidencia Moon base", gold["scenarios"]["lunar_challenge"]["no_evidence"]["k"], 4)
-    check("sin evidencia Spacesuit (todas)", gold["scenarios"]["suit"]["no_evidence"], {"k": 6, "total": 6})
+        check(f"{sid} without pressure (BASS-II + C11M201)", rc["no_pressure"], 130)
+        check(f"{sid} sum of classes", sum(rc.values()), 403)
+        check(f"{sid} coverage y ≤ 9 groups", g["coverage"]["y"], 9)
+        check(f"{sid} without evidence, total", g["no_evidence"]["total"], 6)
+    check("coverage Earth/ISS", (gold["scenarios"]["earth_iss"]["coverage"]["x"], gold["scenarios"]["earth_iss"]["coverage"]["y"]), (7, 9))
+    check("without evidence, Moon base", gold["scenarios"]["lunar_challenge"]["no_evidence"]["k"], 4)
+    check("without evidence, Spacesuit (all)", gold["scenarios"]["suit"]["no_evidence"], {"k": 6, "total": 6})
     air = json.load(open(os.path.join(PUB, "airflow.json"), encoding="utf-8"))
     with open(os.path.join(ROOT, "data", "processed", "bass2_tests.csv"), newline="", encoding="utf-8") as f:
         want_air = {r["test_id"]: float(r["ai_initial_air_speed_cm_s"]) for r in csv.DictReader(f) if r["ai_initial_air_speed_cm_s"]}
     check("airflow.json = bass2_tests.csv (121 valores, AI-extracted)", ({i["test_id"]: i["air_speed_cm_s"] for i in air["items"]}, air["extracted_by"]), (want_air, "AI"))
-    check("flujo de aire: Moon base/Spacesuit sin valor medido", (gold["scenarios"]["lunar_challenge"]["airflow"], gold["scenarios"]["suit"]["airflow"]), (None, None))
+    check("airflow: Moon base/Spacesuit without a measured value", (gold["scenarios"]["lunar_challenge"]["airflow"], gold["scenarios"]["suit"]["airflow"]), (None, None))
     ans = {a["id"]: a for a in json.load(open(os.path.join(PUB, "answers.json"), encoding="utf-8"))["answers"]}
-    check("q11 cita los 5 primeros de la relevancia (lunar_nasa)", ans["q11"]["citations"][0]["test_ids"], [x["test_id"] for x in gold["scenarios"]["lunar_nasa"]["top10"][:5]])
+    check("q11 cites the top 5 by relevance (lunar_nasa)", ans["q11"]["citations"][0]["test_ids"], [x["test_id"] for x in gold["scenarios"]["lunar_nasa"]["top10"][:5]])
     m12 = re.search(r"all (\d+) tests are microgravity.*?(\d+) of (\d+) BASS-II outcomes are not stated\. (\d+) of (\d+) reference atmospheres have no exact test and (\d+) have no test within tolerance", ans["q12"]["answer"])
     n_no_exact = sum(g["relevance_counts"]["exact"] == 0 for g in gold["scenarios"].values())
     n_no_near = sum(g["relevance_counts"]["exact"] + g["relevance_counts"]["near"] == 0 for g in gold["scenarios"].values())
     check("q12 cifras", tuple(map(int, m12.groups())) if m12 else None, (403, 103, 129, n_no_exact, 5, n_no_near))
-    check("cifras de la entrega: completas/parciales", (bool(re.search(r"\b(\d+) of 403 tests are complete", allsub)) and re.search(r"\b(\d+) of 403 tests are complete", allsub).group(1)) or "283", "283")
+    check("stated figures: complete/partial", (bool(re.search(r"\b(\d+) of 403 tests are complete", allsub)) and re.search(r"\b(\d+) of 403 tests are complete", allsub).group(1)) or "283", "283")
 
-    print(f"audit_numbers: {OKS} comprobaciones correctas, {len(FAILS)} discrepancias")
+    print(f"audit_numbers: {OKS} checks passed, {len(FAILS)} discrepancies")
     for f in FAILS:
         print("  FAIL", f)
     return 1 if FAILS else 0

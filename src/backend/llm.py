@@ -1,9 +1,9 @@
-"""Cliente mínimo de Ollama (HTTP local). Un método principal: chat(model, messages, schema) -> str.
+"""Minimal Ollama client (local HTTP). One main method: chat(model, messages, schema) -> str.
 
-- format = esquema JSON (salida estructurada de Ollama); si el servidor no lo acepta, se reintenta con "json".
-- Qwen3: think=false si la versión de Ollama lo soporta (>= 0.9); si no, se añade "/no_think" al prompt.
-- temperature 0, num_ctx 4096, stream false, keep_alive corto (OLLAMA_KEEP_ALIVE, por defecto 5m).
-Cualquier fallo de red, timeout o modelo inexistente → LlmUnavailable (la API responde 503).
+- format = JSON schema (Ollama structured output); if the server does not accept it, it retries with "json".
+- Qwen3: think=false if the Ollama version supports it (>= 0.9); otherwise "/no_think" is added to the prompt.
+- temperature 0, num_ctx 4096, stream false, short keep_alive (OLLAMA_KEEP_ALIVE, default 5m).
+Any network failure, timeout or missing model → LlmUnavailable (the API answers 503).
 """
 from __future__ import annotations
 
@@ -53,7 +53,7 @@ class OllamaClient:
         return self._version or None
 
     def running(self) -> list:
-        """/api/ps: modelos cargados con su tamaño en memoria (para el benchmark)."""
+        """/api/ps: loaded models with their memory size (for the benchmark)."""
         try:
             r = httpx.get(f"{self.s.ollama_url}/api/ps", timeout=self.s.status_timeout_s)
             return r.json().get("models", [])
@@ -75,7 +75,7 @@ class OllamaClient:
                 msgs[0]["content"] += "\n/no_think"
         try:
             r = httpx.post(f"{self.s.ollama_url}/api/chat", json=body, timeout=self.s.ollama_timeout_s)
-            if r.status_code == 400 and schema is not None:  # servidor viejo: sin esquema, solo "json"
+            if r.status_code == 400 and schema is not None:  # old server: no schema, only "json"
                 body["format"] = "json"
                 body.pop("think", None)
                 r = httpx.post(f"{self.s.ollama_url}/api/chat", json=body, timeout=self.s.ollama_timeout_s)
@@ -87,5 +87,5 @@ class OllamaClient:
             raise LlmUnavailable(f"timeout after {self.s.ollama_timeout_s:.0f}s") from e
         except httpx.HTTPError as e:
             raise LlmUnavailable(f"{type(e).__name__}: {e}") from e
-        # Por si el modelo emite el bloque de pensamiento igual.
+        # In case the model emits the thinking block anyway.
         return re.sub(r"<think>.*?</think>", "", content, flags=re.S).strip()

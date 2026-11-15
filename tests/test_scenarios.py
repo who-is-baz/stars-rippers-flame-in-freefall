@@ -1,7 +1,7 @@
-"""Tests de src/scenarios.py. Requieren data/processed/psi.sqlite (scripts/build_experiments.py).
+"""Tests of src/scenarios.py. They need data/processed/psi.sqlite (scripts/build_experiments.py).
 
 Con pytest:      python -m pytest tests/
-Sin pytest:      python3 tests/test_scenarios.py
+Without pytest:  python3 tests/test_scenarios.py
 """
 import os
 import sys
@@ -38,7 +38,7 @@ def test_lunar_challenge_zero_exact_seventeen_near():
 def test_earth_iss_49_in_flex():
     r = RES["earth_iss"]
     assert r["program"] == "FLEX"
-    assert r["n_exact"] == 49 == r["n_near"]  # criterios puntuales: exacto = dentro de la tolerancia
+    assert r["n_exact"] == 49 == r["n_near"]  # point criteria: exact = within tolerance
 
 
 def test_scenarios_without_data_report_nearest_not_as_match():
@@ -65,7 +65,7 @@ def test_every_flex_pressure_falls_in_one_level():
     assert {lv: levels.count(lv) for lv in set(levels)} == {"~0.7 atm": 103, "~1.0 atm": 161, ">2 atm": 9}
 
 
-if __name__ == "__main__":  # runner mínimo si pytest no está instalado
+if __name__ == "__main__":  # minimal runner if pytest is not installed
     failed = 0
     for name, fn in sorted(globals().items()):
         if name.startswith("test_") and callable(fn):

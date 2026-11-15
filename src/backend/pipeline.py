@@ -1,8 +1,8 @@
-"""Niveles medium y high: router (modelo elige herramienta) → ejecución → redacción → verificación.
+"""medium and high levels: router (the model picks a tool) → execution → writing → verification.
 
-Seguridad: la pregunta es entrada NO confiable. El modelo solo puede devolver un nombre del catálogo TOOLS y
-argumentos que pasan por Pydantic; no hay SQL, shell ni otra acción. La redacción NO ve la pregunta, solo el
-resultado de la herramienta (reduce la superficie de inyección). Citas, test_ids y no_data los pone el código.
+Security: the question is UNTRUSTED input. The model can only return a name from the TOOLS catalogue and
+arguments that go through Pydantic; there is no SQL, shell or any other action. The writing step does NOT see the
+question, only the tool result (smaller injection surface). Citations, test_ids and no_data are set by code.
 """
 from __future__ import annotations
 
@@ -102,19 +102,19 @@ def _parse(raw: str) -> dict:
 
 
 def _clean_args(tool: str, args) -> Tuple[dict, List[str]]:
-    """Quita nulos y nombres que la herramienta no tiene (aviso). Los valores fuera de rango los rechaza Pydantic."""
+    """Drops nulls and names the tool does not have (warning). Out-of-range values are rejected by Pydantic."""
     if not isinstance(args, dict):
         raise ValueError("args must be an object")
     fields = T.TOOLS[tool].args.model_fields
     dropped = [k for k in args if k not in fields]
     clean = {k: v for k, v in args.items() if k in fields and v not in (None, "", "null")}
-    # Los modelos pequeños rellenan con ceros lo que omiten: presión 0–0 y O2 0–1 significan "sin filtro" (se quitan).
+    # Small models fill what they omit with zeros: pressure 0–0 and O2 0–1 mean "no filter" (they are dropped).
     if clean.get("pressure_min") == 0 and clean.get("pressure_max") == 0:
         clean.pop("pressure_min"), clean.pop("pressure_max")
     if clean.get("o2_min") == 0 and clean.get("o2_max") == 1:
         clean.pop("o2_min"), clean.pop("o2_max")
-    # Un valor puntual no es un rango: si el modelo pone min == max, se ensancha a la ventana estándar (es un argumento de
-    # entrada, no un número de la respuesta; la ventana es la misma del enrutado por reglas).
+    # A point value is not a range: if the model sets min == max, it is widened to the standard window (it is an input
+    # argument, not a number of the answer; the window is the same as in rule-based routing).
     for lo, hi, w in (("pressure_min", "pressure_max", 0.1), ("o2_min", "o2_max", 0.01)):
         if lo in clean and hi in clean and isinstance(clean[lo], (int, float)) and clean[lo] == clean[hi]:
             clean[lo], clean[hi] = round(max(clean[lo] - w, 0), 4), round(clean[hi] + w, 4)
@@ -122,7 +122,7 @@ def _clean_args(tool: str, args) -> Tuple[dict, List[str]]:
 
 
 def route_once(llm, con, model: str, messages: List[dict], high: bool):
-    """Una decisión del router con 1 reintento. Devuelve (tool_name, ToolResult|None, done, warnings)."""
+    """One router decision with 1 retry. Returns (tool_name, ToolResult|None, done, warnings)."""
     warnings: List[str] = []
     last_err = ""
     for attempt in range(2):
@@ -139,7 +139,7 @@ def route_once(llm, con, model: str, messages: List[dict], high: bool):
             if tool not in T.TOOLS:
                 raise ValueError(f"unknown tool '{tool}'")
             raw_args = obj.get("args") or {}
-            if isinstance(raw_args, str):  # algunos modelos devuelven los argumentos como texto JSON
+            if isinstance(raw_args, str):  # some models return the arguments as JSON text
                 raw_args = json.loads(raw_args or "{}")
             args, dropped = _clean_args(tool, raw_args)
             if dropped:
@@ -162,7 +162,7 @@ def compose(llm, model: str, results: List["T.ToolResult"]) -> Tuple[Optional[st
     try:
         text = _parse(raw).get("answer")
     except (ValueError, json.JSONDecodeError):
-        text = raw  # el modelo respondió texto plano: igual se verifica
+        text = raw  # the model answered plain text: it is verified anyway
     if not isinstance(text, str):
         return None, ["composer returned no text"]
     text = " ".join(text.split())
@@ -177,12 +177,12 @@ def answer(llm, con, question: str, level: str, model: str, settings: Settings):
     """Devuelve (out, mode). LlmUnavailable se propaga (503)."""
     from .assistant import answer_low, result_from_tools
 
-    question = scope.normalize(question)  # el modelo solo ve la pregunta saneada
-    # Defensa previa (determinista): trampas de seguridad/predicción, inyección y gravedad no llegan al modelo.
+    question = scope.normalize(question)  # the model only sees the sanitised question
+    # Deterministic first line of defence: safety/prediction traps, injection and gravity never reach the model.
     r = low.route(question, settings.db_path or None)
     if r.guard or (r.kind == "precomputed" and r.answer_id == "q10"):
         out = answer_low(con, question, settings.db_path or None)
-        # respuesta fija sin modelo: no es una advertencia; el front lo indica con meta.mode == "low"
+        # fixed answer without a model: not a warning; the front end shows it with meta.mode == "low"
         return out, "low"
 
     t0 = time.perf_counter()
@@ -214,12 +214,12 @@ def answer(llm, con, question: str, level: str, model: str, settings: Settings):
                          {"role": "user", "content": f"Result of step {step + 1}: {summary}\n"
                                                      "Next tool, or done=true."}]
     except RouterFailed as e:
-        if results:  # high: un paso posterior falló; se usa lo que ya se obtuvo
+        if results:  # high: a later step failed; what was already obtained is used
             warnings.append(f"A later tool step was invalid and was skipped ({e}).")
         else:
             return _rules_fallback(con, question, settings, e)
 
-    if all(tr.no_data for tr in results):  # sin datos: no hace falta redactar
+    if all(tr.no_data for tr in results):  # no data: nothing to write
         return result_from_tools(results, deterministic(results), warnings), "ollama"
 
     if time.perf_counter() - t0 > settings.ask_budget_s:

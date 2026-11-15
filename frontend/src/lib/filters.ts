@@ -1,4 +1,4 @@
-// Clasificación de filas en bandas/niveles ya definidos en meta.json (solo filtra; no calcula estadísticas).
+// Classifies rows into the bands/levels defined in meta.json (it only filters; it computes no statistics).
 import type { ExperimentRow, Meta, O2Band, PressureLevel } from '../data/types';
 
 export const o2BandOf = (o2: number, meta: Meta): O2Band | null =>
@@ -8,7 +8,7 @@ export const pressureLevelOf = (atm: number | null, meta: Meta): PressureLevel |
   atm == null ? null : meta.pressure_levels.find((l) => atm >= l.atm_min && (l.atm_max == null || atm < l.atm_max))?.label ?? null;
 
 export type Suppressant = 'none' | 'co2' | 'he';
-// FLEX: el supresor es CO₂ o He añadido. BASS-II: el CO₂ es medido en cámara, no un supresor → no aplica.
+// FLEX: the suppressant is added CO₂ or He. BASS-II: CO₂ is measured in the chamber, not a suppressant → not applicable.
 export const suppressantOf = (r: ExperimentRow): Suppressant | null => {
   if (r.program !== 'FLEX') return null;
   if ((r.he_fraction ?? 0) > 0) return 'he';

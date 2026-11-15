@@ -1,8 +1,8 @@
-"""Nivel `low`: sin modelo. Reglas de palabras clave → una herramienta o una respuesta precalculada.
+"""`low` level: no model. Keyword rules → a tool or a precomputed answer.
 
-Las 10 preguntas sugeridas responden exactamente lo mismo que frontend/public/data/answers.json (mismo código:
-scripts/build_frontend_data.build_answers). El orden de las reglas sigue al de frontend/src/assistant/engine.ts y
-agrega: trampas de seguridad/predicción, palabras en español y consultas Q1/Q5/Q6 por palabra clave.
+The 10 suggested questions answer exactly what frontend/public/data/answers.json says (same code:
+scripts/build_frontend_data.build_answers). The rule order follows frontend/src/assistant/engine.ts and adds:
+safety/prediction traps, Spanish keywords and Q1/Q5/Q6 queries by keyword.
 """
 from __future__ import annotations
 
@@ -34,10 +34,10 @@ class Route:
     no_data: bool = False
     warnings: List[str] = field(default_factory=list)
     about_id: Optional[str] = None
-    guard: bool = False             # regla de seguridad: medium/high tampoco llaman al modelo
+    guard: bool = False             # safety rule: medium/high do not call the model either
 
 
-# (regex, answer_id) — mismo orden y mismas expresiones que engine.ts, con equivalentes en español.
+# (regex, answer_id) — same order and expressions as engine.ts, with Spanish equivalents.
 PRECOMPUTED_RULES = [
     (re.compile(r"(most relevant|relevan)", re.I), "q11"),
     (re.compile(r"(can'?t|cannot|can not)\b.{0,20}\btell", re.I), "q12"),
@@ -88,13 +88,13 @@ _SUG: dict = {}
 
 
 def _suggested(db_path=None) -> set:
-    """Claves de las preguntas sugeridas (answers.json): esas SIEMPRE responden con su dato, nunca con 'about'."""
+    """Keys of the suggested questions (answers.json): they ALWAYS answer with their data, never with 'about'."""
     if db_path not in _SUG:
         _SUG[db_path] = {about.key(a["question"]) for a in data.precomputed(db_path)["answers"]["answers"]}
     return _SUG[db_path]
 
 
-SCENARIO_WORDS = [  # (patrón, id de escenario): el primero que coincide
+SCENARIO_WORDS = [  # (pattern, scenario id): the first match wins
     (re.compile(r"moon.?base|challenge|expected moon", re.I), "lunar_challenge"),
     (re.compile(r"lunar habitat|nasa lunar|habitat", re.I), "lunar_nasa"),
     (re.compile(r"exploration", re.I), "exploration"),
@@ -109,23 +109,23 @@ def scenario_in(text: str):
 
 def route(question: str, db_path=None) -> Route:
     text = scope.normalize(question)
-    if scope.hard_block(text):  # inyección, jailbreak o tarea ajena: negativa fija, sin modelo
+    if scope.hard_block(text):  # injection, jailbreak or unrelated task: fixed refusal, no model
         return Route("fixed", text=scope.REFUSAL_TEXT, no_data=True, guard=True)
     upper = text.upper()
     ids = {m.group(0) for m in TEST_ID_RE.finditer(upper)} | {m.group(1).upper() for m in TEST_WORD_RE.finditer(text)}
-    if ids:  # un ID de prueba siempre gana ("Tell me about FLEX test 20CAL08" es una consulta de dato, no "what is FLEX")
+    if ids:  # a test ID always wins ("Tell me about FLEX test 20CAL08" is a data query, not "what is FLEX")
         return Route("tool", tool="get_experiment", args={"test_id": sorted(ids)[0]})
     if about.key(text) not in _suggested(db_path):
         topic = about.match_topic(text)
-        if topic:  # pregunta sobre la propia página: texto fijo, sin modelo ni herramientas
+        if topic:  # question about the page itself: fixed text, no model or tools
             return Route("about", about_id=topic, guard=True)
     if re.search(r"relevan", text, re.I) and about.key(text) not in _suggested(db_path):
-        sid = scenario_in(text)  # "most relevant tests for X": la herramienta con el MISMO orden que la vista Experiments
+        sid = scenario_in(text)  # "most relevant tests for X": the tool with the SAME order as the Experiments view
         if sid:
             return Route("tool", tool="most_relevant_tests", args={"scenario_id": sid})
         return Route("about", about_id="relevance_order", guard=True)
     if not scope.has_topic(text):
-        if about.generic_site(text):  # duda razonable sobre la página → about
+        if about.generic_site(text):  # reasonable question about the page → about
             return Route("about", about_id="site", guard=True)
         return Route("fixed", text=scope.REFUSAL_TEXT, no_data=True, guard=True)
     if LIVE_RE.search(text):
@@ -133,7 +133,7 @@ def route(question: str, db_path=None) -> Route:
     if SAFETY_RE.search(text):
         return Route("fixed", text=SAFETY_TEXT, no_data=True, warnings=[T.MICROGRAVITY_NOTE], guard=True)
     fuel = _fuel(text)
-    # Consultas con parámetros, antes de las precalculadas genéricas.
+    # Parameterised queries, before the generic precomputed answers.
     if re.search(r"extinction diameter|di[aá]metro de extinci[oó]n", text, re.I):
         args = {**({"fuel": fuel} if fuel else {}), **_pressure(text)}
         return Route("tool", tool="q5_extinction_diameter_by_pressure", args=args)
@@ -147,4 +147,4 @@ def route(question: str, db_path=None) -> Route:
             return Route("precomputed", answer_id=answer_id)
     if about.generic_site(text):
         return Route("about", about_id="site", guard=True)
-    return Route("fixed", text=scope.REFUSAL_TEXT, no_data=True)  # en alcance, sin regla: medium/high dejan decidir al router
+    return Route("fixed", text=scope.REFUSAL_TEXT, no_data=True)  # in scope, no rule: medium/high let the router decide

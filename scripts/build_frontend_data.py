@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""Genera los JSON estáticos que consume el frontend: frontend/public/data/*.json.
+"""Builds the static JSON files the front end reads: frontend/public/data/*.json.
 
-Uso: python3 scripts/build_frontend_data.py   (después de scripts/build_experiments.py)
+Usage: python3 scripts/build_frontend_data.py   (after scripts/build_experiments.py)
 
-Lee data/processed/ (psi.sqlite a través de src/psi_queries.py y src/scenarios.py, sin SQL propio; y
-bass2_tests.csv para el color de las varillas). No lee ni escribe data/raw/.
-Todos los números se calculan aquí; los textos van en inglés (la UI y la entrega son en inglés).
-Si falta un dato, el número queda null y el registro lleva "status": "no data". Nunca se imputa.
-Solo meta.json cambia entre corridas (generated_utc); el resto es determinista.
+Reads data/processed/ (psi.sqlite through src/psi_queries.py and src/scenarios.py, with no SQL of its own; and
+bass2_tests.csv for the rod colour). It neither reads nor writes data/raw/.
+Every number is computed here; texts are in English (the UI is in English).
+If a value is missing, the number stays null and the record carries "status": "no data". Nothing is imputed.
+Only meta.json changes between runs (generated_utc); the rest is deterministic.
 """
 from __future__ import annotations
 
@@ -30,7 +30,7 @@ BASS_CSV = os.path.join(ROOT, "data", "processed", "bass2_tests.csv")
 DOI = {"FLEX": "10.60555/mbq8-0451", "BASS-II": "10.60555/4qc4-de67"}
 FUELS = ("heptane", "methanol")
 NO_DATA = "no data"
-STATED = ("extinction", "blowoff", "not_sustained")  # resultados que implican que hubo llama
+STATED = ("extinction", "blowoff", "not_sustained")  # outcomes that imply there was a flame
 
 LIMITATIONS = [
     "All tests were run in microgravity on the ISS; there is no partial-gravity (Moon or Mars) combustion data in PSI.",
@@ -69,10 +69,10 @@ def write(name, obj):
     return path
 
 
-# --------------------------------------------------------------------------- datos base
+# --------------------------------------------------------------------------- base data
 def load(con):
     rows = q.list_experiments(con, limit=q.MAX_LIMIT)
-    assert rows["total"] == len(rows["items"]), "hay más filas que MAX_LIMIT: paginar"
+    assert rows["total"] == len(rows["items"]), "more rows than MAX_LIMIT: paginate"
     items = rows["items"]
     for r in items:
         r["_psi"] = sc.psi(r["pressure_atm"])
@@ -234,7 +234,7 @@ def build_materials(items):
     with open(BASS_CSV, newline="", encoding="utf-8") as f:
         color = {r["test_id"]: r["color"] or None for r in csv.DictReader(f)}
     missing = [r["test_id"] for r in bass if not r["material_category"]]
-    assert not missing, f"material_category vacío (¿falta unir docs/material_mapping.csv?): {missing[:5]}"
+    assert not missing, f"empty material_category (is the docs/material_mapping.csv join missing?): {missing[:5]}"
 
     def summarize(rows, **key):
         outc = Counter(r["outcome"] for r in rows if r["outcome"])

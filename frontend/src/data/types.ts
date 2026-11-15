@@ -49,7 +49,7 @@ export interface CoverageFile {
   n_cells: number; n_cells_empty: number; n_cells_small: number; cells: CoverageCell[];
 }
 
-export interface ScenarioMatch {          // `exact` puede venir como { n: 0 } sin más campos
+export interface ScenarioMatch {          // `exact` may come as { n: 0 } with no other fields
   n: number; o2_min?: number; o2_max?: number; atm_min?: number; atm_max?: number;
   psi_min?: number; psi_max?: number;
   n_by_fuel?: Partial<Record<Fuel, number>>; n_by_outcome?: Partial<Record<Outcome, number>>;

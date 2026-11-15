@@ -1,4 +1,4 @@
-"""Configuración por variables de entorno (sin secretos). Valores por defecto pensados para la laptop del demo."""
+"""Configuration through environment variables (no secrets). Defaults are meant for the demo laptop."""
 from __future__ import annotations
 
 import os
@@ -18,7 +18,7 @@ class Settings:
     ollama_url: str = field(default_factory=lambda: os.environ.get("OLLAMA_URL", "http://localhost:11434").rstrip("/"))
     ollama_timeout_s: float = field(default_factory=lambda: float(os.environ.get("OLLAMA_TIMEOUT_S", "60")))
     status_timeout_s: float = 1.5
-    ask_rate_per_min: int = field(default_factory=lambda: int(os.environ.get("ASK_RATE_PER_MIN", "60")))  # 0 = sin límite
+    ask_rate_per_min: int = field(default_factory=lambda: int(os.environ.get("ASK_RATE_PER_MIN", "60")))  # 0 = no limit
     ask_budget_s: float = field(default_factory=lambda: float(os.environ.get("ASK_BUDGET_S", "45")))
     keep_alive: str = field(default_factory=lambda: os.environ.get("OLLAMA_KEEP_ALIVE", "5m"))
     tiers: Dict[str, str] = field(default_factory=lambda: {
@@ -33,7 +33,7 @@ class Settings:
         return list(dict.fromkeys(self.tiers.values()))
 
     def default_model(self, level: str) -> str:
-        """Modelo si el cliente no manda `model`: medium → MEDIUM_MODEL, high → HEAVY_MODEL."""
+        """Model when the client sends no `model`: medium → MEDIUM_MODEL, high → HEAVY_MODEL."""
         return self.tiers["heavy"] if level == "high" else self.tiers["medium"]
 
 

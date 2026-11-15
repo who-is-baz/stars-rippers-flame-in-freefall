@@ -1,4 +1,4 @@
-"""Fase 2: /ask nivel low (sin Ollama) y paridad con frontend/public/data/answers.json."""
+"""/ask at level low (no Ollama) and parity with frontend/public/data/answers.json."""
 import json
 import os
 
@@ -12,7 +12,7 @@ ANSWERS = os.path.join(os.path.dirname(__file__), "..", "frontend", "public", "d
 FLEX_DOI = "10.60555/mbq8-0451"
 
 
-class NoLLM:  # si el nivel low tocara al modelo, la prueba fallaría
+class NoLLM:  # if the low level touched the model, the test would fail
     def __getattr__(self, name):
         raise AssertionError("low must not use the LLM")
 
@@ -34,7 +34,7 @@ def _file():
 
 
 def test_generator_matches_answers_json():
-    """El backend calcula las respuestas con el mismo código que generó answers.json."""
+    """The backend computes the answers with the same code that produced answers.json."""
     assert data.precomputed()["answers"] == _file()
 
 

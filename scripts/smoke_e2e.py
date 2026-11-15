@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""Smoke test de punta a punta: levanta la API (uvicorn) y el front (vite dev), y hace una pregunta por nivel.
+"""End-to-end smoke test: starts the API (uvicorn) and the front end (vite dev) and asks one question per level.
 
-Uso (desde la raíz, con el .venv activo y `npm install` hecho en frontend/):
-    python scripts/smoke_e2e.py                    # Ollama opcional: sin Ollama, Flash/Medium/Heavy deben dar 503
-    python scripts/smoke_e2e.py --require-ollama   # falla si algún nivel con modelo no responde 200
+Usage (from the root, with the .venv active and `npm install` done in frontend/):
+    python scripts/smoke_e2e.py                    # Ollama optional: without Ollama, Flash/Medium/Heavy must give 503
+    python scripts/smoke_e2e.py --require-ollama   # fails if any level with a model does not answer 200
 
-Comprueba: front sirve index.html y data/answers.json; CORS desde http://127.0.0.1:5173; forma de /ask
+Checks: the front end serves index.html and data/answers.json; CORS from http://127.0.0.1:5173; shape of /ask
 (answer, citations[{query, params, source_doi, test_ids ≤ 20, test_ids_total}], tool_calls, no_data,
-meta{level, model, mode, ms, warnings}); /llm/status; 503 con detail si no hay modelo.
-Sin red externa: solo localhost.
+meta{level, model, mode, ms, warnings}); /llm/status; 503 with detail when there is no model.
+No external network: localhost only.
 """
 from __future__ import annotations
 
@@ -26,7 +26,7 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 API = "http://127.0.0.1:8765"
 FRONT = "http://127.0.0.1:5173"
 ORIGIN = FRONT
-# Mapa de la interfaz (frontend/src/assistant/engine.ts): Basic=low; Flash=medium+FLASH; Medium=medium+MEDIUM; Heavy=high+HEAVY
+# Interface map (frontend/src/assistant/engine.ts): Basic=low; Flash=medium+FLASH; Medium=medium+MEDIUM; Heavy=high+HEAVY
 LEVELS = [("Basic", "low", None), ("Flash", "medium", "flash"), ("Medium", "medium", "medium"), ("Heavy", "high", "heavy")]
 QUESTION = "Are there tests at the expected Moon-base air (30% O2 or more, 10.2 psi or less)?"
 

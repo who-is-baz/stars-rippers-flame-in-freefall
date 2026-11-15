@@ -17,8 +17,8 @@ export type DataState =
 export const DataContext = createContext<DataState>({ status: 'loading' });
 export const RetryContext = createContext<() => void>(() => {});
 
-// assertShape mínima: comprueba solo las claves que la UI necesita para no pintar una gráfica en blanco.
-// (Se evita zod: no está en la lista de dependencias autorizadas.)
+// Minimal assertShape: checks only the keys the UI needs, so that no chart is drawn empty.
+// (zod is avoided: it is not in the list of approved dependencies.)
 function assertShape(file: string, v: unknown, checks: Record<string, 'array' | 'object' | 'number' | 'string'>) {
   if (typeof v !== 'object' || v === null) throw new Error(`${file}: not an object`);
   const o = v as Record<string, unknown>;

@@ -1,4 +1,4 @@
-// Lectura de un escenario: qué grupo de pruebas mostrar y cómo describir su criterio.
+// Reading a scenario: which group of tests to show and how to describe its criterion.
 import type { ExperimentRow, Meta, Scenario, ScenarioMatch } from '../data/types';
 import { fmtO2, fmtPsiAtm } from './format';
 import { o2BandOf, pressureLevelOf } from './filters';
@@ -8,14 +8,14 @@ export const fmtCriterionO2 = (s: Scenario) => `${SIGN[s.criteria.o2.kind]}${fmt
 export const fmtCriterionP = (s: Scenario) => `${SIGN[s.criteria.pressure_psi.kind]}${fmtPsiAtm(s.criteria.pressure_psi.value)}`;
 export const fmtTolerance = (t: Meta['tolerance']) => `±${+(t.o2_fraction * 100).toFixed(2)}% O₂, ±${t.pressure_psi} psi`;
 
-// Grupo a mostrar: las pruebas dentro de tolerancia; si no hay, la condición más cercana (que NO es el escenario).
+// Group to show: the tests within tolerance; if there are none, the closest condition (which is NOT the scenario).
 export function scenarioGroup(s: Scenario): { kind: 'near' | 'nearest' | 'none'; group: ScenarioMatch | null } {
   if (s.n_near > 0) return { kind: 'near', group: s.near };
   if (s.nearest) return { kind: 'nearest', group: s.nearest };
   return { kind: 'none', group: null };
 }
 
-// Celdas de cobertura (combustible|banda|nivel) que contienen estas pruebas FLEX: solo clasifica filas.
+// Coverage cells (fuel|band|level) that contain these FLEX tests: it only classifies rows.
 export function cellKeysFor(testIds: string[] | undefined, rows: ExperimentRow[], meta: Meta): Set<string> {
   const ids = new Set(testIds ?? []);
   const out = new Set<string>();

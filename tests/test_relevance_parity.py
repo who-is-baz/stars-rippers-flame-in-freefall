@@ -1,5 +1,5 @@
-"""El orden de relevancia, completo/parcial y las clases del backend (src/backend/relevance.py) deben coincidir con la recomputación
-independiente (scripts/gen_mentor_golden.py) y, por tanto, con el front. Y el archivo de referencia debe estar al día."""
+"""The relevance order, complete/partial and the classes of the backend (src/backend/relevance.py) must match the independent
+recomputation (scripts/gen_mentor_golden.py) and therefore the front end. And the reference file must be up to date."""
 import importlib.util
 import json
 import os

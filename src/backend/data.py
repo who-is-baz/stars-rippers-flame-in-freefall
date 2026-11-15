@@ -1,8 +1,8 @@
-"""Acceso a datos del backend: conexión de solo lectura, campos comunes y respuestas precalculadas.
+"""Backend data access: read-only connection, common fields and precomputed answers.
 
-Todo pasa por src/psi_queries.py y src/scenarios.py (no hay SQL en otro lugar). Los textos de limitaciones y las
-respuestas del modo `low` se toman de scripts/build_frontend_data.py: así el backend y answers.json salen del
-mismo código (paridad por construcción, comprobada en tests/test_api_ask_low.py).
+Everything goes through src/psi_queries.py and src/scenarios.py (no SQL anywhere else). The limitation texts and the
+`low` mode answers come from scripts/build_frontend_data.py, so the backend and answers.json come from the same code
+(parity by construction, checked in tests/test_api_ask_low.py).
 """
 from __future__ import annotations
 
@@ -27,7 +27,7 @@ PROGRAM_OF_DOI = {v: k for k, v in DOI.items()}
 
 
 class DataUnavailable(RuntimeError):
-    """psi.sqlite no existe: la API responde 503 con el comando para regenerarla."""
+    """psi.sqlite does not exist: the API answers 503 with the command to rebuild it."""
 
 
 def connect(db_path: Optional[str] = None) -> sqlite3.Connection:
@@ -38,7 +38,7 @@ def connect(db_path: Optional[str] = None) -> sqlite3.Connection:
 
 
 def collect_dois(obj) -> list:
-    """Unión de los source_doi que aparezcan en una respuesta (texto o lista, a cualquier profundidad)."""
+    """Union of the source_doi values found in a response (text or list, at any depth)."""
     found = set()
 
     def walk(x):
@@ -60,7 +60,7 @@ def collect_dois(obj) -> list:
 
 
 def envelope(payload: dict, extra_dois: Iterable[str] = ()) -> dict:
-    """Agrega los campos comunes del contrato: `sources` (DOIs) y `limitations` (inglés)."""
+    """Adds the common contract fields: `sources` (DOIs) and `limitations` (English)."""
     out = dict(payload)
     out["sources"] = sorted(set(collect_dois(payload)) | set(extra_dois))
     out["limitations"] = LIMITATIONS
@@ -69,7 +69,7 @@ def envelope(payload: dict, extra_dois: Iterable[str] = ()) -> dict:
 
 @lru_cache(maxsize=4)
 def precomputed(db_path: Optional[str] = None) -> dict:
-    """Mismo cálculo que scripts/build_frontend_data.main(), sin escribir archivos."""
+    """Same computation as scripts/build_frontend_data.main(), without writing files."""
     con = connect(db_path)
     try:
         items = bfd.load(con)
@@ -88,7 +88,7 @@ def _g(x, nd=None) -> str:
 
 
 def site_facts(con, db_path: Optional[str] = None) -> dict:  # noqa: C901
-    """Cifras para los textos "about the site": todas calculadas de los datos (nada escrito a mano)."""
+    """Figures for the "about the site" texts: all computed from the data (nothing typed by hand)."""
     m = q.meta(con)
     n = {p["program"]: p["n"] for p in m["programs"]}
     pre = precomputed(db_path)

@@ -1,4 +1,4 @@
-"""Cliente mínimo para la API pública de NASA PSI (geode-py), con límite de 1 petición/seg."""
+"""Minimal client for the public NASA PSI API (geode-py), limited to 1 request per second."""
 import time, requests
 
 BASE = "https://psi.nasa.gov"

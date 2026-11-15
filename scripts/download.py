@@ -1,10 +1,10 @@
-"""Descarga archivos de NASA PSI a data/raw/<experimento>/ y los registra en data/raw/MANIFEST.csv.
+"""Downloads NASA PSI files into data/raw/<experiment>/ and records them in data/raw/MANIFEST.csv.
 
 Uso: python3 scripts/download.py <ACCESSION> <EXPERIMENTO> "<s3_key>|<file_version>" [...]
 
 - Respeta >=1.1 s entre peticiones (psi_client).
-- Nunca sobrescribe un archivo crudo existente: si ya está, lo omite.
-- Se detiene si la API responde 401/403 o aparece login/captcha.
+- Never overwrites an existing raw file: if it is there, it is skipped.
+- Stops if the API answers 401/403 or a login/captcha appears.
 """
 import csv, hashlib, os, sys, datetime
 from urllib.parse import urlparse
@@ -16,13 +16,13 @@ FIELDS = ["experiment", "accession", "file_name", "s3_key", "source_url", "downl
 
 
 def presigned(accession, name, version):
-    # Igual que el front-end: file = nombre del archivo, version = versión del archivo
+    # Same as the PSI front end: file = file name, version = file version
     r = get(f"/geode-py/ws/studies/{accession}/download",
             params={"file": name, "version": version, "redirect": "false"})
     r.raise_for_status()
     url = r.text.strip().strip('"')
     if not url.startswith("http"):
-        raise RuntimeError(f"respuesta inesperada para {name}: {r.text[:200]}")
+        raise RuntimeError(f"unexpected response for {name}: {r.text[:200]}")
     return url
 
 
@@ -49,10 +49,10 @@ def main(accession, experiment, items):
                 for chunk in r.iter_content(1 << 16):
                     fh.write(chunk); h.update(chunk); size += len(chunk)
             os.replace(tmp, dest)
-            os.chmod(dest, 0o444)  # solo lectura: los crudos no se modifican
+            os.chmod(dest, 0o444)  # read only: raw files are never modified
             p = urlparse(url)
             w.writerow({"experiment": experiment, "accession": accession, "file_name": name, "s3_key": key,
-                        # se guarda la URL sin la firma temporal (expira y contiene credenciales)
+                        # the URL is stored without the temporary signature (it expires and contains credentials)
                         "source_url": f"{p.scheme}://{p.netloc}{p.path}",
                         "download_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
                         "size_bytes": size, "sha256": h.hexdigest()})
@@ -64,4 +64,4 @@ if __name__ == "__main__":
     try:
         main(sys.argv[1], sys.argv[2], sys.argv[3:])
     except Blocked as e:
-        sys.exit(f"DETENIDO: el sitio pidió login/captcha o negó acceso ({e}).")
+        sys.exit(f"STOPPED: the site asked for a login/captcha or denied access ({e}).")

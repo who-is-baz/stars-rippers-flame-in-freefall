@@ -1,7 +1,7 @@
-"""Tests de src/psi_queries.py. Requieren data/processed/psi.sqlite (scripts/build_experiments.py).
+"""Tests of src/psi_queries.py. They need data/processed/psi.sqlite (scripts/build_experiments.py).
 
 Con pytest:      python -m pytest tests/
-Sin pytest:      python3 tests/test_psi_queries.py
+Without pytest:  python3 tests/test_psi_queries.py
 """
 import os
 import sqlite3
@@ -16,7 +16,7 @@ FLEX_DOI, BASS_DOI = "10.60555/mbq8-0451", "10.60555/4qc4-de67"
 
 
 def _common(rows, doi):
-    assert rows, "la consulta no devolvió filas"
+    assert rows, "the query returned no rows"
     for r in rows:
         assert REQUIRED <= r.keys()
         assert r["n"] >= 1
@@ -34,19 +34,19 @@ def test_q1_extinction_rate_by_o2_pressure():
     for r in rows:
         assert 0 <= r["pct_extinction"] <= 100
         assert r["n_extinction"] <= r["n"]
-    # los n suman el total de metanol sin supresor con presión conocida
+    # the n values add up to the methanol total without suppressant and with known pressure
     expected = _total(CON, "program='FLEX' AND material_or_fuel='methanol' AND co2_fraction=0 AND he_fraction=0")
     assert sum(r["n"] for r in rows) == expected
-    # el filtro de rango funciona
+    # the range filter works
     sub = q.extinction_rate_by_o2_pressure(CON, fuel="methanol", o2_range=(0.2, 0.22), pressure_range=(0.9, 1.1))
     assert sub and all(0.2 <= r["o2_fraction"] <= 0.22 and r["pressure_atm"] == 1.0 for r in sub)
 
 
 def test_q2_co2_effect():
     rows = _common(q.co2_effect(CON), FLEX_DOI)
-    assert any(r["co2_fraction"] == 0 for r in rows), "falta el nivel de referencia (CO2=0)"
+    assert any(r["co2_fraction"] == 0 for r in rows), "the reference level (CO2=0) is missing"
     assert any(r["co2_fraction"] > 0 for r in rows)
-    assert all("avg_o2_fraction" in r for r in rows), "debe exponer O2 para mostrar el confundido"
+    assert all("avg_o2_fraction" in r for r in rows), "it must expose O2 to show the confounding"
     assert all(0.9 <= r["pressure_atm"] <= 1.1 for r in rows)
 
 
@@ -64,13 +64,13 @@ def test_q4_burning_rate_by_o2():
         assert r["n_k"] <= r["n"]
         if r["n_k"]:
             assert r["min_burning_rate_mm2_s"] <= r["avg_burning_rate_mm2_s"] <= r["max_burning_rate_mm2_s"]
-            assert 0 < r["avg_burning_rate_mm2_s"] < 2, "K fuera de rango físico (mm²/s)"
+            assert 0 < r["avg_burning_rate_mm2_s"] < 2, "K outside the physical range (mm²/s)"
 
 
 def test_q5_extinction_diameter_only_extinction():
     rows = _common(q.extinction_diameter_by_pressure(CON), FLEX_DOI)
     assert sum(r["n"] for r in rows) == _total(CON, "program='FLEX' AND outcome='extinction'")
-    # en la base no debe haber diámetro de extinción en filas cuyo outcome no sea extinction
+    # the database must have no extinction diameter in rows whose outcome is not extinction
     assert _total(CON, "extinction_diameter_mm IS NOT NULL AND outcome <> 'extinction'") == 0
 
 
@@ -80,11 +80,11 @@ def test_q6_bass2_outcomes_by_o2_band():
     for r in rows:
         parts = r["n_low_flow_extinction"] + r["n_blowoff"] + r["n_no_ignition_or_not_sustained"] + r["n_not_stated"]
         assert parts == r["n"]
-        assert "pct_extinction" not in r, "BASS-II no debe reportar % de extinción (outcome incompleto)"
+        assert "pct_extinction" not in r, "BASS-II must not report an extinction % (incomplete outcome)"
 
 
 def test_small_n_percentages_always_warned():
-    """Ninguna celda con n<5 puede devolver un porcentaje sin advertencia, en ninguna consulta."""
+    """No cell with n<5 may return a percentage without a warning, in any query."""
     outputs = {name: fn(CON) for name, fn in q.ALL_QUERIES.items()}
     outputs["coverage_grid"] = q.flex_coverage_grid(CON)
     small_seen = 0
@@ -96,10 +96,10 @@ def test_small_n_percentages_always_warned():
             assert r.get("pct_note") == q.PCT_NOTE, f"{name}: falta pct_note"
             if r["n"] < q.MIN_N:
                 small_seen += 1
-                assert r.get("warning"), f"{name}: celda n={r['n']} con {pct_keys} sin advertencia: {r}"
+                assert r.get("warning"), f"{name}: cell n={r['n']} with {pct_keys} and no warning: {r}"
             else:
                 assert r.get("warning") is None
-    assert small_seen > 0, "el test no ejercitó ninguna celda pequeña"
+    assert small_seen > 0, "the test exercised no small cell"
 
 
 def test_rejects_invalid_parameters():
@@ -110,7 +110,7 @@ def test_rejects_invalid_parameters():
             bad()
         except ValueError:
             continue
-        raise AssertionError("se aceptó un parámetro inválido")
+        raise AssertionError("an invalid parameter was accepted")
 
 
 def test_connection_is_read_only():
@@ -118,17 +118,17 @@ def test_connection_is_read_only():
         CON.execute("DELETE FROM experiments")
     except sqlite3.OperationalError:
         return
-    raise AssertionError("la conexión permitió escribir")
+    raise AssertionError("the connection allowed a write")
 
 
 def test_messages_in_english_and_o2_band_labels():
-    """Contrato (docs/API.md): los textos que llegan a la UI van en inglés; la primera banda es "<0.15" y va primero."""
+    """Contract (docs/API.md): texts that reach the UI are in English; the first band is "<0.15" and comes first."""
     assert q.PCT_NOTE == "descriptive, not a probability"
     assert q.SMALL_N_WARNING.format(min_n=5).startswith("n<5")
     assert "low-confidence" in q.LOW_CONFIDENCE_WARNING
     assert [b[2] for b in q.O2_BANDS] == ["<0.15", "0.15-0.18", "0.18-0.21", "0.21-0.24", ">=0.24"]
     q6 = [r["o2_band"] for r in q.bass2_outcomes_by_o2_band(CON)]
-    assert q6 == sorted(q6, key=[b[2] for b in q.O2_BANDS].index), f"bandas fuera de orden: {q6}"
+    assert q6 == sorted(q6, key=[b[2] for b in q.O2_BANDS].index), f"bands out of order: {q6}"
 
 
 def test_list_experiments_filters_and_pagination():
@@ -149,7 +149,7 @@ def test_list_experiments_filters_and_pagination():
             q.list_experiments(CON, **bad)
         except ValueError:
             continue
-        raise AssertionError(f"se aceptó un parámetro inválido: {bad}")
+        raise AssertionError(f"an invalid parameter was accepted: {bad}")
 
 
 def test_meta_matches_data():
@@ -162,7 +162,7 @@ def test_meta_matches_data():
     assert m["queries"] == sorted(q.ALL_QUERIES) and len(m["queries"]) == 6
 
 
-if __name__ == "__main__":  # runner mínimo si pytest no está instalado
+if __name__ == "__main__":  # minimal runner if pytest is not installed
     failed = 0
     for name, fn in sorted(globals().items()):
         if name.startswith("test_") and callable(fn):

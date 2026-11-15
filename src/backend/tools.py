@@ -1,9 +1,9 @@
-"""Catálogo de herramientas del asistente: las ÚNICAS acciones que /ask puede ejecutar.
+"""Assistant tool catalogue: the ONLY actions /ask can run.
 
-Cada herramienta es una función de src/psi_queries.py (Q1–Q6, list_experiments, get_experiment, meta) o
-scenarios.evaluate (que solo usa psi_queries). El modelo elige nombre + argumentos; aquí se validan con Pydantic
-y se ejecutan. Las citas (source_doi, test_ids), no_data, avisos y la respuesta de plantilla los calcula el código.
-No hay SQL ni shell: un nombre fuera de TOOLS no se ejecuta.
+Each tool is a function of src/psi_queries.py (Q1–Q6, list_experiments, get_experiment, meta) or
+scenarios.evaluate (which only uses psi_queries). The model picks name + arguments; here they are validated with
+Pydantic and run. Citations (source_doi, test_ids), no_data, warnings and the template answer are computed by code.
+No SQL and no shell: a name outside TOOLS is never run.
 """
 from __future__ import annotations
 
@@ -20,7 +20,7 @@ q, sc = data.q, data.sc
 MAX_TEST_IDS = 20
 PSI_PER_ATM = sc.PSI_PER_ATM
 NO_DATA_TEXT = "No data available for that question."
-from .scope import REFUSAL_TEXT as OUT_OF_SCOPE_TEXT  # noqa: E402  (una sola definición)
+from .scope import REFUSAL_TEXT as OUT_OF_SCOPE_TEXT  # noqa: E402  (a single definition)
 CONFOUND_NOTE = "CO2 and He are confounded with O2 in these tests; no effect can be attributed to a single gas."
 NOT_STATED_NOTE = ("BASS-II outcomes were extracted by AI from free-text notes; 'not_stated' does not mean "
                    "the flame did not go out. No extinction percentage is computed for BASS-II.")
@@ -123,7 +123,7 @@ class Tool:
     run: Callable  # (con, args) -> dict
 
 
-# --------------------------------------------------------------------------- ejecución
+# --------------------------------------------------------------------------- execution
 def _q(name: str):
     def run(con, a: Args) -> dict:
         kw = {k: v for k, v in a.model_dump(exclude_none=True).items() if not k.startswith(("o2_", "pressure_"))}
@@ -245,7 +245,7 @@ TOOLS: Dict[str, Tool] = {t.name: t for t in [
 
 
 def execute(con, name: str, raw_args: Optional[dict]) -> "ToolResult":
-    """Valida y ejecuta. ValueError si el nombre o los argumentos no son válidos (pydantic.ValidationError hereda)."""
+    """Validates and runs. ValueError if the name or the arguments are invalid (pydantic.ValidationError inherits from it)."""
     if name not in TOOLS:
         raise ValueError(f"unknown tool '{name}'")
     tool = TOOLS[name]
@@ -310,7 +310,7 @@ class ToolResult:
         return w
 
     def for_model(self) -> dict:
-        """Lo que ve el modelo al redactar: el resultado sin IDs de prueba (los pone el código)."""
+        """What the model sees when writing: the result without test IDs (code adds them)."""
         r = dict(self.result)
         if "rows" in r:
             r["rows"] = r["rows"][:12]
@@ -319,7 +319,7 @@ class ToolResult:
         return {"tool": self.name, "args": self.args, "result": r, "warnings": self.warnings()}
 
 
-# --------------------------------------------------------------------------- plantillas (deterministas, inglés)
+# --------------------------------------------------------------------------- templates (deterministic, English)
 def _f(x, nd=3) -> str:
     if x is None:
         return "n/a"
@@ -342,7 +342,7 @@ def _more(rows, shown) -> str:
 
 
 def template(tr: ToolResult) -> str:
-    """Respuesta sin modelo. Solo usa números del resultado de la herramienta."""
+    """Answer without a model. Uses only numbers from the tool result."""
     r, name, rows = tr.result, tr.name, tr.rows()
     if tr.no_data and name != "scenario":
         return NO_DATA_TEXT

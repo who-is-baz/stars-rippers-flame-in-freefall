@@ -1,7 +1,7 @@
-"""Tests de frontend/public/data/*.json (scripts/build_frontend_data.py). Requieren psi.sqlite.
+"""Tests of frontend/public/data/*.json (scripts/build_frontend_data.py). They need psi.sqlite.
 
 Con pytest:      python -m pytest tests/
-Sin pytest:      python3 tests/test_frontend_data.py
+Without pytest:  python3 tests/test_frontend_data.py
 """
 import json
 import os
@@ -78,14 +78,14 @@ def test_materials_cover_all_bass2_and_none_non_flammable():
 
 def test_answers_have_citations_or_no_data():
     a = _load("answers.json")["answers"]
-    assert len(a) == 12  # 10 originales + q11 y q12 (relevancia y lo que queda sin resolver)
+    assert len(a) == 12  # 10 original + q11 and q12 (relevance and what remains unresolved)
     for x in a:
         assert x["answer"] and (x["citations"] or x["no_data"])
     gravity = next(x for x in a if "lunar gravity" in x["question"])
     assert gravity["no_data"] and gravity["answer"].startswith("No data available")
 
 
-if __name__ == "__main__":  # runner mínimo si pytest no está instalado
+if __name__ == "__main__":  # minimal runner if pytest is not installed
     failed = 0
     for name, fn in sorted(globals().items()):
         if name.startswith("test_") and callable(fn):

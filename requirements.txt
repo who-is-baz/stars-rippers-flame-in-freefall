@@ -1,9 +1,9 @@
-# Dependencias de runtime (Python 3.12). Versiones probadas localmente el 2026-11-14.
+# Runtime dependencies (Python 3.12). Versions tested locally on 2026-11-14.
 requests==2.34.2      # scripts/psi_client.py, fetch_psi.py, download.py
 pandas==2.1.4         # build_processed.py, build_experiments.py, stats_processed.py
 numpy==1.26.4         # build_processed.py
-openpyxl==3.1.2       # pandas.read_excel de los .xlsx de BASS-II
-# API (src/backend). Probadas el 2026-11-15.
-fastapi==0.163.0      # API y OpenAPI en /docs
+openpyxl==3.1.2       # pandas.read_excel of the BASS-II .xlsx files
+# API (src/backend). Tested on 2026-11-15.
+fastapi==0.163.0      # API and OpenAPI at /docs
 uvicorn==0.54.0       # servidor ASGI: uvicorn backend.app:app --app-dir src
-httpx==0.28.1         # cliente HTTP de Ollama (y TestClient en los tests)
+httpx==0.28.1         # HTTP client for Ollama (and TestClient in the tests)

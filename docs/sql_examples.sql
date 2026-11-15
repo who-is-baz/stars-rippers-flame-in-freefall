@@ -1,8 +1,8 @@
--- Consultas de ejemplo sobre data/processed/psi.sqlite
--- Ejecutar: python3 scripts/run_sql_examples.py   (o: sqlite3 data/processed/psi.sqlite < docs/sql_examples.sql)
--- Vistas: v_flex (FLEX, outcome observado) y v_bass2 (BASS-II, outcome extraído por IA o no declarado).
+-- Example queries over data/processed/psi.sqlite
+-- Run: python3 scripts/run_sql_examples.py   (or: sqlite3 data/processed/psi.sqlite < docs/sql_examples.sql)
+-- Views: v_flex (FLEX, observed outcome) and v_bass2 (BASS-II, outcome extracted by AI or not stated).
 
--- Q1. FLEX metanol sin supresor: % de extinción por nivel de O2 y presión
+-- Q1. FLEX methanol without suppressant: extinction % by O2 level and pressure
 SELECT ROUND(pressure_atm, 1)                                          AS p_atm,
        ROUND(o2_fraction, 2)                                           AS x_o2,
        COUNT(*)                                                        AS n,
@@ -13,7 +13,7 @@ WHERE material_or_fuel = 'methanol' AND co2_fraction = 0 AND he_fraction = 0 AND
 GROUP BY p_atm, x_o2
 ORDER BY p_atm, x_o2;
 
--- Q2. Efecto del CO2 (FLEX, ~1 atm, sin He): resultado y K por combustible y nivel de CO2
+-- Q2. CO2 effect (FLEX, ~1 atm, no He): outcome and K by fuel and CO2 level
 SELECT material_or_fuel                                                AS fuel,
        ROUND(co2_fraction, 2)                                          AS x_co2,
        COUNT(*)                                                        AS n,
@@ -25,7 +25,7 @@ WHERE he_fraction = 0 AND pressure_atm BETWEEN 0.9 AND 1.1
 GROUP BY fuel, x_co2
 ORDER BY fuel, x_co2;
 
--- Q3. Efecto del He (FLEX, todas las presiones): resultado y K por combustible y nivel de He
+-- Q3. He effect (FLEX, all pressures): outcome and K by fuel and He level
 SELECT material_or_fuel                                                AS fuel,
        ROUND(he_fraction, 2)                                           AS x_he,
        ROUND(pressure_atm, 1)                                          AS p_atm,
@@ -39,7 +39,7 @@ GROUP BY fuel, x_he > 0, p_atm
 HAVING x_he > 0 OR p_atm IN (SELECT DISTINCT ROUND(pressure_atm, 1) FROM v_flex WHERE he_fraction > 0)
 ORDER BY fuel, p_atm, x_he;
 
--- Q4. FLEX: tasa de combustión K (mm²/s) vs O2, por combustible, a ~1 atm y sin supresor
+-- Q4. FLEX: burning-rate constant K (mm²/s) vs O2, by fuel, at ~1 atm and without suppressant
 SELECT material_or_fuel                                                AS fuel,
        ROUND(o2_fraction, 2)                                           AS x_o2,
        COUNT(burning_rate_mm2_s)                                       AS n_k,
@@ -52,7 +52,7 @@ GROUP BY fuel, x_o2
 HAVING n_k >= 3
 ORDER BY fuel, x_o2;
 
--- Q5. FLEX: diámetro de extinción (solo outcome = extinction) por combustible y presión
+-- Q5. FLEX: extinction diameter (outcome = extinction only) by fuel and pressure
 SELECT material_or_fuel                                                AS fuel,
        ROUND(pressure_atm, 1)                                          AS p_atm,
        COUNT(extinction_diameter_mm)                                   AS n,
@@ -64,7 +64,7 @@ WHERE outcome = 'extinction'
 GROUP BY fuel, p_atm
 ORDER BY fuel, p_atm;
 
--- Q6. BASS-II: resultado por origen y banda de O2 (OJO: outcome = IA sobre notas; 'not_stated' ≠ sin extinción)
+-- Q6. BASS-II: outcome by source and O2 band (NOTE: outcome = AI on notes; 'not_stated' ≠ no extinction)
 SELECT CASE WHEN o2_fraction < 0.16 THEN 'a) <16%'
             WHEN o2_fraction < 0.18 THEN 'b) 16-18%'
             WHEN o2_fraction < 0.20 THEN 'c) 18-20%'

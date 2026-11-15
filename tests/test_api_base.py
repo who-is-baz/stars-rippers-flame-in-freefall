@@ -107,5 +107,5 @@ def test_query_test_ids_match_counts():
         rows = fn(con)
         ids = data.q.query_test_ids(con, name)
         n_ids = sum(len(v) for v in ids.values())
-        # 193F001 está duplicado: el conteo de filas puede superar al de IDs únicos por 1
+        # 193F001 is duplicated: the row count can exceed the unique-ID count by 1
         assert sum(r["n"] for r in rows) - n_ids in (0, 1), name

@@ -1,17 +1,17 @@
-"""(Módulo puro: lo usan el backend, scripts/build_frontend_data.py y los tests.) Relevancia de cada prueba para una atmósfera: la MISMA fórmula que frontend/src/lib/relevance.ts (paridad comprobada con un
-archivo de referencia, tests/test_relevance_parity.py). Orden transparente, sin pesos ocultos; NO es un ranking de seguridad.
+"""(Pure module: used by the backend, scripts/build_frontend_data.py and the tests.) Relevance of each test for an atmosphere: the SAME formula as frontend/src/lib/relevance.ts (parity checked against an
+reference file, tests/test_relevance_parity.py). Transparent order, no hidden weights; it is NOT a safety ranking.
 
-Clase: exact → near → not_near → no_pressure (BASS-II y C11M201: solo se compara el O2). Dentro de la clase:
-  1. distancia = max(|ΔO2|/tolO2, |Δpsi|/tolpsi) (en no_pressure solo |ΔO2|/tolO2), menor primero;
-  2. resultado declarado antes de "not_stated"; 3. mayor n (pruebas de la misma celda); 4. programa y test_id.
-Δ con signo: valor − objetivo (criterio puntual); para ≥ / ≤ es el faltante (0 si se cumple).
-Completa/parcial: ver `is_complete` (definición en el README del repositorio y en la vista Sources & credits).
+Class: exact → near → not_near → no_pressure (BASS-II and C11M201: only O2 is compared). Within a class:
+  1. distance = max(|ΔO2|/tolO2, |Δpsi|/tolpsi) (for no_pressure only |ΔO2|/tolO2), smaller first;
+  2. declared outcome before "not_stated"; 3. larger n (tests in the same cell); 4. program and test_id.
+Signed Δ: value − target (point criterion); for ≥ / ≤ it is the shortfall (0 when met).
+Complete/partial: see `is_complete` (definition in the Sources & credits view).
 """
 from __future__ import annotations
 
 from typing import Dict, List, Optional
 
-import scenarios as sc  # noqa: E402  (src/ está en sys.path)
+import scenarios as sc  # noqa: E402  (src/ is on sys.path)
 
 EPS = 1e-9
 ORDER = {"exact": 0, "near": 1, "not_near": 2, "no_pressure": 3}
@@ -43,7 +43,7 @@ def _within(d: float, tol: float, strict: bool, kind: str) -> bool:
 def _level(atm: Optional[float]) -> Optional[str]:
     if atm is None:
         return None
-    for lv in sc.PRESSURE_LEVELS:  # misma regla que el front: [min, max)
+    for lv in sc.PRESSURE_LEVELS:  # same rule as the front end: [min, max)
         if atm >= lv["atm_min"] and (lv["atm_max"] is None or atm < lv["atm_max"]):
             return lv["label"]
     return None

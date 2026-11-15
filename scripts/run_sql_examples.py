@@ -1,4 +1,4 @@
-"""Ejecuta cada consulta de docs/sql_examples.sql sobre data/processed/psi.sqlite (solo lectura)."""
+"""Runs each query of docs/sql_examples.sql on data/processed/psi.sqlite (read only)."""
 import re, sqlite3
 con = sqlite3.connect("file:data/processed/psi.sqlite?mode=ro", uri=True)
 sql = open("docs/sql_examples.sql").read()

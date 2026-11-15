@@ -1,5 +1,5 @@
-"""Alcance del asistente (Fase 4): solo responde lo que los datos del sitio permiten. Sin Ollama (modelo falso);
-las pruebas -m ollama repiten los casos con el modelo real. Casos compartidos con el front: scope_cases.json."""
+"""Assistant scope: it only answers what the site data allow. No Ollama (fake model);
+the -m ollama tests repeat the cases with the real model. Cases shared with the front end: scope_cases.json."""
 import json
 import os
 
@@ -18,7 +18,7 @@ REFUSAL = "I can only answer questions about the NASA PSI combustion data shown 
 
 
 def make(llm):
-    # sin límite de tasa: son >60 peticiones
+    # no rate limit: there are >60 requests
     return TestClient(create_app(settings=Settings(ask_rate_per_min=0), llm=llm))
 
 
@@ -35,9 +35,9 @@ def test_enough_cases():
 @pytest.mark.parametrize("level", ["low", "medium", "high"])
 @pytest.mark.parametrize("case", CASES, ids=lambda c: c["q"][:40])
 def test_scope_cases_without_model(case, level):
-    """En los tres niveles: lo ajeno recibe la negativa fija y NUNCA llega al modelo."""
+    """At all three levels: anything unrelated gets the fixed refusal and NEVER reaches the model."""
     if case["expect"] == "answer" and level != "low":
-        pytest.skip("en alcance: medium/high sí consultan al modelo (cubierto en test_api_ask_llm.py)")
+        pytest.skip("in scope: medium/high do ask the model (covered in test_api_ask_llm.py)")
     llm = FakeLLM([])  # cualquier llamada al modelo lanza AssertionError → 500
     c = make(llm)
     r = post(c, case["q"], level)
@@ -49,23 +49,23 @@ def test_scope_cases_without_model(case, level):
         assert len(b["meta"]["suggestions"]) >= 3 and "What is this page?" in b["meta"]["suggestions"]
         assert b["meta"]["kind"] == "out_of_scope" and b["meta"]["warnings"] == []
     elif case["expect"] == "about":
-        # sobre la propia página: texto fijo, sin modelo, sin herramientas, cita una sección (no un dataset)
+        # about the page itself: fixed text, no model, no tools, cites a section (not a dataset)
         assert r.status_code == 200, r.text
         b = r.json()
         assert b["answer"] != REFUSAL and b["no_data"] is False and len(b["answer"]) <= 600
         assert b["citations"] == [] and llm.calls == []
         assert b["tool_calls"] == [{"tool": "about", "id": case["topic"]}], b["tool_calls"]
         assert b["meta"]["kind"] == "about" and b["meta"]["section"]
-        assert "{" not in b["answer"], "marcador sin rellenar"
+        assert "{" not in b["answer"], "unfilled placeholder"
         if case["topic"] in ("greeting", "capabilities"):
             assert len(b["meta"]["suggestions"]) >= 3
-        if case["topic"] == "howto":  # tutorial / guide / first time: 3 pasos Y el botón Tour
+        if case["topic"] == "howto":  # tutorial / guide / first time: 3 steps AND the Tour button
             assert "3 steps" in b["answer"] and "Tour" in b["answer"]
-        assert b["meta"]["warnings"] == [] and b["meta"]["mode"] == "low"  # una regla fija no es una advertencia
+        assert b["meta"]["warnings"] == [] and b["meta"]["mode"] == "low"  # a fixed rule is not a warning
     elif case["expect"] == "no_data_safety":
         b = r.json()
         assert b["no_data"] is True and b["answer"].startswith("No data available for that question.") and llm.calls == []
-    elif level == "low":  # en alcance: la regla de Basic responde sin negativa
+    elif level == "low":  # in scope: the Basic rule answers without a refusal
         b = r.json()
         assert r.status_code == 200 and b["answer"] != REFUSAL
 
@@ -92,7 +92,7 @@ def test_empty_and_very_long_questions():
 
 
 def test_model_never_sees_raw_text():
-    """El router recibe la pregunta normalizada (sin ancho cero ni control) y el redactor no recibe la pregunta."""
+    """The router gets the normalised question (no zero-width or control characters) and the writer does not get the question."""
     llm = FakeLLM([{"tool": "none", "args": {}}])
     c = make(llm)
     r = post(c, "oxygen​ sensors\u0000 in hospitals", "medium")
@@ -105,7 +105,7 @@ def test_rate_limit_and_generic_500():
     c = TestClient(create_app(settings=Settings(ask_rate_per_min=3), llm=FakeLLM([])), raise_server_exceptions=False)
     codes = [post(c, "hello", "low").status_code for _ in range(5)]
     assert codes == [200, 200, 200, 429, 429]
-    llm = FakeLLM([])  # una llamada inesperada al modelo → error interno SIN detalle ni traza
+    llm = FakeLLM([])  # an unexpected model call → internal error WITHOUT detail or traceback
     c2 = TestClient(create_app(settings=Settings(ask_rate_per_min=0), llm=llm), raise_server_exceptions=False)
     r = post(c2, "oxygen sensors in hospitals", "medium")
     assert r.status_code == 500 and r.json() == {"detail": "Internal error."}
@@ -114,9 +114,9 @@ def test_rate_limit_and_generic_500():
 def test_prompts_have_no_user_text():
     from backend import pipeline
     import re as _re
-    # sin marcadores de plantilla: lo único con llaves son los ejemplos JSON fijos
+    # no template placeholders: the only braces are the fixed JSON examples
     assert "{" not in _re.sub(r'\{"answer": "[^"]*"\}', "", pipeline.COMPOSER_SYSTEM)
-    # el prompt del router se arma solo con el catálogo; ningún texto del usuario entra en 'system'
+    # the router prompt is built only from the catalogue; no user text enters 'system'
     assert pipeline.ROUTER_SYSTEM.count("%s") == 2
 
 
@@ -135,7 +135,7 @@ def test_real_model_refuses_off_scope(case):
 
 
 def test_generated_ts_is_up_to_date():
-    """frontend/src/assistant/scope.generated.ts debe ser exactamente lo que genera scripts/gen_scope_ts.py."""
+    """frontend/src/assistant/scope.generated.ts must be exactly what scripts/gen_scope_ts.py generates."""
     import importlib.util
     spec = importlib.util.spec_from_file_location("gen", os.path.join(ROOT, "scripts", "gen_scope_ts.py"))
     gen = importlib.util.module_from_spec(spec)
@@ -156,7 +156,7 @@ def test_about_texts_are_short_numbers_come_from_data_and_no_hand_written_figure
         assert len(txt) <= about.MAX_CHARS, (t["id"], len(txt))
         assert "{" not in txt
         raw = about._BY_ID[t["id"]]["text"]
-        # cifras escritas a mano en el texto fijo: solo pasos "1) 2) 3)" y "3 steps"
+        # figures typed by hand in the fixed text: only the steps "1) 2) 3)" and "3 steps"
         raw = re.sub(r"PSI-\d+|CC0-1\.0", "X", raw)  # nombres de investigación y de licencia, no cifras de datos
         stray = [m for m in re.findall(r"(?<![\w{.])\d+(?:\.\d+)?(?![\w}])", raw) if m not in ("1", "2", "3")]
         assert not stray, (t["id"], stray)

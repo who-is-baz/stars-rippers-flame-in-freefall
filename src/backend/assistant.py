@@ -1,8 +1,8 @@
-"""POST /ask y GET /llm/status (docs/API.md, sección /ask).
+"""POST /ask and GET /llm/status (docs/API.md, /ask section).
 
-Niveles: low = reglas + plantilla (sin Ollama, red de seguridad); medium = un modelo elige UNA herramienta y
-redacta; high = hasta 3 pasos de herramientas, redacta y se verifica. Las citas, test_ids y no_data los calcula
-el código. Si Ollama no está o falla en medium/high → 503 (el frontend cae a Basic).
+Levels: low = rules + template (no Ollama, safety net); medium = a model picks ONE tool and writes;
+high = up to 3 tool steps, writes, and is verified. Citations, test_ids and no_data are computed by
+code. If Ollama is missing or fails at medium/high → 503 (the front end falls back to Basic).
 """
 from __future__ import annotations
 
@@ -27,7 +27,7 @@ MAX_QUESTION = 500
 
 
 class RateLimiter:
-    """Ventana deslizante de 60 s por IP, en memoria (el backend corre solo en la laptop del demo)."""
+    """60 s sliding window per IP, in memory (the backend runs only on the demo laptop)."""
 
     def __init__(self, per_min: int):
         self.per_min, self.hits, self.lock = per_min, collections.defaultdict(collections.deque), threading.Lock()
@@ -75,7 +75,7 @@ class AskMeta(BaseModel):
     mode: Literal["low", "ollama", "fallback"]
     ms: int
     warnings: List[str]
-    kind: Optional[str] = None          # "about" = respuesta fija sobre la propia página (cita una sección, no un dataset)
+    kind: Optional[str] = None          # "about" = fixed answer about the page itself (cites a section, not a dataset)
     section: Optional[str] = None
     suggestions: List[str] = []          # preguntas sugeridas (negativa, saludo, "what can you do")
 
@@ -104,7 +104,7 @@ def _cite_precomputed(cits: List[dict]) -> List[dict]:
 
 
 def answer_low(con, question: str, db_path: Optional[str] = None) -> dict:
-    """Respuesta sin modelo. Devuelve {answer, citations, tool_calls, no_data, warnings}."""
+    """Answer without a model. Returns {answer, citations, tool_calls, no_data, warnings}."""
     r = low.route(question, db_path)
     if r.kind == "about":
         from . import about
@@ -130,9 +130,9 @@ def answer_low(con, question: str, db_path: Optional[str] = None) -> dict:
 
 
 def result_from_tools(trs: List["T.ToolResult"], answer: str, extra_warnings: Optional[List[str]] = None) -> dict:
-    """Arma citas, tool_calls, no_data y avisos desde los resultados (código, nunca el modelo)."""
+    """Builds citations, tool_calls, no_data and warnings from the results (code, never the model)."""
     no_data = all(tr.no_data for tr in trs) if trs else True
-    # Citas solo de resultados con pruebas (o de meta, que cita los dos DOI sin IDs).
+    # Citations only from results with tests (or from meta, which cites both DOIs without IDs).
     cits = [c for tr in trs for c in tr.citations() if c["test_ids_total"] > 0 or tr.name == "meta"]
     if no_data and not answer.startswith(T.NO_DATA_TEXT):
         answer = T.NO_DATA_TEXT

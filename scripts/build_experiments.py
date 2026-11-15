@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
-"""Une flex_tests.csv y bass2_tests.csv en data/processed/experiments.csv y lo carga en data/processed/psi.sqlite.
+"""Joins flex_tests.csv and bass2_tests.csv into data/processed/experiments.csv and loads it into data/processed/psi.sqlite.
 
-Uso: python3 scripts/build_experiments.py   (después de scripts/build_processed.py)
-Solo usa pandas + sqlite3 (stdlib). No lee ni escribe data/raw/.
+Usage: python3 scripts/build_experiments.py   (after scripts/build_processed.py)
+Uses only pandas + sqlite3 (stdlib). It neither reads nor writes data/raw/.
 """
 import os, sqlite3
 import numpy as np
 import pandas as pd
 
 P = "data/processed"
-DOI = {"FLEX": "10.60555/mbq8-0451", "BASS-II": "10.60555/4qc4-de67"}  # de /geode-py/ws/repo/investigations/<ID>
+DOI = {"FLEX": "10.60555/mbq8-0451", "BASS-II": "10.60555/4qc4-de67"}  # from /geode-py/ws/repo/investigations/<ID>
 COLS = ["program", "test_id", "date", "material_or_fuel", "material_category", "o2_fraction", "pressure_atm",
         "co2_fraction", "he_fraction", "outcome", "outcome_source", "extinction_diameter_mm",
         "burning_rate_mm2_s", "qc_flags", "source_doi"]
@@ -39,7 +39,7 @@ def flex_rows():
         "he_fraction": f["he_mole_fraction"],
         "outcome": f["test_end"],
         "outcome_source": "observed",
-        # regla pedida: diámetro de extinción solo si outcome = extinction
+        # rule: extinction diameter only when outcome = extinction
         "extinction_diameter_mm": f["flame_extinction_diameter_mm"].where(is_ext),
         "burning_rate_mm2_s": f["burning_rate_mm2_s"],
         "qc_flags": join_flags(f["qc_flags"].fillna(""),
@@ -56,17 +56,17 @@ def bass_rows():
         "test_id": b["test_id"],
         "date": b["test_date"],
         "material_or_fuel": b["material_raw"],
-        "material_category": b["material_category"],  # docs/material_mapping.csv (mapeo aprobado por el equipo)
-        # % vol → fracción. Es O2 medido en la cámara, no fijado por diseño como en FLEX.
+        "material_category": b["material_category"],  # docs/material_mapping.csv (mapping approved by the team)
+        # % vol → fraction. It is O2 measured in the chamber, not set by design as in FLEX.
         "o2_fraction": (b["o2_initial_pct_vol"] / 100).round(4),
-        "pressure_atm": np.nan,  # no registrada en BASS-II
-        # CO2 de fondo medido (sensor CDM), no un supresor agregado como en FLEX
+        "pressure_atm": np.nan,  # not recorded in BASS-II
+        # measured background CO2 (CDM sensor), not an added suppressant as in FLEX
         "co2_fraction": (b["co2_initial_pct_vol"] / 100).round(5),
         "he_fraction": np.nan,
         "outcome": b["ai_outcome"],
         "outcome_source": np.where(has, "ai_extracted", "not_stated"),
-        "extinction_diameter_mm": np.nan,  # no aplica a sólidos
-        "burning_rate_mm2_s": np.nan,      # no aplica (ley d² es de gotas)
+        "extinction_diameter_mm": np.nan,  # not applicable to solids
+        "burning_rate_mm2_s": np.nan,      # not applicable (the d² law is for droplets)
         "qc_flags": join_flags(b["qc_flags"].fillna("")),
         "source_doi": DOI["BASS-II"],
     })
@@ -97,7 +97,7 @@ def main():
             qc_flags TEXT,
             source_doi TEXT NOT NULL
         );
-        -- no es UNIQUE: FLEX repite el ID 193F001 en dos pruebas distintas (flag duplicate_flex_id)
+        -- not UNIQUE: FLEX repeats the ID 193F001 in two different tests (flag duplicate_flex_id)
         CREATE INDEX ix_experiments_program_test ON experiments (program, test_id);
         CREATE VIEW v_flex  AS SELECT * FROM experiments WHERE program = 'FLEX';
         CREATE VIEW v_bass2 AS SELECT * FROM experiments WHERE program = 'BASS-II';

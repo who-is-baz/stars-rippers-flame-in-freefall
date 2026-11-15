@@ -1,7 +1,7 @@
-"""API FastAPI de Flame in Freefall (docs/API.md).
+"""FastAPI API of Flarefall (docs/API.md).
 
-Rutas bajo /api (contrato). Las mismas rutas también responden en la raíz (sin /api, ocultas del OpenAPI) para
-que el frontend, que llama a `<VITE_LLM_URL>/ask`, funcione con VITE_LLM_URL=http://127.0.0.1:8000.
+Routes under /api (contract). The same routes also answer at the root (without /api, hidden from OpenAPI) so that
+the front end, which calls `<VITE_LLM_URL>/ask`, works with VITE_LLM_URL=http://127.0.0.1:8000.
 
 Correr:  uvicorn backend.app:app --app-dir src --host 127.0.0.1 --port 8000
 """
@@ -25,7 +25,7 @@ log = logging.getLogger("flame.api")
 if not log.handlers:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
 
-QUERY_PARAMS = {  # parámetros que acepta cada consulta (los demás se rechazan con 400)
+QUERY_PARAMS = {  # parameters each query accepts (any other is rejected with 400)
     "q1_extinction_rate_by_o2_pressure": {"program", "fuel", "o2", "pressure", "suppressant"},
     "q2_co2_effect": {"fuel", "o2", "pressure"},
     "q3_he_effect": {"fuel", "o2", "pressure"},
@@ -51,7 +51,7 @@ def rng(lo: Optional[float], hi: Optional[float]):
 
 def build_kwargs(name: str, *, program=None, fuel=None, material=None, o2_min=None, o2_max=None,
                  pressure_min=None, pressure_max=None, suppressant=None) -> dict:
-    """Traduce parámetros de la API a kwargs de psi_queries. Solo pasa lo que llegó (así aplican los defaults)."""
+    """Maps API parameters to psi_queries kwargs. Passes only what arrived (so the defaults apply)."""
     allowed = QUERY_PARAMS[name]
     given = {"program": program, "fuel": fuel, "material": material, "suppressant": suppressant}
     kw = {}
@@ -76,7 +76,7 @@ def create_app(settings: Optional[Settings] = None, llm=None) -> FastAPI:
                   description="NASA PSI microgravity combustion data (FLEX PSI-69, BASS-II PSI-25). CC0-1.0. "
                               "Independent project, not endorsed by NASA.")
     app.state.settings = settings
-    app.state.llm = llm  # se crea perezosamente en assistant.get_llm()
+    app.state.llm = llm  # created lazily in assistant.get_llm()
     app.add_middleware(CORSMiddleware, allow_origins=list(settings.cors_origins), allow_credentials=False,
                        allow_methods=["GET", "POST", "OPTIONS"], allow_headers=["Content-Type"])
 
@@ -103,7 +103,7 @@ def create_app(settings: Optional[Settings] = None, llm=None) -> FastAPI:
 
     @app.exception_handler(Exception)
     async def _unexpected(request: Request, e: Exception):
-        log.error("unhandled %s on %s", type(e).__name__, request.url.path)  # sin traza ni detalle hacia el cliente
+        log.error("unhandled %s on %s", type(e).__name__, request.url.path)  # no traceback or detail sent to the client
         return JSONResponse({"detail": "Internal error."}, status_code=500)
 
     @app.exception_handler(data.DataUnavailable)
@@ -177,7 +177,7 @@ def create_app(settings: Optional[Settings] = None, llm=None) -> FastAPI:
 
     @router.get("/compare")
     def get_compare(a: str = Query(..., max_length=40), b: str = Query(..., max_length=40)):
-        """a y b: `test_id` o `PROGRAM:test_id` (193F001 está repetido en FLEX: vienen ambas filas)."""
+        """a and b: `test_id` or `PROGRAM:test_id` (193F001 is repeated in FLEX: both rows are returned)."""
         c = con()
         try:
             sides = {}
@@ -199,7 +199,7 @@ def create_app(settings: Optional[Settings] = None, llm=None) -> FastAPI:
     assistant.register(router, settings)
 
     app.include_router(router, prefix="/api")
-    app.include_router(router, include_in_schema=False)  # alias sin /api para VITE_LLM_URL
+    app.include_router(router, include_in_schema=False)  # alias without /api for VITE_LLM_URL
 
     @app.get("/", include_in_schema=False)
     def root():
@@ -209,7 +209,7 @@ def create_app(settings: Optional[Settings] = None, llm=None) -> FastAPI:
 
 
 def question_fingerprint(question: str) -> str:
-    """Para el log: longitud y hash corto; nunca la pregunta completa."""
+    """For the log: length and a short hash; never the full question."""
     return f"len={len(question)} sha={hashlib.sha256(question.encode()).hexdigest()[:8]}"
 
 
