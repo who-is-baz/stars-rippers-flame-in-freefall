@@ -58,12 +58,6 @@ docs/              setup, data dictionary, API, data sources, AI use, challenge 
   column definitions: [`docs/data-dictionary.md`](docs/data-dictionary.md).
 - **Code:** Apache-2.0 ([`LICENSE`](LICENSE)). Third-party software and fonts: [`THIRD_PARTY.md`](THIRD_PARTY.md).
 
-## Use of AI
-
-AI tools (Anthropic Claude) wrote most of the code, tests and documentation under the team's direction. BASS-II outcomes
-and air speeds extracted by AI from free-text notes are labelled "AI-extracted" in the data and on the site. The logo was
-generated with Gemini. Full statement: [`docs/AI_USAGE.md`](docs/AI_USAGE.md).
-
 ## Limits
 
 Microgravity on the ISS only (no partial-gravity data in PSI). FLEX extinction shares are descriptive, not probabilities.
