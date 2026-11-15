@@ -48,7 +48,7 @@ export function DataCharts() {
   const showPressureAndGas = group === 'conditions' || group === 'all';
 
   return (
-    <Section id="charts" eyebrow="Data charts" title="Visual telemetry across 403 tests" badge={<Provisional />}
+    <Section id="charts" eyebrow="Data charts" title={`Visual telemetry across ${items.length} tests`} badge={<Provisional />}
       lead={<>Real test points and counts only — no fitted line, no forecast. Filter which chart group to display below.</>}>
       <div className="stack">
         <div className="row" style={{ justifyContent: 'space-between' }}>
