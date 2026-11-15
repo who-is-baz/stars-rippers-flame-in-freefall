@@ -11,6 +11,7 @@ import { Sidebar } from './assistant/Sidebar';
 
 const MAIN_TABS: { view: ViewId; label: string }[] = [
   { view: 'overview', label: 'Dashboard' },
+  { view: 'explore', label: 'Experiments' },
   { view: 'coverage', label: 'Coverage' },
   { view: 'gaps', label: 'Gaps' },
 ];
@@ -134,7 +135,7 @@ function Page() {
 
   const showTests = useCallback((req: TableRequest) => {
     setPreset({ ...req, token: Date.now() });
-    setView('overview');
+    setView('explore');
     setCustomizeOpen(false);
   }, []);
 

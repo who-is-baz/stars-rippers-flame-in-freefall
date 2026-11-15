@@ -160,10 +160,10 @@ describe('single-screen console & saved board', () => {
     renderWithBoard(<Console preset={null} />);
     const gaps = screen.getByRole('article', { name: 'What do these tests tell us?' });
     fireEvent.click(within(gaps).getByRole('button', { name: 'Open full view' }));
-    expect(screen.getByRole('dialog', { name: 'Experiment table' })).toBeInTheDocument();
+    expect(screen.getByRole('dialog', { name: 'Experiments' })).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /Back to console/ }));
     // closing plays a short exit animation before the panel unmounts
-    await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Experiment table' })).toBeNull());
+    await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Experiments' })).toBeNull());
   });
 });
 

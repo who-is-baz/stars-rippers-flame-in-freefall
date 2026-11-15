@@ -48,8 +48,15 @@ for (const url of urls) {
       seen.push(v);
     }
     await page.getByRole('button', { name: 'Close view' }).click();
-    // dock tabs and Custom explorer
-    for (const t of ['Explore tests', 'Investigations', 'Scenarios']) await page.getByRole('tab', { name: t }).click();
+    await page.getByRole('dialog').first().waitFor({ state: 'detached' }); // the panel plays a 170 ms exit animation
+    // dock shortcuts open the Experiments view (Investigations groups by investigation); close it each time
+    for (const t of ['Explore tests', 'Investigations']) {
+      await page.getByRole('button', { name: t, exact: true }).click();
+      await page.getByRole('dialog', { name: 'Experiments' }).waitFor();
+      await overflow(`dock ${t}`);
+      await page.getByRole('button', { name: 'Close view' }).click();
+      await page.getByRole('dialog', { name: 'Experiments' }).waitFor({ state: 'detached' });
+    }
     await page.getByRole('button', { name: /^Custom Observed tests/ }).click();
     await page.getByRole('region', { name: 'Custom atmosphere explorer' }).waitFor();
     await overflow('custom');

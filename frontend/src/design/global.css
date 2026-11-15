@@ -2275,3 +2275,25 @@ html { overflow-x: clip; }
 .interp-block p { margin: 0; font-size: var(--fs-xs); line-height: 1.35; }
 .interp-list { margin: 0; padding-left: 16px; display: grid; gap: 3px; font-size: var(--fs-xs); line-height: 1.35; color: var(--silver); }
 .interp-note { margin: 4px 0 0; font-size: 10.5px; color: var(--ink-dim); border-top: 1px solid var(--hairline); padding-top: 4px; }
+
+/* ---------- Experiments view ---------- */
+.rel-note { margin: 0; font-size: var(--fs-xs); color: var(--silver); line-height: 1.4; }
+.field.check { align-content: end; }
+table.data tr.group-row th { background: rgba(127, 245, 225, 0.08); color: var(--mint); font-size: var(--fs-xs); text-align: left; padding: 6px 12px; }
+table.data tr.rel-exact td:first-child { box-shadow: inset 3px 0 0 var(--mint); }
+table.data tr.rel-near td:first-child { box-shadow: inset 3px 0 0 var(--flame-blue); }
+.scroll-x:focus-visible { outline: 2px solid var(--mint); outline-offset: 2px; }
+.test-drawer {
+  position: fixed; top: 76px; right: 12px; bottom: 12px; width: min(420px, calc(100vw - 24px)); z-index: 130;
+  display: flex; flex-direction: column; gap: 10px; padding: 14px; overflow-y: auto;
+  background: rgba(12, 15, 19, 0.97); border: 1px solid rgba(127, 245, 225, 0.3); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75);
+}
+.test-drawer h4 { margin: 0 0 4px; font-size: var(--fs-sm); color: var(--mint); }
+.drawer-fields { display: grid; gap: 6px; margin: 0; }
+.drawer-fields > div { display: grid; grid-template-columns: 130px 1fr; gap: 8px; font-size: var(--fs-xs); }
+.drawer-fields dt { color: var(--ink-dim); }
+.drawer-fields dd { margin: 0; color: var(--ink); word-break: break-word; }
+@media (max-width: 760px) { .test-drawer { top: 8px; } .drawer-fields > div { grid-template-columns: 105px 1fr; } }
+.field.check input[type='checkbox'] { width: 18px; height: 18px; padding: 0; accent-color: var(--mint); }
+.filters-wrap > summary { cursor: pointer; font-size: var(--fs-sm); color: var(--mint); padding: 4px 0 8px; }
+.filters-wrap > summary:focus-visible { outline: 2px solid var(--mint); outline-offset: 2px; }
