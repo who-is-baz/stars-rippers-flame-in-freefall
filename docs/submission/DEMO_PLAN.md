@@ -30,6 +30,8 @@ not eligible for Global Judging. English on screen; spoken language may differ o
 
 Export at 1920×1080, 30 fps. **Check the final file length (must show ≤ 0:30 in the player) before uploading.**
 
+**New for the mentor's recommendations (15 Nov):** `mentor-dashboard-moon-interpretation.png` (indicator strip + interpretation card), `mentor-dashboard-earth-instruments.png` (oxygen, pressure and airflow instruments; airflow is a measured BASS-II range here), `mentor-dashboard-spacesuit-no-tests.png` (0 exact / 0 near: "No matching tests", closest tested conditions marked "not this atmosphere", airflow "conceptual"), `mentor-experiments-relevance.png` and `mentor-experiments-detail.png` (Experiments view ordered by relevance, detail panel). A 29 s video can use two of them as inserts (for example 0:10–0:14 the interpretation card, 0:14–0:19 the Experiments view) in place of two of the five Custom states; keep narration ≤ 70 words. Remember: relevance orders records by closeness of conditions; never call it a safety ranking.
+
 **Visuals (updated 15 Nov):** each scenario now has its own illustrative microgravity flame (round, faint, held by a match stick, oxygen
 drifting in from every side; warmer and fainter near air, brighter and whiter at ≥30% O₂): `docs/screenshots/flame-earth-iss.png`,
 `flame-moon.png`, `flame-lunar-habitat.png`, `flame-exploration.png`, `flame-spacesuit.png` (dimmed, "No matching tests — illustration only").
@@ -43,7 +45,7 @@ partial-gravity tests." If you show it in the video, keep that note on screen. T
 | 1 | Title | Flame in Freefall Explorer · Stars Rippers · team names · Challenge: Flame in Freefall · NASA Space Apps 2026 | `docs/screenshots/explorer-mixed.png` (cropped to the chamber) |
 | 2 | Problem | Moon habitats may use ≥30% O₂ at ≤10.2 psi. What do 403 NASA microgravity fire tests say about that air? | none / simple diagram |
 | 3 | What we built | One-page dashboard organised by atmosphere: scenarios, coverage map, table, fuels, materials, gaps, SI assistant | `docs/screenshots/flame-earth-iss.png` (full Overview at 1600×1000) |
-| 4 | Key finding | Moon-base air: **0 exact, 17 near** tests (10.33–10.50 psi, 30–34% O₂; 15 disruption, 2 completion). Earth/ISS: 49. Coverage 20/30 cells | `docs/screenshots/flame-moon.png` |
+| 4 | Key finding | Moon-base air: **0 exact, 17 near** tests (10.33–10.50 psi, 30–34% O₂; 15 disruption, 2 completion). Earth/ISS: 49. Coverage 20/30 cells. The card "What do these tests tell us?" lists useful evidence, what the nearest tests show (with n) and what remains unresolved | `docs/screenshots/mentor-dashboard-moon-interpretation.png` |
 | 5 | Custom explorer | Retrieval, not simulation: mixed / all extinguished / n < 5 / no test | `explorer-out.png`, `explorer-small_n.png`, `explorer-empty.png` |
 | 6 | Honest SI | Answers only from the data with DOIs; "No data" for lunar gravity; code checks every number; optional local models | screenshot of the assistant answering the lunar-gravity question |
 | 7 | Limits & next | Microgravity only; no predictions; CO₂/He confounded; next: more PSI investigations, verified sources, real-model tests. Data CC0 · Code Apache-2.0 | `docs/screenshots/explorer-empty.png` or Gaps view |

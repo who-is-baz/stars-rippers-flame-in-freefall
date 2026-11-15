@@ -22,6 +22,7 @@ from statistics import mean
 ROOT = os.path.join(os.path.dirname(__file__), "..")
 sys.path.insert(0, os.path.join(ROOT, "src"))
 import psi_queries as q  # noqa: E402
+import relevance as rel  # noqa: E402
 import scenarios as sc  # noqa: E402
 
 OUT = os.path.join(ROOT, "frontend", "public", "data")
@@ -393,6 +394,29 @@ def build_answers(items, scen, coverage, materials, gaps):
         "combustion data yet. ACME's E-FIELD Flames only mimicked partial gravity with an electric field; it is an "
         "analog, not lunar data.",
         [], no_data=True)
+    # 11 (mentor): most relevant tests for a scenario, with the same order as the Experiments view (src/relevance.py)
+    o2c, pc = rel.scenario_criteria("lunar_nasa")
+    rk = rel.rank(items, o2c, pc)
+    cnt = rel.counts(rk)
+    top = rk[:5]
+    one = lambda x: f"{x['row']['test_id']} ({x['row']['material_or_fuel'] if x['row']['program'] == 'FLEX' else x['row']['material_category']}, ΔO2 {x['d_o2'] * 100 + 0.0:+.1f} pp, " + (f"Δpsi {x['d_psi'] + 0.0:+.2f}" if x["d_psi"] is not None else "no pressure recorded") + ")"
+    lead = (f"{cnt['exact']} exact and {cnt['near']} near FLEX tests for NASA lunar surface habitat (nominal): " if cnt["exact"] + cnt["near"] > 0
+            else "No test is exact or near NASA lunar surface habitat (nominal). The closest by distance of conditions (not this scenario) are ")
+    ids = [x["row"]["test_id"] for x in top]
+    add("Which tests are most relevant to the lunar habitat scenario?",
+        lead + "; ".join(one(x) for x in top) + ". Ordered by closeness of conditions, not a safety ranking. The source of this scenario is unverified.",
+        [{"query": "most_relevant_tests", "params": {"scenario_id": "lunar_nasa", "limit": 5}, "source_doi": DOI["FLEX"], "test_ids": ids}],
+        warnings=["Unverified source: the O2 and pressure values of this scenario are not confirmed yet."])
+    # 12 (mentor): what the data cannot settle, computed for the five reference atmospheres
+    no_exact = sum(1 for sx in scen["scenarios"] if sx["n_exact"] == 0)
+    no_near = sum(1 for sx in scen["scenarios"] if sx["n_near"] == 0)
+    not_stated = sum(r["outcome_source"] == "not_stated" for r in bass)
+    add("What can't the data tell us about this atmosphere?",
+        f"For any atmosphere: all {len(items)} tests are microgravity on the ISS; samples are not habitat materials; CO2 and He are confounded with O2; "
+        f"{not_stated} of {len(bass)} BASS-II outcomes are not stated. {no_exact} of {len(scen['scenarios'])} reference atmospheres have no exact test and {no_near} have no test within tolerance. "
+        "Select an atmosphere and read \"What remains unresolved\" for its own list.",
+        [{"query": "scenarios", "params": {}, "source_doi": DOI["FLEX"], "test_ids": []},
+         {"query": "scenarios", "params": {}, "source_doi": DOI["BASS-II"], "test_ids": []}])
     return {"level": "low", "note": "Precomputed by scripts/build_frontend_data.py; numbers come from the data files.",
             "answers": A}
 

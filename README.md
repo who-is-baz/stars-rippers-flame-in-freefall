@@ -5,10 +5,14 @@ Independent student project (Universidad Politécnica de Querétaro). **Not endo
 
 ## What it is
 An evidence-first dashboard for NASA microgravity combustion data (NASA PSI: **FLEX** PSI-69 and **BASS-II** PSI-25, 403 ISS tests),
-organised by cabin atmosphere (oxygen and pressure). It shows how many real tests are near an atmosphere (Earth/ISS air, the expected
+organised by cabin atmosphere (oxygen and pressure). It shows which real tests are closest to an atmosphere (Experiments view, ordered by a transparent relevance formula, with indicators for completeness, coverage and conditions without evidence), how many are near an atmosphere (Earth/ISS air, the expected
 Moon-base air, …), how they ended, and what is missing. For the expected Moon-base air (≥30% O₂, ≤10.2 psi) there are **0 exact tests
 and 17 near tests**. Every number carries its sample size (n) and source DOI; cells with n < 5 are flagged. An optional SI ("Super
 Intelligence", i.e. an AI/LLM) assistant answers only from these data and says "No data" otherwise.
+
+| Moon base: interpretation card and indicators | Experiments view ordered by relevance |
+|---|---|
+| ![Dashboard, Moon base, interpretation](docs/screenshots/mentor-dashboard-moon-interpretation.png) | ![Experiments ordered by relevance](docs/screenshots/mentor-experiments-relevance.png) |
 
 | Custom explorer: observed tests only | No test within tolerance |
 |---|---|
@@ -32,7 +36,7 @@ cd frontend && VITE_LLM_URL=http://127.0.0.1:8000 npm run dev           # http:/
 the SI panel. Tested on the demo laptop (24 GB RAM, 4 GB GPU): `llama3.2:3b` (Flash) and `qwen3:8b` (Medium) ran; `qwen3:14b` (Heavy) was **not downloaded** (disk space) and was not evaluated. Results and limits: `docs/bench/RESUMEN.md`, `docs/bench/DIAGNOSTICO.md`. Without them the site works in Basic mode.
 Environment variables and troubleshooting: `docs/SETUP.md` §7.
 
-**Checks:** `python -m pytest` · `cd frontend && npm test && npm run build` · `python scripts/audit_numbers.py` ·
+**Checks:** `python -m pytest` (`-m ollama` adds the real-model tests) · `cd frontend && npm test && npm run build` · `python scripts/audit_numbers.py` ·
 `python scripts/smoke_e2e.py` · `node scripts/check_static_site.mjs` (needs `playwright-core`, not a dependency).
 
 ## Folder map

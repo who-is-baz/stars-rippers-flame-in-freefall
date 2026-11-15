@@ -58,6 +58,7 @@ Extinction share of heptane at 0.7 atm -> {"tool": "q1_extinction_rate_by_o2_pre
 Are there tests at the Moon base air (30%% O2 or more, 10.2 psi or less)? -> {"tool": "scenario", "args": {"scenario_id": "lunar_challenge"}}
 How many FLEX tests used helium? -> {"tool": "list_experiments", "args": {"program": "FLEX", "suppressant": "he"}}
 Tell me about test 20CAL08 -> {"tool": "get_experiment", "args": {"test_id": "20CAL08"}}
+Which tests are most relevant to the lunar habitat scenario? -> {"tool": "most_relevant_tests", "args": {"scenario_id": "lunar_nasa"}}
 Tools:
 %s"""
 

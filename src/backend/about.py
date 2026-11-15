@@ -117,6 +117,30 @@ TOPICS: List[Dict[str, str]] = [
            r"\btell me about (this|the) (page|site|website|dashboard|project)\b|\bpurpose\b|\bproposito\b|\bobjetivo\b|\bpara que (es|sirve) (esta|este|esto)\b|\bwhat does (this|the) (page|site|dashboard) do\b|\boverview\b|\bwhat is going on\b|\bexplain (this|it)\W*$|\bquick intro\b|\bintroduction\b|\bintro\b|\bwhat is it\b|\bwhat am i (looking at|seeing)\b|\bwhat do i see\b",
      "text": "This page is an evidence dashboard for NASA microgravity combustion data: {n_tests} tests from NASA PSI ({n_flex} FLEX fuel-droplet tests and {n_bass} BASS-II solid-material tests), "
              "organised by cabin atmosphere (oxygen and pressure). Pick an atmosphere in the bottom dock, open other views from the top bar, or ask me. It shows observed tests only."},
+    {"id": "relevance_order", "section": "Experiments",
+     "re": r"\brelevan\w*\b.{0,30}\b(order|sort|rank|ordered|sorted|ranked|computed|calculated|work|works|mean|formula|score)\b|\b(order|sort|rank|ordered|sorted|ranked|formula)\b.{0,30}\brelevan\w*\b|\bhow (are|is) (the )?(tests|experiments|results|rows).{0,15}(ordered|sorted|ranked)\b|\brelevance (order|formula|ranking)\b",
+     "text": "In Experiments, tests are ordered by relevance to the selected atmosphere: Exact, then Near, then Not near, then tests with no recorded pressure. Within a class the order is the distance "
+             "max(|ΔO₂| / {tol_o2}% , |Δpsi| / {tol_psi} psi), then a declared outcome, then larger n. It orders records by closeness of conditions; it is not a safety ranking."},
+    {"id": "complete_partial", "section": "Dashboard indicators",
+     "re": r"\b(complete|partial)\b.{0,25}\b(test|tests|record|records|mean|means|definition|data|experiments?)\b|\bwhat (does|is|are) (complete|partial)\b|\b(tests?|records?|experiments?)\b.{0,15}\b(are|is) (complete|partial)\b|\bhow many\b.{0,20}\b(complete|partial)\b|\bcomplete (vs|versus|or|and) partial\b|\bcompleto\b|\bparcial\b",
+     "text": "Complete = a declared outcome plus the key fields of its investigation (FLEX: fuel, O₂, pressure and a measured burning rate or extinction diameter; BASS-II: material, O₂ and a declared outcome). "
+             "Partial = one of them is missing. {n_complete} of {n_tests} tests are complete and {n_partial} partial; {n_complete_ai} of the complete ones have AI-extracted outcomes."},
+    {"id": "scenario_coverage", "section": "Dashboard indicators",
+     "re": r"\bscenario coverage\b|\bcoverage of (the )?(scenario|atmosphere)\b|\bgroups? with at least one test\b|\bwhat is (the )?(x of y|coverage percentage)\b",
+     "text": "Scenario coverage = X of Y fuel and material groups with at least one test within ±{tol_o2}% O₂ and ±{tol_psi} psi of the selected atmosphere (FLEX fuels on O₂ and pressure, BASS-II material categories on O₂ only). "
+             "It counts available records; it is not a safety score."},
+    {"id": "no_evidence", "section": "Dashboard indicators and Gaps",
+     "re": r"\bwithout evidence\b|\bno evidence\b|\bconditions? (with(out)? |lacking )?evidence\b",
+     "text": "Conditions without evidence: {n_empty_cells} of {n_cells} cells of the FLEX grid (fuel × O₂ band × pressure level) have no test. For the selected atmosphere the strip also counts fuel × suppressant "
+             "combinations with no test within tolerance. Open Gaps for the details."},
+    {"id": "unresolved", "section": "Dashboard, interpretation card",
+     "re": r"\bunresolved\b|\buncertaint\w*\b|\bopen questions?\b|\bwhat (is|are) (still )?(unknown|uncertain)\b",
+     "text": "\"What remains unresolved\" (third block of the interpretation card) lists what the data cannot settle for the selected atmosphere: no exact tests, small n, CO₂ and He confounded with O₂, an unverified source, "
+             "BASS-II outcomes not stated, microgravity on the ISS only, samples unlike a habitat, and records of past tests only. Each item links to Gaps or Methods."},
+    {"id": "experiments_view", "section": "Experiments",
+     "re": r"\bexperiments?\b.{0,15}\b(tab|view|page|section|screen|table)\b|\bwhat is (the )?experiments\b|\bexplore tests\b|\bwhat (can|do) i (do|see) (in|on) (the )?experiments\b",
+     "text": "Experiments lists all {n_tests} tests, ordered by relevance to the selected atmosphere, with search, filters (investigation, fuel or material, O₂ and pressure ranges, declared outcome, complete or partial, "
+             "n, AI-extracted, relevance) and a detail panel per test. Filters are kept in the page address."},
     {"id": "views", "section": "Top bar and dock",
      "re": r"\b(what|which|que|cuales)\b.{0,25}\b(views?|sections?|tabs?|pages?|screens?|menus?|vistas?|secciones|pestanas)\b|\bnavigation\b|\bnavigate\b|\bnavegar\b|\bmenu\b|\btop bar\b|\bbarra superior\b|\bwhat (does|do|is) (each|every) (view|tab|section|button)\b|\bwhat is (the )?dashboard\b|\bwhat is (the )?(experiments?|charts?|materials?|sources?) (view|tab|section)\b",
      "text": "Views: Dashboard (atmosphere cards and the flame picture), Coverage (which conditions have tests), Gaps (what the data does not cover), and full views from the top bar: "
@@ -134,6 +158,13 @@ TOPICS: List[Dict[str, str]] = [
            r"\b(sample|example|suggested) questions?\b|\bexamples? of questions?\b|\bsuggest\w*\b|\bwhat (are )?you good (for|at)\b|\bwhat is your (purpose|job|role)\b",
      "text": "I can explain this page and answer questions about the NASA PSI combustion data it shows ({n_tests} ISS tests). Try one of the questions below."},
 ]
+
+# Los temas de indicadores/vistas (mentora) van antes de "custom"/"coverage"/"gaps" para que "scenario coverage" no caiga en "coverage".
+_EARLY = ["relevance_order", "complete_partial", "scenario_coverage", "no_evidence", "unresolved", "experiments_view"]
+_early = [t for t in TOPICS if t["id"] in _EARLY]
+_rest = [t for t in TOPICS if t["id"] not in _EARLY]
+_at = next(i for i, t in enumerate(_rest) if t["id"] == "custom")
+TOPICS[:] = _rest[:_at] + _early + _rest[_at:]
 
 # Duda razonable sobre la propia página → "site". Requiere un sustantivo de la página Y una palabra de pregunta/acción.
 GENERIC_NOUN_RE = r"\b(page|pagina|site|sitio|website|web|dashboard|tablero|app|application|aplicacion|tool|herramienta|interface|interfaz|screen|pantalla|assistant|asistente|chatbot)\b"

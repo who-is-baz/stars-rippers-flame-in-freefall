@@ -18,9 +18,12 @@ A one-page dashboard (works fully as a static site, with no server and no AI mod
   marked "Unverified source" until a team member confirms the citation.
 - **Custom explorer:** the user sets fuel, O2, pressure and suppressant (CO2/He). The site retrieves the FLEX tests observed
   within the tolerance and shows n, outcome counts, mean burning rate and mean extinction diameter (extinction tests only).
-  A chamber illustration responds to those observed tests: brightness follows the observed mean burning rate on one fixed
+  A chamber illustration (a conceptual picture, not a simulation) responds to those observed tests: brightness follows the observed mean burning rate on one fixed
   scale; it is grey when n < 5 and empty (hatched, no numbers) when no test is close, with up to 3 closest tested
   conditions. It never interpolates or extrapolates.
+- **Indicators and interpretation (for any scenario or Custom setting):** a strip shows Tests (403), Investigations (2), Complete (283 of 403) and Partial (120 of 403; "complete" means a declared outcome plus the key fields of its investigation, and 26 complete BASS-II outcomes are AI-extracted), Scenario coverage (X of 9 fuel and material groups with at least one test within tolerance) and Conditions without evidence (10 of 30 FLEX grid cells, plus fuel × suppressant combinations with no test near the selected atmosphere). A card then lists the most useful evidence (the 3 closest tests), a descriptive summary of the nearest tests with their n, and what remains unresolved (no exact tests, small n, CO2/He confounded with O2, unverified source, outcomes not stated, microgravity only, samples unlike a habitat). It says: "Descriptive summary of NASA test records. Not a safety assessment or a forecast."
+- **Experiments view:** all 403 tests with search and filters (investigation, fuel or material, O2 and pressure ranges, declared outcome, complete or partial, n, AI-extracted, relevance), ordered by a transparent relevance formula (Exact, then Near, then Not near, then no recorded pressure; inside a class by distance max(|ΔO2|/tolerance, |Δpsi|/tolerance), then declared outcome, then larger n). It orders records by closeness of conditions; it is not a safety ranking. Each test has a detail panel with "Why relevant" and "What this test cannot tell us".
+- **Camera instruments:** oxygen and pressure meters (Earth reference marks) and an airflow indicator. Airflow is shown as a measured range only where the matching tests have one (BASS-II air speed, read from notes by AI); otherwise it is labelled "Airflow (conceptual)": "Not a measured variable in the matching tests".
 - **Coverage map:** FLEX fuel × O2 band × pressure level. 20 of 30 cells have tests; 10 are empty.
 - **Experiment table:** all 403 tests, filterable, with quality flags and CSV export.
 - **Fuels:** heptane vs methanol burning rate by O2 band (descriptive, with n).
@@ -39,7 +42,7 @@ files; nothing is typed by hand. Doubtful values are not corrected but flagged (
 extracted by AI from free-text notes and are labelled as such.
 
 The optional API (Python, FastAPI) serves the same queries. Its `/ask` endpoint lets a local model **choose one of a fixed
-list of query functions** (it cannot write SQL or run anything else) and draft at most 3 sentences from the result. Code
+list of query functions** (including "most relevant tests for an atmosphere", which uses the same relevance order as the Experiments view) (it cannot write SQL or run anything else) and draft at most 3 sentences from the result. Code
 then checks the text: every number must appear in the query result, and words such as "safe", "will" or "predict" are
 rejected, as are claims about the Moon, Mars or a single gas causing an effect. If the check fails, a fixed template
 built from the data is shown instead. Citations (DOI and test IDs) are always added by code, never by the model.
@@ -53,6 +56,7 @@ The public site does not depend on it.
 - **All data are microgravity on the ISS.** There is no partial-gravity (Moon/Mars) or normal-gravity data in PSI, so the
   site makes no claim about how fire behaves on the Moon.
 - The expected Moon-base air has **no exact test**; the 17 "near" tests are near, not lunar.
+- **There is no safety ranking and no extended catalogue of investigations:** we use only the two PSI investigations (FLEX and BASS-II); relevance and coverage count available records and never rate hazard.
 - CO2 and helium effects are confounded with oxygen; we do not attribute effects to one gas.
 - Cells with n < 5 always carry a warning. "Disruption" is not defined by the FLEX documents.
 - BASS-II has no recorded pressure, and 103 of 129 tests have no stated outcome ("not stated" does not mean the flame went out).
@@ -72,4 +76,4 @@ SVG/CSS for all graphics (no 3D library), Ollama for optional local models, GitH
 (Claude Code and claude.ai). Team: Stars Rippers, Universidad Politécnica de Querétaro (UPQ), NASA Space Apps 2026, UNAQ.
 
 ---
-Length: ~6,050 characters (~990 words). No limit stated in the 2026 guide: **MANUAL — check the live form counter**; if it is shorter, cut the "Benefits" and "Tools" sections first.
+Length: ~8,382 characters (~1349 words). No limit stated in the 2026 guide: **MANUAL — check the live form counter**; if it is shorter, cut the "Benefits" and "Tools" sections first.

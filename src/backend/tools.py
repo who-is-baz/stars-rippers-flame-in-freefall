@@ -13,6 +13,7 @@ from typing import Callable, Dict, List, Literal, Optional, Type
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from . import data
+from . import relevance as R
 
 q, sc = data.q, data.sc
 
@@ -94,6 +95,22 @@ class ScenarioArgs(Args):
     scenario_id: Literal["earth_iss", "lunar_challenge", "lunar_nasa", "exploration", "suit"]
 
 
+class RelevantArgs(Args):
+    scenario_id: Optional[Literal["earth_iss", "lunar_challenge", "lunar_nasa", "exploration", "suit"]] = None
+    o2: Optional[float] = Field(None, ge=0, le=1, description="custom atmosphere: O2 fraction (0-1), together with pressure_psi")
+    pressure_psi: Optional[float] = Field(None, ge=0, le=60, description="custom atmosphere: pressure in psi, together with o2")
+    limit: int = Field(5, ge=1, le=10)
+
+    @model_validator(mode="after")
+    def _one_atmosphere(self):
+        custom = self.o2 is not None or self.pressure_psi is not None
+        if (self.scenario_id is None) == (not custom):
+            raise ValueError("give either scenario_id or both o2 and pressure_psi")
+        if custom and (self.o2 is None or self.pressure_psi is None):
+            raise ValueError("a custom atmosphere needs both o2 and pressure_psi")
+        return self
+
+
 class NoArgs(Args):
     pass
 
@@ -165,6 +182,25 @@ def _run_scenario(con, a: ScenarioArgs) -> dict:
     return out
 
 
+def _run_relevant(con, a: RelevantArgs) -> dict:
+    rows = q.list_experiments(con, limit=q.MAX_LIMIT)["items"]
+    if a.scenario_id:
+        o2, p = R.scenario_criteria(a.scenario_id)
+        label = sc.get(a.scenario_id)["label"]
+    else:
+        o2, p, label = {"kind": "point", "value": a.o2}, {"kind": "point", "value": a.pressure_psi}, f"custom {a.o2 * 100:g}% O2, {a.pressure_psi:g} psi"
+    ranked = R.rank(rows, o2, p)
+    counts = R.counts(ranked)
+    top = ranked[: a.limit]
+    items = [{"test_id": x["row"]["test_id"], "program": x["row"]["program"], "fuel_or_material": x["row"]["material_or_fuel"] if x["row"]["program"] == "FLEX" else x["row"]["material_category"],
+              "relevance": x["relevance"], "d_o2_pp": round(x["d_o2"] * 100, 2) + 0.0, "d_psi": None if x["d_psi"] is None else round(x["d_psi"], 2) + 0.0,
+              "distance": round(x["distance"], 2), "n": x["n"], "outcome": x["row"]["outcome"], "source_doi": x["row"]["source_doi"]} for x in top]
+    ids: Dict[str, List[str]] = {}
+    for it in items:
+        ids.setdefault(it["source_doi"], []).append(it["test_id"])
+    return {"label": label, "counts": counts, "n_exact": counts["exact"], "n_near": counts["near"], "total": len(ranked), "items": items, "_ids": ids}
+
+
 def _run_meta(con, a: NoArgs) -> dict:
     m = q.meta(con)
     progs = [{k: p[k] for k in ("program", "n", "o2_min", "o2_max", "pressure_min", "pressure_max", "source_doi")}
@@ -200,6 +236,10 @@ TOOLS: Dict[str, Tool] = {t.name: t for t in [
                      "(>=30% O2, <=10.2 psi, Moon base), lunar_nasa (26.5%, 10.2 psi), exploration (34%, 8.2 psi), "
                      "suit (100%, 4.3 psi). Returns exact and near counts.",
          ScenarioArgs, _run_scenario),
+    Tool("most_relevant_tests", "The tests whose conditions are closest to an atmosphere, in the same order as the Experiments view "
+         "(Exact, then Near, then Not near; closeness of conditions only, never a safety ranking). Give scenario_id "
+         "(earth_iss, lunar_challenge, lunar_nasa, exploration, suit) or a custom o2 and pressure_psi; limit = how many to list.",
+         RelevantArgs, _run_relevant),
     Tool("meta", "Dataset overview: programs, number of tests, O2 and pressure ranges, DOIs.", NoArgs, _run_meta),
 ]}
 
@@ -231,6 +271,8 @@ class ToolResult:
             return r["n_near"] == 0
         if self.name == "list_experiments":
             return r["total"] == 0
+        if self.name == "most_relevant_tests":
+            return len(r["items"]) == 0
         return sum(x.get("n", 1) for x in r.get("rows", [])) == 0
 
     def citations(self) -> List[dict]:
@@ -363,6 +405,13 @@ def template(tr: ToolResult) -> str:
                 f"±0.01 O2 and ±0.5 psi): {_f(n['psi_min'], 2)}-{_f(n['psi_max'], 2)} psi, O2 "
                 f"{_f(n['o2_min'])}-{_f(n['o2_max'])}; outcomes: {outc}. These are near tests run in microgravity "
                 "on the ISS, not tests of that environment.")
+    if name == "most_relevant_tests":
+        def one(x):
+            dpsi = "no pressure recorded" if x["d_psi"] is None else f"Δpsi {x['d_psi']:+g}"
+            return f"{x['test_id']} ({x['fuel_or_material']}, {R.LABEL[x['relevance']]}, ΔO2 {x['d_o2_pp']:+g} pp, {dpsi}, n={x['n']})"
+        lead = (f"Most relevant to {r['label']} ({r['n_exact']} exact, {r['n_near']} near of {r['total']} tests): " if r["n_exact"] + r["n_near"] > 0
+                else f"No test is exact or near {r['label']}. The closest by distance of conditions (not this atmosphere) are: ")
+        return lead + "; ".join(one(x) for x in r["items"]) + ". Ordered by closeness of conditions, not a safety ranking."
     if name == "meta":
         progs = "; ".join(f"{p['program']} {p['n']} tests (O2 {_f(p['o2_min'])}-{_f(p['o2_max'])})" for p in r["programs"])
         return f"{r['n_tests']} tests from NASA PSI: {progs}. {MICROGRAVITY_NOTE}"

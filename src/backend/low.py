@@ -39,6 +39,8 @@ class Route:
 
 # (regex, answer_id) — mismo orden y mismas expresiones que engine.ts, con equivalentes en español.
 PRECOMPUTED_RULES = [
+    (re.compile(r"(most relevant|relevan)", re.I), "q11"),
+    (re.compile(r"(can'?t|cannot|can not)\b.{0,20}\btell", re.I), "q12"),
     (re.compile(r"(gravity|gravedad|partial|parcial|mars|martian|marte)", re.I), "q10"),
     (re.compile(r"(exploration|exploraci[oó]n|8\.2)", re.I), "q04"),
     (re.compile(r"(suit|traje|\beva\b|4\.3)", re.I), "q05"),
@@ -92,6 +94,19 @@ def _suggested(db_path=None) -> set:
     return _SUG[db_path]
 
 
+SCENARIO_WORDS = [  # (patrón, id de escenario): el primero que coincide
+    (re.compile(r"moon.?base|challenge|expected moon", re.I), "lunar_challenge"),
+    (re.compile(r"lunar habitat|nasa lunar|habitat", re.I), "lunar_nasa"),
+    (re.compile(r"exploration", re.I), "exploration"),
+    (re.compile(r"suit|\beva\b", re.I), "suit"),
+    (re.compile(r"earth|\biss\b|cabin|sea level", re.I), "earth_iss"),
+]
+
+
+def scenario_in(text: str):
+    return next((sid for rx, sid in SCENARIO_WORDS if rx.search(text)), None)
+
+
 def route(question: str, db_path=None) -> Route:
     text = scope.normalize(question)
     if scope.hard_block(text):  # inyección, jailbreak o tarea ajena: negativa fija, sin modelo
@@ -104,6 +119,11 @@ def route(question: str, db_path=None) -> Route:
         topic = about.match_topic(text)
         if topic:  # pregunta sobre la propia página: texto fijo, sin modelo ni herramientas
             return Route("about", about_id=topic, guard=True)
+    if re.search(r"relevan", text, re.I) and about.key(text) not in _suggested(db_path):
+        sid = scenario_in(text)  # "most relevant tests for X": la herramienta con el MISMO orden que la vista Experiments
+        if sid:
+            return Route("tool", tool="most_relevant_tests", args={"scenario_id": sid})
+        return Route("about", about_id="relevance_order", guard=True)
     if not scope.has_topic(text):
         if about.generic_site(text):  # duda razonable sobre la página → about
             return Route("about", about_id="site", guard=True)

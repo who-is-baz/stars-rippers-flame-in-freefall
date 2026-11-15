@@ -2,6 +2,7 @@
 // from them, see scripts/gen_scope_ts.py). Anything outside the PSI data and this page gets one fixed refusal; questions
 // about the page itself get a fixed "about the site" answer with figures computed from the data. No model either way.
 import type { DataBundle } from '../data/DataProvider';
+import { completeness } from '../lib/indicators';
 import {
   ABOUT_GREETING, ABOUT_NOUN_RE, ABOUT_SUGGESTIONS, ABOUT_TOPICS, ABOUT_TYPOS, ABOUT_VERB_RE,
   DISALLOWED_RE, ID_RE, INJECTION_RE, LIVE_RE, REFUSAL_TEXT, SAFETY_RE, TOPIC_RE,
@@ -63,7 +64,9 @@ export function siteFacts(d: DataBundle): Record<string, string | number> {
   const doi = (p: string) => d.meta.programs.find((x) => x.program === p)?.source_doi ?? '';
   const moon = d.scenarios.scenarios.find((s) => s.id === 'lunar_challenge');
   const gap = (id: string) => d.gaps.gaps.find((x) => x.id === id)?.evidence as Record<string, number> | undefined;
+  const comp = completeness(d.experiments.items);
   return {
+    n_complete: comp.complete, n_partial: comp.partial, n_complete_ai: comp.completeAiExtracted, n_empty_cells: d.coverage.n_cells_empty,
     n_tests: d.meta.programs.reduce((a, p) => a + p.n, 0), n_flex: n('FLEX'), n_bass: n('BASS-II'),
     doi_flex: doi('FLEX'), doi_bass: doi('BASS-II'),
     tol_o2: g(d.meta.tolerance.o2_fraction * 100), tol_psi: String(d.meta.tolerance.pressure_psi), min_n: d.meta.min_n,

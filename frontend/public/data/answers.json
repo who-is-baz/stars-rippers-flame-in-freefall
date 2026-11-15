@@ -271,6 +271,55 @@
    "no_data": true,
    "warnings": [],
    "level": "low"
+  },
+  {
+   "id": "q11",
+   "question": "Which tests are most relevant to the lunar habitat scenario?",
+   "answer": "No test is exact or near NASA lunar surface habitat (nominal). The closest by distance of conditions (not this scenario) are 053F001 (methanol, ΔO2 -1.5 pp, Δpsi +0.19); 053R001 (methanol, ΔO2 -1.5 pp, Δpsi +0.19); 141F001 (methanol, ΔO2 -1.5 pp, Δpsi +0.21); 141R001 (methanol, ΔO2 -1.5 pp, Δpsi +0.23); 061F002 (heptane, ΔO2 -1.5 pp, Δpsi +0.17). Ordered by closeness of conditions, not a safety ranking. The source of this scenario is unverified.",
+   "citations": [
+    {
+     "query": "most_relevant_tests",
+     "params": {
+      "scenario_id": "lunar_nasa",
+      "limit": 5
+     },
+     "source_doi": "10.60555/mbq8-0451",
+     "test_ids": [
+      "053F001",
+      "053R001",
+      "141F001",
+      "141R001",
+      "061F002"
+     ]
+    }
+   ],
+   "no_data": false,
+   "warnings": [
+    "Unverified source: the O2 and pressure values of this scenario are not confirmed yet."
+   ],
+   "level": "low"
+  },
+  {
+   "id": "q12",
+   "question": "What can't the data tell us about this atmosphere?",
+   "answer": "For any atmosphere: all 403 tests are microgravity on the ISS; samples are not habitat materials; CO2 and He are confounded with O2; 103 of 129 BASS-II outcomes are not stated. 4 of 5 reference atmospheres have no exact test and 3 have no test within tolerance. Select an atmosphere and read \"What remains unresolved\" for its own list.",
+   "citations": [
+    {
+     "query": "scenarios",
+     "params": {},
+     "source_doi": "10.60555/mbq8-0451",
+     "test_ids": []
+    },
+    {
+     "query": "scenarios",
+     "params": {},
+     "source_doi": "10.60555/4qc4-de67",
+     "test_ids": []
+    }
+   ],
+   "no_data": false,
+   "warnings": [],
+   "level": "low"
   }
  ]
 }

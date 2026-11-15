@@ -5,6 +5,7 @@
 import type { DataBundle } from '../data/DataProvider';
 import type { Citation, ExperimentRow } from '../data/types';
 import { fmtDiameter, fmtO2, fmtPressure, fmtRate } from '../lib/format';
+import { rankByRelevance, relevanceCounts, RELEVANCE_LABEL } from '../lib/relevance';
 import { LIVE_RE, REFUSAL_TEXT, SAFETY_RE, SUGGESTIONS, SUGGEST_TOPICS, aboutKey, genericSite, hardBlock, hasTopic, matchAbout, normalize, renderAbout } from './scope';
 import { DISRUPTION_SHORT, LOW_CONFIDENCE_WARNING, hasLowConfidence, outcomeLabel } from '../lib/honesty';
 
@@ -61,6 +62,8 @@ const countCited = (c: Citation[]): number | null => {
 // Order matters: specific topics first, the generic "how many tests" rule last.
 const RULES: { re: RegExp; id: string }[] = [
   { re: /\b(today|right now|latest|live|real[- ]?time|currently|hoy|en vivo|ahora mismo)\b/i, id: 'live' },
+  { re: /(most relevant|relevan)/i, id: 'q11' },
+  { re: /(can'?t|cannot|can not)\b.{0,20}\btell/i, id: 'q12' },
   { re: /(gravity|gravedad|partial|parcial|mars|martian|marte)/i, id: 'q10' },
   { re: /(exploration|exploraci[oó]n|8\.2)/i, id: 'q04' },
   { re: /(suit|traje|\beva\b|4\.3)/i, id: 'q05' },
@@ -110,6 +113,28 @@ function lookupTest(question: string, rows: ExperimentRow[]): Reply | null {
   return base(hits.map(describeRow).join(' '), { citations, warnings, n: hits.length });
 }
 
+const SCENARIO_WORDS: [RegExp, string][] = [
+  [/moon.?base|challenge|expected moon/i, 'lunar_challenge'], [/lunar habitat|nasa lunar|habitat/i, 'lunar_nasa'],
+  [/exploration/i, 'exploration'], [/suit|\beva\b/i, 'suit'], [/earth|\biss\b|cabin|sea level/i, 'earth_iss'],
+];
+const sgn2 = (x: number, nd: number) => `${x >= 0 ? '+' : ''}${(+x.toFixed(nd) + 0).toString()}`;
+
+// "Which tests are most relevant to <scenario>?": same order as the Experiments view (lib/relevance.ts), top 5, cited by code.
+function relevantReply(scenarioId: string, data: DataBundle): Reply | null {
+  const s = data.scenarios.scenarios.find((x) => x.id === scenarioId);
+  if (!s) return null;
+  const ranked = rankByRelevance(data.experiments.items, { o2: s.criteria.o2, pressure_psi: s.criteria.pressure_psi }, data.meta);
+  const c = relevanceCounts(ranked);
+  const top = ranked.slice(0, 5);
+  const one = (x: (typeof top)[number]) => `${x.row.test_id} (${x.row.program === 'FLEX' ? x.row.material_or_fuel : x.row.material_category}, ${RELEVANCE_LABEL[x.relevance]}, ΔO2 ${sgn2(x.dO2 * 100, 2)} pp, ${x.dPsi == null ? 'no pressure recorded' : `Δpsi ${sgn2(x.dPsi, 2)}`}, n=${x.n})`;
+  const lead = c.exact + c.near > 0 ? `Most relevant to ${s.label} (${c.exact} exact, ${c.near} near of ${ranked.length} tests): ` : `No test is exact or near ${s.label}. The closest by distance of conditions (not this atmosphere) are: `;
+  const ids = top.map((x) => x.row.test_id);
+  return base(`${lead}${top.map(one).join('; ')}. Ordered by closeness of conditions, not a safety ranking.`, {
+    citations: [{ query: 'most_relevant_tests', params: { scenario_id: scenarioId }, source_doi: data.meta.programs[0].source_doi, test_ids: ids }], n: ids.length,
+    warnings: s.verified ? [] : ['Unverified source: the O2 and pressure values of this scenario are not confirmed yet.'],
+  });
+}
+
 const refusal = (): Reply => base(OUT_OF_SCOPE, { outOfScope: true, noData: true, suggestions: SUGGESTIONS });
 const aboutReply = (id: string, data: DataBundle): Reply => {
   const a = renderAbout(id, data);
@@ -126,6 +151,10 @@ export function answerBasic(rawQuestion: string, data: DataBundle): Reply {
   if (!suggested.has(aboutKey(question))) {
     const topic = matchAbout(question);
     if (topic) return aboutReply(topic, data);
+  }
+  if (/relevan/i.test(question) && !suggested.has(aboutKey(question))) {
+    const sid = SCENARIO_WORDS.find(([rx]) => rx.test(question))?.[1];
+    return (sid ? relevantReply(sid, data) : null) ?? aboutReply('relevance_order', data);
   }
   if (!hasTopic(question)) return genericSite(question) ? aboutReply('site', data) : refusal();
   if (LIVE_RE.test(question)) return base(NO_LIVE_DATA, { noData: true });

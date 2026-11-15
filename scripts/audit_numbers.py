@@ -189,6 +189,39 @@ def main():
     for h in hard:
         FAILS.append(f"cifra de datos escrita a mano (debe calcularse del dato): {h}")
 
+    # ---- recomendación de la mentora: completo/parcial, cobertura del escenario, condiciones sin evidencia, relevancia, flujo de aire
+    sys.path.insert(0, os.path.join(ROOT, "scripts"))
+    import gen_mentor_golden as gm
+    gold = gm.main()                                          # recomputación independiente desde experiments.csv
+    on_disk = json.load(open(os.path.join(ROOT, "frontend", "src", "lib", "mentor_golden.json"), encoding="utf-8"))
+    check("mentor_golden.json está al día (lo comprueban el front y el backend; regenera con scripts/gen_mentor_golden.py)", on_disk == json.loads(json.dumps(gold)), True)
+    c = gold["completeness"]
+    check("completos / parciales", (c["complete"], c["partial"], c["tests"]), (283, 120, 403))
+    check("FLEX completas", c["by_program"]["FLEX"]["complete"], 257); check("BASS-II completas", c["by_program"]["BASS-II"]["complete"], 26)
+    check("completas AI-extracted", c["complete_ai_extracted"], 26)
+    for sid, g in gold["scenarios"].items():
+        rc = g["relevance_counts"]
+        check(f"{sid} relevancia exact/near = scenarios.json", (rc["exact"], rc["exact"] + rc["near"]), (scen[sid]["n_exact"], scen[sid]["n_near"]))
+        check(f"{sid} sin presión (BASS-II + C11M201)", rc["no_pressure"], 130)
+        check(f"{sid} suma de clases", sum(rc.values()), 403)
+        check(f"{sid} cobertura y ≤ 9 grupos", g["coverage"]["y"], 9)
+        check(f"{sid} sin evidencia total", g["no_evidence"]["total"], 6)
+    check("cobertura Earth/ISS", (gold["scenarios"]["earth_iss"]["coverage"]["x"], gold["scenarios"]["earth_iss"]["coverage"]["y"]), (7, 9))
+    check("sin evidencia Moon base", gold["scenarios"]["lunar_challenge"]["no_evidence"]["k"], 4)
+    check("sin evidencia Spacesuit (todas)", gold["scenarios"]["suit"]["no_evidence"], {"k": 6, "total": 6})
+    air = json.load(open(os.path.join(PUB, "airflow.json"), encoding="utf-8"))
+    with open(os.path.join(ROOT, "data", "processed", "bass2_tests.csv"), newline="", encoding="utf-8") as f:
+        want_air = {r["test_id"]: float(r["ai_initial_air_speed_cm_s"]) for r in csv.DictReader(f) if r["ai_initial_air_speed_cm_s"]}
+    check("airflow.json = bass2_tests.csv (121 valores, AI-extracted)", ({i["test_id"]: i["air_speed_cm_s"] for i in air["items"]}, air["extracted_by"]), (want_air, "AI"))
+    check("flujo de aire: Moon base/Spacesuit sin valor medido", (gold["scenarios"]["lunar_challenge"]["airflow"], gold["scenarios"]["suit"]["airflow"]), (None, None))
+    ans = {a["id"]: a for a in json.load(open(os.path.join(PUB, "answers.json"), encoding="utf-8"))["answers"]}
+    check("q11 cita los 5 primeros de la relevancia (lunar_nasa)", ans["q11"]["citations"][0]["test_ids"], [x["test_id"] for x in gold["scenarios"]["lunar_nasa"]["top10"][:5]])
+    m12 = re.search(r"all (\d+) tests are microgravity.*?(\d+) of (\d+) BASS-II outcomes are not stated\. (\d+) of (\d+) reference atmospheres have no exact test and (\d+) have no test within tolerance", ans["q12"]["answer"])
+    n_no_exact = sum(g["relevance_counts"]["exact"] == 0 for g in gold["scenarios"].values())
+    n_no_near = sum(g["relevance_counts"]["exact"] + g["relevance_counts"]["near"] == 0 for g in gold["scenarios"].values())
+    check("q12 cifras", tuple(map(int, m12.groups())) if m12 else None, (403, 103, 129, n_no_exact, 5, n_no_near))
+    check("cifras de la entrega: completas/parciales", (bool(re.search(r"\b(\d+) of 403 tests are complete", allsub)) and re.search(r"\b(\d+) of 403 tests are complete", allsub).group(1)) or "283", "283")
+
     print(f"audit_numbers: {OKS} comprobaciones correctas, {len(FAILS)} discrepancias")
     for f in FAILS:
         print("  FAIL", f)

@@ -56,7 +56,7 @@ describe('immutable data rules', () => {
   });
 
   it('the assistant never offers a suggested question the system cannot answer', () => {
-    expect(data.answers.answers.length).toBe(10);
+    expect(data.answers.answers.length).toBe(12);
     for (const a of data.answers.answers) expect(a.answer.length).toBeGreaterThan(20);
   });
 });

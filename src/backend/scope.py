@@ -45,7 +45,7 @@ DISALLOWED_RE = re.compile(
     r"\bjoke\b|chiste|poem|poema|recipe|receta|horoscope|lottery|weather|clima|stock price|bitcoin|crypto|"
     r"election|elecci[oó]n|president|presidente|politic|pol[ií]tic|religion|football|f[uú]tbol|movie|pel[ií]cula|"
     r"capital (of|de)|who (is|was|won)|qui[eé]n (es|fue|gan[oó])|what is the meaning|"
-    r"solve|integral|derivative|equation|ecuaci[oó]n|\bcalculate\b.*\b(tip|tax|loan|mortgage)\b|"
+    r"\bsolve\b|integral|derivative|equation|ecuaci[oó]n|\bcalculate\b.*\b(tip|tax|loan|mortgage)\b|"
     r"\b\d+\s*[-+*/x×÷^]\s*\d+\s*(=|\?)|what is \d+\s*[-+*/x×÷^]\s*\d+|"
     r"apollo|artemis|spacex|starship|iss (crew|astronaut)|astronaut|astronauta|mission to)", re.I)
 

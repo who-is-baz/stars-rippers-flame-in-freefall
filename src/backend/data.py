@@ -87,7 +87,7 @@ def _g(x, nd=None) -> str:
     return f"{round(x, nd):g}" if nd is not None else f"{x:g}"
 
 
-def site_facts(con, db_path: Optional[str] = None) -> dict:
+def site_facts(con, db_path: Optional[str] = None) -> dict:  # noqa: C901
     """Cifras para los textos "about the site": todas calculadas de los datos (nada escrito a mano)."""
     m = q.meta(con)
     n = {p["program"]: p["n"] for p in m["programs"]}
@@ -95,7 +95,12 @@ def site_facts(con, db_path: Optional[str] = None) -> dict:
     scen = {s["id"]: s for s in pre["scenarios"]["scenarios"]}
     gaps = {g["id"]: g for g in pre["gaps"]["gaps"]}
     cov = pre["coverage"]
+    from . import relevance as R
+    rows = q.list_experiments(con, limit=q.MAX_LIMIT)["items"]
+    n_complete = sum(R.is_complete(r) for r in rows)
     return {
+        "n_complete": n_complete, "n_partial": len(rows) - n_complete,
+        "n_complete_ai": sum(R.is_complete(r) and r["outcome_source"] == "ai_extracted" for r in rows), "n_empty_cells": cov["n_cells_empty"],
         "n_tests": sum(n.values()), "n_flex": n["FLEX"], "n_bass": n["BASS-II"],
         "doi_flex": DOI["FLEX"], "doi_bass": DOI["BASS-II"],
         "tol_o2": _g(sc.TOLERANCE["o2_fraction"] * 100, 2), "tol_psi": _g(sc.TOLERANCE["pressure_psi"]),

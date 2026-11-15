@@ -454,3 +454,11 @@ Yael pidió que Claude tomara las decisiones abiertas.
 2. **Cámara fija:** sin rotación por arrastre, sin zoom con rueda, sin botones +/−/reset; el scroll de la página funciona sobre la escena (verificado a 390/768/1280 px).
 3. **Llamas:** apariencia ilustrativa por O₂ y presión (`lib/flameLook.ts`), palito de fósforo, partículas de oxígeno por difusión, referencia "Earth 1 g (illustration)" con aviso obligatorio, atenuación sin pruebas y `prefers-reduced-motion`. Capturas en `docs/screenshots/flame-*.png` revisadas por la IA.
 4. Lighthouse móvil 95/100/100/100; Playwright estático raíz y subdirectorio: 0 errores. Revisión humana pendiente de los textos "about" y del aspecto de las llamas.
+
+## 2026-11-15 (32) — Recomendaciones de la mentora: indicadores, interpretación, vista Experiments, instrumentos y asistente — Claude (Fable 5.2 / Sonnet 5.5, Claude Code)
+
+1. **Parte A:** `lib/indicators.ts`, `lib/interpretation.ts`, franja de indicadores y tarjeta "What do these tests tell us?" (definiciones en DECISIONES y Methods & Sources).
+2. **Parte B:** vista Experiments (`ExperimentTable.tsx` ampliada, `TestDrawer.tsx`, `lib/relevance.ts`, `lib/experimentsView.ts`), el dock lleva a ella; se elimina el explorador compacto duplicado.
+3. **Parte C:** `SceneInstruments.tsx` (O₂, presión, flujo); `airflow.json` generado por el script del repo desde `bass2_tests.csv` (velocidad de aire extraída por IA, solo BASS-II).
+4. **Parte D:** herramienta `most_relevant_tests`, `src/relevance.py`, temas "about" y preguntas q11/q12, `scripts/gen_mentor_golden.py`, `audit_numbers.py` ampliado (220 comprobaciones), documentos de entrega y capturas.
+5. **Modelos reales (mismo día):** se probaron llama3.2:3b y qwen3:8b (`docs/bench/DIAGNOSTICO.md`); eso llevó a endurecer el verificador. Pytest 864, Vitest 421. Revisión humana pendiente de definiciones, textos y capturas.

@@ -717,6 +717,101 @@
    "topic": "scenarios"
   },
   {
+   "q": "how is relevance computed",
+   "expect": "about",
+   "topic": "relevance_order"
+  },
+  {
+   "q": "how are the tests ordered",
+   "expect": "about",
+   "topic": "relevance_order"
+  },
+  {
+   "q": "what is the relevance order",
+   "expect": "about",
+   "topic": "relevance_order"
+  },
+  {
+   "q": "how does the relevance formula work",
+   "expect": "about",
+   "topic": "relevance_order"
+  },
+  {
+   "q": "how are the experiments sorted",
+   "expect": "about",
+   "topic": "relevance_order"
+  },
+  {
+   "q": "what does complete mean",
+   "expect": "about",
+   "topic": "complete_partial"
+  },
+  {
+   "q": "what is a partial test",
+   "expect": "about",
+   "topic": "complete_partial"
+  },
+  {
+   "q": "what is complete vs partial",
+   "expect": "about",
+   "topic": "complete_partial"
+  },
+  {
+   "q": "how many tests are complete",
+   "expect": "about",
+   "topic": "complete_partial"
+  },
+  {
+   "q": "what is scenario coverage",
+   "expect": "about",
+   "topic": "scenario_coverage"
+  },
+  {
+   "q": "what does the scenario coverage number mean",
+   "expect": "about",
+   "topic": "scenario_coverage"
+  },
+  {
+   "q": "what does without evidence mean",
+   "expect": "about",
+   "topic": "no_evidence"
+  },
+  {
+   "q": "what are conditions without evidence",
+   "expect": "about",
+   "topic": "no_evidence"
+  },
+  {
+   "q": "what remains unresolved",
+   "expect": "about",
+   "topic": "unresolved"
+  },
+  {
+   "q": "what are the open questions",
+   "expect": "about",
+   "topic": "unresolved"
+  },
+  {
+   "q": "what uncertainties does the data have",
+   "expect": "about",
+   "topic": "unresolved"
+  },
+  {
+   "q": "what is the experiments tab",
+   "expect": "about",
+   "topic": "experiments_view"
+  },
+  {
+   "q": "what can I do in the experiments view",
+   "expect": "about",
+   "topic": "experiments_view"
+  },
+  {
+   "q": "what is the experiments page",
+   "expect": "about",
+   "topic": "experiments_view"
+  },
+  {
    "q": "what views are there",
    "expect": "about",
    "topic": "views"
@@ -740,6 +835,18 @@
    "q": "which tabs are there",
    "expect": "about",
    "topic": "views"
+  },
+  {
+   "q": "Which tests are most relevant to the lunar habitat scenario?",
+   "expect": "answer"
+  },
+  {
+   "q": "What can't the data tell us about this atmosphere?",
+   "expect": "answer"
+  },
+  {
+   "q": "which tests are most relevant to the moon base",
+   "expect": "answer"
   },
   {
    "q": "Tell me about FLEX test 20CAL08",

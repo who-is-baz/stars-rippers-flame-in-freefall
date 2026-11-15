@@ -78,7 +78,7 @@ def test_materials_cover_all_bass2_and_none_non_flammable():
 
 def test_answers_have_citations_or_no_data():
     a = _load("answers.json")["answers"]
-    assert len(a) == 10
+    assert len(a) == 12  # 10 originales + 2 de la mentora (q11, q12)
     for x in a:
         assert x["answer"] and (x["citations"] or x["no_data"])
     gravity = next(x for x in a if "lunar gravity" in x["question"])
