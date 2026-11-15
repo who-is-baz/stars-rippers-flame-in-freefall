@@ -1,9 +1,8 @@
 # SETUP · Cómo empezar a trabajar en el repo
 
-Guía para un compañero nuevo. Python **3.12** (Linux/macOS; en Windows usa `py -3.12` y `.venv\Scripts\activate`).
+Python **3.12** (Linux/macOS; en Windows usa `py -3.12` y `.venv\Scripts\activate`).
 
 ## 1. Clonar
-El repo es privado: necesitas que Baz te agregue como colaborador.
 ```bash
 git clone https://github.com/who-is-baz/stars-rippers-flame-in-freefall.git
 cd stars-rippers-flame-in-freefall
@@ -60,13 +59,7 @@ python scripts/fetch_psi.py --verify-only  # solo verifica lo que ya tienes
 > **La demo NUNCA depende de la API viva de PSI:** solo usa `data/processed/` (versionado) y `psi.sqlite`
 > regenerado con `scripts/build_experiments.py`. La red solo se usa para recrear `data/raw/`.
 
-## 6. Flujo de trabajo
-1. Lee `CLAUDE.md`, `docs/03-analisis-datos.md`, `docs/07-api-contract.md`, `docs/data-dictionary.md` y **tu archivo en `docs/tareas/`**.
-2. Rama por issue: `git switch -c feat/<nombre>-<tema>` (p. ej. `feat/fer-material-mapping`); el PR lleva `Closes #N`.
-3. Commits pequeños; PR con la plantilla y revisión de otra persona. Nada de force push a `main`.
-4. Todo uso de IA se anota en `docs/AI_USAGE_LOG.md`. Nunca subas secretos (`.env` está ignorado).
-
-## 7. Backend (API) + frontend + IA local
+## 6. Backend (API) + frontend + IA local
 El sitio público **no** necesita nada de esto: funciona solo con Basic (`frontend/public/data/*.json`).
 Esto es para la laptop del demo y para desarrollo.
 
@@ -117,6 +110,5 @@ Mapa: Basic = `low` (sin modelo) · Flash = `medium` + `FLASH_MODEL` · Medium =
 python -m pytest                     # todo (Ollama mockeado); las pruebas -m ollama se saltan sin Ollama
 python -m pytest -m ollama -rs       # integración con Ollama real
 python scripts/smoke_e2e.py          # levanta API + front y pregunta en cada nivel
-python scripts/bench_models.py       # benchmark → docs/bench/results.csv y RESUMEN.md
 (cd frontend && npm test)
 ```

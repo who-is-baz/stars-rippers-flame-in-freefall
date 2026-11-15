@@ -1,83 +1,77 @@
-# 🔥 Flarefall — Stars Rippers
+# Flarefall
 
-**Flarefall** is our evidence map of NASA microgravity combustion data (Flame in Freefall · NASA Space Apps 2026).
+**An evidence map, not a guess: it shows what NASA's microgravity combustion data can and cannot tell a Moon-base designer.**
 
-NASA Space Apps Challenge 2026 · UNAQ (Querétaro) · Challenge: *Flame in Freefall: AI-Powered Fire Safety Insights from Microgravity Combustion Data*.
-Independent student project (Universidad Politécnica de Querétaro). **Not endorsed by NASA.**
+Flarefall is an interactive dashboard built for the NASA Space Apps Challenge 2026 challenge *Flame in Freefall*.
+It organises **403 fire tests run on the International Space Station** (274 FLEX fuel-droplet tests and 129 BASS-II
+solid-material tests, from NASA Physical Sciences Informatics) by cabin atmosphere. For each atmosphere it shows which
+tests are closest, how they ended, what is covered, what is missing, and which investigations NASA has run on each
+fire-safety pillar (prevention, detection, suppression).
 
-## What it is
-An evidence-first dashboard for NASA microgravity combustion data (NASA PSI: **FLEX** PSI-69 and **BASS-II** PSI-25, 403 ISS tests),
-organised by cabin atmosphere (oxygen and pressure). It shows which real tests are closest to an atmosphere (Experiments view, ordered by a transparent relevance formula, with indicators for completeness, coverage and conditions without evidence), how many are near an atmosphere (Earth/ISS air, the expected
-Moon-base air, …), how they ended, and what is missing. For the expected Moon-base air (≥30% O₂, ≤10.2 psi) there are **0 exact tests
-and 17 near tests**. Every number carries its sample size (n) and source DOI; cells with n < 5 are flagged. An optional SI ("Super
-Intelligence", i.e. an AI/LLM) assistant answers only from these data and says "No data" otherwise.
+**Main finding:** for the Moon-base air expected in the challenge (30% O₂ or more at 10.2 psi or less) the FLEX data has
+**0 exact tests and 17 near ones**, and no FLEX test below 10.18 psi or between 25% and 30% O₂. All PSI data are
+microgravity: there is no partial-gravity (Moon or Mars) combustion data yet.
 
-| Moon base: interpretation card and indicators | Experiments view ordered by relevance |
+| Dashboard (Moon-base air) | Experiments ordered by relevance |
 |---|---|
-| ![Dashboard, Moon base, interpretation](docs/screenshots/mentor-dashboard-moon-interpretation.png) | ![Experiments ordered by relevance](docs/screenshots/mentor-experiments-relevance.png) |
+| ![Dashboard with the Moon-base atmosphere selected](docs/screenshots/dashboard-moon.png) | ![Experiments view ordered by relevance](docs/screenshots/experiments.png) |
 
-| Custom explorer: observed tests only | No test within tolerance |
-|---|---|
-| ![Custom explorer, mixed outcomes](docs/screenshots/explorer-mixed.png) | ![Custom explorer, no test](docs/screenshots/explorer-empty.png) |
-| ![Moon base atmosphere, microgravity flame](docs/screenshots/flame-moon.png) | ![Earth 1 g reference, illustration only](docs/screenshots/flame-earth-1g-reference.png) |
-
-The scene shows a conceptual match-stick fire (procedural canvas + SVG flame tongues, 13 s loop, static frame with reduced motion). It is an illustration: nothing in it is a measurement, a simulation or a prediction.
+Every number on the site is computed from the data files and shows its sample size (n) and source DOI. The site is
+descriptive: **no safety rating, no risk score, no forecast.** Where there is no test it says "No data".
 
 ## Run it
-**1. Static site only (what is published; no backend, no AI model)**
+
 ```bash
-cd frontend && npm ci && npm run build      # → frontend/dist (drag it to any static host; see docs/submission/DEPLOY.md)
-npm run preview                             # http://127.0.0.1:4173
+cd frontend
+npm ci
+npm run dev        # http://127.0.0.1:5173  (add ?intro=off to skip the opening animation)
+npm run build      # static site in frontend/dist, works on any static host (relative paths)
+npm test
 ```
-**2. With the API (demo laptop)**
+
+Optional Python pipeline and API (Python 3.12):
+
 ```bash
-python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements-dev.txt
-python scripts/build_experiments.py         # regenerates psi.sqlite from data/processed/*.csv (no network)
-uvicorn backend.app:app --app-dir src --host 127.0.0.1 --port 8000      # OpenAPI at /docs
-cd frontend && VITE_LLM_URL=http://127.0.0.1:8000 npm run dev           # http://127.0.0.1:5173
-```
-**3. With local models (optional, Ollama)**: `ollama pull llama3.2:3b`, `ollama pull qwen3:8b`, `ollama pull qwen3:14b`; then **Connect local AI** in
-the SI panel. Tested on the demo laptop (24 GB RAM, 4 GB GPU): `llama3.2:3b` (Flash) and `qwen3:8b` (Medium) ran; `qwen3:14b` (Heavy) was **not downloaded** (disk space) and was not evaluated. Results and limits: `docs/bench/RESUMEN.md`, `docs/bench/DIAGNOSTICO.md`. Without them the site works in Basic mode.
-Environment variables and troubleshooting: `docs/SETUP.md` §7.
-
-**Checks:** `python -m pytest` (`-m ollama` adds the real-model tests) · `cd frontend && npm test && npm run build` · `python scripts/audit_numbers.py` ·
-`python scripts/smoke_e2e.py` · `node scripts/check_static_site.mjs` (needs `playwright-core`, not a dependency).
-
-## Folder map
-```
-frontend/            React + Vite + TypeScript site (public/data/*.json are generated, never edited by hand)
-src/psi_queries.py   the only place with SQL (read-only SQLite); src/scenarios.py atmosphere scenarios
-src/backend/         FastAPI: routes, closed tool list, scope rules, verifier, Ollama client
-scripts/             data pipeline, build_frontend_data.py, audit_numbers.py, smoke/bench/static checks
-data/processed/      versioned tables (experiments.csv, 403 rows); data/raw is local and git-ignored
-tests/               pytest (API, scope, guardrails with a fake model, data); frontend tests live in frontend/src
-docs/                data dictionary, API contract, decisions, AI log, submission/ (form drafts, demo plan, deploy)
+python -m venv .venv && .venv/bin/pip install -r requirements-dev.txt   # Windows: .venv\Scripts\pip
+python scripts/build_experiments.py          # rebuilds data/processed/psi.sqlite from the CSVs (no network)
+python -m pytest
 ```
 
-## Data and licenses
-- **Data:** NASA Physical Sciences Informatics, **CC0-1.0**: FLEX DOI [10.60555/mbq8-0451](https://doi.org/10.60555/mbq8-0451), BASS-II DOI [10.60555/4qc4-de67](https://doi.org/10.60555/4qc4-de67). All tests are microgravity on the ISS.
-- **Code:** Apache-2.0 (`LICENSE`). Third-party licenses: `THIRD_PARTY.md`.
+Full setup, data regeneration and the optional local assistant (Ollama): [`docs/SETUP.md`](docs/SETUP.md).
+
+## Repository
+
+```
+frontend/          React + TypeScript site (Vite). public/data/*.json = the data the site reads
+src/               Python: read-only queries over SQLite, scenarios, relevance, optional FastAPI backend
+scripts/           data pipeline (fetch, process, build), audit_numbers.py (independent recomputation), smoke tests
+data/processed/    processed tables (CSV, JSON) built from the NASA files
+tests/             Python tests
+docs/              setup, data dictionary, API, data sources, AI use, challenge text
+```
+
+## Data and licences
+
+- **Data:** NASA Physical Sciences Informatics, **CC0-1.0**. FLEX (PSI-69) DOI
+  [10.60555/mbq8-0451](https://doi.org/10.60555/mbq8-0451) · BASS-II (PSI-25) DOI
+  [10.60555/4qc4-de67](https://doi.org/10.60555/4qc4-de67). Details: [`docs/DATA_SOURCES.md`](docs/DATA_SOURCES.md),
+  column definitions: [`docs/data-dictionary.md`](docs/data-dictionary.md).
+- **Code:** Apache-2.0 ([`LICENSE`](LICENSE)). Third-party software and fonts: [`THIRD_PARTY.md`](THIRD_PARTY.md).
 
 ## Use of AI
-Much of the code, documentation and UI text was generated with AI assistants (Anthropic Claude via Claude Code and claude.ai). The log
-records each task, the model, and what review is still pending: `docs/AI_USAGE_LOG.md`; summary: `docs/submission/use_of_si.md`.
-BASS-II outcomes were extracted by AI from free-text notes and are labelled (`ai_*`, `extracted_by=AI`, `outcome_source = ai_extracted`).
-Commits with AI-generated changes carry `AI-assisted: yes`.
 
-## Limits (read before quoting a number)
-No predictive model and no safety rating. FLEX extinction percentages are descriptive, not probabilities. There is no partial-gravity or
-normal-gravity data. CO₂/He effects are confounded with O₂. In BASS-II, "not stated" does not mean the flame did not go out. "Disruption"
-is not defined by the source. Three atmosphere sources are marked "Unverified source". Details: `docs/data-dictionary.md`, `docs/03-analisis-datos.md`.
+AI tools (Anthropic Claude) wrote most of the code, tests and documentation under the team's direction. BASS-II outcomes
+and air speeds extracted by AI from free-text notes are labelled "AI-extracted" in the data and on the site. The logo was
+generated with Gemini. Full statement: [`docs/AI_USAGE.md`](docs/AI_USAGE.md).
 
-## Team documents (Spanish)
-| File | Purpose |
-|---|---|
-| `docs/00-reglas-y-checklist.md` | Rules, dates, submission requirements |
-| `docs/02-roles.md`, `docs/tareas/` | Who does what |
-| `docs/03-analisis-datos.md` | Data analysis and interpretation rules |
-| `docs/07-api-contract.md` | API contract (backend ↔ frontend) |
-| `docs/DECISIONES.md` | Decision log · `docs/HANDOFF.md` current state |
-| `docs/maintenance/CLEANUP_REPORT.md` | What was deleted and why |
-| `CLAUDE.md`, `.claude/skills/` | Instructions given to the AI assistants |
+## Limits
 
-Team: Stars Rippers — students of ITIID, Universidad Politécnica de Querétaro (UPQ). Mentor: Dra. Argelia.
+Microgravity on the ISS only (no partial-gravity data in PSI). FLEX extinction shares are descriptive, not probabilities.
+Cells with n < 5 carry a warning. CO₂ and helium effects are confounded with oxygen. "Disruption" is not defined by the
+source. BASS-II records no pressure and 103 of 129 of its tests have no stated outcome ("not stated" does not mean the
+flame went out). These are exploratory findings by a student team, not NASA guidance.
+
+## Team
+
+Stars Rippers, Universidad Politécnica de Querétaro (UPQ), NASA Space Apps Challenge 2026, UNAQ (Querétaro).
+Uses NASA open data. **Not endorsed by NASA.**

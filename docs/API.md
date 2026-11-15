@@ -1,4 +1,4 @@
-# 07 · Contrato de la API (alineado con `src/psi_queries.py`; pendiente de firma de Yael y Charly en #7)
+# API contract (aligned with `src/psi_queries.py`)
 
 Base: `/api`. FastAPI + Pydantic genera el OpenAPI (`/docs`). Implementación: `src/backend/` (`uvicorn backend.app:app --app-dir src`).
 Las mismas rutas responden también **sin** `/api` (alias oculto del OpenAPI) porque el frontend llama a `<VITE_LLM_URL>/ask`. Mientras el backend no esté, el frontend usa un **mock** servido desde
@@ -42,7 +42,7 @@ Rango → tupla: `o2_min`/`o2_max` → `o2_range=(o2_min, o2_max)` y `pressure_m
 | GET | `/queries/q5_extinction_diameter_by_pressure` | Q5 `extinction_diameter_by_pressure` | `fuel`, `o2_*`, `pressure_*`, `suppressant`=any | `{fuel, pressure_atm, n, n_d, avg_extinction_diameter_mm, min_extinction_diameter_mm, max_extinction_diameter_mm, …comunes}` |
 | GET | `/queries/q6_bass2_outcomes_by_o2_band` | Q6 `bass2_outcomes_by_o2_band` | `material`, `o2_*` | `{o2_band, n, n_low_flow_extinction, n_blowoff, n_no_ignition_or_not_sustained, n_not_stated, pct_outcome_stated, …comunes}`. **Sin % de extinción.** |
 | GET | `/queries/{name}` | Q1–Q6 por nombre (forma real implementada) | los de cada fila de arriba; un parámetro que la consulta no acepta → 400 | `{query, params, rows:[…], sources, limitations}` |
-| GET | `/ranking` | **No implementado (post-hackathon).** El frontend no lo usa (verificado el 2026-11-15); faltan los pesos de Fer | `fuel`, `w_burning_rate`, `w_ext_diameter`, `w_confidence` (propuesta) | — |
+| GET | `/ranking` | **No implementado (post-hackathon).** El frontend no lo usa (verificado el 2026-11-15) | `fuel`, `w_burning_rate`, `w_ext_diameter`, `w_confidence` (propuesta) | — |
 | GET | `/compare` | `get_experiment(con, test_id, program)` | `a`, `b` = `test_id` o `PROGRAM:test_id` (193F001 está repetido en FLEX: vienen ambas filas) | `{a:[filas], b:[filas], same, different}` (`same`/`different` comparan la primera fila de cada lado); 404 si no existe |
 | GET | `/gaps` | `build_gaps` de `scripts/build_frontend_data.py` (mismo contenido que `gaps.json`) | — | `{gaps:[{id, text, evidence, source_doi}]}` |
 | POST | `/ask` | elige entre las herramientas de `src/backend/tools.py` (Q1–Q6, `list_experiments`, `get_experiment`, `scenario`, `meta`) | `{question (1–500 car.), level: "low"\|"medium"\|"high", model?: string}` | `{answer, citations:[{query, params, source_doi, test_ids, test_ids_total}], tool_calls, no_data, meta:{level, model, mode, ms, warnings}}`; `query` es la clave de la herramienta (p. ej. `q4_burning_rate_by_o2`) |
@@ -51,7 +51,7 @@ Rango → tupla: `o2_min`/`o2_max` → `o2_range=(o2_min, o2_max)` y `pressure_m
 "…comunes" = `n`, `qc_flags`, `source_doi`, y cuando aplica `pct_note`, `warning` y `low_confidence_warning`.
 
 **PROVISIONAL** = la ruta y la forma pueden cambiar sin que cuente como cambio de contrato. Antes de implementarla,
-hay que agregar su función a `src/psi_queries.py` (regla 4 de CLAUDE.md: no hay SQL fuera de ese archivo) y quitar la marca aquí.
+hay que agregar su función a `src/psi_queries.py` (no hay SQL fuera de ese archivo) y quitar la marca aquí.
 
 ### `outcome`, `limit` y `offset` en `/experiments` (decisión)
 Se mantienen e implementan en `list_experiments`:
@@ -107,4 +107,4 @@ Los errores de validación de FastAPI/Pydantic (tipo, rango) también salen como
 `404` test_id inexistente. `503` LLM no disponible (el cliente cae a `low`).
 
 ## Cambios a este contrato
-Una vez congelado (#19), cualquier cambio exige un PR que avise a quien lo consume (Yael: backend; Charly: frontend).
+Cualquier cambio de este contrato debe actualizar a la vez el backend (`src/backend/`) y el frontend (`frontend/src/data/types.ts`).

@@ -1,40 +1,8 @@
-# 08 · Reto oficial: Flame in Freefall (NASA Space Apps 2026)
+# Official challenge text: Flame in Freefall (NASA Space Apps Challenge 2026)
 
-> Fuente: página oficial del reto en spaceappschallenge.org (copiada por Baz el 14 nov 2026, 11:30; el primer renglón del texto pegado llegó cortado). Dificultad: Advanced/Intermediate. Tema: Space Exploration. **No está aquí la pestaña Resources ni Teams:** pendiente de pegar (puede traer más datos).
-> El texto oficial completo está al final, sin modificar. La primera parte es nuestra lectura, para decidir alcance.
-
-## Qué pide el reto (en una línea)
-Un **dashboard web impulsado por SI** que **resume, ordena (rank) e interpreta** investigaciones de combustión en microgravedad de NASA PSI para dar **ideas de seguridad contra incendios** en exploración humana.
-
-Objetivos que se pueden atender (el reto dice "puede considerar", no obliga):
-1. **Identificar las investigaciones más relevantes** para los entornos habitables de la tripulación: nave, estación, bases lunares/marcianas, rovers presurizados.
-2. **Extraer datos que sirvan para modelado predictivo** de flamabilidad y escenarios de incendio.
-3. **Resaltar investigaciones** que informen controles y equipo de seguridad contra incendios de nueva generación.
-4. Opcional: **aplicaciones en la Tierra** (p. ej. nebulizadores de agua fina, detección de humo, equipo de bomberos).
-
-Público: profesores, posgrado, licenciatura, investigadores e ingenieros aeroespaciales → UI técnica, en inglés.
-
-## Lo que esto implica para nuestro plan
-| Hecho del reto | Implicación |
-|---|---|
-| Pide **resumir, ordenar y comparar investigaciones**, no solo experimentos sueltos. | Nuestro núcleo son 2 investigaciones (FLEX, BASS-II). Falta una vista de **catálogo de investigaciones** (las 24 de Combustion Science que ya listamos) con metadatos y **un ranking explícito**. Ver issue de catálogo/ranking. |
-| "Rank" por relevancia para entornos habitables. | El ranking debe ser **transparente y reproducible** (criterios visibles, pesos fijos, sin que el LLM invente el orden) y etiquetado como **heurística del equipo, no de NASA**. |
-| Atmósfera lunar prevista: **O₂ ≥ 30 % a ≤ 10.2 psi** (≈0.70 atm). Spacesuit: 100 % O₂ a 4.3 psi. | Filtro de datos **"condiciones relevantes a hábitat lunar"** (O₂ ≥ 0.30 y presión ≤ 0.70 atm) y mostrar cuántas pruebas lo cumplen. Si hay pocas, **decirlo**: es un hallazgo honesto. |
-| "Extraer datos que apoyen el modelado predictivo." | Significa **dar los datos limpios y exportables**, no que nosotros construyamos el modelo. Mantener "sin modelo predictivo" y añadir **exportación CSV** de lo filtrado (con DOI y flags). |
-| **No hay datos de gravedad parcial en PSI** (LUCI y FM2 vendrán después). E-FIELD de ACME *imita* gravedad parcial con campo eléctrico. | La pregunta trampa "¿qué pasa en gravedad lunar?" debe responder `no_data`, **mencionando** que E-FIELD es solo un análogo. Ver `local-llm-rag`. |
-| Fuego en **cohetes/propelentes** está fuera de alcance. | Segunda pregunta trampa → `no_data` con motivo. |
-| FLEX = gotas de combustible líquido (MDCA/CIR) con **supresión por CO₂ y helio**. BASS/BASS-II = materiales sólidos en el MSG con ducto de flujo. | Etiquetar en la UI el **tipo de combustible y el hardware** de cada investigación. Los resultados de FLEX hablan de **supresión**; los de BASS-II, de **flamabilidad de materiales**. No mezclar conclusiones. |
-| Otras investigaciones relevantes: **Saffire-I/II/III** (incendios de materiales), **SAME/SAME-R** (detección de humo), **DAFT/DAFT-2** (polvo), **SPICE, SLICE**, **ACME** (6 experimentos de gases, incl. BRE y CFI-G con hasta 85 % O₂). | Candidatas al catálogo. Profundizar solo en FLEX y BASS-II; las demás aparecen con metadatos y enlace, **sin cifras que no hayamos verificado**. |
-| El reto menciona el mensaje de "SI" (Super Intelligence). | En entrega y UI usar **"SI"** como lo hace NASA (y aclarar "AI/LLM" una vez). |
-
-## Resumen de alcance sugerido (a validar con `scope-guard`)
-1. **Mantener:** dashboard FLEX/BASS-II, 6 consultas parametrizadas, asistente anclado con `no_data`.
-2. **Añadir (ligero):** (a) catálogo de investigaciones con metadatos; (b) ranking por criterios visibles; (c) filtro "condiciones lunares"; (d) exportación CSV.
-3. **No hacer:** modelo predictivo, SQL libre, cifras de investigaciones no verificadas.
-
----
-
-## Texto oficial (sin modificar)
+> Copied unchanged from the challenge page on spaceappschallenge.org on 14 Nov 2026 (the first character of the
+> title was lost when copying). The data files cite this document as their source for the expected Moon-base air,
+> the spacesuit atmosphere, the investigations catalogue and the partial-gravity note.
 
 lame in Freefall: SI-Powered Fire Safety Insights from Microgravity Combustion Data
 Join the Challenge

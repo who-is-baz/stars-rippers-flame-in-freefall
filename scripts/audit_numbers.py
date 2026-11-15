@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Auditoría de cifras: recalcula TODO desde data/processed/experiments.csv (sin psi_queries ni SQLite, a propósito: es una
 segunda implementación independiente) y falla si algo no coincide con frontend/public/data/*.json, con las cifras
-fijas de la entrega (docs/submission/*.md) o si hay cifras de datos escritas a mano en frontend/src.
+fijas de README.md y docs públicos o si hay cifras de datos escritas a mano en frontend/src.
 Uso: python scripts/audit_numbers.py        (sale con código 1 si hay una discrepancia)"""
 from __future__ import annotations
 
@@ -150,8 +150,9 @@ def main():
     hp = [r for r in flex_p if r["pressure_atm"] > 1.5]
     check("gap >1 atm tests", gaps["high_pressure_small_n"]["evidence"]["n_tests"], len(hp))
 
-    # ---- cifras fijas en docs/submission (cada frase debe seguir cierta)
-    sub = {n: open(os.path.join(ROOT, "docs", "submission", n), encoding="utf-8").read() for n in os.listdir(os.path.join(ROOT, "docs", "submission")) if n.endswith(".md")}
+    # ---- cifras fijas en README y docs públicos (cada frase debe seguir cierta)
+    # public texts that state figures (the submission drafts were moved out of the repository)
+    sub = {n: open(os.path.join(ROOT, n), encoding="utf-8").read() for n in ("README.md", "docs/AI_USAGE.md", "docs/DATA_SOURCES.md") if os.path.exists(os.path.join(ROOT, n))}
     allsub = "\n".join(sub.values())
     must = {
         r"403 (ISS )?(NASA )?(fire )?tests": 403, r"274 FLEX": 274, r"129 BASS-II": 129, r"\b49 tests": 49,
@@ -165,12 +166,12 @@ def main():
     for m in re.finditer(r"\b(\d+) (?:of|/) (\d+) (?:tests|cells)", allsub):
         pass
     for bad in re.findall(r"\b(?:18|19|21|22|23|24|31|32) of 30 cells", allsub):
-        FAILS.append(f"docs/submission: cifra de cobertura incorrecta: {bad}")
+        FAILS.append(f"docs: cifra de cobertura incorrecta: {bad}")
     for bad in re.findall(r"\b(?:16|18|19|20|21) near tests?", allsub):
-        FAILS.append(f"docs/submission: cifra de pruebas cercanas incorrecta: {bad}")
+        FAILS.append(f"docs: cifra de pruebas cercanas incorrecta: {bad}")
     for pat, val in {r"(\d+) FLEX fuel-droplet tests": len(flex), r"(\d+) BASS-II solid-material tests": len(bass), r"(\d+) of 30 cells have tests": 20, r"(\d+) of 129 tests have no stated outcome": 103, r"(\d+) ISS tests": 403}.items():
         for m in re.finditer(pat, allsub):
-            check(f"docs/submission «{m.group(0)}»", int(m.group(1)), val)
+            check(f"docs «{m.group(0)}»", int(m.group(1)), val)
 
     # ---- cifras de datos escritas a mano en frontend/src (no tests)
     lit = re.compile(r"""(['"`>])[^'"`<>\n]*?\b(\d{2,3}(?:\.\d+)?)\s*(tests?|pruebas|FLEX|BASS-II|cells|experiments|of 30|of 129|of 274)\b""")
