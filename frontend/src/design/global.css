@@ -2382,3 +2382,12 @@ table.data tr.rel-near td:first-child { box-shadow: inset 3px 0 0 var(--flame-bl
   .rail-item:has(.interp-scroll) .interp-scroll { flex: 0 1 auto; min-height: 60px; max-height: none; }
   .rail-item:has(.interp-scroll) .wc-hd, .rail-item:has(.interp-scroll) .wc-ft, .rail-item:has(.interp-scroll) .interp-note { flex: none; }
 }
+
+/* ---------- headline finding (under the indicators) and "What NASA should test next" ---------- */
+.finding-headline { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 12px; padding: 7px 20px; flex: 0 0 auto; border-bottom: 1px solid var(--glass-border); background: linear-gradient(90deg, rgba(127, 245, 225, 0.12), rgba(10, 12, 15, 0.92) 62%); }
+.finding-headline p { margin: 0; flex: 0 1 auto; min-width: 0; font-size: var(--fs-sm); font-weight: 500; color: var(--ink); line-height: 1.35; }
+.finding-headline .ind-link { margin-left: auto; }
+@media (max-width: 760px) { .finding-headline { padding: 7px 14px; } .finding-headline .ind-link { margin-left: 0; } }
+.next-tests { border-color: rgba(127, 245, 225, 0.28); }
+ol.next-tests-list { padding-left: 1.4em; color: var(--ink); font-size: var(--fs-sm); }
+.next-tests-note { margin: 0; padding-top: 8px; border-top: 1px solid var(--hairline); font-size: var(--fs-sm); color: var(--ink-2); line-height: 1.5; }

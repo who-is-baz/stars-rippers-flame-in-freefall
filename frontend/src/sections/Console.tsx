@@ -12,6 +12,7 @@ import { AtmosphereExplorer, fmtCrit, useAtmosphere } from './AtmosphereExplorer
 import { CustomContext, type CustomState } from '../state/custom';
 import { IndicatorsStrip } from './IndicatorsStrip';
 import { SceneInstruments } from './SceneInstruments';
+import { FindingHeadline } from './FindingHeadline';
 import { BoardCard, MiniFlameThumb, SHORT_NAME } from '../components/Cards';
 import { KpiRingSvg } from '../components/charts';
 import { Gallery } from '../components/Gallery';
@@ -160,6 +161,7 @@ export function Console({ preset, assistantOpen = false }: { preset: TablePreset
   return (
     <CustomContext.Provider value={customState}>
     <IndicatorsStrip />
+    <FindingHeadline />
     <header className="console-section" id="top">
       <div className={`console-frame${focus ? ' is-focus' : ''}${customizeOpen ? ' is-editing' : ''}${assistantOpen ? ' is-assistant-open' : ''}${view && view !== 'overview' ? ' is-busy' : ''}${customOn && dockTab === 'scenarios' ? ' is-custom' : ''}`}>
         {current && <FlameScene scenario={current} mode={mode} observed={observed} />}

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useGaps, useMeta } from '../data/useData';
 import { Dois, Provisional, Section, Segmented } from '../components/ui';
+import { NextTestsList } from './FindingHeadline';
 
 // Scope statements that are NOT entries in gaps.json. They carry no figures; each says what it rests on.
 const SCOPE: { id: string; text: string; basis: string }[] = [
@@ -27,6 +28,7 @@ export function Gaps() {
     <Section id="gaps" eyebrow="Gaps & limitations" title="What this data cannot tell you" badge={<Provisional />}
       lead={<>Where there is no test, the answer is &ldquo;No data&rdquo;, never an estimate. Switch views below to inspect data gaps, scope limits, or statistical rules.</>}>
       <div className="stack">
+        <NextTestsList />
         <div className="row" style={{ justifyContent: 'space-between' }}>
           <Segmented
             label="View"
