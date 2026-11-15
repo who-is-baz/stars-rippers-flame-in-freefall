@@ -2366,3 +2366,19 @@ table.data tr.rel-near td:first-child { box-shadow: inset 3px 0 0 var(--flame-bl
 @keyframes fireLife { 0% { opacity: 0; } 8% { opacity: 1; } 86% { opacity: 1; } 95%, 100% { opacity: 0; } }
 .fire-paused, .fire-paused * { animation-play-state: paused !important; }
 @media (prefers-reduced-motion: reduce) { .fire, .fire * { animation: none !important; } }
+
+/* ---------- layout fit pass (1366x768, 1440x900, 1920x1080): nothing overlaps on the console ---------- */
+@media (min-width: 1181px) {
+  /* the instruments panel starts where the left rail ends (same clamp as .console-left) instead of a fixed 276 px */
+  .scene-instruments { left: calc(18px + clamp(244px, 19.5vw, 282px) + 10px); }
+  /* rails stop above the dock (dock = 93 px tall + 10 px from the bottom) and show a thin scrollbar if a card does not fit */
+  .console-left, .console-right { max-height: calc(100% - 14px - 116px); scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.18) transparent; }
+  .console-left::-webkit-scrollbar, .console-right::-webkit-scrollbar { width: 4px; }
+  .console-left::-webkit-scrollbar-thumb, .console-right::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.18); border-radius: 2px; }
+  /* the interpretation card gives up height first: its own list scrolls inside the card */
+  .rail-item:has(.interp-scroll) { flex: 0 1 auto; min-height: 190px; display: flex; flex-direction: column; }
+  .rail-item:has(.interp-scroll) > .wc { flex: 0 1 auto; min-height: 0; display: flex; flex-direction: column; }
+  .rail-item:has(.interp-scroll) .wc-body { flex: 0 1 auto; min-height: 0; display: flex; flex-direction: column; }
+  .rail-item:has(.interp-scroll) .interp-scroll { flex: 0 1 auto; min-height: 60px; max-height: none; }
+  .rail-item:has(.interp-scroll) .wc-hd, .rail-item:has(.interp-scroll) .wc-ft, .rail-item:has(.interp-scroll) .interp-note { flex: none; }
+}
