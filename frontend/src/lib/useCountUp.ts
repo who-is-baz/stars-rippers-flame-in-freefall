@@ -1,12 +1,13 @@
 // Animates a number from its previous value to a new one (about 0.5 s). The first render shows the real value
 // immediately, so nothing ever starts at a made-up 0. Reduced motion: jumps straight to the value.
 import { useEffect, useRef, useState } from 'react';
+import { animationsPaused } from './displayPrefs';
 
 export function useCountUp(value: number, ms = 520): number {
   const [shown, setShown] = useState(value);
   const from = useRef(value);
   useEffect(() => {
-    const reduce = typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reduce = animationsPaused();
     if (reduce || from.current === value) { from.current = value; setShown(value); return; }
     const start = performance.now();
     const a = from.current;

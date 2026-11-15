@@ -2,6 +2,7 @@
 // Everything here is decoration driven by lib/flameLook.ts; none of it encodes a measurement.
 import { memo, useEffect, useState } from 'react';
 import type { FlameLook, Particle } from '../lib/flameLook';
+import { useDisplayPrefs } from '../lib/displayPrefs';
 
 export const REF_1G_NOTE = 'Reference only. This dataset has no 1 g or partial-gravity tests.';
 export const NO_TESTS_NOTE = 'No matching tests — illustration only';
@@ -18,7 +19,8 @@ function useMedia(query: string): boolean {
   }, [query]);
   return v;
 }
-export const usePrefersReducedMotion = () => useMedia('(prefers-reduced-motion: reduce)');
+// Reduced motion = the OS setting OR the visitor's "Pause animations" button: the flame then stays still and readable.
+export const usePrefersReducedMotion = () => { const os = useMedia('(prefers-reduced-motion: reduce)'); const { paused } = useDisplayPrefs(); return os || paused; };
 export const useIsPhone = () => useMedia('(max-width: 640px)');
 /** True while the tab is hidden: the animation is paused so a background tab costs nothing. */
 export function usePageHidden(): boolean {

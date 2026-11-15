@@ -1,5 +1,6 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { LayoutGrid, RotateCcw, Search, Sparkles } from 'lucide-react';
+import { LayoutGrid, Pause, Play, RotateCcw, Search, Sparkles } from 'lucide-react';
+import { setDisplayPrefs, useDisplayPrefs, type TextSize } from './lib/displayPrefs';
 import { DataProvider, RetryContext } from './data/DataProvider';
 import { useDataState } from './data/useData';
 import type { Scenario } from './data/types';
@@ -68,6 +69,7 @@ function Nav({ onAssistant, open, mode, onMode, customizeOpen, onCustomize, view
         </ul>
 
         <div className="nav-right">
+          <DisplayControls />
           {!customizeOpen ? (
             <>
               <button type="button" className="ask-trigger" aria-label="Ask the SI assistant" onClick={onAssistant} aria-expanded={open} aria-controls="assistant" aria-keyshortcuts={isMac ? 'Meta+K' : 'Control+K'}>
@@ -94,6 +96,29 @@ function Nav({ onAssistant, open, mode, onMode, customizeOpen, onCustomize, view
         </div>
       </div>
     </nav>
+  );
+}
+
+const TEXT_SIZES: { v: TextSize; label: string; name: string }[] = [
+  { v: 'sm', label: 'A−', name: 'Smaller text' }, { v: 'md', label: 'A', name: 'Default text size' }, { v: 'lg', label: 'A+', name: 'Larger text' },
+];
+
+// Text size (scales the whole interface; remembered) and "Pause animations" (flame, stars, particles; remembered).
+function DisplayControls() {
+  const { text, paused } = useDisplayPrefs();
+  return (
+    <div className="display-ctl">
+      <div className="seg seg-compact" role="group" aria-label="Text size">
+        {TEXT_SIZES.map((t) => (
+          <button key={t.v} type="button" aria-pressed={text === t.v} aria-label={t.name} title={t.name} onClick={() => setDisplayPrefs({ text: t.v })}>{t.label}</button>
+        ))}
+      </div>
+      <button type="button" className="btn btn-sm btn-ghost" aria-pressed={paused} onClick={() => setDisplayPrefs({ paused: !paused })}
+        title={paused ? 'Resume animations' : 'Pause animations'}>
+        {paused ? <Play size={14} aria-hidden="true" /> : <Pause size={14} aria-hidden="true" />}
+        <span className="display-ctl-label">Pause animations</span>
+      </button>
+    </div>
   );
 }
 
@@ -171,7 +196,7 @@ function Page() {
     <BoardContext.Provider value={boardApi}>
       <UiContext.Provider value={actions}>
         <div className={`app-shell${open ? ' is-assistant-open' : ''}`}>
-          <a className="skip" href="#main">Skip to content</a>
+          <a className="skip" href="#main">Skip to main content</a>
           <Nav
             onAssistant={() => setOpen((o) => !o)} open={open} mode={mode} onMode={setMode}
             customizeOpen={customizeOpen} onCustomize={setCustomizeOpen} view={view} onView={openView}

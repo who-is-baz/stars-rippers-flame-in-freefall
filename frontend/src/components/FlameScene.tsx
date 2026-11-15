@@ -250,7 +250,7 @@ export const FlameScene = memo(function FlameScene({ scenario, mode = 'explorer'
         viewBox="0 0 1600 1000"
         preserveAspectRatio="xMidYMid slice"
         role="img"
-        aria-label={`Microgravity combustion chamber illustration for ${observed ? `custom settings (${observed.atmosphere}): ${observed.caption}` : scenario.label}.`}
+        aria-label={`Conceptual illustration of a flame at ${Math.round(lookO2 * 100)}% oxygen and ${lookPsi.toFixed(1)} psi (${observed ? `custom settings: ${observed.caption}` : scenario.label}). Not a simulation.`}
       >
         <title>{`Microgravity spherical flame illustration (${scenario.label}) — not a combustion simulation`}</title>
         <Backdrop />

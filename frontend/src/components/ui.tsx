@@ -33,7 +33,7 @@ export const NoData = ({ why }: { why?: string }) => (
 export function QcChip({ flag }: { flag: string }) {
   const label = flagLabel(flag);
   return (
-    <span className="chip" tabIndex={0} data-tip={`${label} [${flag}]`} aria-label={`QC flag: ${label}`}>
+    <span className="chip" role="img" tabIndex={0} data-tip={`${label} [${flag}]`} aria-label={`QC flag: ${label}`}>
       <span aria-hidden="true">{flag}</span>
     </span>
   );
