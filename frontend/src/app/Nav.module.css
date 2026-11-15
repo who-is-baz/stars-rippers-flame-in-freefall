@@ -23,3 +23,10 @@
 .toggle button { background: transparent; border: 0; padding: 6px 12px; font-size: var(--fs-xs); color: var(--silver); }
 .toggle button[aria-pressed='true'] { background: var(--graphite-7); color: var(--ink); }
 @media (max-width: 767px) { .bar { padding: var(--s-3) var(--s-4); } .pill, .cta, .toggle button { min-height: 44px; } }
+@media (max-width: 767px) {
+  .bar { gap: var(--s-2); }
+  .pills { order: 3; flex: 1 0 100%; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  .pill { display: inline-flex; align-items: center; white-space: nowrap; }
+  .right { margin-left: auto; }
+  .brand { flex: 1; }
+}

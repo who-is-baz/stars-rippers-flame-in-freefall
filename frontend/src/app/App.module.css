@@ -8,3 +8,5 @@
 .view p { color: var(--silver); max-width: 60ch; }
 .stat { margin-top: var(--s-4); color: var(--ink-dim); font-size: var(--fs-sm); }
 @media (max-width: 767px) { .main { padding: var(--s-6) var(--s-4); } }
+.body { flex: 1; display: flex; align-items: stretch; min-width: 0; }
+.body > .main { min-width: 0; }

@@ -5,21 +5,19 @@ import { AssistantProvider, ExplainModeProvider, ScenarioProvider } from '../pro
 import { Footer } from './Footer';
 import { ErrorBoundary } from './ErrorBoundary';
 import { Nav } from './Nav';
-import { ROUTE_LABEL, useLocation, type Route } from './routes';
-import { Placeholder } from '../views/Placeholder';
+import { ROUTE_LABEL, useLocation, type Location } from './routes';
+import { Overview } from '../views/Overview';
+import { Explorer } from '../views/Explorer';
+import { Coverage } from '../views/Coverage';
+import { Gaps } from '../views/Gaps';
+import { Materials } from '../views/Materials';
+import { AssistantPanel } from '../assistant/AssistantPanel';
 import s from './App.module.css';
 
-const BLURB: Record<Route, string> = {
-  overview: 'Pick an atmosphere and see how many tests match it.',
-  explorer: 'Browse every test with its source.',
-  coverage: 'See which oxygen and pressure combinations were tested.',
-  gaps: 'See what the data does not cover.',
-  materials: 'See which solid materials were shown to burn.',
-};
-
 // Muestra loading/error claro en vez de una pantalla en blanco si algún JSON falla.
-function DataGate({ children }: { children: ReactNode }) {
+function DataGate({ children, quiet }: { children: ReactNode; quiet?: boolean }) {
   const st = useDataState();
+  if (quiet && st.status !== 'ready') return null; // panel y footer: el mensaje ya lo da la vista
   if (st.status === 'loading') return <p role="status" className={s.stat}>Loading data…</p>;
   if (st.status === 'error') {
     return (
@@ -32,20 +30,35 @@ function DataGate({ children }: { children: ReactNode }) {
   return <>{children}</>;
 }
 
+function View({ loc }: { loc: Location }) {
+  switch (loc.route) {
+    case 'overview': return <Overview />;
+    case 'explorer': return <Explorer loc={loc} />;
+    case 'coverage': return <Coverage loc={loc} />;
+    case 'gaps': return <Gaps />;
+    case 'materials': return <Materials />;
+  }
+}
+
 function Shell() {
-  const { route } = useLocation();
+  const loc = useLocation();
+  const { route } = loc;
   return (
     <div className={s.shell}>
       <Nav active={route} />
-      <main className={s.main}>
-        <DataGate>
-          {/* key por ruta: cada vista tiene su propio ErrorBoundary y se reinicia al navegar */}
-          <ErrorBoundary key={route} label={ROUTE_LABEL[route]}>
-            <Placeholder title={ROUTE_LABEL[route]} blurb={BLURB[route]} />
-          </ErrorBoundary>
-        </DataGate>
-      </main>
-      <DataGate><Footer /></DataGate>
+      <div className={s.body}>
+        <main className={s.main} id="main">
+          <DataGate>
+            {/* key por hash: cada vista tiene su ErrorBoundary y se reinicia al navegar con otros filtros */}
+            <ErrorBoundary key={window.location.hash || route} label={ROUTE_LABEL[route]}>
+              <View loc={loc} />
+            </ErrorBoundary>
+          </DataGate>
+        </main>
+        {/* Panel SI acoplado a la derecha (no modal, no ruta) */}
+        <DataGate quiet><ErrorBoundary label="SI assistant"><AssistantPanel /></ErrorBoundary></DataGate>
+      </div>
+      <DataGate quiet><Footer /></DataGate>
     </div>
   );
 }
