@@ -10,7 +10,7 @@ import re
 from dataclasses import dataclass, field
 from typing import List, Optional
 
-from . import scope
+from . import about, data, scope
 from .scope import LIVE_RE, SAFETY_RE  # noqa: F401
 from . import tools as T
 
@@ -33,6 +33,7 @@ class Route:
     text: Optional[str] = None
     no_data: bool = False
     warnings: List[str] = field(default_factory=list)
+    about_id: Optional[str] = None
     guard: bool = False             # regla de seguridad: medium/high tampoco llaman al modelo
 
 
@@ -81,15 +82,32 @@ def _o2(text: str) -> dict:
     return {}
 
 
-def route(question: str) -> Route:
+_SUG: dict = {}
+
+
+def _suggested(db_path=None) -> set:
+    """Claves de las preguntas sugeridas (answers.json): esas SIEMPRE responden con su dato, nunca con 'about'."""
+    if db_path not in _SUG:
+        _SUG[db_path] = {about.key(a["question"]) for a in data.precomputed(db_path)["answers"]["answers"]}
+    return _SUG[db_path]
+
+
+def route(question: str, db_path=None) -> Route:
     text = scope.normalize(question)
-    kind = scope.classify(text)
-    if kind != "in_scope":  # inyección, jailbreak, tarea ajena o fuera de tema: negativa fija, sin modelo
+    if scope.hard_block(text):  # inyección, jailbreak o tarea ajena: negativa fija, sin modelo
         return Route("fixed", text=scope.REFUSAL_TEXT, no_data=True, guard=True)
+    if about.key(text) not in _suggested(db_path):
+        topic = about.match_topic(text)
+        if topic:  # pregunta sobre la propia página: texto fijo, sin modelo ni herramientas
+            return Route("about", about_id=topic, guard=True)
     upper = text.upper()
     ids = {m.group(0) for m in TEST_ID_RE.finditer(upper)} | {m.group(1).upper() for m in TEST_WORD_RE.finditer(text)}
     if ids:
         return Route("tool", tool="get_experiment", args={"test_id": sorted(ids)[0]})
+    if not scope.has_topic(text):
+        if about.generic_site(text):  # duda razonable sobre la página → about
+            return Route("about", about_id="site", guard=True)
+        return Route("fixed", text=scope.REFUSAL_TEXT, no_data=True, guard=True)
     if LIVE_RE.search(text):
         return Route("fixed", text=LIVE_TEXT, no_data=True, guard=True)
     if SAFETY_RE.search(text):
@@ -107,4 +125,6 @@ def route(question: str) -> Route:
     for rx, answer_id in PRECOMPUTED_RULES:
         if rx.search(text):
             return Route("precomputed", answer_id=answer_id)
+    if about.generic_site(text):
+        return Route("about", about_id="site", guard=True)
     return Route("fixed", text=scope.REFUSAL_TEXT, no_data=True)  # en alcance, sin regla: medium/high dejan decidir al router

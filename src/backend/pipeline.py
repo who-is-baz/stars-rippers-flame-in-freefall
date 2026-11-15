@@ -157,10 +157,11 @@ def answer(llm, con, question: str, level: str, model: str, settings: Settings):
 
     question = scope.normalize(question)  # el modelo solo ve la pregunta saneada
     # Defensa previa (determinista): trampas de seguridad/predicción, inyección y gravedad no llegan al modelo.
-    r = low.route(question)
+    r = low.route(question, settings.db_path or None)
     if r.guard or (r.kind == "precomputed" and r.answer_id == "q10"):
         out = answer_low(con, question, settings.db_path or None)
-        out["warnings"] = out["warnings"] + ["Answered by a deterministic guard rule (no model call)."]
+        if out.get("kind") != "about":
+            out["warnings"] = out["warnings"] + ["Answered by a deterministic guard rule (no model call)."]
         return out, "low"
 
     t0 = time.perf_counter()

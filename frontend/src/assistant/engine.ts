@@ -5,7 +5,7 @@
 import type { DataBundle } from '../data/DataProvider';
 import type { Citation, ExperimentRow } from '../data/types';
 import { fmtDiameter, fmtO2, fmtPressure, fmtRate } from '../lib/format';
-import { LIVE_RE, REFUSAL_TEXT, SAFETY_RE, classify, normalize } from './scope';
+import { LIVE_RE, REFUSAL_TEXT, SAFETY_RE, SUGGESTIONS, SUGGEST_TOPICS, aboutKey, genericSite, hardBlock, hasTopic, matchAbout, normalize, renderAbout } from './scope';
 import { DISRUPTION_SHORT, LOW_CONFIDENCE_WARNING, hasLowConfidence, outcomeLabel } from '../lib/honesty';
 
 export type Level = 'basic' | 'flash' | 'medium' | 'heavy';
@@ -40,6 +40,9 @@ export interface Reply {
   answeredBy: Level;         // which level actually produced the text
   aiText: boolean;           // true only when a model wrote the text
   notice?: string;
+  kind?: 'about';             // fixed answer about the page itself: cites a page section, not a dataset
+  section?: string;
+  suggestions?: string[];     // clickable example questions (refusal, greeting)
 }
 
 const countCited = (c: Citation[]): number | null => {
@@ -104,19 +107,31 @@ function lookupTest(question: string, rows: ExperimentRow[]): Reply | null {
   return base(hits.map(describeRow).join(' '), { citations, warnings, n: hits.length });
 }
 
+const refusal = (): Reply => base(OUT_OF_SCOPE, { outOfScope: true, noData: true, suggestions: SUGGESTIONS });
+const aboutReply = (id: string, data: DataBundle): Reply => {
+  const a = renderAbout(id, data);
+  return base(a.text, { kind: 'about', section: a.section, suggestions: SUGGEST_TOPICS.has(id) ? SUGGESTIONS : undefined });
+};
+
+// Same decision order as src/backend/low.py route(): hard block → about the page → test ID → topic gate → live/safety → data rules.
 export function answerBasic(rawQuestion: string, data: DataBundle): Reply {
   const question = normalize(rawQuestion);
-  // Scope gate first (same rules as the backend): injection, jailbreak, other tasks and off-topic get one fixed refusal.
-  if (classify(question) !== 'in_scope') return base(OUT_OF_SCOPE, { outOfScope: true, noData: true });
+  if (hardBlock(question)) return refusal();
+  const suggested = new Set(data.answers.answers.map((a) => aboutKey(a.question ?? '')));
+  if (!suggested.has(aboutKey(question))) {
+    const topic = matchAbout(question);
+    if (topic) return aboutReply(topic, data);
+  }
   const test = lookupTest(question, data.experiments.items);
   if (test) return test;
+  if (!hasTopic(question)) return genericSite(question) ? aboutReply('site', data) : refusal();
   if (LIVE_RE.test(question)) return base(NO_LIVE_DATA, { noData: true });
   if (SAFETY_RE.test(question)) return base(SAFETY_TEXT, { noData: true, warnings: ['All tests are microgravity on the ISS; there is no partial-gravity or normal-gravity data.'] });
   const rule = RULES.find((r) => r.re.test(question));
-  if (!rule) return base(OUT_OF_SCOPE, { outOfScope: true, noData: true });
+  if (!rule) return genericSite(question) ? aboutReply('site', data) : refusal();
   if (rule.id === 'live') return base(NO_LIVE_DATA, { noData: true });
   const a = data.answers.answers.find((x) => x.id === rule.id);
-  if (!a) return base(OUT_OF_SCOPE, { outOfScope: true, noData: true });
+  if (!a) return refusal();
   return base(a.answer, { citations: a.citations, warnings: a.warnings ?? [], noData: a.no_data, n: countCited(a.citations) });
 }
 
@@ -186,7 +201,10 @@ export async function ask(question: string, level: Level, data: DataBundle, opts
     if (citations.length === 0 && body.no_data !== true) warnings.push('This answer came without a verifiable citation. Treat it as unverified.');
     // meta.mode: "ollama" = model text (verified), "fallback" = fixed template, "low" = fixed rule. No meta → treat as model text.
     const mode = typeof meta.mode === 'string' ? meta.mode : 'ollama';
+    const kind = meta.kind === 'about' ? ('about' as const) : undefined;
+    const sugg = Array.isArray(meta.suggestions) ? meta.suggestions.filter((x): x is string => typeof x === 'string') : [];
     return {
+      kind, section: typeof meta.section === 'string' ? meta.section : undefined, suggestions: sugg.length ? sugg : undefined,
       text: body.answer, citations, warnings, noData: body.no_data === true,
       outOfScope: body.answer.startsWith(OUT_OF_SCOPE),
       n: countCited(citations), answeredBy: level, aiText: mode === 'ollama',

@@ -97,6 +97,7 @@ Motivo: la tabla del frontend necesita filtrar por resultado y paginar, y con la
 - Fuera de tema → `"That is not in the PSI data shown on this page."` con `no_data: true`.
 - Mapa de la interfaz: Basic=`low`; Flash=`medium`+`FLASH_MODEL`; Medium=`medium`+`MEDIUM_MODEL`;
   Heavy=`high`+`HEAVY_MODEL`.
+- **`meta.kind`** (`"about"` | null), **`meta.section`** y **`meta.suggestions`** (lista de preguntas sugeridas): aditivos (2026-11-15). Una pregunta sobre la propia página se responde con texto fijo (`tool_calls: [{tool: "about", id}]`, `citations: []`, `no_data: false`, sin modelo); la negativa fija ("I can only answer questions about the NASA PSI combustion data shown on this site.", `no_data: true`) trae `meta.suggestions`.
 - `503` si Ollama no responde, el modelo no está instalado o la llamada falla; el frontend cae a Basic.
 
 ## Errores

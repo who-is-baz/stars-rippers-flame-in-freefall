@@ -4,7 +4,7 @@ Uso: python scripts/gen_scope_ts.py   (tests/test_scope.py comprueba que el arch
 import json, os, sys
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, os.path.join(ROOT, "src"))
-from backend import scope  # noqa: E402
+from backend import about, scope  # noqa: E402
 
 OUT = os.path.join(ROOT, "frontend", "src", "assistant", "scope.generated.ts")
 
@@ -15,7 +15,15 @@ def render() -> str:
             f"export const REFUSAL_TEXT = {json.dumps(scope.REFUSAL_TEXT)};\n"
             + rx("TOPIC_RE", scope.TOPIC_RE) + rx("DISALLOWED_RE", scope.DISALLOWED_RE)
             + rx("INJECTION_RE", scope.INJECTION_RE) + rx("LIVE_RE", scope.LIVE_RE) + rx("SAFETY_RE", scope.SAFETY_RE)
-            + f"export const ID_RE = new RegExp({json.dumps(scope._ID_RE.pattern)});\n")
+            + f"export const ID_RE = new RegExp({json.dumps(scope._ID_RE.pattern)});\n"
+            + f"export const ABOUT_TYPOS: [string, string][] = {json.dumps([[a, b] for a, b in about.TYPOS], ensure_ascii=False)};\n"
+            + f"export const ABOUT_GREETING = new RegExp({json.dumps(about.GREETING_RE)}, 'i');\n"
+            + f"export const ABOUT_NOUN_RE = new RegExp({json.dumps(about.GENERIC_NOUN_RE)}, 'i');\n"
+            + f"export const ABOUT_VERB_RE = new RegExp({json.dumps(about.GENERIC_VERB_RE)}, 'i');\n"
+            + f"export const ABOUT_SUGGESTIONS: string[] = {json.dumps(about.SUGGESTIONS)};\n"
+            + "export const ABOUT_TOPICS: { id: string; section: string; re: RegExp; text: string }[] = [\n"
+            + "".join(f"  {{ id: {json.dumps(t['id'])}, section: {json.dumps(t['section'])}, re: new RegExp({json.dumps(t['re'])}, 'i'), text: {json.dumps(t['text'], ensure_ascii=False)} }},\n" for t in about.TOPICS)
+            + f"  {{ id: 'greeting', section: 'SI Assistant', re: /$^/, text: {json.dumps(about._BY_ID['greeting']['text'], ensure_ascii=False)} }},\n];\n")
 
 
 if __name__ == "__main__":

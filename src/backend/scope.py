@@ -10,6 +10,9 @@ from __future__ import annotations
 
 import re
 import unicodedata
+from typing import Optional
+
+from . import about
 
 REFUSAL_TEXT = "I can only answer questions about the NASA PSI combustion data shown on this site."
 
@@ -60,16 +63,31 @@ SAFETY_RE = re.compile(r"\b(safe|safer|safest|unsafe|seguro|segura|seguros|m[aá
                        r"predict|prediction|forecast|predecir|predicci[oó]n|will happen|would happen|pasar[ií]a)\b", re.I)
 
 
-def classify(question: str) -> str:
-    """'injection' | 'off_topic' | 'in_scope'. Determinista; corre antes de cualquier modelo."""
+def hard_block(question: str) -> Optional[str]:
+    """'injection' | 'off_topic' (tarea ajena prohibida) | None. Corre antes de todo lo demás."""
     q = normalize(question)
     if not q:
         return "off_topic"
     if INJECTION_RE.search(q):
         return "injection"
-    if DISALLOWED_RE.search(q) or not TOPIC_RE.search(q) and not _looks_like_test_id(q):
+    if DISALLOWED_RE.search(q):
         return "off_topic"
-    return "in_scope"
+    return None
+
+
+def has_topic(question: str) -> bool:
+    q = normalize(question)
+    return bool(TOPIC_RE.search(q) or _looks_like_test_id(q))
+
+
+def classify(question: str) -> str:
+    """'injection' | 'off_topic' | 'about' | 'in_scope'. 'about' = pregunta sobre la propia página (se responde con texto fijo)."""
+    hb = hard_block(question)
+    if hb:
+        return hb
+    if about.match_topic(question) or about.generic_site(question):
+        return "about"
+    return "in_scope" if has_topic(question) else "off_topic"
 
 
 _ID_RE = re.compile(r"\b(?=[A-Z0-9]*\d)(?=[A-Z0-9]*[A-Z])[A-Z0-9]{6,}\b")

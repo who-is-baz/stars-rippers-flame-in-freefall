@@ -24,7 +24,7 @@ const replyAsText = (t: Turn): string => {
   return [`Q: ${t.question}`, `A: ${t.reply.text}`, ...t.reply.warnings.map((w) => `Warning: ${w}`), ...(cites.length ? [`Sources: ${cites.join('; ')}`] : [])].join('\n');
 };
 
-function ReplyCard({ turn }: { turn: Turn }) {
+function ReplyCard({ turn, onAsk }: { turn: Turn; onAsk: (q: string) => void }) {
   const { showTests } = useUi();
   const [copied, setCopied] = useState(false);
   const r = turn.reply;
@@ -43,7 +43,8 @@ function ReplyCard({ turn }: { turn: Turn }) {
     <article className="msg-a" aria-label="Answer">
       <div className="row">
         <Badge>{LEVELS.find((l) => l.value === r.answeredBy)?.label ?? r.answeredBy}{r.aiText ? '' : ' · no model'}</Badge>
-        {r.noData && <Badge tone="caution">No data</Badge>}
+        {r.kind === 'about' && <Badge tone="info" title="Fixed answer about this page; no model and no dataset involved">About this site</Badge>}
+        {r.noData && r.kind !== 'about' && <Badge tone="caution">No data</Badge>}
         {r.aiText && <Badge tone="info" title="Text written by a local language model. Check it against the citations.">AI-generated text</Badge>}
       </div>
       {r.notice && <Warn>{r.notice}</Warn>}
@@ -62,7 +63,18 @@ function ReplyCard({ turn }: { turn: Turn }) {
         </div>
       )}
       {r.outOfScope && <p className="dim">Try one of the suggested questions, or ask about a test ID, a fuel, an atmosphere or a material.</p>}
+      {r.suggestions && r.suggestions.length > 0 && (
+        <div className="stack" style={{ gap: 6 }}>
+          <span className="label">Try one of these questions</span>
+          <div className="suggest" style={{ maxHeight: 'none' }}>
+            {r.suggestions.map((q) => <button key={q} type="button" onClick={() => onAsk(q)}>{q}</button>)}
+          </div>
+        </div>
+      )}
       {r.warnings.map((w) => <Warn key={w}>{w}</Warn>)}
+      {r.kind === 'about' ? (
+        <div className="cites"><span className="label">Section of this page</span><span>{r.section}</span></div>
+      ) : r.outOfScope ? null : (
       <div className="cites">
         <span className="label">Citations (from the data files)</span>
         {r.citations.length === 0 ? <span className="dim">None: this answer cites no dataset.</span> : (
@@ -85,6 +97,7 @@ function ReplyCard({ turn }: { turn: Turn }) {
         )}
         <span className="num">n = {r.n ?? 'stated in the answer text'}{r.n != null && ' cited tests'}</span>
       </div>
+      )}
       <div>
         <button type="button" className="btn btn-sm btn-ghost" onClick={copy}>
           {copied ? <Check size={14} aria-hidden="true" /> : <Copy size={14} aria-hidden="true" />} {copied ? 'Copied' : 'Copy answer'}
@@ -255,7 +268,7 @@ export function Sidebar({ open, onClose, pending, draft, llmUrl = ENV_URL, fetch
         {turns.map((t) => (
           <div key={t.id} className="stack" style={{ gap: 8 }}>
             <p className="msg-q">{t.question}</p>
-            <ReplyCard turn={t} />
+            <ReplyCard turn={t} onAsk={(q) => void send(q)} />
           </div>
         ))}
       </div>

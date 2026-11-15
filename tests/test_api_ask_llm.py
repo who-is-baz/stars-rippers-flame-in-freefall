@@ -127,7 +127,7 @@ def test_args_out_of_range_retry_then_fallback():
 
 def test_unknown_args_are_dropped_with_warning():
     c, _ = make([route("meta", sql="SELECT 1"), text("There are 403 tests: 274 FLEX and 129 BASS-II.")])
-    b = ask(c, "dataset overview")
+    b = ask(c, "how many tests are in the dataset")
     assert b["meta"]["mode"] == "ollama" and any("ignored unknown arguments" in w for w in b["meta"]["warnings"])
 
 
@@ -148,7 +148,7 @@ def test_guard_rules_skip_model(q):
 
 def test_spanish_composer_falls_back():
     c, _ = make([route("meta"), text("Hay 403 pruebas en el conjunto de datos y es seguro.")])
-    b = ask(c, "dataset overview")
+    b = ask(c, "how many tests are in the dataset")
     assert b["meta"]["mode"] == "fallback" and b["answer"].startswith("403 tests")
 
 
@@ -235,7 +235,7 @@ def test_high_max_three_steps_and_no_repeat():
     assert len(b["tool_calls"]) == 3 and b["meta"]["mode"] == "fallback"
     c2, llm2 = make([{"tool": "meta", "args": {}, "done": False}, {"tool": "meta", "args": {}, "done": False},
                      text("403 tests.")])
-    b2 = ask(c2, "dataset overview", level="high")
+    b2 = ask(c2, "how many tests are in the dataset", level="high")
     assert len(b2["tool_calls"]) == 1
 
 
@@ -260,18 +260,18 @@ def test_number_tolerance(answer, allowed, ok):
                                  "Test 99X1234 had 403 tests.", "403 tests. " * 70])
 def test_composer_hardening(bad):
     c, _ = make([route("meta"), text(bad)])
-    b = ask(c, "dataset overview")
+    b = ask(c, "how many tests are in the dataset")
     assert b["meta"]["mode"] == "fallback"
 
 
 def test_args_as_json_string_accepted():
     c, _ = make([{"tool": "meta", "args": "{}"}, text("403 tests.")])
-    assert ask(c, "dataset overview")["meta"]["mode"] == "ollama"
+    assert ask(c, "how many tests are in the dataset")["meta"]["mode"] == "ollama"
 
 
 def test_high_later_step_invalid_keeps_first_result():
     c, _ = make([{"tool": "meta", "args": {}, "done": False}, "garbage", "garbage again", text("403 tests.")])
-    b = ask(c, "dataset overview then more", level="high")
+    b = ask(c, "how many tests in the dataset then more", level="high")
     assert b["meta"]["mode"] == "ollama" and len(b["tool_calls"]) == 1
     assert any("later tool step" in w for w in b["meta"]["warnings"])
 
@@ -279,7 +279,7 @@ def test_high_later_step_invalid_keeps_first_result():
 def test_time_budget(monkeypatch):
     llm = FakeLLM([route("meta")])
     c = TestClient(create_app(settings=Settings(ask_budget_s=-1), llm=llm))
-    b = ask(c, "dataset overview")
+    b = ask(c, "how many tests are in the dataset")
     assert b["meta"]["mode"] == "fallback" and len(llm.calls) == 1
     assert any("Time budget" in w for w in b["meta"]["warnings"])
 

@@ -28,7 +28,8 @@ def post(c, q, level):
 
 def test_enough_cases():
     assert len(CASES) >= 60
-    assert {c["expect"] for c in CASES} == {"refuse", "answer", "no_data_safety"}
+    assert {c["expect"] for c in CASES} == {"refuse", "answer", "no_data_safety", "about"}
+    assert sum(c["expect"] != "refuse" for c in CASES) >= 60 and sum(c["expect"] == "refuse" for c in CASES) >= 30
 
 
 @pytest.mark.parametrize("level", ["low", "medium", "high"])
@@ -45,6 +46,18 @@ def test_scope_cases_without_model(case, level):
         b = r.json()
         assert b["answer"] == REFUSAL and b["no_data"] is True
         assert b["citations"] == [] and b["tool_calls"] == [] and llm.calls == []
+        assert len(b["meta"]["suggestions"]) >= 3 and "What is this page?" in b["meta"]["suggestions"]
+    elif case["expect"] == "about":
+        # sobre la propia página: texto fijo, sin modelo, sin herramientas, cita una sección (no un dataset)
+        assert r.status_code == 200, r.text
+        b = r.json()
+        assert b["answer"] != REFUSAL and b["no_data"] is False and len(b["answer"]) <= 600
+        assert b["citations"] == [] and llm.calls == []
+        assert b["tool_calls"] == [{"tool": "about", "id": case["topic"]}], b["tool_calls"]
+        assert b["meta"]["kind"] == "about" and b["meta"]["section"]
+        assert "{" not in b["answer"], "marcador sin rellenar"
+        if case["topic"] in ("greeting", "capabilities"):
+            assert len(b["meta"]["suggestions"]) >= 3
     elif case["expect"] == "no_data_safety":
         b = r.json()
         assert b["no_data"] is True and b["answer"].startswith("No data available for that question.") and llm.calls == []
@@ -58,6 +71,7 @@ def test_classify_kinds():
     assert scope.classify("What is the capital of France?") == "off_topic"
     assert scope.classify("   ") == "off_topic"
     assert scope.classify("heptane burning rate") == "in_scope"
+    assert scope.classify("what is this page") == "about" and scope.classify("hola") == "about"
     assert scope.classify("tell me about 20cal08") == "in_scope"
 
 
@@ -122,3 +136,29 @@ def test_generated_ts_is_up_to_date():
     spec.loader.exec_module(gen)
     with open(gen.OUT, encoding="utf-8") as f:
         assert f.read() == gen.render(), "ejecuta: python scripts/gen_scope_ts.py"
+
+
+def test_about_texts_are_short_numbers_come_from_data_and_no_hand_written_figures():
+    from backend import about, data
+    facts = data.site_facts(data.connect())
+    assert facts["n_tests"] == 403 and facts["n_flex"] == 274 and facts["n_bass"] == 129
+    assert (facts["n_moon_exact"], facts["n_moon_near"]) == (0, 17) and facts["min_n"] == 5
+    assert (facts["n_cells"], facts["n_cells_tested"]) == (30, 20) and facts["tol_o2"] == "1" and facts["tol_psi"] == "0.5"
+    import re
+    for t in about.TOPICS + [{"id": "greeting"}]:
+        txt = about.render(t["id"], facts)
+        assert len(txt) <= about.MAX_CHARS, (t["id"], len(txt))
+        assert "{" not in txt
+        raw = about._BY_ID[t["id"]]["text"]
+        # cifras escritas a mano en el texto fijo: solo pasos "1) 2) 3)" y "3 steps"
+        raw = re.sub(r"PSI-\d+|CC0-1\.0", "X", raw)  # nombres de investigación y de licencia, no cifras de datos
+        stray = [m for m in re.findall(r"(?<![\w{.])\d+(?:\.\d+)?(?![\w}])", raw) if m not in ("1", "2", "3")]
+        assert not stray, (t["id"], stray)
+
+
+def test_about_does_not_steal_suggested_questions_or_data_questions():
+    from backend import low
+    import json as _j
+    answers = _j.load(open(os.path.join(ROOT, "frontend", "public", "data", "answers.json"), encoding="utf-8"))["answers"]
+    for a in answers:
+        assert low.route(a["question"]).kind == "precomputed", a["question"]

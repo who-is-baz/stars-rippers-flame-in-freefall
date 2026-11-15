@@ -75,6 +75,9 @@ class AskMeta(BaseModel):
     mode: Literal["low", "ollama", "fallback"]
     ms: int
     warnings: List[str]
+    kind: Optional[str] = None          # "about" = respuesta fija sobre la propia página (cita una sección, no un dataset)
+    section: Optional[str] = None
+    suggestions: List[str] = []          # preguntas sugeridas (negativa, saludo, "what can you do")
 
 
 class AskResponse(BaseModel):
@@ -102,9 +105,17 @@ def _cite_precomputed(cits: List[dict]) -> List[dict]:
 
 def answer_low(con, question: str, db_path: Optional[str] = None) -> dict:
     """Respuesta sin modelo. Devuelve {answer, citations, tool_calls, no_data, warnings}."""
-    r = low.route(question)
+    r = low.route(question, db_path)
+    if r.kind == "about":
+        from . import about
+        facts = data.site_facts(con, db_path)
+        sug = about.SUGGESTIONS if r.about_id in ("greeting", "capabilities") else []
+        return {"answer": about.render(r.about_id, facts), "citations": [], "tool_calls": [{"tool": "about", "id": r.about_id}],
+                "no_data": False, "warnings": [], "kind": "about", "section": about.section(r.about_id), "suggestions": sug}
     if r.kind == "fixed":
-        return {"answer": r.text, "citations": [], "tool_calls": [], "no_data": r.no_data, "warnings": r.warnings}
+        from . import about, scope
+        return {"answer": r.text, "citations": [], "tool_calls": [], "no_data": r.no_data, "warnings": r.warnings,
+                "suggestions": about.SUGGESTIONS if r.text == scope.REFUSAL_TEXT else []}
     if r.kind == "precomputed":
         ans = next(a for a in data.precomputed(db_path)["answers"]["answers"] if a["id"] == r.answer_id)
         return {"answer": ans["answer"], "citations": _cite_precomputed(ans["citations"]),
@@ -177,7 +188,8 @@ def register(router: APIRouter, settings: Settings) -> None:
                  out["no_data"], [c["tool"] for c in out["tool_calls"]], ms)
         return {"answer": out["answer"], "citations": out["citations"], "tool_calls": out["tool_calls"],
                 "no_data": out["no_data"],
-                "meta": {"level": body.level, "model": model, "mode": mode, "ms": ms, "warnings": out["warnings"]}}
+                "meta": {"level": body.level, "model": model, "mode": mode, "ms": ms, "warnings": out["warnings"],
+                         "kind": out.get("kind"), "section": out.get("section"), "suggestions": out.get("suggestions", [])}}
 
 
 def _is_installed(tag: str, installed: List[str]) -> bool:

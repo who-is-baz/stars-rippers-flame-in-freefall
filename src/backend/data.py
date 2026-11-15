@@ -78,6 +78,29 @@ def precomputed(db_path: Optional[str] = None) -> dict:
         materials = bfd.build_materials(items)
         gaps = bfd.build_gaps(items, coverage, scen)
         answers = bfd.build_answers(items, scen, coverage, materials, gaps)
-        return {"answers": answers, "gaps": gaps, "scenarios": scen}
+        return {"answers": answers, "gaps": gaps, "scenarios": scen, "coverage": coverage}
     finally:
         con.close()
+
+
+def _g(x, nd=None) -> str:
+    return f"{round(x, nd):g}" if nd is not None else f"{x:g}"
+
+
+def site_facts(con, db_path: Optional[str] = None) -> dict:
+    """Cifras para los textos "about the site": todas calculadas de los datos (nada escrito a mano)."""
+    m = q.meta(con)
+    n = {p["program"]: p["n"] for p in m["programs"]}
+    pre = precomputed(db_path)
+    scen = {s["id"]: s for s in pre["scenarios"]["scenarios"]}
+    gaps = {g["id"]: g for g in pre["gaps"]["gaps"]}
+    cov = pre["coverage"]
+    return {
+        "n_tests": sum(n.values()), "n_flex": n["FLEX"], "n_bass": n["BASS-II"],
+        "doi_flex": DOI["FLEX"], "doi_bass": DOI["BASS-II"],
+        "tol_o2": _g(sc.TOLERANCE["o2_fraction"] * 100, 2), "tol_psi": _g(sc.TOLERANCE["pressure_psi"]),
+        "min_n": m["min_n"], "n_cells": cov["n_cells"], "n_cells_tested": cov["n_cells"] - cov["n_cells_empty"],
+        "n_moon_exact": scen["lunar_challenge"]["n_exact"], "n_moon_near": scen["lunar_challenge"]["n_near"],
+        "gap_psi_min": _g(gaps["low_pressure"]["evidence"]["min_psi"]),
+        "gap_o2_max_pct": _g(gaps["high_oxygen"]["evidence"]["flex_o2_max"] * 100, 2),
+    }
