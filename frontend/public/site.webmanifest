@@ -1,11 +1,11 @@
 {
-  "name": "Flame in Freefall Explorer",
-  "short_name": "Flame",
+  "name": "Flarefall · Flame in Freefall · NASA Space Apps 2026",
+  "short_name": "Flarefall",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "theme_color": "#040506",
-  "background_color": "#040506",
+  "theme_color": "#0b0e14",
+  "background_color": "#0b0e14",
   "icons": [
     {
       "src": "icon-192.png",

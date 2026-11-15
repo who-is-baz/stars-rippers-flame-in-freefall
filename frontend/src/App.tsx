@@ -38,15 +38,10 @@ function remembered<T extends string>(key: string, allowed: readonly T[], fallba
   } catch { return fallback; }
 }
 
-function BrandEmblem() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 26 26" aria-hidden="true">
-      <circle cx="13" cy="13" r="11.5" fill="none" stroke="var(--silver)" strokeOpacity="0.5" />
-      <circle cx="13" cy="13" r="6" fill="var(--flame-blue)" fillOpacity="0.55" />
-      <circle cx="13" cy="13" r="2.2" fill="var(--ink)" />
-    </svg>
-  );
-}
+// App name (from the team's logo). The challenge is still "Flame in Freefall"; that is the reference, not the product name.
+export const APP_NAME = 'Flarefall';
+const LOGO_1X = './brand/logo-name@1x.png';
+const LOGO_2X = './brand/logo-name@2x.png';
 
 function Nav({ onAssistant, open, mode, onMode, customizeOpen, onCustomize, view, onView }: {
   onAssistant: () => void; open: boolean; mode: ExplanationMode; onMode: (m: ExplanationMode) => void;
@@ -58,7 +53,9 @@ function Nav({ onAssistant, open, mode, onMode, customizeOpen, onCustomize, view
   return (
     <nav className="nav" aria-label="Views">
       <div className="nav-in">
-        <button type="button" className="brand" onClick={() => onView('overview')}><BrandEmblem /> Flame in Freefall</button>
+        <button type="button" className="brand" onClick={() => onView('overview')} aria-label={`${APP_NAME}: go to the dashboard`}>
+          <img className="brand-logo" src={LOGO_1X} srcSet={`${LOGO_1X} 1x, ${LOGO_2X} 2x`} alt={APP_NAME} width={103} height={32} />
+        </button>
         <ul className="nav-links" role="list">
           {MAIN_TABS.map((t) => {
             const active = t.view === 'explore' ? isExploreGroup : view === t.view;

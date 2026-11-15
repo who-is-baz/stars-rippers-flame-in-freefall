@@ -1,4 +1,6 @@
-# 🔥 Stars Rippers — Flame in Freefall Explorer
+# 🔥 Flarefall — Stars Rippers
+
+**Flarefall** is our evidence map of NASA microgravity combustion data (Flame in Freefall · NASA Space Apps 2026).
 
 NASA Space Apps Challenge 2026 · UNAQ (Querétaro) · Challenge: *Flame in Freefall: AI-Powered Fire Safety Insights from Microgravity Combustion Data*.
 Independent student project (Universidad Politécnica de Querétaro). **Not endorsed by NASA.**

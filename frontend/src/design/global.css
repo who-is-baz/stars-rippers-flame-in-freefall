@@ -2435,3 +2435,9 @@ table.inv-table td { vertical-align: top; white-space: normal; }
 }
 .fire .fire-sphere { transform-box: fill-box; transform-origin: 50% 50%; animation: fireSphere 2.7s ease-in-out infinite alternate; }
 @keyframes fireSphere { 0% { transform: scale(0.96); opacity: 0.85; } 43% { transform: scale(1.03); opacity: 1; } 100% { transform: scale(0.98); opacity: 0.9; } }
+
+/* ---------- brand logo (team logo + name image) ---------- */
+.brand { padding: 2px 4px; border-radius: var(--r-sm, 6px); background: none; border: 0; }
+.brand:focus-visible { outline: 2px solid var(--mint); outline-offset: 3px; }
+.brand-logo { display: block; height: 30px; width: auto; }
+@media (max-width: 760px) { .brand-logo { height: 24px; } }

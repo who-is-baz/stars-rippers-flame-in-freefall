@@ -30,9 +30,16 @@ export function Sources() {
           the chosen fuel, O₂, pressure and suppressant and shows their counts and plain means with n. No interpolation,
           extrapolation or curve fitting; settings without tests show &ldquo;No test within tolerance&rdquo;. BASS-II is not included.
         </p>
+        <div className="row brand-credit" style={{ gap: 12, alignItems: 'center' }}>
+          <img src="./brand/logo-mark.png" alt="Flarefall logo" width={48} height={48} />
+          <p style={{ margin: 0 }}>
+            <strong>Logo and name:</strong> provided by the team. <span className="badge badge-caution">AI-generated</span>{' '}
+            <span className="dim">Created with Gemini (Google). No NASA logos or insignia.</span>
+          </p>
+        </div>
         <p><strong>Code:</strong> Apache-2.0 license. <strong>Interface design assisted by AI.</strong> Outcomes marked &ldquo;AI-extracted&rdquo; await human review.</p>
         <p className="dim">
-          Built by Stars Rippers for the NASA Space Apps Challenge 2026. Uses NASA PSI open data (CC0). Not endorsed by NASA.
+          Flarefall, built by Stars Rippers for the NASA Space Apps Challenge 2026 (challenge: Flame in Freefall). Uses NASA PSI open data (CC0). Not endorsed by NASA.
           No predictive model. Not safety guidance. Data files generated {meta.generated_utc.slice(0, 10)} by {meta.generated_by}.
         </p>
       </div>
