@@ -262,8 +262,8 @@ button { cursor: pointer; background: none; border: 0; }
 .scene-svg {
   width: 100%;
   height: 100%;
-  cursor: grab;
-  touch-action: none;
+  cursor: default;
+  touch-action: auto; /* the page scrolls with the wheel and with a finger over the scene */
   outline: none;
   display: block;
 }

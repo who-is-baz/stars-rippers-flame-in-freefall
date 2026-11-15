@@ -1,12 +1,8 @@
-// Interactive 2.5D Microgravity Combustion Chamber Scene (flame-v3-reference.html + reference image).
+// 2.5D Microgravity Combustion Chamber Scene (flame-v3-reference.html + reference image), fixed camera.
 // Driven by the active atmosphere scenario from scenarios.json (O₂ fraction scales flame radius & brightness).
-//
-// Performance notes (the scene sits behind every card, so it must stay cheap):
-// - Pan/zoom/rotate write the SVG transform attributes directly (one per animation frame). React only
-//   re-renders when the semantic zoom level (Chamber/Flame/Droplet) actually changes.
-// - The static artwork is memoized and has no SVG filters and no continuous animation, so dragging or
-//   changing a card never forces the whole scene to repaint.
-import { memo, useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react';
+// No drag-to-rotate and no wheel zoom: the page keeps scrolling over the scene. The static artwork is memoized and
+// has no SVG filters, so changing a card never forces the whole scene to repaint.
+import { memo, useEffect, useRef, useState } from 'react';
 import type { Scenario } from '../data/types';
 import type { ExplanationMode } from '../state/ui';
 import { fmtCriterionO2, fmtCriterionP } from '../lib/scenario';
@@ -20,14 +16,8 @@ const obsScale = (glow: number | null) => (glow == null ? 1 : Number((0.8 + 0.6 
 export type ZoomLevel = 1 | 2 | 3; // 1 = Chamber, 2 = Flame, 3 = Droplet
 
 const SCALE_FOR_LEVEL: Record<ZoomLevel, number> = { 1: 1, 2: 1.85, 3: 2.9 };
-const K_MIN = 0.85;
-const K_MAX = 3.8;
 const INITIAL_WORLD = 'translate(0 0) translate(800 480) scale(1) translate(-800 -480)';
-const INITIAL_ROT = 'rotate(0 800 480)';
 
-interface View { k: number; tx: number; ty: number; ang: number }
-const levelOf = (k: number): ZoomLevel => (k < 1.5 ? 1 : k < 2.5 ? 2 : 3);
-const clampK = (k: number) => Math.max(K_MIN, Math.min(K_MAX, k));
 
 // Deterministic multi-depth starfield with parallax drift + 5 twinkle frequencies.
 const STAR_LAYERS: { driftCls: string; groups: { cls: string; stars: [number, number, number, string?][] }[] }[] = [
@@ -323,12 +313,7 @@ const Callouts = memo(function Callouts({ scenario, mode, dim, atmosphere }: { s
 export const FlameScene = memo(function FlameScene({ scenario, mode = 'explorer', observed }: { scenario: Scenario; mode?: ExplanationMode; observed?: ObservedFlame }) {
   const svgRef = useRef<SVGSVGElement>(null);
   const worldRef = useRef<SVGGElement>(null);
-  const rotRef = useRef<SVGGElement>(null);
-  const view = useRef<View>({ k: 1, tx: 0, ty: 0, ang: 0 });
-  const frame = useRef(0);
-  const drag = useRef<{ x: number; y: number; v: View } | null>(null);
   const [level, setLevel] = useState<ZoomLevel>(1);
-  const [hintUsed, setHintUsed] = useState(false);
 
   // Illustrative flame scale from scenario O₂ & pressure (Earth 21% O₂ = 1.0x, Moon 30% = 1.18x, ...)
   const o2Val = scenario.criteria.o2.value;
@@ -336,23 +321,12 @@ export const FlameScene = memo(function FlameScene({ scenario, mode = 'explorer'
   const flameScale = observed ? obsScale(observed.glow) : Number(Math.min(1.42, Math.max(0.86, 0.78 + o2Val * 1.15)).toFixed(2));
   const rimOpacity = observed ? 0.5 : Number(Math.min(0.75, Math.max(0.3, pVal / 22)).toFixed(2));
 
-  // Writes the transforms once per animation frame, no matter how many pointer events arrived.
-  const paint = () => {
-    if (frame.current) return;
-    frame.current = requestAnimationFrame(() => {
-      frame.current = 0;
-      const { k, tx, ty, ang } = view.current;
-      worldRef.current?.setAttribute('transform', `translate(${tx} ${ty}) translate(800 480) scale(${k}) translate(-800 -480)`);
-      rotRef.current?.setAttribute('transform', `rotate(${ang} 800 480)`);
-      const l = levelOf(k);
-      setLevel((prev) => (prev === l ? prev : l));
-    });
+  // Fixed camera: no drag-to-rotate and no wheel zoom (the page must keep scrolling over the scene). The three
+  // view buttons only pick a fixed scale around the flame.
+  const setSemanticZoom = (lvl: ZoomLevel) => {
+    worldRef.current?.setAttribute('transform', `translate(0 0) translate(800 480) scale(${SCALE_FOR_LEVEL[lvl]}) translate(-800 -480)`);
+    setLevel(lvl);
   };
-  const update = (patch: Partial<View>) => { view.current = { ...view.current, ...patch }; setHintUsed(true); paint(); };
-  const zoomBy = (f: number) => update({ k: clampK(view.current.k * f) });
-  const reset = () => update({ k: 1, tx: 0, ty: 0, ang: 0 });
-
-  useEffect(() => () => { if (frame.current) cancelAnimationFrame(frame.current); }, []);
 
   // A soft ring leaves the flame whenever the atmosphere changes (not on first paint).
   const firstScenario = useRef(true);
@@ -367,42 +341,6 @@ export const FlameScene = memo(function FlameScene({ scenario, mode = 'explorer'
     return () => window.clearTimeout(t);
   }, [scenario.id]);
 
-  // React attaches wheel listeners as passive; a native non-passive one lets us keep the page still while zooming.
-  useEffect(() => {
-    const el = svgRef.current;
-    if (!el) return;
-    const onWheel = (e: WheelEvent) => { e.preventDefault(); zoomBy(e.deltaY < 0 ? 1.12 : 1 / 1.12); };
-    el.addEventListener('wheel', onWheel, { passive: false });
-    return () => el.removeEventListener('wheel', onWheel);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const setSemanticZoom = (lvl: ZoomLevel) => update(lvl === 1 ? { k: SCALE_FOR_LEVEL[1], tx: 0, ty: 0 } : { k: SCALE_FOR_LEVEL[lvl] });
-
-  const onPointerDown = (e: PointerEvent<SVGSVGElement>) => {
-    drag.current = { x: e.clientX, y: e.clientY, v: { ...view.current } };
-    svgRef.current?.classList.add('drag');
-    try { e.currentTarget.setPointerCapture(e.pointerId); } catch { /* test environments lack setPointerCapture */ }
-  };
-  const onPointerMove = (e: PointerEvent<SVGSVGElement>) => {
-    const d = drag.current;
-    if (!d) return;
-    const dx = e.clientX - d.x;
-    const dy = e.clientY - d.y;
-    if (d.v.k > 1.5) update({ tx: d.v.tx + dx, ty: d.v.ty + dy });
-    else update({ ang: d.v.ang + dx * 0.25 });
-  };
-  const onPointerUp = () => { drag.current = null; svgRef.current?.classList.remove('drag'); };
-
-  const onKeyDown = (e: KeyboardEvent<SVGSVGElement>) => {
-    const key = e.key;
-    if (key === '+' || key === '=') { e.preventDefault(); zoomBy(1.25); }
-    else if (key === '-' || key === '_') { e.preventDefault(); zoomBy(1 / 1.25); }
-    else if (key === '0') { e.preventDefault(); reset(); }
-    else if (key === 'ArrowLeft') { e.preventDefault(); update({ ang: view.current.ang - 8 }); }
-    else if (key === 'ArrowRight') { e.preventDefault(); update({ ang: view.current.ang + 8 }); }
-  };
-
   return (
     <div className="scene-layer">
       <svg
@@ -411,19 +349,13 @@ export const FlameScene = memo(function FlameScene({ scenario, mode = 'explorer'
         className="scene-svg"
         viewBox="0 0 1600 1000"
         preserveAspectRatio="xMidYMid slice"
-        tabIndex={0}
         role="img"
-        aria-label={`Microgravity combustion chamber illustration for ${observed ? `custom settings (${observed.atmosphere}): ${observed.caption}` : scenario.label}. Drag to rotate, scroll or use plus and minus keys to zoom.`}
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={onPointerUp}
-        onPointerCancel={onPointerUp}
-        onKeyDown={onKeyDown}
+        aria-label={`Microgravity combustion chamber illustration for ${observed ? `custom settings (${observed.atmosphere}): ${observed.caption}` : scenario.label}.`}
       >
         <title>{`Microgravity spherical flame illustration (${scenario.label}) — not a combustion simulation`}</title>
         <Backdrop />
         <g ref={worldRef} transform={INITIAL_WORLD}>
-          <g ref={rotRef} transform={INITIAL_ROT}>
+          <g>
             <Chamber flameScale={flameScale} rimOpacity={rimOpacity} showRuler={level >= 2} obs={observed} />
           </g>
           <Callouts scenario={scenario} mode={mode} dim={level !== 1} atmosphere={observed?.atmosphere} />
@@ -438,16 +370,9 @@ export const FlameScene = memo(function FlameScene({ scenario, mode = 'explorer'
         ))}
       </div>
 
-      <div className="zoom-controls" role="group" aria-label="Camera controls">
-        <button type="button" aria-label="Zoom in" onClick={() => zoomBy(1.3)}>+</button>
-        <button type="button" aria-label="Zoom out" onClick={() => zoomBy(1 / 1.3)}>−</button>
-        <button type="button" aria-label="Reset view" onClick={reset}>⟲</button>
-      </div>
-
       <div className="scene-legend">
         <span>Illustration. Not a combustion simulation.</span>
         {observed && <span className="obs-caption">{observed.caption}</span>}
-        <span style={{ opacity: hintUsed ? 0.45 : 1, transition: 'opacity 0.3s' }}>drag to rotate · scroll to zoom</span>
       </div>
     </div>
   );
