@@ -253,3 +253,40 @@ def test_high_max_three_steps_and_no_repeat():
 ])
 def test_number_tolerance(answer, allowed, ok):
     assert (verify.unknown_numbers(answer, allowed) == []) is ok
+
+
+# --------------------------------------------------------------------------- fase 4: endurecimiento
+@pytest.mark.parametrize("bad", ["See https://example.com for 403 tests.", "**403** tests.",
+                                 "Test 99X1234 had 403 tests.", "403 tests. " * 70])
+def test_composer_hardening(bad):
+    c, _ = make([route("meta"), text(bad)])
+    b = ask(c, "dataset overview")
+    assert b["meta"]["mode"] == "fallback"
+
+
+def test_args_as_json_string_accepted():
+    c, _ = make([{"tool": "meta", "args": "{}"}, text("403 tests.")])
+    assert ask(c, "dataset overview")["meta"]["mode"] == "ollama"
+
+
+def test_high_later_step_invalid_keeps_first_result():
+    c, _ = make([{"tool": "meta", "args": {}, "done": False}, "garbage", "garbage again", text("403 tests.")])
+    b = ask(c, "overview then more", level="high")
+    assert b["meta"]["mode"] == "ollama" and len(b["tool_calls"]) == 1
+    assert any("later tool step" in w for w in b["meta"]["warnings"])
+
+
+def test_time_budget(monkeypatch):
+    llm = FakeLLM([route("meta")])
+    c = TestClient(create_app(settings=Settings(ask_budget_s=-1), llm=llm))
+    b = ask(c, "dataset overview")
+    assert b["meta"]["mode"] == "fallback" and len(llm.calls) == 1
+    assert any("Time budget" in w for w in b["meta"]["warnings"])
+
+
+def test_known_test_id_allowed():
+    c, _ = make([route("get_experiment", test_id="20CAL08"),
+                 text("Test 20CAL08 used methanol at O2 0.21 and 0.997 atm.")])
+    b = ask(c, "test 20cal08 details please")
+    # la regla low detecta el ID, pero medium sí llama al modelo (no es una guardia)
+    assert b["meta"]["mode"] == "ollama", b["meta"]["warnings"]

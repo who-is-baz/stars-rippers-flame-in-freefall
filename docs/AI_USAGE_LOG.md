@@ -400,3 +400,9 @@ Yael pidió que Claude tomara las decisiones abiertas.
 3. `src/backend/verify.py`: números contra el resultado (tolerancia de redondeo), frases prohibidas, near≠lunar, n<5, inglés, ≤ 3 frases → si falla, plantilla (`mode: fallback`).
 4. `GET /llm/status` (Ollama vía `/api/tags`, timeout 1.5 s; caído → `available:false` con 200).
 5. `tests/test_api_ask_llm.py` + `tests/fake_llm.py`: 42 pruebas con Ollama MOCKEADO. 121 en verde. **No se probó con un modelo real**: Ollama 0.21.1 está instalado pero `~/.ollama` apunta a un disco no montado y no hay modelos. Revisión humana pendiente.
+
+## 2026-11-15 (25) — Backend fase 4: nivel high y endurecimiento — Claude (Opus 5.5, Claude Code)
+
+1. High: hasta 3 pasos sin repetir llamadas; si un paso posterior es inválido se conserva lo obtenido; presupuesto de tiempo `ASK_BUDGET_S` (45 s) antes de redactar.
+2. Verificador: test_id que no estén en el resultado, links/markdown, > 600 caracteres; argumentos como texto JSON aceptados.
+3. `docs/07-api-contract.md` (sección `/ask` + `/llm/status`) y 5 decisiones en `docs/DECISIONES.md`. 129 pruebas en verde (Ollama mockeado). Revisión humana pendiente.

@@ -7,6 +7,7 @@ resultado de la herramienta (reduce la superficie de inyección). Citas, test_id
 from __future__ import annotations
 
 import json
+import time
 from typing import List, Optional, Tuple
 
 from pydantic import ValidationError
@@ -115,7 +116,10 @@ def route_once(llm, con, model: str, messages: List[dict], high: bool):
                 return "none", None, True, warnings
             if tool not in T.TOOLS:
                 raise ValueError(f"unknown tool '{tool}'")
-            args, dropped = _clean_args(tool, obj.get("args") or {})
+            raw_args = obj.get("args") or {}
+            if isinstance(raw_args, str):  # algunos modelos devuelven los argumentos como texto JSON
+                raw_args = json.loads(raw_args or "{}")
+            args, dropped = _clean_args(tool, raw_args)
             if dropped:
                 warnings.append(f"ignored unknown arguments from the model: {', '.join(map(str, dropped))}")
             tr = T.execute(con, tool, args)
@@ -158,6 +162,7 @@ def answer(llm, con, question: str, level: str, model: str, settings: Settings):
         out["warnings"] = out["warnings"] + ["Answered by a deterministic guard rule (no model call)."]
         return out, "low"
 
+    t0 = time.perf_counter()
     high = level == "high"
     system = ROUTER_SYSTEM % (HIGH_EXTRA if high else "", _catalog()) + (HIGH_RULES if high else "")
     messages = [{"role": "system", "content": system}, {"role": "user", "content": question}]
@@ -186,13 +191,18 @@ def answer(llm, con, question: str, level: str, model: str, settings: Settings):
                          {"role": "user", "content": f"Result of step {step + 1}: {summary}\n"
                                                      "Next tool, or done=true."}]
     except RouterFailed as e:
-        out = answer_low(con, question, settings.db_path or None)
-        out["warnings"] = out["warnings"] + [f"The model did not produce a valid tool call ({e}); "
-                                             "rule-based answer shown instead."]
-        return out, "fallback"
+        if results:  # high: un paso posterior falló; se usa lo que ya se obtuvo
+            warnings.append(f"A later tool step was invalid and was skipped ({e}).")
+        else:
+            return _rules_fallback(con, question, settings, e)
 
     if all(tr.no_data for tr in results):  # sin datos: no hace falta redactar
         return result_from_tools(results, deterministic(results), warnings), "ollama"
+
+    if time.perf_counter() - t0 > settings.ask_budget_s:
+        warnings.append(f"Time budget of {settings.ask_budget_s:.0f}s exceeded before drafting; "
+                        "deterministic template shown instead.")
+        return result_from_tools(results, deterministic(results), warnings), "fallback"
 
     text, problems = compose(llm, model, results)
     if problems or not text:
@@ -200,3 +210,11 @@ def answer(llm, con, question: str, level: str, model: str, settings: Settings):
                         "deterministic template shown instead.")
         return result_from_tools(results, deterministic(results), warnings), "fallback"
     return result_from_tools(results, text, warnings), "ollama"
+
+
+def _rules_fallback(con, question, settings, e):
+    from .assistant import answer_low
+    out = answer_low(con, question, settings.db_path or None)
+    out["warnings"] = out["warnings"] + [f"The model did not produce a valid tool call ({e}); "
+                                         "rule-based answer shown instead."]
+    return out, "fallback"

@@ -19,6 +19,9 @@ from . import tools as T
 PSI_PER_ATM = T.PSI_PER_ATM
 ALWAYS_ALLOWED = {5.0, 14.7, 0.01, 0.5}  # MIN_N, 1 atm en psi, tolerancias de scenarios.py
 MAX_SENTENCES = 3
+MAX_CHARS = 600
+URL_RE = re.compile(r"(https?://|www\.)", re.I)
+MARKDOWN_RE = re.compile(r"(\*\*|`|^#|\[[^\]]+\]\()", re.M)
 
 NUM_RE = re.compile(r"(?<![A-Za-z0-9.])(\d+(?:\.\d+)?)(?![0-9])")
 DOI_RE = re.compile(r"10\.\d{4,9}/[^\s,;)]+")
@@ -115,6 +118,14 @@ def check(answer: str, results: List["T.ToolResult"]) -> List[str]:
     small = any(x.get("n", T.q.MIN_N) < T.q.MIN_N for tr in results for x in tr.rows())
     if small and "%" in a and not re.search(r"n\s*<\s*5|small sample", a, re.I):
         problems.append("percentage with n<5 rows but no n<5 warning")
+    known_ids = {i.upper() for tr in results for ids in tr.ids.values() for i in ids}
+    for tid in TESTID_RE.findall(a):
+        if any(ch.isdigit() for ch in tid) and tid.upper() not in known_ids and not re.fullmatch(r"\d+(st|nd|rd|th)", tid, re.I):
+            problems.append(f"test ID not in the tool result: {tid}")
+    if URL_RE.search(a) or MARKDOWN_RE.search(a):
+        problems.append("links or markdown are not allowed")
+    if len(a) > MAX_CHARS:
+        problems.append(f"answer longer than {MAX_CHARS} characters")
     if len(SPANISH.findall(a)) >= 2:
         problems.append("answer is not in English")
     if sentences(a) > MAX_SENTENCES:

@@ -18,6 +18,7 @@ class Settings:
     ollama_url: str = field(default_factory=lambda: os.environ.get("OLLAMA_URL", "http://localhost:11434").rstrip("/"))
     ollama_timeout_s: float = field(default_factory=lambda: float(os.environ.get("OLLAMA_TIMEOUT_S", "60")))
     status_timeout_s: float = 1.5
+    ask_budget_s: float = field(default_factory=lambda: float(os.environ.get("ASK_BUDGET_S", "45")))
     keep_alive: str = field(default_factory=lambda: os.environ.get("OLLAMA_KEEP_ALIVE", "5m"))
     tiers: Dict[str, str] = field(default_factory=lambda: {
         "flash": os.environ.get("FLASH_MODEL", "llama3.2:3b"),

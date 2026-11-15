@@ -45,7 +45,8 @@ Rango → tupla: `o2_min`/`o2_max` → `o2_range=(o2_min, o2_max)` y `pressure_m
 | GET | `/ranking` | **PROVISIONAL**: no hay función | `fuel`, `w_burning_rate`, `w_ext_diameter`, `w_confidence` | condiciones ordenadas con `score`, desglose por componente, `n`, `qc_flags` |
 | GET | `/compare` | `get_experiment(con, test_id, program)` | `a`, `b` = `test_id` o `PROGRAM:test_id` (193F001 está repetido en FLEX: vienen ambas filas) | `{a:[filas], b:[filas], same, different}` (`same`/`different` comparan la primera fila de cada lado); 404 si no existe |
 | GET | `/gaps` | `build_gaps` de `scripts/build_frontend_data.py` (mismo contenido que `gaps.json`) | — | `{gaps:[{id, text, evidence, source_doi}]}` |
-| POST | `/ask` | elige entre `ALL_QUERIES` (Q1–Q6) | `{question, level: "low"\|"medium"\|"high"}` | `{answer, citations:[{query, params, source_doi, test_ids}], tool_calls, no_data}`; `query` es la clave de `ALL_QUERIES` (p. ej. `q4_burning_rate_by_o2`) |
+| POST | `/ask` | elige entre las herramientas de `src/backend/tools.py` (Q1–Q6, `list_experiments`, `get_experiment`, `scenario`, `meta`) | `{question (1–500 car.), level: "low"\|"medium"\|"high", model?: string}` | `{answer, citations:[{query, params, source_doi, test_ids, test_ids_total}], tool_calls, no_data, meta:{level, model, mode, ms, warnings}}`; `query` es la clave de la herramienta (p. ej. `q4_burning_rate_by_o2`) |
+| GET | `/llm/status` | consulta `GET /api/tags` de Ollama (timeout 1.5 s) | — | `{available, ollama_url, models:[{tag, tier: "flash"\|"medium"\|"heavy", installed}]}`; si Ollama no responde: `available:false` con **200** |
 
 "…comunes" = `n`, `qc_flags`, `source_doi`, y cuando aplica `pct_note`, `warning` y `low_confidence_warning`.
 
@@ -82,6 +83,21 @@ Motivo: la tabla del frontend necesita filtrar por resultado y paginar, y con la
 - `high`: un modelo mayor, en varios pasos, y verifica que cada cita exista.
 - Si no hay evidencia: `{"answer": "No data available for that question.", "no_data": true}`.
 - **El modo `low` debe funcionar sin Ollama** (el enlace público no tendrá modelo local).
+
+### Extensión aditiva (2026-11-15, no rompe a quien consume)
+- **`model`** (opcional) en la petición: etiqueta de Ollama. Debe ser una de las de `/llm/status`
+  (`FLASH_MODEL`=llama3.2:3b, `MEDIUM_MODEL`=qwen3:8b, `HEAVY_MODEL`=qwen3:14b por defecto); si no, **400**.
+  Sin `model`: `medium` usa `MEDIUM_MODEL` y `high` usa `HEAVY_MODEL`. En `low` se ignora.
+- **`meta`** (aditivo) en la respuesta: `level`, `model` (null en low), `mode` (`low` = reglas sin modelo,
+  `ollama` = texto redactado por el modelo y verificado, `fallback` = el modelo falló la verificación o no dio una
+  llamada válida y se muestra la plantilla), `ms`, `warnings` (avisos obligatorios: n<5, no es probabilidad,
+  confundido CO₂/He–O₂, `not_stated`, baja confianza, motivo del fallback).
+- **`test_ids`**: máximo 20 por cita; **`test_ids_total`** da el total (p. ej. Earth/ISS: 20 de 49).
+- `citations`, `test_ids` y `no_data` los calcula **el código**, nunca el modelo. Sin pruebas → `citations: []`.
+- Fuera de tema → `"That is not in the PSI data shown on this page."` con `no_data: true`.
+- Mapa de la interfaz: Basic=`low`; Flash=`medium`+`FLASH_MODEL`; Medium=`medium`+`MEDIUM_MODEL`;
+  Heavy=`high`+`HEAVY_MODEL`.
+- `503` si Ollama no responde, el modelo no está instalado o la llamada falla; el frontend cae a Basic.
 
 ## Errores
 `400` parámetros inválidos: las funciones lanzan `ValueError` con el motivo y la API lo devuelve tal cual (`{"detail": "…"}`).
