@@ -19,7 +19,8 @@ did **not** fit in the time box, so nobody claims it.
 3. **Focus trap and focus return** not tested dialog by dialog; the audit checks the skip link, its focus ring,
    Ctrl K and Escape on the assistant, and Escape on the Display panel.
 4. **Tap targets of 44×44 px**: the Display controls meet it; elsewhere only the WCAG 2.2 AA minimum (24×24 px).
-5. **Lighthouse Performance** on mobile is 70–83 on the demo laptop, before and after this work.
+5. **Lighthouse Performance**: 92–93 (mobile, gzip-served build) before and after this work; 70 only when served
+   without compression (`python -m http.server`), which is not how a host serves it.
 6. Higher contrast was checked by token design only, not by its own axe run.
 7. No tooltip screenshot: no QC chip is visible on the dashboard by default.
 

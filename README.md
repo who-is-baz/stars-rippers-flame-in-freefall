@@ -1,5 +1,14 @@
 # Flarefall
 
+## Live demo
+
+- **Site:** https://flame-in-freefall-explorer.netlify.app/ (add `?theme=light` for the light theme)
+- **Demo slides:** https://canva.link/gaifyja4tjt8bor
+- **Repository:** https://github.com/who-is-baz/stars-rippers-flame-in-freefall
+
+An evidence-first dashboard of NASA's ISS fire tests (FLEX, BASS-II) by cabin atmosphere. The public site runs in Basic
+mode (no model, no server); the local AI assistant (Ollama) is optional.
+
 **An evidence map, not a guess: it shows what NASA's microgravity combustion data can and cannot tell a Moon-base designer.**
 
 Flarefall is an interactive dashboard built for the NASA Space Apps Challenge 2026 challenge *Flame in Freefall*.
@@ -47,7 +56,7 @@ src/               Python: read-only queries over SQLite, scenarios, relevance, 
 scripts/           data pipeline (fetch, process, build), audit_numbers.py (independent recomputation), smoke tests
 data/processed/    processed tables (CSV, JSON) built from the NASA files
 tests/             Python tests
-docs/              setup, data dictionary, API, data sources, AI use, challenge text
+docs/              setup, data dictionary, API, data sources, AI use, challenge text, submission links
 ```
 
 ## Data and licences
@@ -70,7 +79,7 @@ docs/              setup, data dictionary, API, data sources, AI use, challenge 
   dependencies. Most code is checked by automated tests and an independent recomputation of every figure
   (`scripts/audit_numbers.py`) rather than line by line.
 
-Full statement: [`docs/AI_USAGE.md`](docs/AI_USAGE.md).
+Full statement: [`docs/AI_USAGE.md`](docs/AI_USAGE.md); session log: [`docs/AI_USAGE_LOG.md`](docs/AI_USAGE_LOG.md).
 
 ## Accessibility
 
@@ -85,9 +94,16 @@ All display settings are in the **Display** button of the top bar and are rememb
 
 Checked on the static site: **axe-core** (WCAG 2.2 AA rules) in 32 views and states, at 390 and 1280 px, in both
 themes: 0 serious or critical violations. Contrast of the colour tokens computed for both themes (146 pairs).
-**Lighthouse** mobile accessibility: 100 in Dark and in Light. Scripts: `scripts/check_a11y.mjs`,
-`scripts/check_contrast.mjs`, `scripts/check_english.mjs`; screenshots of every view in both themes:
-`docs/screenshots/theme-*.png`.
+**Lighthouse** (mobile, 15 Nov 2026, built site served with gzip like a production host, 3 runs each):
+
+| Theme | Performance | Accessibility | Best practices | SEO |
+|---|---|---|---|---|
+| Dark | 92–93 | 100 | 100 | 100 |
+| Light | 92 | 100 | 100 | 100 |
+
+The deployed Netlify site measured 97 / 77 / 98 for performance in three runs (network variance). Scripts:
+`scripts/check_a11y.mjs`, `scripts/check_contrast.mjs`, `scripts/check_english.mjs`; screenshots of every view in both
+themes: `docs/screenshots/theme-*.png`. Accessibility statement: [`docs/submission/ACCESSIBILITY.md`](docs/submission/ACCESSIBILITY.md).
 
 ## Limits
 
