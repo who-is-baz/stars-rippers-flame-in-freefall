@@ -20,3 +20,6 @@ __pycache__/
 # Otros
 node_modules/
 .DS_Store
+
+# Entregable del sitio estático (se genera con: cd frontend && npm run build && cd dist && zip -r ../../site.zip .)
+site.zip

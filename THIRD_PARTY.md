@@ -8,7 +8,7 @@ NASA PSI data: **CC0-1.0** (FLEX DOI 10.60555/mbq8-0451, BASS-II DOI 10.60555/4q
 
 All dependencies use permissive licenses (MIT, ISC, BSD-2/3-Clause, Apache-2.0, MIT-0, BlueOak-1.0.0, PSF-2.0, CC0-1.0). Notes:
 - **MPL-2.0** (file-level copyleft): `certifi` (Python, installed at runtime by `requests`; not redistributed in this repo) and `lightningcss` (+ platform binaries, build tool only, not shipped in `dist/`). Compatible as long as MPL files are not modified; we do not modify them.
-- **OFL-1.1** (fonts): `@fontsource-variable/inter` is **bundled** in the built site (`dist/assets/inter-*.woff2`); the OFL allows bundling with software and requires keeping the license with the font (it ships in the npm package). *Sora* and *IBM Plex Mono* are loaded from Google Fonts (OFL-1.1) and are not bundled.
+- **OFL-1.1** (fonts): `@fontsource-variable/inter`, `@fontsource/sora` and `@fontsource/ibm-plex-mono` are **bundled** in the built site (`dist/assets/*.woff2`, `*.woff`). The SIL Open Font License 1.1 allows bundling with software and requires keeping the copyright and license with the fonts; each npm package ships its `LICENSE` (Inter; Sora: "Copyright 2019 The Sora Project Authors"; IBM Plex Mono: "Copyright 2017 IBM Corp."), verified in the package files on 15 Nov 2026. The site no longer loads anything from Google Fonts.
 - Python `pandas`, `numpy`, `openpyxl` are used only by the offline data scripts; versions below are the ones on the build machine.
 - No GPL/AGPL/LGPL dependency was found. Open question for a human: none blocking.
 
@@ -17,6 +17,8 @@ All dependencies use permissive licenses (MIT, ISC, BSD-2/3-Clause, Apache-2.0, 
 | Package | License | Repository |
 |---|---|---|
 | `@fontsource-variable/inter@5.3.0` | OFL-1.1 | https://github.com/fontsource/font-files |
+| `@fontsource/ibm-plex-mono@5.3.0` | OFL-1.1 | https://github.com/fontsource/font-files |
+| `@fontsource/sora@5.3.0` | OFL-1.1 | https://github.com/fontsource/font-files |
 | `@types/prop-types@15.7.15` | MIT | https://github.com/DefinitelyTyped/DefinitelyTyped |
 | `@types/react@18.3.31` | MIT | https://github.com/DefinitelyTyped/DefinitelyTyped |
 | `csstype@3.2.3` | MIT | https://github.com/frenic/csstype |

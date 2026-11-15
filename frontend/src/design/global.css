@@ -2205,3 +2205,9 @@ ul.plain { margin: 0; padding-left: 1.1em; display: grid; gap: var(--s-2); color
   .btn-sm, .rail-help, .mini-seg button, .ax-range, .ax-small, .ax-disclaimer, .ax-unverified,
   .ax-preset, .ax-slider-head, .ax-readout, .ax-snap, .ax-seg legend, .dim, .num { font-size: 12px !important; }
 }
+
+/* Tablet/phone: the full-view panel is fixed and must sit above the sticky nav (z 100), which otherwise
+   covers its section switcher. The panel has its own "Back to console" and close buttons. */
+@media (max-width: 1180px) {
+  .view-panel { z-index: 120; }
+}

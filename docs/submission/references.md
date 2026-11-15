@@ -25,7 +25,7 @@ No space agency partner data were used. Everything we used is listed below, incl
 - FastAPI, Pydantic, Starlette, Uvicorn, httpx (API); pytest (tests).
 - React 18, React DOM, TypeScript, Vite, Vitest, Testing Library, jsdom (website).
 - lucide-react (icons, ISC).
-- Fonts: Inter (bundled via `@fontsource-variable/inter`, OFL-1.1); Sora and IBM Plex Mono (loaded from Google Fonts; OFL-1.1 as listed by Google Fonts — **MANUAL: re-check on fonts.google.com**).
+- Fonts, all self-hosted in the site (no font CDN): Inter (`@fontsource-variable/inter`), Sora (`@fontsource/sora`, © 2019 The Sora Project Authors) and IBM Plex Mono (`@fontsource/ibm-plex-mono`, © 2017 IBM Corp.) — SIL Open Font License 1.1, as stated in the `LICENSE` file of each package.
 - Ollama (runs optional local models on the demo machine; not bundled).
 - Tools used during development only: Git and GitHub, `gh` CLI, Google Chrome and Microsoft Edge (screenshots), playwright-core (screenshots), Lighthouse (audit), license-checker and pip-licenses (license inventory), `pdftotext`.
 - Design inspiration for our own guidelines: Anthropic's `frontend-design` skill and the "UI UX Pro Max" repository (nextlevelbuilder, MIT license). No code was copied from other teams.
