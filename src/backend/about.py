@@ -159,7 +159,7 @@ TOPICS: List[Dict[str, str]] = [
      "text": "I can explain this page and answer questions about the NASA PSI combustion data it shows ({n_tests} ISS tests). Try one of the questions below."},
 ]
 
-# Los temas de indicadores/vistas (mentora) van antes de "custom"/"coverage"/"gaps" para que "scenario coverage" no caiga en "coverage".
+# Los temas de indicadores/vistas van antes de "custom"/"coverage"/"gaps" para que "scenario coverage" no caiga en "coverage".
 _EARLY = ["relevance_order", "complete_partial", "scenario_coverage", "no_evidence", "unresolved", "experiments_view"]
 _early = [t for t in TOPICS if t["id"] in _EARLY]
 _rest = [t for t in TOPICS if t["id"] not in _EARLY]

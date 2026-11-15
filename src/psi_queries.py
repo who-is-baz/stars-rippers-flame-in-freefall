@@ -21,7 +21,7 @@ from typing import Iterable, Optional, Sequence, Tuple
 
 DEFAULT_DB = os.path.join(os.path.dirname(__file__), "..", "data", "processed", "psi.sqlite")
 MIN_N = 5
-# Mensajes que llegan a la UI y al asistente: en inglés (la entrega es en inglés). Ver docs/07-api-contract.md.
+# Mensajes que llegan a la UI y al asistente: en inglés (la entrega es en inglés). Ver docs/API.md.
 PCT_NOTE = "descriptive, not a probability"
 SMALL_N_WARNING = "n<{min_n}: unstable percentage; do not read it as a rate"
 LOW_CONFIDENCE_FLAG = "low_confidence"

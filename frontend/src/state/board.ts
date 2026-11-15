@@ -1,6 +1,6 @@
 // User board: which cards sit in the left rail and the right rail of the single-screen console.
 // Saved in localStorage so each visitor keeps their own board (no backend). Rails have slot limits
-// so the screen never overflows: the anti-clutter rule of flame-dashboard-builder §4.
+// so the screen never overflows.
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
 export type CardType =

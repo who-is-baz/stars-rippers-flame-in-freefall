@@ -1,4 +1,4 @@
-// Part B (mentor): the Experiments view. Order by relevance, filters, URL hash, detail drawer, dock shortcuts.
+// The Experiments view. Order by relevance, filters, URL hash, detail drawer, dock shortcuts.
 import { beforeEach, describe, expect, it } from 'vitest';
 import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { Console } from './Console';

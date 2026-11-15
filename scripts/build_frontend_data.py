@@ -234,7 +234,7 @@ def build_materials(items):
     with open(BASS_CSV, newline="", encoding="utf-8") as f:
         color = {r["test_id"]: r["color"] or None for r in csv.DictReader(f)}
     missing = [r["test_id"] for r in bass if not r["material_category"]]
-    assert not missing, f"material_category vacío (¿falta unir #28?): {missing[:5]}"
+    assert not missing, f"material_category vacío (¿falta unir docs/material_mapping.csv?): {missing[:5]}"
 
     def summarize(rows, **key):
         outc = Counter(r["outcome"] for r in rows if r["outcome"])
@@ -394,7 +394,7 @@ def build_answers(items, scen, coverage, materials, gaps):
         "combustion data yet. ACME's E-FIELD Flames only mimicked partial gravity with an electric field; it is an "
         "analog, not lunar data.",
         [], no_data=True)
-    # 11 (mentor): most relevant tests for a scenario, with the same order as the Experiments view (src/relevance.py)
+    # 11: most relevant tests for a scenario, with the same order as the Experiments view (src/relevance.py)
     o2c, pc = rel.scenario_criteria("lunar_nasa")
     rk = rel.rank(items, o2c, pc)
     cnt = rel.counts(rk)
@@ -407,7 +407,7 @@ def build_answers(items, scen, coverage, materials, gaps):
         lead + "; ".join(one(x) for x in top) + ". Ordered by closeness of conditions, not a safety ranking. The source of this scenario is unverified.",
         [{"query": "most_relevant_tests", "params": {"scenario_id": "lunar_nasa", "limit": 5}, "source_doi": DOI["FLEX"], "test_ids": ids}],
         warnings=["Unverified source: the O2 and pressure values of this scenario are not confirmed yet."])
-    # 12 (mentor): what the data cannot settle, computed for the five reference atmospheres
+    # 12: what the data cannot settle, computed for the five reference atmospheres
     no_exact = sum(1 for sx in scen["scenarios"] if sx["n_exact"] == 0)
     no_near = sum(1 for sx in scen["scenarios"] if sx["n_near"] == 0)
     not_stated = sum(r["outcome_source"] == "not_stated" for r in bass)

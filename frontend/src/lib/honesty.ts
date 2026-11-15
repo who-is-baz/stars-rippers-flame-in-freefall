@@ -1,4 +1,4 @@
-// Las reglas de honestidad de docs/03 hechas código. El texto viene de aquí, nunca escrito a mano en componentes.
+// Las reglas de honestidad de los datos hechas código. El texto viene de aquí, nunca escrito a mano en componentes.
 import type { ExperimentRow, Outcome } from '../data/types';
 
 // n<5 siempre con advertencia; el umbral sale de meta.min_n.
@@ -43,7 +43,7 @@ export const flagLabel = (flag: string): string => FLAGS[flag] ?? flag;
 export const needsAiBadge = (row: Pick<ExperimentRow, 'outcome_source' | 'qc_flags'>): boolean =>
   row.outcome_source === 'ai_extracted' || row.qc_flags.includes('low_confidence');
 
-// Fixed texts (docs/07-api-contract.md and the team's honesty rules). Components import these; they never retype them.
+// Fixed texts (docs/API.md and the data honesty rules). Components import these; they never retype them.
 export const LOW_CONFIDENCE_WARNING =
   'includes low-confidence AI-extracted outcomes (pending human review); show them with a warning';
 export const hasLowConfidence = (flags: string[]): boolean => flags.includes('low_confidence');

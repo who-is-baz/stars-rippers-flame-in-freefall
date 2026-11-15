@@ -11,7 +11,7 @@ import { data, renderWithBoard, renderWithData } from '../test/render';
 const rows = data.experiments.items as ExperimentRow[];
 const scale = globalRateScale(rows);
 
-// Real settings found in experiments.json for each state (see docs/screenshots/README.md).
+// Real settings found in experiments.json for each state.
 export const STATES = {
   stable: { fuel: 'any', o2: 0.34, psi: 10.3 },     // 9 tests, 0 extinction
   mixed: { fuel: 'any', o2: 0.2, psi: 14.6 },       // 56 tests, 34 extinction

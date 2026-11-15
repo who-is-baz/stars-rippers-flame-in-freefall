@@ -1,6 +1,6 @@
 // Indicators of the dashboard strip. Pure functions over experiments.json, meta.json and coverage.json; nothing typed by hand.
 //
-// COMPLETE vs PARTIAL (per test; fields chosen from the real table schema, see docs/DECISIONS):
+// COMPLETE vs PARTIAL (per test; fields chosen from the real table schema):
 //   FLEX      complete = fuel, O₂ and pressure recorded + a DECLARED outcome + at least one measured magnitude
 //             (burning rate or extinction diameter). Anything else is partial.
 //   BASS-II   complete = material, O₂ and a DECLARED outcome. Pressure is not recorded by the investigation, and the table has no

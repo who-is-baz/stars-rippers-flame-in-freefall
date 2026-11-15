@@ -5,7 +5,7 @@ Clase: exact → near → not_near → no_pressure (BASS-II y C11M201: solo se c
   1. distancia = max(|ΔO2|/tolO2, |Δpsi|/tolpsi) (en no_pressure solo |ΔO2|/tolO2), menor primero;
   2. resultado declarado antes de "not_stated"; 3. mayor n (pruebas de la misma celda); 4. programa y test_id.
 Δ con signo: valor − objetivo (criterio puntual); para ≥ / ≤ es el faltante (0 si se cumple).
-Completa/parcial: ver `is_complete` (definición en docs/DECISIONES.md, 2026-11-15).
+Completa/parcial: ver `is_complete` (definición en el README del repositorio y en la vista Sources & credits).
 """
 from __future__ import annotations
 

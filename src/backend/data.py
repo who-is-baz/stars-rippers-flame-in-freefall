@@ -1,6 +1,6 @@
 """Acceso a datos del backend: conexión de solo lectura, campos comunes y respuestas precalculadas.
 
-Todo pasa por src/psi_queries.py y src/scenarios.py (regla 4 de CLAUDE.md). Los textos de limitaciones y las
+Todo pasa por src/psi_queries.py y src/scenarios.py (no hay SQL en otro lugar). Los textos de limitaciones y las
 respuestas del modo `low` se toman de scripts/build_frontend_data.py: así el backend y answers.json salen del
 mismo código (paridad por construcción, comprobada en tests/test_api_ask_low.py).
 """

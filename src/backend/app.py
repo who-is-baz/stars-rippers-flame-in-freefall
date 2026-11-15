@@ -1,4 +1,4 @@
-"""API FastAPI de Flame in Freefall (docs/07-api-contract.md).
+"""API FastAPI de Flame in Freefall (docs/API.md).
 
 Rutas bajo /api (contrato). Las mismas rutas también responden en la raíz (sin /api, ocultas del OpenAPI) para
 que el frontend, que llama a `<VITE_LLM_URL>/ask`, funcione con VITE_LLM_URL=http://127.0.0.1:8000.

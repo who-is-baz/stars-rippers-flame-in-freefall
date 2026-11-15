@@ -1,4 +1,4 @@
-// Atmosphere explorer: RETRIEVAL of observed FLEX tests, not a simulation (docs/DECISIONES.md, 2026-11-15).
+// Atmosphere explorer: RETRIEVAL of observed FLEX tests, not a simulation.
 // Pure functions only. No interpolation, no extrapolation, no curve fitting: every number returned here is a
 // count or a plain mean over real rows that match the filters, always with its n.
 //

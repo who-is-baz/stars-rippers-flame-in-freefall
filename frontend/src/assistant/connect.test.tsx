@@ -1,4 +1,4 @@
-// Backend connection: /llm/status ("Connect local AI"), `model`, `meta` and test_ids_total (docs/07, 2026-11-15).
+// Backend connection: /llm/status ("Connect local AI"), `model`, `meta` and test_ids_total (docs/API.md).
 import { describe, expect, it, vi } from 'vitest';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { Sidebar } from './Sidebar';

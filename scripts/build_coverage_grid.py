@@ -11,7 +11,7 @@ import psi_queries as q  # noqa: E402
 OUT = "data/processed/coverage_grid.json"
 
 con = q.connect()
-cells = q.flex_coverage_grid(con)  # mismos nombres de campo que devuelve la API (docs/07-api-contract.md)
+cells = q.flex_coverage_grid(con)  # mismos nombres de campo que devuelve la API (docs/API.md)
 
 doc = {
     "description": "FLEX (NASA PSI PSI-69): cobertura de pruebas por combustible × banda de O2 × presión × supresor",

@@ -190,7 +190,7 @@ def main():
     for h in hard:
         FAILS.append(f"cifra de datos escrita a mano (debe calcularse del dato): {h}")
 
-    # ---- recomendación de la mentora: completo/parcial, cobertura del escenario, condiciones sin evidencia, relevancia, flujo de aire
+    # ---- indicadores: completo/parcial, cobertura del escenario, condiciones sin evidencia, relevancia, flujo de aire
     sys.path.insert(0, os.path.join(ROOT, "scripts"))
     import gen_mentor_golden as gm
     gold = gm.main()                                          # recomputación independiente desde experiments.csv

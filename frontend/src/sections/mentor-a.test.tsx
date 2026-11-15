@@ -1,4 +1,4 @@
-// Part A (mentor): indicators strip + scenario interpretation card. Numbers come from the data files.
+// Indicators strip + scenario interpretation card. Numbers come from the data files.
 import { beforeEach, describe, expect, it } from 'vitest';
 import { fireEvent, screen, within } from '@testing-library/react';
 import { Console } from './Console';

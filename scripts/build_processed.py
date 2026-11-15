@@ -13,10 +13,10 @@ OUT = "data/processed"
 FLEX_CSV = f"{RAW}/FLEX/PSI-69_Experimental table_FLEX.csv"
 BASS_CSV = f"{RAW}/BASS-II/PSI-25_Experimental table_BASS-II.csv"
 BASS_XLSX = f"{RAW}/BASS-II/PSI-25_Science Documents_BASS-II_Test.Matrices.xlsx"
-MATERIAL_MAP = "docs/material_mapping.csv"  # aprobado en el issue #3
+MATERIAL_MAP = "docs/material_mapping.csv"  # mapeo aprobado por el equipo
 MMHG_PER_ATM = 760.0
 # BASS-II: extracciones de IA con texto ambiguo (P5, P13a: pot 0 al extinguirse; O6: "out" sin "ext").
-# Se marcan `low_confidence` hasta que Fer las revise; quitarlas de aquí cuando las apruebe.
+# Se marcan `low_confidence` hasta que una persona las revise; quitarlas de aquí cuando se aprueben.
 AI_LOW_CONFIDENCE = {"P5", "P13a", "O6"}
 
 
@@ -175,7 +175,7 @@ def build_bass2():
         "co_initial_over_range": co_i.str.strip().str.upper().isin(["OR", "OVER"]),
         "co_final_over_range": co_f.str.strip().str.upper().isin(["OR", "OVER"]),
     })
-    # Mapeo de materiales aprobado por Fer en el issue #3 (14 nov). Se une por el texto original normalizado.
+    # Mapeo de materiales aprobado por el equipo (14 nov). Se une por el texto original normalizado.
     mp = pd.read_csv(MATERIAL_MAP, dtype=str).drop(columns="test_ids")
     df = df.merge(mp, on="material_raw", how="left", validate="many_to_one")
     assert df["material_category"].notna().all(), "hay material_raw sin categoría en docs/material_mapping.csv"
@@ -202,10 +202,10 @@ def build_bass2():
     # - CO inicial negativo (−1 a −3 ppm, probable offset del sensor): se conserva tal cual.
     flags = add_flag(flags, co_f.str.strip().str.startswith(">"), "co_final_censored")
     flags = add_flag(flags, df["co_initial_ppm"] < 0, "co_initial_negative")
-    # Extracciones de IA ambiguas: baja confianza hasta que Fer las apruebe (docs/tareas/fer-datos.md).
+    # Extracciones de IA ambiguas: baja confianza hasta revisión humana.
     flags = add_flag(flags, df["test_id"].isin(AI_LOW_CONFIDENCE) & df["ai_outcome"].notna(), "low_confidence")
-    # Marcas del mapeo que Fer pidió conservar (#3): material asumido por el ReadMe / typo en el texto /
-    # valor corregido por Fer (fer_corrected: P14 "blac" -> black; el texto original no se toca).
+    # Marcas del mapeo que el equipo pidió conservar: material asumido por el ReadMe / typo en el texto /
+    # valor corregido a mano por el equipo (fer_corrected: P14 "blac" -> black; el texto original no se toca).
     for name in ("material_assumed_from_readme", "material_text_typo", "fer_corrected"):
         flags = add_flag(flags, df["material_flag"].eq(name), name)
     df = df.drop(columns="material_flag")

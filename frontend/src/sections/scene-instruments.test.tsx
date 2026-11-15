@@ -1,4 +1,4 @@
-// Part C (mentor): oxygen, pressure and airflow instruments under the camera.
+// Oxygen, pressure and airflow instruments under the camera.
 import { beforeEach, describe, expect, it } from 'vitest';
 import { fireEvent, screen, within } from '@testing-library/react';
 import { Console } from './Console';

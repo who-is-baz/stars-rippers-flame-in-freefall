@@ -101,7 +101,7 @@ Mapa: Basic = `low` (sin modelo) · Flash = `medium` + `FLASH_MODEL` · Medium =
 ### Si Ollama no está
 - `/llm/status` → `available:false` (HTTP 200); `/ask` en medium/high → **503** y el front responde con Basic (lo avisa).
 - `low` nunca usa Ollama.
-- Si `OLLAMA_MODELS` o `~/.ollama` apuntan a un disco no montado, arranca con un directorio local: `HOME=$HOME/ollama-home OLLAMA_MODELS=$HOME/ollama-models OLLAMA_MAX_LOADED_MODELS=1 ollama serve` (ver `docs/bench/DIAGNOSTICO.md`).
+- Si `OLLAMA_MODELS` o `~/.ollama` apuntan a un disco no montado, arranca con un directorio local: `HOME=$HOME/ollama-home OLLAMA_MODELS=$HOME/ollama-models OLLAMA_MAX_LOADED_MODELS=1 ollama serve`.
 - Si `ollama serve` dice `could not create directory ~/.ollama: file exists`, `~/.ollama` es un enlace a un disco no
   montado: monta el disco o usa `OLLAMA_MODELS=/otra/ruta ollama serve`.
 

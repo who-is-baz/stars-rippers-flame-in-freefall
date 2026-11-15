@@ -1,4 +1,4 @@
-// Formato de unidades (flame-data-viz §2). Solo da formato: no calcula estadísticas nuevas.
+// Formato de unidades. Solo da formato: no calcula estadísticas nuevas.
 const ATM_PSI = 14.696; // 1 atm = 14.696 psi
 
 const trim = (x: number, d: number) => x.toFixed(d).replace(/\.0+$/, '');

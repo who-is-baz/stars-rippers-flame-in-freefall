@@ -1,7 +1,7 @@
 """Escenarios de atmósfera, tolerancias, bandas de O2 y niveles de presión: definidos UNA sola vez, como datos.
 
 Todo lo demás (API, scripts del frontend, tests, docs) importa de aquí. Para cambiar un escenario o la tolerancia,
-se cambia este archivo y se anota en docs/DECISIONES.md.
+se cambia este archivo (y se regeneran los JSON del frontend).
 
 Reglas de conteo (n_exact / n_near):
 - Un criterio de valor puntual ("21 % O2", "14.7 psi") se cumple si el dato está dentro de la tolerancia: una medida
@@ -12,7 +12,7 @@ Reglas de conteo (n_exact / n_near):
 - Solo FLEX tiene presión. BASS-II no registra presión: se informa aparte un conteo solo por O2.
 - Las pruebas sin presión (C11M201) se excluyen y se listan en `excluded`.
 
-Acceso a datos solo por src/psi_queries.py (regla 4 de CLAUDE.md): aquí no hay SQL.
+Acceso a datos solo por src/psi_queries.py: aquí no hay SQL.
 """
 from __future__ import annotations
 
@@ -70,7 +70,7 @@ SCENARIOS: List[Dict] = [
         "quote": ("...a nominal operating pressure of 10.2 psia (70.3 kPa) and 26.5% Oxygen concentration and the "
                   "capability to operate at 8.2 psi (56.5 kPa)and 34% Oxygen."),
         "verified": False,
-        "note": "Pending: Fer confirms the citation.",
+        "note": "Pending: a team member confirms the citation.",
     },
     {
         "id": "exploration",
@@ -82,7 +82,7 @@ SCENARIOS: List[Dict] = [
         "quote": ("After re-evaluation in 2012, the 8/32 environment was altered to 8.2 psia and 34% O2 to reduce "
                   "the hypoxic stress to a crewmember."),
         "verified": False,
-        "note": ("Pending: Fer confirms the citation. The quote is from NTRS 20150021491; NASA/TM-2013-217377 was "
+        "note": ("Pending: a team member confirms the citation. The quote is from NTRS 20150021491; NASA/TM-2013-217377 was "
                  "not read in this session and its title refers to the earlier 8 psia / 32% O2 atmosphere."),
     },
     {

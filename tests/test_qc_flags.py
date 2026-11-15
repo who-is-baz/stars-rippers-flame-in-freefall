@@ -1,4 +1,4 @@
-"""Tests de los qc_flags de BASS-II añadidos tras la verificación del 14 nov (docs/VERIFICACION.md, A6–A7).
+"""Tests de los qc_flags de BASS-II añadidos tras la verificación del 14 nov (verificación del 14 nov).
 
 Solo leen data/processed/ (no necesitan data/raw ni red). Requieren psi.sqlite (scripts/build_experiments.py).
 Con pytest:      python -m pytest tests/
@@ -66,7 +66,7 @@ def test_queries_warn_when_low_confidence_rows_are_included():
 
 
 def test_material_mapping_applied_to_all_bass2_rows():
-    """Mapeo aprobado por Fer en el issue #3: las 129 pruebas tienen categoría y se conservan sus marcas."""
+    """Mapeo aprobado por el equipo: las 129 pruebas tienen categoría y se conservan sus marcas."""
     bass = _rows("bass2_tests.csv")
     exp = [r for r in _rows("experiments.csv") if r["program"] == "BASS-II"]
     assert len(bass) == len(exp) == 129
@@ -83,7 +83,7 @@ def test_material_mapping_applied_to_all_bass2_rows():
 
 
 def test_fer_corrected_marks_every_corrected_value():
-    """P14 ("1/4 blac rod"): Fer corrigió el color a black (#28). El texto original se conserva y la corrección
+    """P14 ("1/4 blac rod"): el equipo corrigió el color a black. El texto original se conserva y la corrección
     lleva la marca fer_corrected en el mapeo, en bass2_tests.csv y en experiments.csv. Regla general: si el color
     asignado no aparece tal cual en el texto original, la fila tiene que llevar la marca."""
     with open(os.path.join(ROOT, "docs", "material_mapping.csv"), newline="", encoding="utf-8") as fh:

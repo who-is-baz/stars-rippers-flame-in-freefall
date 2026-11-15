@@ -56,7 +56,7 @@ def bass_rows():
         "test_id": b["test_id"],
         "date": b["test_date"],
         "material_or_fuel": b["material_raw"],
-        "material_category": b["material_category"],  # docs/material_mapping.csv, aprobado en #3
+        "material_category": b["material_category"],  # docs/material_mapping.csv (mapeo aprobado por el equipo)
         # % vol → fracción. Es O2 medido en la cámara, no fijado por diseño como en FLEX.
         "o2_fraction": (b["o2_initial_pct_vol"] / 100).round(4),
         "pressure_atm": np.nan,  # no registrada en BASS-II

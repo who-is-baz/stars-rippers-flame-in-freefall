@@ -180,5 +180,5 @@ All dependencies use permissive licenses (MIT, ISC, BSD-2/3-Clause, Apache-2.0, 
 
 ## Not dependencies (listed for completeness)
 
-- Optional local models (Ollama, only on the demo machine; not distributed): Llama 3.2 3B — *Llama 3.2 Community License* (custom license, per the Hugging Face model card); Qwen3-8B and Qwen3-14B — *apache-2.0* (per their Hugging Face model cards). See `docs/submission/references.md`.
+- Optional local models (Ollama, only on the demo machine; not distributed): Llama 3.2 3B — *Llama 3.2 Community License* (custom license, per the Hugging Face model card); Qwen3-8B and Qwen3-14B — *apache-2.0* (per their Hugging Face model cards). See `docs/AI_USAGE.md`.
 - Ollama is an external program installed separately on the demo machine, not bundled (its license was not re-verified in this session).

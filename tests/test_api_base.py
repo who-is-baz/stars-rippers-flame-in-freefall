@@ -1,4 +1,4 @@
-"""Fase 1: /meta, /experiments, /coverage, /queries, /gaps, /compare, CORS y errores (docs/07-api-contract.md)."""
+"""/meta, /experiments, /coverage, /queries, /gaps, /compare, CORS y errores (docs/API.md)."""
 import pytest
 from fastapi.testclient import TestClient
 

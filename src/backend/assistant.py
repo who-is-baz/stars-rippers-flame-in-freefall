@@ -1,4 +1,4 @@
-"""POST /ask y GET /llm/status (docs/07-api-contract.md, sección /ask).
+"""POST /ask y GET /llm/status (docs/API.md, sección /ask).
 
 Niveles: low = reglas + plantilla (sin Ollama, red de seguridad); medium = un modelo elige UNA herramienta y
 redacta; high = hasta 3 pasos de herramientas, redacta y se verifica. Las citas, test_ids y no_data los calcula

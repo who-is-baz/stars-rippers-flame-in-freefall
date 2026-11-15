@@ -1,4 +1,4 @@
-// Honest SVG visualizations (flame-data-viz & DESIGN_BRIEF).
+// Honest SVG visualizations: every mark is a real value with its n; no fitted lines or probabilities.
 // Every chart reads precomputed values from public/data/*.json; it never invents statistics or trendlines.
 import type { CoverageCell, Fuel, O2Band, Outcome, PressureLevel } from '../data/types';
 import { fmtBand, fmtDiameter, fmtRate } from '../lib/format';

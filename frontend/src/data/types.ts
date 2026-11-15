@@ -29,13 +29,13 @@ export interface ExperimentRow {
   outcome: Outcome | null; outcome_source: OutcomeSource;
   extinction_diameter_mm: number | null; burning_rate_mm2_s: number | null;
   qc_flags: string[]; source_doi: string;
-  // NOTE: `low_confidence_warning` (docs/07-api-contract.md) is NOT present in experiments.json;
+  // NOTE: `low_confidence_warning` (docs/API.md) is NOT present in experiments.json;
   // the UI derives it from the `low_confidence` qc flag (see lib/honesty.ts).
 }
 export interface ExperimentsFile { columns: string[]; total: number; items: ExperimentRow[] }
 
 export interface CoverageCell {
-  // TODO(contract): docs/07-api-contract.md names this `pressure_atm_level`; coverage.json ships `pressure_level`.
+  // Contract difference: docs/API.md names this `pressure_atm_level`; coverage.json ships `pressure_level`.
   fuel: Fuel; o2_band: O2Band; pressure_level: PressureLevel;
   n: number; status: CellStatus;
   n_by_suppressant: { none: number; co2: number; he: number };

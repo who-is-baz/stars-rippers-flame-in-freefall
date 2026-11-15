@@ -1,4 +1,4 @@
-// Board cards (widgets). One question, one view, one reading line, source + n (flame-dashboard-builder §2).
+// Board cards (widgets). One question, one view, one reading line, source + n.
 // Every figure is read from the JSON files; the browser only counts and formats.
 import { memo, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import {

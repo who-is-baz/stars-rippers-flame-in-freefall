@@ -122,7 +122,7 @@ def test_connection_is_read_only():
 
 
 def test_messages_in_english_and_o2_band_labels():
-    """Contrato (docs/07): los textos que llegan a la UI van en inglés; la primera banda es "<0.15" y va primero."""
+    """Contrato (docs/API.md): los textos que llegan a la UI van en inglés; la primera banda es "<0.15" y va primero."""
     assert q.PCT_NOTE == "descriptive, not a probability"
     assert q.SMALL_N_WARNING.format(min_n=5).startswith("n<5")
     assert "low-confidence" in q.LOW_CONFIDENCE_WARNING

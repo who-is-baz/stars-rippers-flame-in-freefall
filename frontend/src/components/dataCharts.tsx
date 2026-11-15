@@ -1,5 +1,5 @@
 // Charts built from the 403-row experiments.json and coverage.json. The browser only counts and places marks:
-// no fitted line, no averages, no probabilities (flame-data-viz). Every mark is a real test or a real count.
+// no fitted line, no averages, no probabilities. Every mark is a real test or a real count.
 import { memo, useMemo, useRef, useState, type PointerEvent } from 'react';
 import type { CoverageCell, ExperimentRow, Meta, Outcome } from '../data/types';
 import { DISRUPTION_SHORT, isSmallN, outcomeLabel } from '../lib/honesty';

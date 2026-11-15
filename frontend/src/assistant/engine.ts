@@ -13,8 +13,8 @@ export type Level = 'basic' | 'flash' | 'medium' | 'heavy';
 export const LEVELS: { value: Level; label: string }[] = [
   { value: 'basic', label: 'Basic' }, { value: 'flash', label: 'Flash' }, { value: 'medium', label: 'Medium' }, { value: 'heavy', label: 'Heavy' },
 ];
-// UI level → `level` sent to POST /ask (docs/07-api-contract.md defines low | medium | high).
-// Flash and Medium both use API level "medium"; what differs is the model (field `model`, docs/07 2026-11-15).
+// UI level → `level` sent to POST /ask (docs/API.md defines low | medium | high).
+// Flash and Medium both use API level "medium"; what differs is the model (field `model`, docs/API.md).
 export const API_LEVEL: Record<Level, string> = { basic: 'low', flash: 'medium', medium: 'medium', heavy: 'high' };
 export type Tier = 'flash' | 'medium' | 'heavy';
 export const LEVEL_TIER: Record<Level, Tier | null> = { basic: null, flash: 'flash', medium: 'medium', heavy: 'heavy' };

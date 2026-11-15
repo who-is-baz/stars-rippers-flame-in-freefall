@@ -1,4 +1,4 @@
-// Immutable data rules (docs/03-analisis-datos.md) checked on the rendered site, against the real data files.
+// Immutable data rules (see README, Limits) checked on the rendered site, against the real data files.
 import { beforeEach, describe, expect, it } from 'vitest';
 import { fireEvent, screen, within } from '@testing-library/react';
 import { Console } from '../sections/Console';

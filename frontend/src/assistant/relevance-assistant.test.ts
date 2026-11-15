@@ -1,4 +1,4 @@
-// Basic assistant: "most relevant tests" uses the same order as the Experiments view (independent reference: mentor_golden.json).
+// Basic assistant: "most relevant tests" uses the same order as the Experiments view (independent reference: mentor_golden.json, built by scripts/gen_mentor_golden.py).
 import { describe, expect, it } from 'vitest';
 import golden from '../lib/mentor_golden.json';
 import { data } from '../test/render';
