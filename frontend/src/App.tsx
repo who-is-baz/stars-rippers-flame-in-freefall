@@ -47,10 +47,9 @@ function BrandEmblem() {
   );
 }
 
-function Nav({ onAssistant, open, mode, onMode, customizeOpen, onCustomize, view, onView, nTests, nPrograms }: {
+function Nav({ onAssistant, open, mode, onMode, customizeOpen, onCustomize, view, onView }: {
   onAssistant: () => void; open: boolean; mode: ExplanationMode; onMode: (m: ExplanationMode) => void;
   customizeOpen: boolean; onCustomize: (v: boolean) => void; view: ViewId; onView: (v: ViewId) => void;
-  nTests?: number; nPrograms?: number;
 }) {
   const { undo, canUndo } = useBoard();
   const isExploreGroup = view === 'explore' || view === 'charts' || view === 'scenarios' || view === 'fuels' || view === 'materials' || view === 'sources';
@@ -71,9 +70,6 @@ function Nav({ onAssistant, open, mode, onMode, customizeOpen, onCustomize, view
         </ul>
 
         <div className="nav-right">
-          {nTests != null && nPrograms != null && !customizeOpen && (
-            <div className="status-pill num" aria-label="Dataset status"><i aria-hidden="true" />{nTests} tests · {nPrograms} investigations</div>
-          )}
           {!customizeOpen ? (
             <>
               <button type="button" className="ask-trigger" aria-label="Ask the SI assistant" onClick={onAssistant} aria-expanded={open} aria-controls="assistant" aria-keyshortcuts={isMac ? 'Meta+K' : 'Control+K'}>
@@ -172,7 +168,6 @@ function Page() {
   }, [open]);
 
   const ready = state.status === 'ready';
-  const meta = ready ? state.data.meta : undefined;
 
   return (
     <BoardContext.Provider value={boardApi}>
@@ -182,7 +177,6 @@ function Page() {
           <Nav
             onAssistant={() => setOpen((o) => !o)} open={open} mode={mode} onMode={setMode}
             customizeOpen={customizeOpen} onCustomize={setCustomizeOpen} view={view} onView={openView}
-            nTests={meta?.n_tests} nPrograms={meta?.programs.length}
           />
           <div className="app-workspace">
             <main id="main" tabIndex={-1} className="app-main">

@@ -74,7 +74,8 @@ describe('FlameScene illustrations', () => {
 
   it('1 g comparison: obligatory sentence, rising air, and nothing from the data attached', () => {
     render(<FlameScene scenario={byId('earth_iss')} />);
-    const btn = screen.getByRole('button', { name: 'Earth 1 g (illustration)' });
+    const btn = screen.getByRole('button', { name: 'Compare with 1 g' });
+    expect(document.body.textContent).not.toContain('Earth 1 g (illustration)');   // the label only exists while the comparison is on
     expect(btn).toHaveAttribute('aria-pressed', 'false');
     expect(screen.queryByText(REF_1G_NOTE)).toBeNull();
     fireEvent.click(btn);
@@ -96,7 +97,7 @@ describe('FlameScene illustrations', () => {
     const ps = [...document.querySelectorAll('.o2p')];
     expect(ps.length).toBeGreaterThan(0);
     expect(ps.every((p) => p.classList.contains('o2p-static'))).toBe(true);
-    fireEvent.click(screen.getByRole('button', { name: 'Earth 1 g (illustration)' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Compare with 1 g' }));
     expect(document.querySelector('.flame-1g')).toBeNull();
     expect(document.querySelector('[data-flame="1g"]')).not.toBeNull();
   });

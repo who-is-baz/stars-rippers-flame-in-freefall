@@ -23,7 +23,7 @@ for (const [name, re] of SHOTS) {
   console.log('saved', name);
 }
 await dock.getByRole('button', { name: /^Earth \/ ISS/ }).click();
-await page.getByRole('button', { name: 'Earth 1 g (illustration)' }).click();
+await page.getByRole('button', { name: 'Compare with 1 g' }).click();
 await page.waitForTimeout(2000);
 await page.screenshot({ path: path.join(ROOT, 'docs', 'screenshots', 'flame-earth-1g-reference.png') });
 console.log('saved flame-earth-1g-reference');

@@ -19,6 +19,8 @@ Intelligence", i.e. an AI/LLM) assistant answers only from these data and says "
 | ![Custom explorer, mixed outcomes](docs/screenshots/explorer-mixed.png) | ![Custom explorer, no test](docs/screenshots/explorer-empty.png) |
 | ![Moon base atmosphere, microgravity flame](docs/screenshots/flame-moon.png) | ![Earth 1 g reference, illustration only](docs/screenshots/flame-earth-1g-reference.png) |
 
+The scene shows a conceptual match-stick fire (procedural canvas + SVG flame tongues, 13 s loop, static frame with reduced motion). It is an illustration: nothing in it is a measurement, a simulation or a prediction.
+
 ## Run it
 **1. Static site only (what is published; no backend, no AI model)**
 ```bash

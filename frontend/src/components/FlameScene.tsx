@@ -8,7 +8,9 @@ import type { ExplanationMode } from '../state/ui';
 import { fmtCriterionO2, fmtCriterionP } from '../lib/scenario';
 import type { FlameState } from '../lib/explorer';
 import { diffusionParticles, flameLook, particleCount, risingParticles, type FlameLook, type Particle } from '../lib/flameLook';
-import { LookDefs, MatchStick, NO_TESTS_NOTE, OneGFlame, Particles, REF_1G_NOTE, useIsPhone, usePageHidden, usePrefersReducedMotion } from './FlameArt';
+import { MatchBurn, MATCH_REGION } from './MatchBurn';
+import { matchBurnParams } from '../lib/matchBurn';
+import { FireTongues, type FireProps, LookDefs, MatchStick, NO_TESTS_NOTE, OneGFlame, Particles, REF_1G_NOTE, useIsPhone, usePageHidden, usePrefersReducedMotion } from './FlameArt';
 
 // Custom explorer ("observed" mode): the flame is driven only by matched FLEX tests (lib/explorer.ts).
 // glow = observed mean burning rate on the fixed GLOBAL FLEX scale (0–1, never rescaled per selection).
@@ -228,9 +230,10 @@ function OutcomeRing({ k, n }: { k: number; n: number }) {
   );
 }
 
-interface ChamberArt { look: FlameLook; level: ZoomLevel; oneG: boolean; particles: Particle[]; animated: boolean; dim: boolean }
+interface ChamberArt { look: FlameLook; level: ZoomLevel; oneG: boolean; particles: Particle[]; animated: boolean; dim: boolean; fx: FxProps | null; fire: FireProps | null }
+interface FxProps { params: ReturnType<typeof matchBurnParams>; scale: number; phone: boolean; sizeKey: string; onReady: (ok: boolean) => void }
 const Chamber = memo(function Chamber({ flameScale, rimOpacity, obs, art }: { flameScale: number; rimOpacity: number; obs?: ObservedFlame; art: ChamberArt }) {
-  const { look, level, oneG, particles, animated, dim } = art;
+  const { look, level, oneG, particles, animated, dim, fx, fire } = art;
   const showRuler = level === 3;
   return (
     <>
@@ -279,6 +282,10 @@ const Chamber = memo(function Chamber({ flameScale, rimOpacity, obs, art }: { fl
           </g>
         </g>
       )}
+      {fire && <FireTongues key={`${fire.oneG}-${fire.mode}-${fire.grayscale}-${fire.look.core}`} {...fire} />}
+      {fx && <foreignObject x={MATCH_REGION.x} y={MATCH_REGION.y} width={MATCH_REGION.w} height={MATCH_REGION.h} style={{ pointerEvents: 'none' }}>
+        <MatchBurn params={fx.params} scale={fx.scale} oneG={oneG} phone={fx.phone} sizeKey={fx.sizeKey} onReady={fx.onReady} />
+      </foreignObject>}
       {obs && obs.n > 0 && !oneG && <OutcomeRing k={obs.k} n={obs.n} />}
       {level === 3 && <circle cx="800" cy="480" r="11" fill="#0b0e14" stroke="#E6EAF0" strokeOpacity="0.7" />}
       {dim && !oneG && <text x="800" y="700" textAnchor="middle" fill="#E6EAF0" fontSize="15" fontFamily="var(--font-mono)" stroke="#05070a" strokeWidth="7" paintOrder="stroke" strokeLinejoin="round" data-note="no-tests">{NO_TESTS_NOTE}</text>}
@@ -337,7 +344,14 @@ export const FlameScene = memo(function FlameScene({ scenario, mode = 'explorer'
   const look = useMemo(() => flameLook(lookO2, lookPsi), [lookO2, lookPsi]);
   const nParticles = oneG ? (phone ? 8 : 16) : Math.max(4, Math.round(particleCount(lookO2, phone) * (noTests ? 0.4 : 1)));
   const particles = useMemo(() => (oneG ? risingParticles(nParticles) : diffusionParticles(nParticles)), [oneG, nParticles]);
-  const art = useMemo(() => ({ look, level, oneG, particles, animated: !reduced && !hidden, dim: noTests }), [look, level, oneG, particles, reduced, hidden, noTests]);
+  const [fxReady, setFxReady] = useState(false);
+  const burn = useMemo(() => matchBurnParams({ custom: observed?.state ?? null, glow: observed?.glow ?? null, o2: lookO2, psi: lookPsi, noTests, oneG, reducedMotion: reduced, phone }),
+    [observed?.state, observed?.glow, lookO2, lookPsi, noTests, oneG, reduced, phone]);
+  const fxEligible = level !== 3 && burn.mode !== 'none';
+  const fxProps = useMemo<FxProps | null>(() => (fxEligible ? { params: burn, scale: flameScale, phone, sizeKey: String(level), onReady: setFxReady } : null), [fxEligible, burn, flameScale, phone, level]);
+  const fire = useMemo<FireProps | null>(() => (level === 3 ? null : { look, oneG, scale: flameScale, mode: burn.mode, grayscale: burn.grayscale, strong: observed?.state === 'mixed', intensity: burn.intensity,
+    lifecycle: burn.lifecycle, animated: !reduced, paused: hidden, phone }), [level, look, oneG, flameScale, burn, observed?.state, reduced, hidden, phone]);
+  const art = useMemo(() => ({ look, level, oneG, particles, animated: !reduced && !hidden, dim: noTests, fx: fxProps, fire }), [look, level, oneG, particles, reduced, hidden, noTests, fxProps, fire]);
   const rimOpacity = observed ? 0.5 : Number(Math.min(0.75, Math.max(0.3, pVal / 22)).toFixed(2));
 
   // Fixed camera: no drag-to-rotate and no wheel zoom (the page must keep scrolling over the scene). The three
@@ -361,7 +375,7 @@ export const FlameScene = memo(function FlameScene({ scenario, mode = 'explorer'
   }, [scenario.id]);
 
   return (
-    <div className="scene-layer">
+    <div className="scene-layer" data-fx={fxEligible && fxReady ? 'on' : 'off'}>
       <svg
         ref={svgRef}
         id="scene"
@@ -391,7 +405,7 @@ export const FlameScene = memo(function FlameScene({ scenario, mode = 'explorer'
 
       <button type="button" className="onegtoggle" aria-pressed={oneG} onClick={() => setOneG((v) => !v)}
         title="Show the typical flame in normal gravity next to nothing from this dataset: a reference picture only">
-        Earth 1 g (illustration)
+        {oneG ? 'Earth 1 g (illustration)' : 'Compare with 1 g'}
       </button>
       {oneG && <div className="ref-1g-note" role="note">{REF_1G_NOTE}</div>}
 

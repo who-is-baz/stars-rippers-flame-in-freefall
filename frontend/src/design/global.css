@@ -255,11 +255,13 @@ button { cursor: pointer; background: none; border: 0; }
 
 /* Interactive SVG combustion scene */
 .scene-layer {
+  overflow: clip;
   position: absolute;
   inset: 0;
   z-index: var(--z-scene);
 }
 .scene-svg {
+  overflow: hidden;
   width: 100%;
   height: 100%;
   cursor: default;
@@ -2321,8 +2323,13 @@ table.data tr.rel-near td:first-child { box-shadow: inset 3px 0 0 var(--flame-bl
 /* the 1 g toggle sits to the right of the legend now, the reference note above the instruments */
 @media (min-width: 1181px) {
   .onegtoggle { bottom: 96px; left: calc(50% + 190px); transform: none; }
-  .ref-1g-note { bottom: 192px; }
+  .ref-1g-note { bottom: 120px; }
   .console-frame.is-custom .scene-instruments { display: none; }
+  /* compact panel in the free top-left corner of the scene: it never touches the ring, the legend or the stick */
+  .scene-instruments { left: 276px; top: 6px; bottom: auto; transform: none; flex-direction: column; width: 172px; gap: 5px; padding: 6px 8px; }
+  .scene-instruments .inst { width: 100%; gap: 2px; font-size: 10px; }
+  .scene-instruments .inst + .inst { border-top: 1px solid rgba(255, 255, 255, 0.07); padding-top: 4px; }
+  .scene-instruments .inst-foot { font-size: 9px; line-height: 1.2; }
 }
 @media (max-width: 1180px) {
   .scene-instruments { position: static; transform: none; grid-column: 1 / -1; flex-wrap: wrap; justify-content: center; }
@@ -2332,3 +2339,30 @@ table.data tr.rel-near td:first-child { box-shadow: inset 3px 0 0 var(--flame-bl
 .interp-scroll:focus-visible { outline: 2px solid var(--mint); outline-offset: 2px; }
 @media (max-width: 1180px) { .interp-scroll { max-height: none; overflow: visible; } }
 @media (min-width: 1181px) { .onegtoggle { left: calc(50% + 232px); } }
+
+/* Procedural match-burn canvas replaces the static SVG stick and flames once it is ready (jsdom / no canvas keeps the SVG). */
+.scene-layer[data-fx='on'] [data-part='match-stick'] { display: none; }
+
+/* ---------- animated fire layer (SVG tongues; transform and opacity only, no filters) ---------- */
+.fire { pointer-events: none; }
+.fire .ft { transform-box: fill-box; transform-origin: 50% 100%; animation: fireTongue var(--dur, 1.2s) ease-in-out var(--delay, 0s) infinite alternate; }
+.fire-strong .ft { animation-duration: calc(var(--dur, 1.2s) * 0.55); }
+@keyframes fireTongue {
+  0% { transform: scale(0.88, 0.7) rotate(-5deg); opacity: 0.35; }
+  45% { transform: scale(1.05, calc(1 + 0.22 * var(--amp, 1))) rotate(3deg); opacity: 1; }
+  100% { transform: scale(0.95, 0.85) rotate(6deg); opacity: 0.6; }
+}
+.fire-strong .ft { animation-name: fireTongueStrong; }
+@keyframes fireTongueStrong {
+  0% { transform: scale(0.7, 0.45) rotate(-9deg); opacity: 0.1; }
+  40% { transform: scale(1.1, 1.4) rotate(5deg); opacity: 1; }
+  100% { transform: scale(0.8, 0.6) rotate(9deg); opacity: 0.25; }
+}
+.fire .fire-core { transform-box: fill-box; transform-origin: 50% 50%; animation: fireCore 0.9s ease-in-out infinite alternate; }
+@keyframes fireCore { from { transform: scale(0.85); opacity: 0.8; } to { transform: scale(1.1); opacity: 1; } }
+.fire .fire-spark { animation: fireSpark var(--dur, 2s) ease-out var(--delay, 0s) infinite; opacity: 0; }
+@keyframes fireSpark { 0% { transform: translate(0, 0); opacity: 0; } 12% { opacity: 1; } 100% { transform: translate(var(--dx), var(--dy)); opacity: 0; } }
+.fire-life { animation: fireLife 13s linear infinite; transform-box: fill-box; transform-origin: 50% 100%; }
+@keyframes fireLife { 0% { opacity: 0; } 8% { opacity: 1; } 86% { opacity: 1; } 95%, 100% { opacity: 0; } }
+.fire-paused, .fire-paused * { animation-play-state: paused !important; }
+@media (prefers-reduced-motion: reduce) { .fire, .fire * { animation: none !important; } }
