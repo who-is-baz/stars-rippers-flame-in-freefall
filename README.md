@@ -53,5 +53,7 @@ Sin backend ni Ollama el sitio funciona igual en modo Basic. Detalle y variables
 3. Todo uso de IA se anota en `docs/AI_USAGE_LOG.md`.
 4. Congelamiento de funciones: **dom 15 nov, 2:00 PM** (ajustar al horario real de UNAQ).
 
-## Licencia
-Al entregar se agregará `LICENSE` (Apache-2.0, por defecto del evento).
+## License · Data · Use of AI
+- **Code:** Apache-2.0 (`LICENSE`). Third-party licenses: `THIRD_PARTY.md`.
+- **Data:** NASA Physical Sciences Informatics (PSI), **CC0-1.0** — FLEX (PSI-69, DOI 10.60555/mbq8-0451) and BASS-II (PSI-25, DOI 10.60555/4qc4-de67). Not endorsed by NASA.
+- **Use of AI (SI):** a large part of the code, documentation and UI text was generated with AI assistants (Anthropic Claude: Claude Code and claude.ai); the log records, task by task, what the team reviewed and what review is still pending; BASS-II outcomes were extracted by AI from free-text notes and are labelled (`ai_*`, `extracted_by=AI`, `outcome_source = ai_extracted`). Commits with AI-generated changes carry `AI-assisted: yes`. Full log: `docs/AI_USAGE_LOG.md`; summary: `docs/submission/use_of_si.md`.
