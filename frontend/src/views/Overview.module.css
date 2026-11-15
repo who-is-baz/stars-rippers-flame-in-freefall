@@ -1,0 +1,11 @@
+.top { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(320px, 1fr); gap: var(--s-6); align-items: start; }
+.intro { display: flex; flex-direction: column; gap: var(--s-4); }
+.picker { display: flex; flex-direction: column; gap: var(--s-2); }
+.scLabel { font-size: var(--fs-lg); font-weight: 500; }
+.hypo { color: var(--silver); font-size: var(--fs-sm); border: 1px dashed var(--silver); border-radius: var(--r-inner); padding: var(--s-2) var(--s-3); }
+.cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-5); align-items: start; }
+.nums { display: flex; gap: var(--s-6); flex-wrap: wrap; }
+.minis { display: grid; gap: var(--s-2); }
+@media (max-width: 1100px) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 900px) { .top { grid-template-columns: 1fr; } }
+@media (max-width: 700px) { .cards { grid-template-columns: 1fr; } }

@@ -1,0 +1,6 @@
+.burn { color: var(--ember); font-weight: 600; }
+.undet { color: var(--silver); font-weight: 600; border-bottom: 1px dotted var(--silver); align-self: flex-start; }
+.dotted { background: radial-gradient(circle, var(--silver) 1px, transparent 1.5px) 0 0 / 5px 5px; border: 1px dotted var(--silver); }
+.sub { display: grid; gap: var(--s-2); text-transform: none; }
+.sub > p::first-letter { text-transform: uppercase; }
+.lc { color: var(--caution); font-size: var(--fs-xs); }
