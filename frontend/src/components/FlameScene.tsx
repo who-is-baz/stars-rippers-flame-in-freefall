@@ -396,7 +396,7 @@ export const FlameScene = memo(function FlameScene({ scenario, mode = 'explorer'
       {oneG && <div className="ref-1g-note" role="note">{REF_1G_NOTE}</div>}
 
       <div className="scene-legend">
-        <span>Illustration. Not a combustion simulation.</span>
+        <span>Conceptual illustration. Not a physical simulation or a prediction.</span>
         {observed && !oneG && <span className="obs-caption">{observed.caption}</span>}
         {observed && !oneG && <span className="obs-legend">Colour is illustrative (set by O₂); size and brightness come from the data.</span>}
       </div>

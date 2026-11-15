@@ -12,8 +12,9 @@ import experiments from '../../public/data/experiments.json';
 import gaps from '../../public/data/gaps.json';
 import materials from '../../public/data/materials.json';
 import answers from '../../public/data/answers.json';
+import airflow from '../../public/data/airflow.json';
 
-export const data = { meta, scenarios, coverage, experiments, gaps, materials, answers } as unknown as DataBundle;
+export const data = { meta, scenarios, coverage, experiments, gaps, materials, answers, airflow } as unknown as DataBundle;
 
 export const renderWithData = (ui: ReactElement) =>
   render(<DataContext.Provider value={{ status: 'ready', data }}>{ui}</DataContext.Provider>);

@@ -114,6 +114,7 @@ def build_meta(items, excluded):
             "gaps.json": "what the data does not cover",
             "materials.json": "BASS-II by material category",
             "answers.json": "suggested questions with precomputed answers (assistant 'low' mode)",
+            "airflow.json": "BASS-II initial air speed (cm/s), read from notes by AI; used by the scene's airflow indicator",
         },
     }
 
@@ -279,6 +280,17 @@ def build_materials(items):
     }
 
 
+def build_airflow():
+    """BASS-II air speed per test (bass2_tests.csv: ai_initial_air_speed_cm_s). It is AI-extracted from free-text notes and is
+    only shown with that label; FLEX has no airflow variable. Tests without a value are simply absent (never imputed)."""
+    with open(BASS_CSV, newline="", encoding="utf-8") as f:
+        items = [{"test_id": r["test_id"], "air_speed_cm_s": float(r["ai_initial_air_speed_cm_s"])}
+                 for r in csv.DictReader(f) if r["ai_initial_air_speed_cm_s"] not in ("", None)]
+    return {"program": "BASS-II", "source_doi": DOI["BASS-II"], "field": "ai_initial_air_speed_cm_s", "unit": "cm/s",
+            "extracted_by": "AI", "note": "Initial air speed read from free-text notes by AI; pending human review.",
+            "n_tests": len(items), "items": items}
+
+
 def build_answers(items, scen, coverage, materials, gaps):
     S = {s["id"]: s for s in scen["scenarios"]}
     flex = [r for r in items if r["program"] == "FLEX"]
@@ -403,6 +415,7 @@ def main():
         "gaps.json": gaps,
         "materials.json": materials,
         "answers.json": build_answers(items, scen, coverage, materials, gaps),
+        "airflow.json": build_airflow(),
     }
     for name, obj in files.items():
         path = write(name, obj)

@@ -1,0 +1,495 @@
+{
+ "program": "BASS-II",
+ "source_doi": "10.60555/4qc4-de67",
+ "field": "ai_initial_air_speed_cm_s",
+ "unit": "cm/s",
+ "extracted_by": "AI",
+ "note": "Initial air speed read from free-text notes by AI; pending human review.",
+ "n_tests": 121,
+ "items": [
+  {
+   "test_id": "B1",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "B2",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "B3",
+   "air_speed_cm_s": 2.0
+  },
+  {
+   "test_id": "B4",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "B5",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "B6",
+   "air_speed_cm_s": 3.0
+  },
+  {
+   "test_id": "B7",
+   "air_speed_cm_s": 2.0
+  },
+  {
+   "test_id": "B8",
+   "air_speed_cm_s": 10.0
+  },
+  {
+   "test_id": "B9",
+   "air_speed_cm_s": 2.0
+  },
+  {
+   "test_id": "B10",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "B11",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "B12",
+   "air_speed_cm_s": 2.0
+  },
+  {
+   "test_id": "B13",
+   "air_speed_cm_s": 10.0
+  },
+  {
+   "test_id": "B14",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "B15",
+   "air_speed_cm_s": 10.0
+  },
+  {
+   "test_id": "B16",
+   "air_speed_cm_s": 3.0
+  },
+  {
+   "test_id": "B17",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "B18",
+   "air_speed_cm_s": 10.0
+  },
+  {
+   "test_id": "B19",
+   "air_speed_cm_s": 10.0
+  },
+  {
+   "test_id": "B20",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "B21",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "B22",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "F1",
+   "air_speed_cm_s": 9.5
+  },
+  {
+   "test_id": "F2",
+   "air_speed_cm_s": 15.0
+  },
+  {
+   "test_id": "F3",
+   "air_speed_cm_s": 8.0
+  },
+  {
+   "test_id": "F4",
+   "air_speed_cm_s": 3.0
+  },
+  {
+   "test_id": "M1",
+   "air_speed_cm_s": 10.0
+  },
+  {
+   "test_id": "M2",
+   "air_speed_cm_s": 20.0
+  },
+  {
+   "test_id": "M3",
+   "air_speed_cm_s": 10.0
+  },
+  {
+   "test_id": "M4",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "M5",
+   "air_speed_cm_s": 20.0
+  },
+  {
+   "test_id": "M6",
+   "air_speed_cm_s": 10.0
+  },
+  {
+   "test_id": "M7",
+   "air_speed_cm_s": 10.0
+  },
+  {
+   "test_id": "M8",
+   "air_speed_cm_s": 10.0
+  },
+  {
+   "test_id": "M9",
+   "air_speed_cm_s": 10.0
+  },
+  {
+   "test_id": "M10",
+   "air_speed_cm_s": 10.0
+  },
+  {
+   "test_id": "M11",
+   "air_speed_cm_s": 10.0
+  },
+  {
+   "test_id": "M13",
+   "air_speed_cm_s": 6.0
+  },
+  {
+   "test_id": "M14",
+   "air_speed_cm_s": 10.0
+  },
+  {
+   "test_id": "M15",
+   "air_speed_cm_s": 10.0
+  },
+  {
+   "test_id": "M16",
+   "air_speed_cm_s": 10.0
+  },
+  {
+   "test_id": "M17",
+   "air_speed_cm_s": 10.0
+  },
+  {
+   "test_id": "M18",
+   "air_speed_cm_s": 10.0
+  },
+  {
+   "test_id": "M19",
+   "air_speed_cm_s": 10.0
+  },
+  {
+   "test_id": "M20",
+   "air_speed_cm_s": 10.0
+  },
+  {
+   "test_id": "O1",
+   "air_speed_cm_s": 20.0
+  },
+  {
+   "test_id": "O2",
+   "air_speed_cm_s": 0.0
+  },
+  {
+   "test_id": "O3a",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "O3b",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "O4",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "O5a",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "O5b",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "O10",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "O11",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "O13a",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "O13b",
+   "air_speed_cm_s": 7.0
+  },
+  {
+   "test_id": "O14",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "O15a",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "O15b",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "O16",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "O17",
+   "air_speed_cm_s": 3.0
+  },
+  {
+   "test_id": "O18",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "O19",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "O20",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "O22",
+   "air_speed_cm_s": 4.0
+  },
+  {
+   "test_id": "P1",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "P2",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "P3a",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "P3b",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "P4",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "P5",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "P6",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "P8",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "P9",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "P10",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "P12",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "P13a",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "P13b",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "P14",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "P15",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "P16",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "P17",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "P18",
+   "air_speed_cm_s": 2.0
+  },
+  {
+   "test_id": "P19",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "P20",
+   "air_speed_cm_s": 2.0
+  },
+  {
+   "test_id": "P21a",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "P21b",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "P22a",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "P22b",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "P23",
+   "air_speed_cm_s": 2.0
+  },
+  {
+   "test_id": "P24",
+   "air_speed_cm_s": 2.0
+  },
+  {
+   "test_id": "P25",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "T1",
+   "air_speed_cm_s": 10.0
+  },
+  {
+   "test_id": "T2",
+   "air_speed_cm_s": 9.0
+  },
+  {
+   "test_id": "T3",
+   "air_speed_cm_s": 10.0
+  },
+  {
+   "test_id": "T4",
+   "air_speed_cm_s": 9.0
+  },
+  {
+   "test_id": "T5",
+   "air_speed_cm_s": 10.0
+  },
+  {
+   "test_id": "T6",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "T7",
+   "air_speed_cm_s": 10.0
+  },
+  {
+   "test_id": "T9",
+   "air_speed_cm_s": 10.0
+  },
+  {
+   "test_id": "T10",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "T11",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "T12",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "T13",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "T14",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "T15",
+   "air_speed_cm_s": 9.0
+  },
+  {
+   "test_id": "T16",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "T17",
+   "air_speed_cm_s": 6.0
+  },
+  {
+   "test_id": "T18",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "T19",
+   "air_speed_cm_s": 11.0
+  },
+  {
+   "test_id": "T20",
+   "air_speed_cm_s": 11.0
+  },
+  {
+   "test_id": "T21",
+   "air_speed_cm_s": 11.0
+  },
+  {
+   "test_id": "T22",
+   "air_speed_cm_s": 10.0
+  },
+  {
+   "test_id": "T23",
+   "air_speed_cm_s": 10.0
+  },
+  {
+   "test_id": "T24",
+   "air_speed_cm_s": 10.0
+  },
+  {
+   "test_id": "T25",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "T26",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "T27",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "T28a",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "T28b",
+   "air_speed_cm_s": 5.0
+  },
+  {
+   "test_id": "T29",
+   "air_speed_cm_s": 5.0
+  }
+ ]
+}

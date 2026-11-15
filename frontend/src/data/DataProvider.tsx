@@ -1,12 +1,12 @@
 import { createContext, useEffect, useState, type ReactNode } from 'react';
 import type {
-  AnswersFile, CoverageFile, ExperimentsFile, GapsFile, MaterialsFile, Meta, ScenariosFile,
+  AirflowFile, AnswersFile, CoverageFile, ExperimentsFile, GapsFile, MaterialsFile, Meta, ScenariosFile,
 } from './types';
 import { loadStatic } from './source';
 
 export interface DataBundle {
   meta: Meta; scenarios: ScenariosFile; coverage: CoverageFile; experiments: ExperimentsFile;
-  gaps: GapsFile; materials: MaterialsFile; answers: AnswersFile;
+  gaps: GapsFile; materials: MaterialsFile; answers: AnswersFile; airflow: AirflowFile;
 }
 export type DataState =
   | { status: 'loading' }
@@ -30,11 +30,11 @@ function assertShape(file: string, v: unknown, checks: Record<string, 'array' | 
 }
 
 async function loadAll(): Promise<DataBundle> {
-  const [meta, scenarios, coverage, experiments, gaps, materials, answers] = await Promise.all([
+  const [meta, scenarios, coverage, experiments, gaps, materials, answers, airflow] = await Promise.all([
     loadStatic<Meta>('meta.json'), loadStatic<ScenariosFile>('scenarios.json'),
     loadStatic<CoverageFile>('coverage.json'), loadStatic<ExperimentsFile>('experiments.json'),
     loadStatic<GapsFile>('gaps.json'), loadStatic<MaterialsFile>('materials.json'),
-    loadStatic<AnswersFile>('answers.json'),
+    loadStatic<AnswersFile>('answers.json'), loadStatic<AirflowFile>('airflow.json'),
   ]);
   assertShape('meta.json', meta, { license: 'string', min_n: 'number', programs: 'array', tolerance: 'object', limitations: 'array' });
   assertShape('scenarios.json', scenarios, { scenarios: 'array' });
@@ -43,7 +43,8 @@ async function loadAll(): Promise<DataBundle> {
   assertShape('gaps.json', gaps, { gaps: 'array' });
   assertShape('materials.json', materials, { materials: 'array' });
   assertShape('answers.json', answers, { answers: 'array' });
-  return { meta, scenarios, coverage, experiments, gaps, materials, answers };
+  assertShape('airflow.json', airflow, { items: 'array', n_tests: 'number' });
+  return { meta, scenarios, coverage, experiments, gaps, materials, answers, airflow };
 }
 
 // Loaded once per page: every consumer shares this promise (module-level cache).

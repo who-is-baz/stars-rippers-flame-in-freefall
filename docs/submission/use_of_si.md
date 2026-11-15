@@ -48,5 +48,5 @@ AI-assisted task is recorded in `docs/AI_USAGE_LOG.md` (one entry per task, 14â€
 - Data: `ai_*` columns, `extracted_by=AI`, `outcome_source`, `qc_flags`.
 - Website: answers written by a local model are labelled "AI-generated text"; answers without a model say "no model".
   The page states "SI (Super Intelligence), i.e. an AI/LLM assistant".
-- Images: the site has no AI-generated images (the chamber is an SVG drawing labelled "Illustration. Not a combustion simulation."). Three AI-generated design reference images that were only in the team's design docs were deleted from the repository on 15 Nov 2026 before it was made public. The screenshots in `docs/screenshots/` are captures of the site itself.
+- Images: the site has no AI-generated images (the chamber is an SVG drawing labelled "Conceptual illustration. Not a physical simulation or a prediction."). Three AI-generated design reference images that were only in the team's design docs were deleted from the repository on 15 Nov 2026 before it was made public. The screenshots in `docs/screenshots/` are captures of the site itself.
 - No NASA logos, flags or mission identifiers are used or modified by any generated content.

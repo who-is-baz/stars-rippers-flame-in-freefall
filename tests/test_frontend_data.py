@@ -14,7 +14,7 @@ import scenarios as sc  # noqa: E402
 
 DATA = os.path.join(ROOT, "frontend", "public", "data")
 FILES = ("meta.json", "scenarios.json", "coverage.json", "experiments.json", "gaps.json", "materials.json",
-         "answers.json")
+         "answers.json", "airflow.json")
 CON = q.connect()
 
 
@@ -95,3 +95,13 @@ if __name__ == "__main__":  # runner mínimo si pytest no está instalado
                 failed += 1; print(f"FAIL {name}: {e!r}")
     print(f"\n{'OK' if not failed else f'{failed} FALLAS'}")
     sys.exit(1 if failed else 0)
+
+
+def test_airflow_is_ai_extracted_bass2_only_and_matches_the_table():
+    import csv
+    a = _load("airflow.json")
+    assert a["extracted_by"] == "AI" and a["program"] == "BASS-II" and a["unit"] == "cm/s"
+    with open(os.path.join(ROOT, "data", "processed", "bass2_tests.csv"), newline="", encoding="utf-8") as f:
+        want = {r["test_id"]: float(r["ai_initial_air_speed_cm_s"]) for r in csv.DictReader(f) if r["ai_initial_air_speed_cm_s"]}
+    assert {i["test_id"]: i["air_speed_cm_s"] for i in a["items"]} == want
+    assert a["n_tests"] == len(want) == 121

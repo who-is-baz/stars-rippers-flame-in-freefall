@@ -12,7 +12,7 @@ describe('FlameScene camera', () => {
     render(<FlameScene scenario={scenario} />);
     expect(screen.queryByRole('button', { name: /zoom in|zoom out|reset view/i })).toBeNull();
     expect(document.body.textContent).not.toMatch(/drag to rotate|scroll to zoom/i);
-    expect(screen.getByText('Illustration. Not a combustion simulation.')).toBeInTheDocument();
+    expect(screen.getByText('Conceptual illustration. Not a physical simulation or a prediction.')).toBeInTheDocument();
   });
   it('does not capture the wheel (the page keeps scrolling) and a drag changes nothing', () => {
     render(<FlameScene scenario={scenario} />);

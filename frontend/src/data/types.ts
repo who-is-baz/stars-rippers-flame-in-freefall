@@ -96,3 +96,9 @@ export interface Answer {
   no_data: boolean; warnings?: string[]; level: string; tool_calls?: unknown[];
 }
 export interface AnswersFile { level: 'low'; note: string; answers: Answer[] }
+
+// airflow.json: BASS-II initial air speed, AI-extracted from notes (frontend/public/data/airflow.json)
+export interface AirflowFile {
+  program: 'BASS-II'; source_doi: string; field: string; unit: string; extracted_by: 'AI'; note: string; n_tests: number;
+  items: { test_id: string; air_speed_cm_s: number }[];
+}

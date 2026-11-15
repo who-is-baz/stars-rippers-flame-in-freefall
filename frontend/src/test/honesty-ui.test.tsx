@@ -122,7 +122,7 @@ describe('single-screen console & saved board', () => {
 
   it('starts with the Starter board: honesty legend, match card (0 exact, 17 near), inspector and interpretation', () => {
     renderWithBoard(<Console preset={null} />);
-    expect(screen.getByText('Illustration. Not a combustion simulation.')).toBeInTheDocument();
+    expect(screen.getByText('Conceptual illustration. Not a physical simulation or a prediction.')).toBeInTheDocument();
     const match = screen.getByRole('article', { name: 'How many tests match this air?' });
     expect(within(match).getAllByText(/0 exact matches/).length).toBeGreaterThan(0);
     expect(match).toHaveTextContent('17');

@@ -36,7 +36,7 @@ describe('immutable data rules', () => {
 
   it('no predictive or safety language anywhere in the console (every card, default board)', () => {
     renderWithBoard(<Console preset={null} />);
-    const text = (document.body.textContent ?? '').replace(/Observed in NASA PSI tests\. Not a simulation or a forecast\./g, '').replace(/Descriptive summary of NASA test records\. Not a safety assessment or a forecast\./g, '');
+    const text = (document.body.textContent ?? '').replace(/Observed in NASA PSI tests\. Not a simulation or a forecast\./g, '').replace(/Descriptive summary of NASA test records\. Not a safety assessment or a forecast\./g, '').replace('Conceptual illustration. Not a physical simulation or a prediction.', '');
     expect(text).not.toMatch(/\b(predict\w*|probabilit\w*|chance|likely|safe|safer|safest|will)\b/i);
   });
 

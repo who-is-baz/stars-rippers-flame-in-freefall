@@ -1,6 +1,6 @@
 {
  "title": "Flame in Freefall: NASA PSI microgravity combustion data (FLEX + BASS-II)",
- "generated_utc": "2026-11-14T22:41:47+00:00",
+ "generated_utc": "2026-11-15T14:40:21+00:00",
  "generated_by": "scripts/build_frontend_data.py",
  "license": "CC0-1.0",
  "n_tests": 403,
@@ -95,6 +95,7 @@
   "experiments.json": "all tests, one row each (API contract columns)",
   "gaps.json": "what the data does not cover",
   "materials.json": "BASS-II by material category",
-  "answers.json": "suggested questions with precomputed answers (assistant 'low' mode)"
+  "answers.json": "suggested questions with precomputed answers (assistant 'low' mode)",
+  "airflow.json": "BASS-II initial air speed (cm/s), read from notes by AI; used by the scene's airflow indicator"
  }
 }

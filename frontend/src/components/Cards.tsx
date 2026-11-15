@@ -465,6 +465,7 @@ function InterpretationCard() {
   const fuels = Object.entries(i.useful.byFuel).map(([f, n]) => `${f} ${n}`).join(', ');
   return (
     <Frame type="interpretation" swapKey={atm.label} icon={<Sparkles size={13} />} src={<>FLEX · BASS-II</>} n={atm.source === 'custom' ? 'Custom' : undefined}>
+      <div className="interp-scroll" tabIndex={0} role="region" aria-label="Interpretation details (scrolls)">
       <section className="interp-block" aria-label="Useful evidence">
         <h3>Useful evidence</h3>
         {i.useful.top.length > 0 ? (
@@ -492,6 +493,7 @@ function InterpretationCard() {
         </ul>
         {i.unresolved.length > 2 && <button type="button" className="ind-link" aria-expanded={all} onClick={() => setAll((v) => !v)}>{all ? 'Show fewer' : `+${i.unresolved.length - 2} more`}</button>}
       </section>
+      </div>
       <p className="interp-note">{DISCLAIMER_INTERPRETATION}</p>
     </Frame>
   );

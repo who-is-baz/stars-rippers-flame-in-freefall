@@ -49,7 +49,7 @@ describe('custom atmosphere explorer', () => {
     expect(panel.querySelector('[aria-live="polite"]')?.textContent).toMatch(/tests within|No test within tolerance/);
     expect(within(panel).getByText(/Solid materials \(BASS-II\) are not part of this explorer/)).toBeInTheDocument();
     expect(screen.getByText(DISCLAIMER)).toBeInTheDocument();
-    expect(screen.getByText('Illustration. Not a combustion simulation.')).toBeInTheDocument();
+    expect(screen.getByText('Conceptual illustration. Not a physical simulation or a prediction.')).toBeInTheDocument();
   });
 
   it('slider ranges come from the FLEX data', () => {
@@ -78,7 +78,7 @@ describe('custom atmosphere explorer', () => {
       const panel = openCustom();
       setState(panel, s);
       await waitFor(() => expect(flame()?.getAttribute('data-obs-state')).toBe(name));
-      const text = (document.body.textContent ?? '').replace(DISCLAIMER, '').replace('Descriptive summary of NASA test records. Not a safety assessment or a forecast.', '');
+      const text = (document.body.textContent ?? '').replace(DISCLAIMER, '').replace('Descriptive summary of NASA test records. Not a safety assessment or a forecast.', '').replace('Conceptual illustration. Not a physical simulation or a prediction.', '');
       expect(text).not.toMatch(BANNED);
     });
   }
