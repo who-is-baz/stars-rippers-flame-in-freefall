@@ -90,7 +90,7 @@ export interface MaterialsFile {
   classification_rule: Record<string, string>; non_flammable: string[]; notes: string[]; materials: Material[];
 }
 
-export interface Citation { query: string; params: Record<string, unknown>; source_doi: string; test_ids: string[] }
+export interface Citation { query: string; params: Record<string, unknown>; source_doi: string; test_ids: string[]; test_ids_total?: number }
 export interface Answer {
   id?: string; question?: string; answer: string; citations: Citation[];
   no_data: boolean; warnings?: string[]; level: string; tool_calls?: unknown[];

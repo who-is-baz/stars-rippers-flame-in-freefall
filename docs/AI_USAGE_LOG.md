@@ -406,3 +406,10 @@ Yael pidió que Claude tomara las decisiones abiertas.
 1. High: hasta 3 pasos sin repetir llamadas; si un paso posterior es inválido se conserva lo obtenido; presupuesto de tiempo `ASK_BUDGET_S` (45 s) antes de redactar.
 2. Verificador: test_id que no estén en el resultado, links/markdown, > 600 caracteres; argumentos como texto JSON aceptados.
 3. `docs/07-api-contract.md` (sección `/ask` + `/llm/status`) y 5 decisiones en `docs/DECISIONES.md`. 129 pruebas en verde (Ollama mockeado). Revisión humana pendiente.
+
+## 2026-11-15 (26) — Fase 5: conexión front ↔ API y smoke test — Claude (Opus 5.5, Claude Code)
+
+1. `frontend/src/assistant/engine.ts`: Flash → `medium` + `model` (se quita el `level:"flash"` fuera de contrato), lectura de `meta.warnings`/`meta.mode`, `test_ids_total` para n, `fetchLlmStatus()` (GET `/llm/status`), timeout configurable `VITE_LLM_TIMEOUT_MS` (15 s por defecto).
+2. `frontend/src/assistant/Sidebar.tsx`: botón **Connect local AI** con estados conectando / conectado (modelos) / API no detectada / Ollama no detectado / modelo no instalado (título con `ollama pull`). Sin cambios de diseño, tokens ni secciones.
+3. Fuera de `assistant/` (mínimo): campo opcional `test_ids_total` en `src/data/types.ts` y tipos de env en `src/vite-env.d.ts`.
+4. `frontend/src/assistant/connect.test.tsx` (6 pruebas; 45 Vitest en verde, build OK). `scripts/smoke_e2e.py`: API + Vite reales, una pregunta por nivel: PASSED (Basic 200; Flash/Medium/Heavy 503 porque Ollama no tiene modelos aquí). Revisión humana pendiente.

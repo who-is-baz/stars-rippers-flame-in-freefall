@@ -37,14 +37,22 @@ To enable the local levels on the demo machine, set the endpoint **at build time
 VITE_LLM_URL=http://127.0.0.1:8000 npm run build
 ```
 
-The site then calls `POST <VITE_LLM_URL>/ask` with `{"question", "level"}` and expects
-`{"answer", "citations": [{"query", "source_doi", "test_ids"}], "no_data"}` (see `docs/07-api-contract.md`).
+Without a build variable, the panel has a **Connect local AI** button: it calls `GET http://127.0.0.1:8000/llm/status`
+(the browser never talks to Ollama directly) and unlocks only the levels whose model is installed. States:
+connecting · connected (model list, `ollama pull <tag>` for missing ones) · API not detected · Ollama not detected.
+`VITE_API_URL` is accepted as an alias of `VITE_LLM_URL`; `VITE_LLM_TIMEOUT_MS` changes the 15 s timeout.
 
-- Level sent: Basic → `low`, Medium → `medium`, Heavy → `high`, Flash → `flash`.
-  **`flash` is not in the API contract yet** (TODO in `src/assistant/engine.ts`).
-- If the endpoint fails, returns an error or takes more than 15 s, the answer comes from Basic and says so.
+The site calls `POST <VITE_LLM_URL>/ask` with `{"question", "level", "model"}` and reads
+`{"answer", "citations": [{"query", "source_doi", "test_ids", "test_ids_total"}], "no_data", "meta": {"mode", "warnings"}}`
+(see `docs/07-api-contract.md`).
+
+- Level → API: Basic → `low`; Flash → `medium` + `llama3.2:3b`; Medium → `medium` + `qwen3:8b`; Heavy → `high` + `qwen3:14b`
+  (tags come from `/llm/status`).
+- `meta.mode`: `ollama` → "AI-generated text"; `fallback` (model text failed verification) and `low` (fixed rule)
+  are shown as "no model" with a notice.
+- If the endpoint fails, returns an error (503 = no local model) or takes more than 15 s, the answer comes from Basic and says so.
 - Citations from the endpoint are shown only if their DOI is one of the two datasets and their test IDs exist in
-  `experiments.json`. Model-written text is labelled "AI-generated text".
+  `experiments.json`. The API sends at most 20 IDs per citation; `n` uses `test_ids_total`.
 - The endpoint must allow cross-origin requests (CORS) from the page.
 
 ## Structure

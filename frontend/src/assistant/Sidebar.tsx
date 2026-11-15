@@ -3,9 +3,11 @@ import { Check, Copy, SendHorizontal, Sparkles, X } from 'lucide-react';
 import { useData } from '../data/useData';
 import { useUi } from '../state/ui';
 import { Badge, Doi, Skeleton, Warn } from '../components/ui';
-import { LEVELS, ask, type Level, type Reply } from './engine';
+import { DEFAULT_API_URL, DEFAULT_TAGS, LEVELS, LEVEL_TIER, ask, fetchLlmStatus, type Level, type LlmStatus, type Reply } from './engine';
 
-const ENV_URL: string | undefined = import.meta.env.VITE_LLM_URL || undefined;
+// Backend base URL (no /api). VITE_LLM_URL wins; VITE_API_URL is accepted as an alias.
+const ENV_URL: string | undefined = import.meta.env.VITE_LLM_URL || import.meta.env.VITE_API_URL || undefined;
+type Conn = 'idle' | 'connecting' | 'connected' | 'no_api' | 'no_ollama';
 const LOCAL_ONLY = 'Local AI — runs on the demo machine';
 
 interface Turn {
@@ -113,6 +115,31 @@ export function Sidebar({ open, onClose, pending, llmUrl = ENV_URL, fetchImpl, t
   const input = useRef<HTMLInputElement>(null);
   const log = useRef<HTMLDivElement>(null);
   const nextId = useRef(1);
+  const [conn, setConn] = useState<Conn>('idle');
+  const [status, setStatus] = useState<LlmStatus | null>(null);
+  const [connectedUrl, setConnectedUrl] = useState<string | undefined>(undefined);
+  const apiUrl = llmUrl ?? connectedUrl;
+  const tagFor = (l: Level): string | undefined => {
+    const tier = LEVEL_TIER[l];
+    if (!tier) return undefined;
+    return status?.models.find((m) => m.tier === tier)?.tag ?? DEFAULT_TAGS[tier];
+  };
+  const missing = (l: Level): boolean => {
+    const tier = LEVEL_TIER[l];
+    if (!tier || !status) return false;
+    return !status.available || !status.models.some((m) => m.tier === tier && m.installed);
+  };
+  const connect = async () => {
+    const url = llmUrl ?? DEFAULT_API_URL;
+    setConn('connecting');
+    try {
+      const st = await fetchLlmStatus(url, fetchImpl);
+      setStatus(st);
+      if (st.available) { setConnectedUrl(url); setConn('connected'); } else { setConn('no_ollama'); }
+    } catch {
+      setStatus(null); setConn('no_api');
+    }
+  };
 
   const applyBoardAction = (q: string): string | null => {
     if (!autoBoard) return null;
@@ -145,7 +172,7 @@ export function Sidebar({ open, onClose, pending, llmUrl = ENV_URL, fetchImpl, t
     setTurns((t) => [...t, { id, question: q, reply: null, error: null, boardAction: null }]);
     setText(''); setBusy(true);
     try {
-      const reply = await ask(q, level, data, { url: llmUrl, fetchImpl, timeoutMs });
+      const reply = await ask(q, level, data, { url: apiUrl, fetchImpl, timeoutMs, model: tagFor(level) });
       const boardAction = !reply.outOfScope ? applyBoardAction(q) : null;
       setTurns((t) => t.map((x) => (x.id === id ? { ...x, reply, boardAction } : x)));
     } catch (e) {
@@ -178,15 +205,39 @@ export function Sidebar({ open, onClose, pending, llmUrl = ENV_URL, fetchImpl, t
         <div className="stack" style={{ gap: 6 }}>
           <div className="seg" role="group" aria-label="Assistant level">
             {LEVELS.map((l) => {
-              const locked = l.value !== 'basic' && !llmUrl;
+              const notInstalled = l.value !== 'basic' && missing(l.value);
+              const locked = l.value !== 'basic' && (!apiUrl || notInstalled);
+              const title = notInstalled ? `Model not installed: ollama pull ${tagFor(l.value)}` : locked ? LOCAL_ONLY : undefined;
               return (
-                <button key={l.value} type="button" aria-pressed={level === l.value} disabled={locked} title={locked ? LOCAL_ONLY : undefined}
+                <button key={l.value} type="button" aria-pressed={level === l.value} disabled={locked} title={title}
                   onClick={() => setLevel(l.value)}>{l.label}</button>
               );
             })}
           </div>
+          <div className="row" style={{ gap: 6, flexWrap: 'wrap' }}>
+            <button type="button" className="btn btn-sm" onClick={() => void connect()} disabled={conn === 'connecting'}>
+              {conn === 'connecting' ? 'Connecting…' : conn === 'connected' ? 'Reconnect local AI' : 'Connect local AI'}
+            </button>
+          </div>
+          <div className="level-hint" role="status" aria-live="polite">
+            {conn === 'connecting' && <span>Connecting to the local API ({llmUrl ?? DEFAULT_API_URL})…</span>}
+            {conn === 'connected' && status && (
+              <span>
+                Connected. Models:{' '}
+                {status.models.map((m) => (
+                  <span key={m.tier} className="mono">{m.tag} {m.installed ? '✓' : `✗ (ollama pull ${m.tag})`}{' '}</span>
+                ))}
+              </span>
+            )}
+            {conn === 'no_ollama' && (
+              <span>Local API found, but Ollama was not detected. Run <span className="mono">ollama serve</span>, then <span className="mono">ollama pull {DEFAULT_TAGS.flash}</span>.</span>
+            )}
+            {conn === 'no_api' && (
+              <span>Local AI not detected at {llmUrl ?? DEFAULT_API_URL}. Start the API (<span className="mono">uvicorn backend.app:app --app-dir src</span>) and Ollama (<span className="mono">ollama pull {DEFAULT_TAGS.flash}</span>). Basic keeps working.</span>
+            )}
+          </div>
           <span className="level-hint">
-            {llmUrl
+            {apiUrl
               ? 'Basic uses no model. Flash, Medium and Heavy use the local AI; if it does not answer in 15 s, Basic answers instead.'
               : <>Basic uses no model: precomputed, sourced answers. Flash, Medium and Heavy: {LOCAL_ONLY}.</>}
           </span>

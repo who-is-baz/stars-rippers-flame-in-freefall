@@ -12,13 +12,21 @@ export const LEVELS: { value: Level; label: string }[] = [
   { value: 'basic', label: 'Basic' }, { value: 'flash', label: 'Flash' }, { value: 'medium', label: 'Medium' }, { value: 'heavy', label: 'Heavy' },
 ];
 // UI level → `level` sent to POST /ask (docs/07-api-contract.md defines low | medium | high).
-// TODO(contract): "flash" has no equivalent in the contract yet; it is sent as-is until backend and frontend agree.
-export const API_LEVEL: Record<Level, string> = { basic: 'low', flash: 'flash', medium: 'medium', heavy: 'high' };
+// Flash and Medium both use API level "medium"; what differs is the model (field `model`, docs/07 2026-11-15).
+export const API_LEVEL: Record<Level, string> = { basic: 'low', flash: 'medium', medium: 'medium', heavy: 'high' };
+export type Tier = 'flash' | 'medium' | 'heavy';
+export const LEVEL_TIER: Record<Level, Tier | null> = { basic: null, flash: 'flash', medium: 'medium', heavy: 'heavy' };
+// Default Ollama tags (backend FLASH_MODEL / MEDIUM_MODEL / HEAVY_MODEL); GET /llm/status overrides them.
+export const DEFAULT_TAGS: Record<Tier, string> = { flash: 'llama3.2:3b', medium: 'qwen3:8b', heavy: 'qwen3:14b' };
+export const DEFAULT_API_URL = 'http://127.0.0.1:8000';
 
 export const OUT_OF_SCOPE = 'That is not in the PSI data shown on this page';
 export const NO_LIVE_DATA = 'No data: these are archived ISS experiments; there is no live data on this page.';
 export const FALLBACK_NOTICE = 'Local AI did not respond. This answer comes from Basic mode (no model).';
-export const TIMEOUT_MS = 15_000;
+export const TEMPLATE_NOTICE = 'The local AI text did not pass verification; a fixed template built from the data is shown instead.';
+export const RULE_NOTICE = 'Answered by a fixed rule (no model call).';
+const envTimeout = Number(import.meta.env?.VITE_LLM_TIMEOUT_MS);
+export const TIMEOUT_MS = Number.isFinite(envTimeout) && envTimeout > 0 ? envTimeout : 15_000;
 
 export interface Reply {
   text: string;
@@ -33,6 +41,11 @@ export interface Reply {
 }
 
 const countCited = (c: Citation[]): number | null => {
+  // The API sends at most 20 IDs per citation plus test_ids_total; use the total when present.
+  if (c.some((x) => typeof x.test_ids_total === 'number')) {
+    const total = c.reduce((s, x) => s + (x.test_ids_total ?? x.test_ids.length), 0);
+    return total > 0 ? total : null;
+  }
   const ids = new Set(c.flatMap((x) => x.test_ids));
   return ids.size > 0 ? ids.size : null;
 };
@@ -112,12 +125,39 @@ export function sanitizeCitations(raw: unknown, data: DataBundle): Citation[] {
     const o = c as Record<string, unknown>;
     if (typeof o.source_doi !== 'string' || !dois.has(o.source_doi)) continue;
     const testIds = Array.isArray(o.test_ids) ? o.test_ids.filter((t): t is string => typeof t === 'string' && ids.has(t)) : [];
-    out.push({ query: typeof o.query === 'string' ? o.query : 'unknown', params: {}, source_doi: o.source_doi, test_ids: testIds });
+    const cit: Citation = { query: typeof o.query === 'string' ? o.query : 'unknown', params: {}, source_doi: o.source_doi, test_ids: testIds };
+    // Keep the total only if every listed ID was verified (otherwise the count could include unknown IDs).
+    const listed = Array.isArray(o.test_ids) ? o.test_ids.length : 0;
+    if (typeof o.test_ids_total === 'number' && Number.isInteger(o.test_ids_total) && o.test_ids_total >= testIds.length && listed === testIds.length) {
+      cit.test_ids_total = o.test_ids_total;
+    }
+    out.push(cit);
   }
   return out;
 }
 
-export interface AskOptions { url?: string; fetchImpl?: typeof fetch; timeoutMs?: number }
+export interface AskOptions { url?: string; fetchImpl?: typeof fetch; timeoutMs?: number; model?: string }
+
+// GET <url>/llm/status — the browser never talks to Ollama directly.
+export interface LlmModel { tag: string; tier: Tier; installed: boolean }
+export interface LlmStatus { available: boolean; ollama_url: string; models: LlmModel[] }
+
+export async function fetchLlmStatus(url: string, fetchImpl: typeof fetch = fetch, timeoutMs = 4_000): Promise<LlmStatus> {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+  try {
+    const res = await fetchImpl(`${url.replace(/\/+$/, '')}/llm/status`, { signal: ctrl.signal });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const b = (await res.json()) as Partial<LlmStatus>;
+    const tiers: Tier[] = ['flash', 'medium', 'heavy'];
+    const models = Array.isArray(b.models)
+      ? b.models.filter((m): m is LlmModel => !!m && typeof m.tag === 'string' && tiers.includes(m.tier as Tier)).map((m) => ({ tag: m.tag, tier: m.tier, installed: m.installed === true }))
+      : [];
+    return { available: b.available === true, ollama_url: typeof b.ollama_url === 'string' ? b.ollama_url : '', models };
+  } finally {
+    clearTimeout(timer);
+  }
+}
 
 export async function ask(question: string, level: Level, data: DataBundle, opts: AskOptions = {}): Promise<Reply> {
   if (level === 'basic' || !opts.url) return answerBasic(question, data);
@@ -127,17 +167,23 @@ export async function ask(question: string, level: Level, data: DataBundle, opts
   try {
     const res = await doFetch(`${opts.url.replace(/\/+$/, '')}/ask`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: ctrl.signal,
-      body: JSON.stringify({ question, level: API_LEVEL[level] }),
+      body: JSON.stringify({ question, level: API_LEVEL[level], ...(opts.model ? { model: opts.model } : {}) }),
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const body = (await res.json()) as Record<string, unknown>;
     if (typeof body.answer !== 'string' || body.answer.trim() === '') throw new Error('empty answer');
     const citations = sanitizeCitations(body.citations, data);
-    const warnings = Array.isArray(body.warnings) ? body.warnings.filter((w): w is string => typeof w === 'string') : [];
+    const meta = (typeof body.meta === 'object' && body.meta !== null ? body.meta : {}) as Record<string, unknown>;
+    const rawWarnings = Array.isArray(meta.warnings) ? meta.warnings : Array.isArray(body.warnings) ? body.warnings : [];
+    const warnings = rawWarnings.filter((w): w is string => typeof w === 'string');
     if (citations.length === 0 && body.no_data !== true) warnings.push('This answer came without a verifiable citation. Treat it as unverified.');
+    // meta.mode: "ollama" = model text (verified), "fallback" = fixed template, "low" = fixed rule. No meta → treat as model text.
+    const mode = typeof meta.mode === 'string' ? meta.mode : 'ollama';
     return {
-      text: body.answer, citations, warnings, noData: body.no_data === true, outOfScope: false,
-      n: countCited(citations), answeredBy: level, aiText: true,
+      text: body.answer, citations, warnings, noData: body.no_data === true,
+      outOfScope: body.answer.startsWith(OUT_OF_SCOPE),
+      n: countCited(citations), answeredBy: level, aiText: mode === 'ollama',
+      ...(mode === 'fallback' ? { notice: TEMPLATE_NOTICE } : mode === 'low' ? { notice: RULE_NOTICE } : {}),
     };
   } catch {
     return { ...answerBasic(question, data), notice: FALLBACK_NOTICE };
