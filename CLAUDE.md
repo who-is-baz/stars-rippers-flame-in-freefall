@@ -24,7 +24,8 @@ Equipo: 5 estudiantes de ITIID (UPQ), primer hackatón. Docs internos en españo
 Python 3.12 + FastAPI · React + TypeScript (Vite) · SQLite · LLM local vía Ollama (niveles Low/Medium/High; `low` sin LLM).
 
 ## Skills (`.claude/skills/`)
-`nasa-data-grounding`, `experiment-card` (esquema histórico; el vigente es `experiments.csv`), `ai-disclosure-log`, `submission-writer`, `scope-guard`, `api-contract`, `local-llm-rag`, `shift-handoff`. Skills externas recomendadas (máx. 5–6 activas): `frontend-design`, `webapp-testing`, `baseline-ui`, `fixing-accessibility`.
+`nasa-data-grounding`, `experiment-card` (esquema histórico; el vigente es `experiments.csv`), `ai-disclosure-log`, `submission-writer`, `scope-guard`, `api-contract`, `local-llm-rag`, `shift-handoff`.
+Frontend (React): `flame-design-system` (identidad visual, tokens, movimiento), `flame-react-frontend` (stack decidido, estructura, tipos, escena 3D, reparto), `flame-data-viz` (cómo mostrar cada dato sin afirmar de más) y `flame-dashboard-builder` (primera vista, tarjetas personalizables, copiloto SI). Estas cuatro ganan sobre `frontend-design` genérica. Skills externas opcionales (máx. 5–6 activas): `webapp-testing`, `fixing-accessibility`.
 
 ## Específico de este repo (pipeline de datos PSI)
 Complementa las reglas 3 y 4; no las repite.
