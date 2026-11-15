@@ -1,3 +1,5 @@
+> Nota 2026-11-15: las imágenes `docs/design/v3_*.png` citadas abajo se eliminaron del repo (eran generadas por IA); usa el HTML de referencia y el sitio.
+
 # Prompt 00 · Contexto de diseño para cada compañero (pégalo PRIMERO)
 
 Cada Claude empieza sin memoria: no sabe qué diseño aprobó el equipo. Este paquete se lo da. **Úsalo antes del prompt 01

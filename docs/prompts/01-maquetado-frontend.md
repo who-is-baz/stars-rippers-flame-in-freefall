@@ -1,3 +1,5 @@
+> Nota 2026-11-15: las imágenes `docs/design/v3_*.png` citadas abajo se eliminaron del repo (eran generadas por IA); usa el HTML de referencia y el sitio.
+
 # Prompt 01 · Primer avance del frontend (maquetado)
 
 > Para pegar en Claude Code, abierto en la raíz del repo, en una rama nueva. Producto: la base del dashboard

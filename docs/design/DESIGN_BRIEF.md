@@ -4,7 +4,7 @@ Si tu Claude te da un diseño distinto, es porque no vio esto. **Las skills desc
 aprobado está en 4 archivos de esta carpeta.** Antes de diseñar o programar cualquier pantalla, ábrelos.
 
 ## 1. Orden de autoridad (si algo choca, gana el de arriba)
-1. `docs/design/reference/flame-v3-reference.html` y las tres imágenes `v3_starter.png`, `v3_edit.png`, `v3_copilot.png`.
+1. `docs/design/reference/flame-v3-reference.html` (las tres imágenes de referencia generadas por IA `v3_*.png` se eliminaron el 2026-11-15 antes de publicar el repo; la referencia vigente es este HTML y el sitio).
 2. Las skills `flame-design-system`, `flame-dashboard-builder`, `flame-data-viz`, `flame-react-frontend`.
 3. Cualquier idea nueva de tu Claude. Si no está en 1 o 2, **no se agrega sin preguntar al equipo**.
 
