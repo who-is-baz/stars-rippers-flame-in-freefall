@@ -385,3 +385,10 @@ Yael pidió que Claude tomara las decisiones abiertas.
 2. `src/psi_queries.py`: nuevas `get_experiment` y `query_test_ids` (SQL solo en este archivo).
 3. `tests/test_api_base.py` (18 pruebas) + `tests/conftest.py`. Dependencias: fastapi, uvicorn, httpx (en `requirements.txt`).
 4. Verificado por la IA con pytest (49 en verde). Revisión humana pendiente.
+
+## 2026-11-15 (23) — Backend fase 2: /ask nivel low — Claude (Opus 5.5, Claude Code)
+
+1. `src/backend/tools.py`: catálogo cerrado de herramientas (Q1–Q6, `list_experiments`, `get_experiment`, `scenario`, `meta`) con argumentos validados por Pydantic, citas/`no_data`/avisos calculados por código y plantillas deterministas en inglés.
+2. `src/backend/low.py`: enrutado por reglas (mismo orden que `engine.ts` del front, más español, trampas de seguridad/predicción, inyección y Q1/Q5/Q6 por palabra clave). Las 10 preguntas sugeridas devuelven exactamente `answers.json` (mismo código generador).
+3. `src/backend/assistant.py`: `POST /ask` con `meta {level, model, mode, ms, warnings}`, `test_ids` truncados a 20 + `test_ids_total`, pregunta ≤ 500 caracteres; log sin la pregunta (longitud + hash).
+4. `tests/test_api_ask_low.py` (30 pruebas, paridad incluida). 79 en verde. Revisión humana pendiente.
