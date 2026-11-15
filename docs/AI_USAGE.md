@@ -54,3 +54,5 @@ English check, the axe accessibility audit and the exact-tests check (`scripts/c
 control, the Pause animations button and the larger type. Everything was verified by the automated gate (pytest,
 vitest, build, `audit_numbers.py`, static-site check, English, accessibility and exact-tests checks); the team reviews
 the visual result. What did not fit is listed in `docs/maintenance/PENDIENTES_A11Y.md`.
+Later the same day Claude also built the light theme and the Display panel (theme, higher contrast, text size, pause),
+the token contrast check and the theme screenshots; the same gate passed in both themes.

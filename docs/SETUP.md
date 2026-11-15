@@ -124,4 +124,6 @@ NODE_PATH=/tmp/pw/node_modules node scripts/check_static_site.mjs http://127.0.0
 NODE_PATH=/tmp/pw/node_modules node scripts/check_english.mjs http://127.0.0.1:8099/       # all visible text in English
 NODE_PATH=/tmp/pw/node_modules node scripts/check_a11y.mjs http://127.0.0.1:8099/         # axe-core (npm i --prefix /tmp/pw axe-core)
 NODE_PATH=/tmp/pw/node_modules node scripts/check_exact_tests.mjs http://127.0.0.1:8099/  # exact / near tests are shown
+node scripts/check_contrast.mjs                                                           # token contrast, dark + light
+NODE_PATH=/tmp/pw/node_modules node scripts/capture_themes.mjs http://127.0.0.1:8099/     # docs/screenshots/theme-*.png
 ```

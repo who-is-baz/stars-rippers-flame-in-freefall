@@ -30,7 +30,7 @@ export function SceneInstruments() {
   const flow = useMemo(() => (atm ? airflowFor(rows, d.airflow, atm, d.meta) : { kind: 'conceptual' as const }), [rows, d.airflow, atm, d.meta]);
   if (!atm) return null;
   return (
-    <section className="scene-instruments" aria-label="Scene instruments (conceptual illustration)">
+    <section className="scene-instruments dark-zone" aria-label="Scene instruments (conceptual illustration)">
       <Meter label="Oxygen" value={`${critText(atm.o2, 'o2')} O₂`} fill={atm.o2.value} refAt={O2_REFERENCE} refLabel="Earth air 21%" />
       <Meter label="Pressure" value={fmtPsiAtm(atm.pressure_psi.value).replace(/^/, atm.pressure_psi.kind === 'max' ? '≤' : atm.pressure_psi.kind === 'min' ? '≥' : '')}
         fill={atm.pressure_psi.value / psiMax} refAt={PSI_REFERENCE / psiMax} refLabel="Earth 14.7 psi" />

@@ -241,7 +241,7 @@ export const FlameScene = memo(function FlameScene({ scenario, mode = 'explorer'
   }, [scenario.id]);
 
   return (
-    <div className="scene-layer" data-fx={fxEligible && fxReady ? 'on' : 'off'}>
+    <div className="scene-layer dark-zone" data-fx={fxEligible && fxReady ? 'on' : 'off'}>
       <StarField phone={phone} paused={hidden} />
       <svg
         ref={svgRef}

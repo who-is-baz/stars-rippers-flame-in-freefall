@@ -1,5 +1,5 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { LayoutGrid, Pause, Play, RotateCcw, Search, Sparkles } from 'lucide-react';
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { Contrast, Eye, LayoutGrid, Pause, Play, RotateCcw, Search, Sparkles } from 'lucide-react';
 import { setDisplayPrefs, useDisplayPrefs, type TextSize } from './lib/displayPrefs';
 import { DataProvider, RetryContext } from './data/DataProvider';
 import { useDataState } from './data/useData';
@@ -103,21 +103,46 @@ const TEXT_SIZES: { v: TextSize; label: string; name: string }[] = [
   { v: 'sm', label: 'A−', name: 'Smaller text' }, { v: 'md', label: 'A', name: 'Default text size' }, { v: 'lg', label: 'A+', name: 'Larger text' },
 ];
 
-// Text size (scales the whole interface; remembered) and "Pause animations" (flame, stars, particles; remembered).
+// Display settings in one place: theme (Dark / Light), Higher contrast, text size (scales the whole interface) and
+// Pause animations (flame, stars, particles). All remembered. Opens as a small panel; Esc closes it and returns focus.
 function DisplayControls() {
-  const { text, paused } = useDisplayPrefs();
+  const { text, paused, theme, contrast } = useDisplayPrefs();
+  const [open, setOpen] = useState(false);
+  const wrap = useRef<HTMLDivElement>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const away = (e: MouseEvent) => { if (!wrap.current?.contains(e.target as Node)) setOpen(false); };
+    document.addEventListener('mousedown', away);
+    return () => document.removeEventListener('mousedown', away);
+  }, [open]);
   return (
-    <div className="display-ctl">
-      <div className="seg seg-compact" role="group" aria-label="Text size">
-        {TEXT_SIZES.map((t) => (
-          <button key={t.v} type="button" aria-pressed={text === t.v} aria-label={t.name} title={t.name} onClick={() => setDisplayPrefs({ text: t.v })}>{t.label}</button>
-        ))}
-      </div>
-      <button type="button" className="btn btn-sm btn-ghost" aria-pressed={paused} onClick={() => setDisplayPrefs({ paused: !paused })}
-        title={paused ? 'Resume animations' : 'Pause animations'}>
-        {paused ? <Play size={14} aria-hidden="true" /> : <Pause size={14} aria-hidden="true" />}
-        <span className="display-ctl-label">Pause animations</span>
+    <div className="display-ctl" ref={wrap}
+      onKeyDown={(e) => { if (e.key === 'Escape' && open) { e.stopPropagation(); setOpen(false); trigger.current?.focus(); } }}>
+      <button ref={trigger} type="button" className="btn btn-sm" aria-expanded={open} aria-controls="display-panel" onClick={() => setOpen((o) => !o)}>
+        <Eye size={14} aria-hidden="true" /> Display
       </button>
+      {open && (
+        <div id="display-panel" className="display-panel" role="group" aria-label="Display settings">
+          <span className="display-lbl" id="dl-theme">Theme</span>
+          <div className="seg" role="group" aria-labelledby="dl-theme">
+            <button type="button" aria-pressed={theme === 'dark'} onClick={() => setDisplayPrefs({ theme: 'dark' })}>Dark</button>
+            <button type="button" aria-pressed={theme === 'light'} onClick={() => setDisplayPrefs({ theme: 'light' })}>Light</button>
+          </div>
+          <span className="display-lbl" id="dl-text">Text size</span>
+          <div className="seg" role="group" aria-labelledby="dl-text">
+            {TEXT_SIZES.map((t) => (
+              <button key={t.v} type="button" aria-pressed={text === t.v} aria-label={t.name} title={t.name} onClick={() => setDisplayPrefs({ text: t.v })}>{t.label}</button>
+            ))}
+          </div>
+          <button type="button" className="btn btn-sm display-toggle" aria-pressed={contrast} onClick={() => setDisplayPrefs({ contrast: !contrast })}>
+            <Contrast size={14} aria-hidden="true" /> Higher contrast <span className="display-state">{contrast ? 'On' : 'Off'}</span>
+          </button>
+          <button type="button" className="btn btn-sm display-toggle" aria-pressed={paused} onClick={() => setDisplayPrefs({ paused: !paused })}>
+            {paused ? <Play size={14} aria-hidden="true" /> : <Pause size={14} aria-hidden="true" />} Pause animations <span className="display-state">{paused ? 'On' : 'Off'}</span>
+          </button>
+        </div>
+      )}
     </div>
   );
 }

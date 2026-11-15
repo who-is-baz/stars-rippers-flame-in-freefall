@@ -3,6 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="theme-color" content="#040506" />
+    <meta name="color-scheme" content="dark" />
+    <script>
+      // Apply the saved theme before the first paint (no flash). Dark unless the visitor chose Light; same keys as
+      // src/lib/displayPrefs.ts. Storage errors leave the default (Dark).
+      (function () {
+        var d = document.documentElement, t = 'dark', c = null;
+        try { t = localStorage.getItem('fif.theme') === 'light' ? 'light' : 'dark'; c = localStorage.getItem('fif.contrast'); } catch (e) {}
+        var q = /[?&]theme=(dark|light)\b/.exec(location.search); if (q) t = q[1]; // ?theme=light for a demo link (not saved)
+        d.setAttribute('data-theme', t);
+        if (c === 'more' || (c === null && window.matchMedia && matchMedia('(prefers-contrast: more)').matches)) d.setAttribute('data-contrast', 'more');
+        if (t === 'light') {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ECEEF1');
+          document.querySelector('meta[name="color-scheme"]').setAttribute('content', 'light');
+        }
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Flarefall (Flame in Freefall · NASA Space Apps 2026): NASA PSI microgravity combustion data, organised by atmosphere, with sources and stated gaps." />
     <title>Flarefall · Flame in Freefall · NASA Space Apps 2026</title>

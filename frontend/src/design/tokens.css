@@ -1,6 +1,8 @@
 /* Design tokens: the ONLY place where raw colors, radii, blur, spacing and type sizes are defined.
    Approved v3 Space Console identity (graphite glass + single mint accent #7FF5E1; blue/ember reserved for flame & data series). */
-:root {
+/* Dark is the default theme. `.dark-zone` re-declares these dark values so the chamber scene, the flame and what
+   floats over them stay dark in the light theme too (the fire and its glow need a dark background). */
+:root, .dark-zone {
   color-scheme: dark;
 
   /* v3 core surfaces */
@@ -77,6 +79,13 @@
   --info: #9DB7FF;
   --info-bg: rgba(157, 183, 255, 0.12);
   --focus: var(--mint);
+  --fg-rgb: 255, 255, 255;   /* overlays, hairlines and glass tints are drawn in this colour */
+  --page-bg: #000;
+  --panel-solid: #0C0E12;    /* drawer, full views, tooltips */
+  --nodata-stripe: #191e26;
+  --scene-bg: #040506;       /* the chamber scene: dark in both themes */
+  --view-bg: #0A0C0F;        /* full views (Experiments, Coverage…) */
+  --surf: initial;           /* unset = each dark panel keeps its own colour (see global.css rgba(var(--surf, …))) */
 
   /* typography: Sora + IBM Plex Mono */
   --font-ui: 'Sora', 'Inter Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
@@ -137,4 +146,73 @@
   --z-modal: 50;
   --z-tip: 60;
   --drawer-w: min(400px, 100vw);
+}
+
+/* Light theme: soft (off-white and light grey, never pure white), near-black text, accents darkened for contrast
+   (every text colour >= 4.5:1 on its surfaces; checked by scripts/check_contrast.mjs and axe). */
+:root[data-theme="light"] {
+  color-scheme: light;
+  --space: #ECEEF1;
+  --graphite-9: #F5F6F8;
+  --graphite-8: #F9FAFB;
+  --graphite-7: #E2E5E9;
+  --graphite-5: #AEB5BE;
+  --silver: #2B3138;
+  --ink: #14171B;
+  --ink-dim: #4A525C;
+  --ink-faint: #7C848E;
+  --glass: linear-gradient(150deg, rgba(255, 255, 255, 0.70), rgba(255, 255, 255, 0.45) 55%, rgba(255, 255, 255, 0.35));
+  --glass-solid: rgba(246, 247, 249, 0.96);
+  --glass-border: rgba(20, 24, 30, 0.16);
+  --glass-hi: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  --mint: #0A7466;
+  --mint-dim: rgba(10, 116, 102, 0.12);
+  --mint-rgb: 10, 116, 102;
+  --on-mint: #FFFFFF;
+  --ember: #B04C0C;
+  --caution: #845600;
+  --nodata: #D3D8DE;
+  --fuel-heptane: #B04C0C;
+  --fuel-methanol: #535D69;
+  --prog-flex: #0A7466;
+  --prog-bass2: #7247BC;
+  --out-extinction: #3655C8;
+  --out-disruption: #7247BC;
+  --out-completion: #B4530F;
+  --out-blowoff: #0B7F63;
+  --out-noflame: #646C76;
+  --seq-1: #D6DCEE;
+  --seq-2: #8C9FDA;
+  --seq-3: #6468BE;
+  --seq-4: #C98140;
+  --seq-5: #B04C0C;
+  --cov-1: rgba(10, 116, 102, 0.12);
+  --cov-2: rgba(10, 116, 102, 0.25);
+  --cov-3: rgba(10, 116, 102, 0.42);
+  --cov-4: rgba(10, 116, 102, 0.62);
+  --glass-strong: rgba(20, 24, 30, 0.05);
+  --glass-chrome: rgba(245, 246, 248, 0.94);
+  --hairline-strong: rgba(20, 24, 30, 0.26);
+  --flame-strong: #075E53;
+  --caution-bg: rgba(132, 86, 0, 0.10);
+  --caution-line: rgba(132, 86, 0, 0.45);
+  --muted-cell: #E1E4E8;
+  --nodata-cell: #E9EBEE;
+  --info: #2D4BB2;
+  --info-bg: rgba(45, 75, 178, 0.10);
+  --shadow: 0 1px 2px rgba(20, 24, 30, 0.06), 0 10px 28px rgba(20, 24, 30, 0.10);
+  --shadow-pop: 0 18px 48px rgba(20, 24, 30, 0.20);
+  --fg-rgb: 20, 24, 30;
+  --page-bg: #ECEEF1;
+  --panel-solid: #F5F6F8;
+  --nodata-stripe: #DDE1E6;
+  --view-bg: #ECEEF1;
+  --surf: 246, 247, 249;     /* dark translucent panels become light ones */
+}
+
+/* Higher contrast (prefers-contrast: more, or the switch): stronger borders, secondary text as strong as body text. */
+:root[data-contrast="more"], :root[data-contrast="more"] .dark-zone {
+  --ink-dim: var(--silver);
+  --glass-border: rgba(var(--fg-rgb), 0.42);
+  --hairline-strong: rgba(var(--fg-rgb), 0.6);
 }

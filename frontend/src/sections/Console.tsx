@@ -172,12 +172,12 @@ export function Console({ preset, assistantOpen = false }: { preset: TablePreset
         <SceneInstruments />
         {customizeOpen && <div className="grid-overlay" aria-hidden="true" />}
 
-        <button type="button" className="glass focus-btn" aria-pressed={focus} aria-keyshortcuts="F" onClick={() => setFocus((f) => !f)}
+        <button type="button" className="glass focus-btn dark-zone" aria-pressed={focus} aria-keyshortcuts="F" onClick={() => setFocus((f) => !f)}
           title={focus ? 'Show the cards (F)' : 'Hide the cards (F)'}>
           {focus ? <EyeOff size={14} aria-hidden="true" /> : <Eye size={14} aria-hidden="true" />} {focus ? 'Show cards' : 'Focus'}
         </button>
 
-        <span className="console-credit">Uses NASA PSI open data ({meta.license}). Not endorsed by NASA.</span>
+        <span className="console-credit dark-zone">Uses NASA PSI open data ({meta.license}). Not endorsed by NASA.</span>
 
         {notice && (
           <div className="glass console-toast" role="status" aria-live="polite">

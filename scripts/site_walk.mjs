@@ -51,6 +51,11 @@ export async function walk(page, visit, { assistant = true } = {}) {
   await settle(page);
   await visit('customize');
   await page.getByRole('button', { name: 'Done' }).click();
+  // Display settings panel (theme, contrast, text size, pause); Esc closes it
+  await page.getByRole('button', { name: 'Display', exact: true }).click();
+  await page.getByRole('group', { name: 'Display settings' }).waitFor();
+  await visit('display settings');
+  await page.keyboard.press('Escape');
   // full views from the top nav + every section of the switcher
   await page.getByRole('navigation', { name: 'Views' }).getByRole('button', { name: 'Experiments', exact: true }).click();
   const seg = page.getByRole('group', { name: 'Full view sections' });
