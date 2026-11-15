@@ -341,7 +341,7 @@ Yael pidió que Claude tomara las decisiones abiertas.
 2. En `frontend/src/`: paleta grafito + menta (`#7FF5E1`) y tipografía Sora + IBM Plex Mono en `tokens.css` y `global.css`; escena interactiva `<FlameScene>` (`src/components/FlameScene.tsx`) con rotación, zoom semántico (`Chamber · Flame · Droplet`) y anotaciones con líneas guía; gráficas SVG en `src/components/charts.tsx` (`MatchRingSvg`, `KpiRingSvg`, `BurningRateChartSvg` en modos barras y líneas con alerta `n < 5`, `CoverageRadarSvg`, `OutcomePills`, `OutcomeBarsSvg`, `Bass2CountBar` sin porcentajes); consola completa en `Hero.tsx`, galería Customize, tour de 3 pasos y drawer izquierdo del `SI Assistant` con adición automática de tarjetas.
 3. Todas las cifras provienen de `frontend/public/data/*.json`; 29 pruebas en Vitest y build de producción verificados. Revisión humana pendiente.
 
-## 2026-11-14 (17) — Consola de una sola pantalla con tablero guardable — Claude (Opus 5.5, Claude Code)
+## 2026-11-14 (18) — Consola de una sola pantalla con tablero guardable — Claude (Opus 5.5, Claude Code)
 
 **Pedido (Carlos):** todo en la pantalla principal sin saturar, sin scroll, con tarjetas que el usuario pueda guardar y menús; basado en la referencia v3 (patches 0001–0005, ya aplicados en el repo).
 
@@ -350,7 +350,7 @@ Yael pidió que Claude tomara las decisiones abiertas.
 3. Todas las cifras siguen saliendo de `public/data/*.json`; sin datos nuevos ni valores inventados. Pruebas: 35 en verde (se añadieron 7 sobre consola y almacenamiento).
 4. Sin cambios en datos, `src/`, `scripts/` ni `docs/07-api-contract.md`. Sin peticiones de red.
 
-## 2026-11-14 (18) — Panel SI a la derecha, ajuste de layouts y optimización de rendimiento — Claude (Sonnet 5.5, Claude Code)
+## 2026-11-14 (19) — Panel SI a la derecha, ajuste de layouts y optimización de rendimiento — Claude (Sonnet 5.5, Claude Code)
 
 **Pedido (Carlos):** asistente de IA del lado derecho, revisar y limpiar distribuciones, y optimizar porque se sentía lenta.
 
@@ -358,7 +358,7 @@ Yael pidió que Claude tomara las decisiones abiertas.
 2. Rendimiento: `FlameScene` escribe las transformaciones por `requestAnimationFrame` sin re-renderizar React; arte estático memoizado; se quitó el filtro de desenfoque de la llama, la animación continua del anillo y todos los `backdrop-filter`; vistas completas con `React.lazy`; tarjetas con `memo`; fuentes de Google sin bloquear el primer render. JS inicial: 257 kB → 212 kB.
 3. Sin cambios en datos, `src/`, `scripts/` ni contrato de API. 35 pruebas y build en verde. Revisión humana pendiente; no se midió con Lighthouse.
 
-## 2026-11-14 (19) — Menú More al frente, gráficas de datos nuevas y animaciones — Claude (Opus 5.5, Claude Code)
+## 2026-11-14 (20) — Menú More al frente, gráficas de datos nuevas y animaciones — Claude (Opus 5.5, Claude Code)
 
 **Pedido (Carlos):** que el menú More se vea sobre las demás ventanas, añadir gráficas con lo que falta del proyecto y animaciones que mejoren la experiencia.
 
@@ -368,7 +368,7 @@ Yael pidió que Claude tomara las decisiones abiertas.
 4. Error corregido: varias acciones del tablero en el mismo instante (quitar o añadir varias tarjetas) perdían todas menos la última; ahora cada acción parte del estado más reciente. Prueba de regresión añadida. Preset Engineer reordenado para que quepa sin desbordar.
 5. Verificado por la IA: `tsc`, 36 pruebas Vitest, build y capturas con Edge controlado por CDP. Revisión humana pendiente.
 
-## 2026-11-14 (20) — Gráficas de pastel y barras, animaciones v2 y modo Focus — Claude (Opus 5.5, Claude Code)
+## 2026-11-14 (21) — Gráficas de pastel y barras, animaciones v2 y modo Focus — Claude (Opus 5.5, Claude Code)
 
 **Pedido (Carlos):** gráficas de barras, pastel y demás; mejorar las animaciones y el resto de la interfaz.
 
