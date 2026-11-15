@@ -33,51 +33,51 @@ export function MatchRingSvg({
   total?: number;
   minN?: number;
 }) {
-  const r = 25;
+  const r = 22;
   const c = 2 * Math.PI * r;
   const shown = exact > 0 ? exact : near;
   // Scale visually against FLEX tests so 17/274 or 49/274 shows a clear, honest arc
-  const ratio = shown === 0 ? 0 : Math.min(1, Math.max(0.12, shown / Math.min(total, 60)));
+  const ratio = shown === 0 ? 0 : Math.min(1, Math.max(0.14, shown / Math.min(total, 60)));
   const dash = (ratio * c).toFixed(1);
   const small = shown > 0 && isSmallN(shown, minN);
   const stroke = shown === 0 ? 'var(--graphite-5)' : small ? 'var(--caution)' : 'var(--mint)';
 
   return (
     <svg
-      width="62"
-      height="62"
-      viewBox="0 0 62 62"
+      width="56"
+      height="56"
+      viewBox="0 0 56 56"
       role="img"
       aria-label={`${exact} exact matches and ${near} near matches out of ${total} FLEX tests`}
-      style={{ flex: '0 0 62px' }}
+      style={{ flex: '0 0 56px' }}
     >
       <title>{`${exact} exact matches, ${near} within tolerance`}</title>
       <circle
-        cx="31"
-        cy="31"
+        cx="28"
+        cy="28"
         r={r}
         fill="none"
         stroke="var(--graphite-7)"
-        strokeWidth="5"
+        strokeWidth="4.5"
         strokeDasharray={exact === 0 ? '3 3' : undefined}
       />
       {shown > 0 && (
         <circle
-          cx="31"
-          cy="31"
+          cx="28"
+          cy="28"
           r={r}
           fill="none"
           stroke={stroke}
-          strokeWidth="5"
+          strokeWidth="4.5"
           strokeDasharray={`${dash} ${c.toFixed(1)}`}
           strokeLinecap="round"
-          transform="rotate(-90 31 31)"
-          opacity="0.9"
+          transform="rotate(-90 28 28)"
+          opacity="0.92"
         />
       )}
       <text
-        x="31"
-        y="35"
+        x="28"
+        y="32"
         textAnchor="middle"
         fill="var(--ink)"
         fontSize="12"
@@ -380,12 +380,12 @@ export function CoverageRadarSvg({
 }) {
   const fuelCells = cells.filter((c) => c.fuel === fuel);
   const maxN = Math.max(1, ...fuelCells.map((c) => c.n));
-  const cx = 110;
-  const cy = 98;
+  const cx = 98;
+  const cy = 76;
   const rings = [
-    { rIn: 16, rOut: 36 }, // ~0.7 atm
-    { rIn: 39, rOut: 59 }, // ~1.0 atm
-    { rIn: 62, rOut: 80 }, // >2 atm
+    { rIn: 12, rOut: 27 }, // ~0.7 atm
+    { rIn: 30, rOut: 45 }, // ~1.0 atm
+    { rIn: 48, rOut: 62 }, // >2 atm
   ];
   const nBands = bands.length;
   const stepDeg = 360 / nBands;
@@ -419,9 +419,9 @@ export function CoverageRadarSvg({
 
   return (
     <svg
-      width="220"
-      height="194"
-      viewBox="0 0 220 194"
+      width="196"
+      height="152"
+      viewBox="0 0 196 152"
       role="img"
       aria-label={`Coverage radar for ${fuel}: 5 O₂ bands by 3 pressure rings`}
       style={{ display: 'block', margin: '0 auto' }}
@@ -443,7 +443,7 @@ export function CoverageRadarSvg({
       {bands.map((b, bi) => {
         const start = bi * stepDeg - stepDeg / 2 + gapDeg / 2;
         const end = (bi + 1) * stepDeg - stepDeg / 2 - gapDeg / 2;
-        const [lx, ly] = polar(92, bi * stepDeg);
+        const [lx, ly] = polar(71, bi * stepDeg);
         return (
           <g key={b.label}>
             {pressures.map((p, pi) => {
@@ -463,7 +463,7 @@ export function CoverageRadarSvg({
                         ? 'var(--caution)'
                         : 'rgba(127, 245, 225, 0.48)'
                   }
-                  strokeWidth={small ? '1.3' : '0.9'}
+                  strokeWidth={small ? '1.2' : '0.85'}
                   strokeDasharray={n === 0 ? '2 2' : undefined}
                   style={{ cursor: onSelectCell && cell ? 'pointer' : 'default' }}
                   onClick={() => cell && onSelectCell?.(cell)}
@@ -479,7 +479,7 @@ export function CoverageRadarSvg({
               y={(ly + 3).toFixed(1)}
               textAnchor="middle"
               fill="var(--ink-dim)"
-              fontSize="9.5"
+              fontSize="9"
               fontFamily="var(--font-mono)"
             >
               {SHORT_BAND[b.label] ?? b.label}
@@ -488,7 +488,7 @@ export function CoverageRadarSvg({
           </g>
         );
       })}
-      <circle cx={cx} cy={cy} r="6" fill="var(--graphite-9)" stroke="var(--silver)" strokeOpacity="0.6" />
+      <circle cx={cx} cy={cy} r="5" fill="var(--graphite-9)" stroke="var(--silver)" strokeOpacity="0.6" />
     </svg>
   );
 }

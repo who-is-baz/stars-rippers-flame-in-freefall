@@ -13,7 +13,7 @@ import { BurningRateChartSvg, CoverageRadarSvg, KpiRingSvg, MatchRingSvg, Outcom
 import { O2BandBars, OutcomesDonut, ScatterKey, TestsMixBars, TestsMixDonut, TestsScatterSvg, flexWithRate, type ColorBy } from './dataCharts';
 import { useCountUp } from '../lib/useCountUp';
 import { fmtCriterionO2, fmtCriterionP, fmtTolerance } from '../lib/scenario';
-import { isSmallN, MICROGRAVITY_NOTE } from '../lib/honesty';
+import { isSmallN } from '../lib/honesty';
 
 export const SHORT_NAME: Record<Scenario['id'], string> = {
   earth_iss: 'Earth / ISS',
@@ -160,19 +160,19 @@ function Frame({ type, icon, children, src, n, warn, extra, swapKey }: {
         <span className="wc-icon" aria-hidden="true">{icon}</span>
         <h2>{meta.title}</h2>
         {by === 'si' && <span className="bysi-badge">Added by SI</span>}
+        {!collapsed && extra}
         {!collapsed && (
           <button type="button" className="icon-btn" aria-label="How to read this card" aria-expanded={info} onClick={() => setInfo((v) => !v)}>
-            <Info size={13} aria-hidden="true" />
+            <Info size={12} aria-hidden="true" />
           </button>
         )}
         {!collapsed && meta.view && (
           <button type="button" className="icon-btn" aria-label="Open full view" onClick={() => openView?.(meta.view as ViewId)}>
-            <ArrowUpRight size={13} aria-hidden="true" />
+            <ArrowUpRight size={12} aria-hidden="true" />
           </button>
         )}
         <CardMenu type={type} />
       </div>
-      {!collapsed && extra && <div className="wc-tools">{extra}</div>}
       {!collapsed && (
         <>
           {info ? <p className="wc-read">{HOW[type][mode]}</p> : <div className="wc-body" key={swapKey}>{children}</div>}
@@ -203,15 +203,15 @@ function MatchCard() {
   if (!current) return null;
   const reading =
     current.n_exact > 0 ? `${current.n_exact} FLEX tests match within ${tol}.`
-    : current.n_near > 0 ? `No FLEX test sits exactly at ${fmtCriterionO2(current)} and ${fmtCriterionP(current)}; ${current.n_near} are within ${tol}.`
+    : current.n_near > 0 ? `None match exactly; ${current.n_near} are within ${tol}.`
     : `No FLEX test matches this atmosphere, even within ${tol}.`;
   return (
-    <Frame type="scenario_match" swapKey={current.id} icon={<Flame size={13} />} src={<>FLEX · {flex?.psi_id ?? 'PSI-69'} · <Doi doi={current.source_doi} /></>} n={`n = ${current.n_near || current.n_exact}`}>
+    <Frame type="scenario_match" swapKey={current.id} icon={<Flame size={13} />} src={<>FLEX · {flex?.psi_id ?? 'PSI-69'}</>} n={`n = ${current.n_near || current.n_exact}`}>
       <div className="ring-row">
         <MatchRingSvg exact={current.n_exact} near={current.n_near} total={flex?.n ?? 274} minN={meta.min_n} />
         <div>
           <div className="wc-big num">{nearShown} <small>{current.n_exact > 0 ? 'within tolerance' : 'near'}</small></div>
-          <div className="dim num" style={{ fontSize: 'var(--fs-sm)' }}>{current.n_exact} exact {current.n_exact === 1 ? 'match' : 'matches'}</div>
+          <div className="dim num" style={{ fontSize: 'var(--fs-xs)' }}>{current.n_exact} exact {current.n_exact === 1 ? 'match' : 'matches'}</div>
         </div>
       </div>
       <p className="wc-read">{reading}</p>
@@ -225,9 +225,10 @@ function InspectorCard() {
   if (!current) return null;
   const ids = current.n_near > 0 ? current.near.test_ids : current.nearest?.test_ids;
   const count = current.n_near > 0 ? current.n_near : current.nearest?.n ?? 0;
+  const out = current.n_near > 0 ? current.near.n_by_outcome : current.nearest?.n_by_outcome;
   const label = `${SHORT_NAME[current.id]}: ${current.n_exact > 0 ? 'matching' : 'near-match'} tests`;
   return (
-    <Frame type="scenario_inspector" swapKey={current.id} icon={<Target size={13} />} src={<>scenarios.json</>} n={`${String(idx + 1).padStart(2, '0')} of ${String(scenarios.length).padStart(2, '0')}`}
+    <Frame type="scenario_inspector" swapKey={current.id} icon={<Target size={13} />} src={<>FLEX · PSI-69</>} n={`${String(idx + 1).padStart(2, '0')} of ${String(scenarios.length).padStart(2, '0')}`}
       extra={!current.verified ? <span className="badge badge-caution">Unverified</span> : null}>
       <div className="insp-head">
         <MiniFlameThumb o2={current.criteria.o2.value} />
@@ -242,6 +243,7 @@ function InspectorCard() {
         <div><span>Earth, for comparison</span><b>21% · 14.7 psi</b></div>
         <div><span>Exact · within tolerance</span><b className={current.n_near === 0 ? 'warn-text' : undefined}>{current.n_exact} · {current.n_near} tests</b></div>
       </div>
+      <OutcomePills outcomes={out} />
       {ids && count > 0 ? (
         <button type="button" className="cta-mint" onClick={() => showTests({ ids, label: current.n_near > 0 ? label : `Closest tested condition to ${SHORT_NAME[current.id]} (not this scenario)` })}>
           Show {count} {current.n_exact === 0 ? 'closest ' : ''}tests{current.n_near === 0 ? ' (not this scenario)' : ''}
@@ -300,7 +302,7 @@ function BurningRateCard() {
         <span className="mono">~1.0 atm</span>
       </div>
       <BurningRateChartSvg cells={coverage.cells} bands={meta.o2_bands} pressureLevel="~1.0 atm" metric="rate" mode={view} minN={meta.min_n} compact />
-      <p className="wc-read">{mode === 'engineer' ? 'Mean K (mm²/s) at ~1.0 atm. Descriptive; suppressants mixed.' : 'At ~1.0 atm, both fuels burn faster as oxygen increases. Descriptive; suppressants mixed.'}</p>
+      <p className="wc-read">{mode === 'engineer' ? 'Mean K (mm²/s) at ~1.0 atm. Descriptive; suppressants mixed.' : 'Heptane is higher in every band. Descriptive; pressures mixed.'}</p>
     </Frame>
   );
 }
@@ -313,7 +315,7 @@ function CoverageCard() {
   const cells = coverage.cells.filter((c) => c.fuel === fuel);
   const tested = cells.filter((c) => c.n > 0).length;
   return (
-    <Frame type="coverage" icon={<Target size={13} />} src={<>FLEX · PSI-69</>} n={`${tested} of ${cells.length} tested`}
+    <Frame type="coverage" icon={<Target size={13} />} src={<>FLEX · PSI-69</>} n={`${tested} of ${cells.length} conditions tested`}
       extra={
         <div className="mini-seg" role="group" aria-label="Radar fuel">
           <button type="button" aria-pressed={fuel === 'heptane'} onClick={() => setFuel('heptane')}>Hept</button>
@@ -350,10 +352,10 @@ function MaterialsCard() {
 function GapsCard() {
   const { gaps } = useGaps();
   return (
-    <Frame type="gaps" icon={<span>∅</span>} src={<>PSI-69 · PSI-25</>} n={`${gaps.length} gaps`}>
+    <Frame type="gaps" icon={<span>∅</span>} src={<>PSI-69 · PSI-25</>} n={`${gaps.length} gaps · See all`}>
       <ul className="glist">
-        <li>{MICROGRAVITY_NOTE}</li>
-        {gaps.slice(0, 2).map((g) => <li key={g.id}>{g.text}</li>)}
+        <li>No Moon or Mars gravity fire data (ISS microgravity only)</li>
+        <li>No test below 10.18 psi or above 34% O₂</li>
       </ul>
     </Frame>
   );

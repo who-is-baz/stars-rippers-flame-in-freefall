@@ -28,10 +28,21 @@ export const VIEW_TITLE: Record<ViewId, string> = {
   scenarios: 'Scenario explorer', fuels: 'Fuel comparison', materials: 'Materials', sources: 'Sources & credits',
 };
 
-const INTRO_KEY = 'fif.intro.hidden';
-const readIntro = () => { try { return window.localStorage.getItem(INTRO_KEY) !== '1'; } catch { return true; } };
+const SUB_VIEWS: { id: ViewId; label: string }[] = [
+  { id: 'explore', label: 'Experiments' },
+  { id: 'charts', label: 'Charts' },
+  { id: 'coverage', label: 'Coverage' },
+  { id: 'scenarios', label: 'Scenarios' },
+  { id: 'fuels', label: 'Fuels' },
+  { id: 'materials', label: 'Materials' },
+  { id: 'gaps', label: 'Gaps' },
+  { id: 'sources', label: 'Sources' },
+];
 
-function ViewPanel({ view, preset, onClose }: { view: ViewId; preset: TablePreset | null; onClose: () => void }) {
+const INTRO_KEY = 'fif.intro.v2';
+const readIntro = () => { try { return window.localStorage.getItem(INTRO_KEY) === '1'; } catch { return false; } };
+
+function ViewPanel({ view, preset, onSelectView, onClose }: { view: ViewId; preset: TablePreset | null; onSelectView: (v: ViewId) => void; onClose: () => void }) {
   // Closing plays a short exit animation first, then asks the parent to unmount the panel.
   const [leaving, setLeaving] = useState(false);
   const timer = useRef(0);
@@ -45,7 +56,13 @@ function ViewPanel({ view, preset, onClose }: { view: ViewId; preset: TablePrese
     <section className={`glass view-panel${leaving ? ' leaving' : ''}`} role="dialog" aria-modal="false" aria-label={VIEW_TITLE[view]}>
       <header className="view-bar">
         <button type="button" className="btn btn-sm" onClick={close}>← Back to console</button>
-        <span className="dim" style={{ fontSize: 'var(--fs-sm)' }}>{VIEW_TITLE[view]}</span>
+        <div className="seg seg-compact" role="group" aria-label="Full view sections">
+          {SUB_VIEWS.map((sv) => (
+            <button key={sv.id} type="button" aria-pressed={view === sv.id} onClick={() => onSelectView(sv.id)}>
+              {sv.label}
+            </button>
+          ))}
+        </div>
         <button type="button" className="icon-btn" aria-label="Close view" onClick={close}><X size={14} aria-hidden="true" /></button>
       </header>
       <div className="view-body" key={view}>
@@ -64,11 +81,11 @@ function ViewPanel({ view, preset, onClose }: { view: ViewId; preset: TablePrese
   );
 }
 
-export function Console({ preset }: { preset: TablePreset | null }) {
+export function Console({ preset, assistantOpen = false }: { preset: TablePreset | null; assistantOpen?: boolean }) {
   const meta = useMeta();
   const { scenarios } = useScenarios();
   const { board, notice, dismissNotice, undo, canUndo } = useBoard();
-  const { openAssistant, scenarioId, setScenarioId, mode = 'explorer', customizeOpen = false, setCustomizeOpen, view, closeView } = useUi();
+  const { openAssistant, scenarioId, setScenarioId, mode = 'explorer', customizeOpen = false, setCustomizeOpen, view, openView, closeView } = useUi();
   const [introOpen, setIntroOpen] = useState(readIntro);
   const [tour, setTour] = useState<number | null>(null);
   const [focus, setFocus] = useState(false); // hides the cards so the scene fills the screen
@@ -89,7 +106,7 @@ export function Console({ preset }: { preset: TablePreset | null }) {
   const tol = fmtTolerance(meta.tolerance);
   const setIntro = (open: boolean) => {
     setIntroOpen(open);
-    try { window.localStorage.setItem(INTRO_KEY, open ? '0' : '1'); } catch { /* ignore */ }
+    try { window.localStorage.setItem(INTRO_KEY, open ? '1' : '0'); } catch { /* ignore */ }
   };
 
   // Notices fade out by themselves; the next one replaces the current one.
@@ -104,7 +121,7 @@ export function Console({ preset }: { preset: TablePreset | null }) {
 
   return (
     <header className="console-section" id="top">
-      <div className={`console-frame${focus ? ' is-focus' : ''}${customizeOpen ? ' is-editing' : ''}${view && view !== 'overview' ? ' is-busy' : ''}`}>
+      <div className={`console-frame${focus ? ' is-focus' : ''}${customizeOpen ? ' is-editing' : ''}${assistantOpen ? ' is-assistant-open' : ''}${view && view !== 'overview' ? ' is-busy' : ''}`}>
         {current && <FlameScene scenario={current} mode={mode} />}
         {customizeOpen && <div className="grid-overlay" aria-hidden="true" />}
 
@@ -124,26 +141,37 @@ export function Console({ preset }: { preset: TablePreset | null }) {
           </div>
         )}
 
-        <button type="button" className="glass sitab" onClick={() => openAssistant()} aria-label="Open SI assistant">
-          <Sparkles size={15} color="var(--mint)" aria-hidden="true" />
-          <span>SI assistant</span>
-        </button>
+        {!assistantOpen && (
+          <button type="button" className="glass sitab" onClick={() => openAssistant()} aria-label="Open SI assistant">
+            <Sparkles size={14} color="var(--mint)" aria-hidden="true" />
+            <span>SI assistant</span>
+          </button>
+        )}
 
         {/* ---- left rail ---- */}
         <aside className="console-left" aria-label="Key questions">
-          {introOpen ? (
-            <div className="intro-block">
+          <div className="rail-header">
+            <span className="rail-eyebrow">
+              <Sparkles size={13} color="var(--mint)" aria-hidden="true" /> SI insights
+            </span>
+            <div className="row" style={{ gap: 6 }}>
+              <button type="button" className="rail-help" onClick={() => setTour(1)}>
+                <Compass size={12} aria-hidden="true" /> Tour
+              </button>
+              <button type="button" className="rail-help" aria-expanded={introOpen} onClick={() => setIntro(!introOpen)} aria-label="About this dashboard">
+                <HelpCircle size={12} aria-hidden="true" /> About
+              </button>
+            </div>
+          </div>
+          {introOpen && (
+            <div className="glass wc intro-block">
               <h1>Fire behaves differently in space.</h1>
               <p>Explore <strong className="num">{meta.n_tests}</strong> NASA fire tests run on the ISS and see what they say about spacecraft and Moon-base air.</p>
-              <div className="row" style={{ marginTop: 10 }}>
-                <button type="button" className="btn btn-primary btn-sm" onClick={() => setTour(1)}><Compass size={13} aria-hidden="true" /> Take the 30-s tour</button>
-                <button type="button" className="btn btn-ghost btn-sm" onClick={() => setIntro(false)}>Dismiss</button>
+              <div className="row" style={{ marginTop: 8 }}>
+                <button type="button" className="btn btn-primary btn-sm" onClick={() => setTour(1)}><Compass size={13} aria-hidden="true" /> 30-s tour</button>
+                <button type="button" className="btn btn-ghost btn-sm" onClick={() => setIntro(false)}>Got it</button>
               </div>
             </div>
-          ) : (
-            <button type="button" className="rail-help" onClick={() => setIntro(true)} aria-label="Show introduction">
-              <HelpCircle size={13} aria-hidden="true" /> What is this?
-            </button>
           )}
           {board.left.map((t, i) => <div className="rail-item" style={{ '--i': i } as CSSProperties} key={t}><BoardCard type={t} /></div>)}
           {customizeOpen && leftFree && (
@@ -158,7 +186,7 @@ export function Console({ preset }: { preset: TablePreset | null }) {
             {board.right.length === 0 && (
               <button type="button" className="slot-btn" onClick={() => setCustomizeOpen?.(true)}>+ Add a card</button>
             )}
-            {board.right.length > 0 && rightFree && (
+            {customizeOpen && board.right.length > 0 && rightFree && (
               <button type="button" className="slot-btn slot-btn-sm" onClick={() => setCustomizeOpen?.(true)}>+ Add a card</button>
             )}
           </aside>
@@ -193,7 +221,7 @@ export function Console({ preset }: { preset: TablePreset | null }) {
           })}
         </div>
 
-        {view && view !== 'overview' && <ViewPanel view={view} preset={preset} onClose={() => closeView?.()} />}
+        {view && view !== 'overview' && <ViewPanel view={view} preset={preset} onSelectView={(v) => openView?.(v)} onClose={() => closeView?.()} />}
       </div>
     </header>
   );

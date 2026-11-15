@@ -1,5 +1,5 @@
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { ChevronDown, LayoutGrid, RotateCcw, Search, Sparkles } from 'lucide-react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { LayoutGrid, RotateCcw, Search, Sparkles } from 'lucide-react';
 import { DataProvider, RetryContext } from './data/DataProvider';
 import { useDataState } from './data/useData';
 import type { Scenario } from './data/types';
@@ -13,14 +13,7 @@ const MAIN_TABS: { view: ViewId; label: string }[] = [
   { view: 'overview', label: 'Overview' },
   { view: 'explore', label: 'Explore' },
   { view: 'coverage', label: 'Coverage' },
-  { view: 'charts', label: 'Charts' },
   { view: 'gaps', label: 'Gaps' },
-];
-const MORE_TABS: { view: ViewId; label: string }[] = [
-  { view: 'scenarios', label: 'Scenarios' },
-  { view: 'fuels', label: 'Fuels' },
-  { view: 'materials', label: 'Materials' },
-  { view: 'sources', label: 'Sources' },
 ];
 const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform);
 const SHORTCUT = isMac ? '⌘K' : 'Ctrl K';
@@ -60,38 +53,21 @@ function Nav({ onAssistant, open, mode, onMode, customizeOpen, onCustomize, view
   nTests?: number; nPrograms?: number;
 }) {
   const { undo, canUndo } = useBoard();
-  const [more, setMore] = useState(false);
-  const moreRef = useRef<HTMLLIElement>(null);
-  useEffect(() => {
-    if (!more) return;
-    const onDown = (e: PointerEvent) => { if (!moreRef.current?.contains(e.target as Node)) setMore(false); };
-    document.addEventListener('pointerdown', onDown);
-    return () => document.removeEventListener('pointerdown', onDown);
-  }, [more]);
-  const moreActive = MORE_TABS.some((t) => t.view === view);
+  const isExploreGroup = view === 'explore' || view === 'charts' || view === 'scenarios' || view === 'fuels' || view === 'materials' || view === 'sources';
 
   return (
     <nav className="nav" aria-label="Views">
       <div className="nav-in">
         <button type="button" className="brand" onClick={() => onView('overview')}><BrandEmblem /> Flame in Freefall</button>
         <ul className="nav-links" role="list">
-          {MAIN_TABS.map((t) => (
-            <li key={t.view}>
-              <button type="button" className={view === t.view ? 'nav-pill-active' : undefined} aria-current={view === t.view ? 'page' : undefined} onClick={() => onView(t.view)}>{t.label}</button>
-            </li>
-          ))}
-          <li className="nav-more" ref={moreRef}>
-            <button type="button" className={moreActive ? 'nav-pill-active' : undefined} aria-haspopup="menu" aria-expanded={more} onClick={() => setMore((m) => !m)}>
-              More <ChevronDown size={12} aria-hidden="true" />
-            </button>
-            {more && (
-              <div className="cmenu-pop glass nav-more-pop" role="menu">
-                {MORE_TABS.map((t) => (
-                  <button key={t.view} type="button" role="menuitem" onClick={() => { onView(t.view); setMore(false); }}>{t.label}</button>
-                ))}
-              </div>
-            )}
-          </li>
+          {MAIN_TABS.map((t) => {
+            const active = t.view === 'explore' ? isExploreGroup : view === t.view;
+            return (
+              <li key={t.view}>
+                <button type="button" className={active ? 'nav-pill-active' : undefined} aria-current={active ? 'page' : undefined} onClick={() => onView(t.view)}>{t.label}</button>
+              </li>
+            );
+          })}
         </ul>
 
         <div className="nav-right">
@@ -194,19 +170,21 @@ function Page() {
   return (
     <BoardContext.Provider value={boardApi}>
       <UiContext.Provider value={actions}>
-        <div className="app-shell">
+        <div className={`app-shell${open ? ' is-assistant-open' : ''}`}>
           <a className="skip" href="#main">Skip to content</a>
           <Nav
             onAssistant={() => setOpen((o) => !o)} open={open} mode={mode} onMode={setMode}
             customizeOpen={customizeOpen} onCustomize={setCustomizeOpen} view={view} onView={openView}
             nTests={meta?.n_tests} nPrograms={meta?.programs.length}
           />
-          <main id="main" tabIndex={-1} className="app-main">
-            {state.status === 'loading' && <Loading />}
-            {state.status === 'error' && <div className="section"><ErrorState message={state.message} onRetry={retry} /></div>}
-            {ready && <Console preset={preset} />}
-          </main>
-          {ready && <Sidebar open={open} onClose={() => setOpen(false)} pending={pending} />}
+          <div className="app-workspace">
+            <main id="main" tabIndex={-1} className="app-main">
+              {state.status === 'loading' && <Loading />}
+              {state.status === 'error' && <div className="section"><ErrorState message={state.message} onRetry={retry} /></div>}
+              {ready && <Console preset={preset} assistantOpen={open} />}
+            </main>
+            {ready && <Sidebar open={open} onClose={() => setOpen(false)} pending={pending} />}
+          </div>
         </div>
       </UiContext.Provider>
     </BoardContext.Provider>

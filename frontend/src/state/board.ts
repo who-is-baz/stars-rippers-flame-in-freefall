@@ -58,13 +58,22 @@ export interface Board {
 
 export type PresetId = 'starter' | 'engineer' | 'moon';
 export const PRESETS: { id: PresetId; label: string; board: Board }[] = [
-  { id: 'starter', label: 'Starter', board: { left: ['scenario_match', 'gaps'], right: ['scenario_inspector'], collapsed: [], addedBy: {} } },
+  {
+    id: 'starter',
+    label: 'Starter',
+    board: {
+      left: ['scenario_match', 'burning_rate', 'gaps'],
+      right: ['scenario_inspector', 'coverage'],
+      collapsed: [],
+      addedBy: {},
+    },
+  },
   { id: 'engineer', label: 'Engineer', board: { left: ['burning_rate', 'tests_scatter'], right: ['coverage', 'materials'], collapsed: [], addedBy: {} } },
-  { id: 'moon', label: 'Moon-base story', board: { left: ['scenario_match', 'outcomes', 'gaps'], right: ['scenario_inspector'], collapsed: ['gaps'], addedBy: {} } },
+  { id: 'moon', label: 'Moon-base story', board: { left: ['scenario_match', 'outcomes', 'gaps'], right: ['scenario_inspector', 'coverage'], collapsed: [], addedBy: {} } },
 ];
 export const STARTER: Board = PRESETS[0].board;
 
-export const STORAGE_KEY = 'fif.board.v1';
+export const STORAGE_KEY = 'fif.board.v2';
 const ALL = new Set<string>(CATALOG.map((c) => c.type));
 
 // Never trust what is in storage: drop unknown types, duplicates and anything over the slot limit.

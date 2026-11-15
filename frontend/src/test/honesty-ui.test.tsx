@@ -184,7 +184,7 @@ describe('board storage', () => {
   it('applies several quick actions in the same tick without losing any', () => {
     window.localStorage.clear();
     const { result } = renderHook(() => useBoardState());
-    act(() => { result.current.remove('scenario_match'); result.current.remove('gaps'); });
+    act(() => { result.current.remove('scenario_match'); result.current.remove('burning_rate'); result.current.remove('gaps'); });
     expect(result.current.board.left).toEqual([]);
     act(() => { result.current.add('burning_rate'); result.current.add('materials'); });
     expect(result.current.board.left).toEqual(['burning_rate', 'materials']);
