@@ -7,7 +7,8 @@ import type { Scenario } from '../data/types';
 import { useCoverage, useExperiments, useMaterials, useMeta, useScenarios } from '../data/useData';
 import { useUi, type TablePreset } from '../state/ui';
 import { MAX_PER_SIDE, useBoard, type ViewId } from '../state/board';
-import { FlameScene } from '../components/FlameScene';
+import { FlameScene, type ObservedFlame } from '../components/FlameScene';
+import { AtmosphereExplorer, fmtCrit, useAtmosphere } from './AtmosphereExplorer';
 import { BoardCard, MiniFlameThumb, SHORT_NAME } from '../components/Cards';
 import { KpiRingSvg } from '../components/charts';
 import { Gallery } from '../components/Gallery';
@@ -318,7 +319,18 @@ export function Console({ preset, assistantOpen = false }: { preset: TablePreset
   const materialsData = useMaterials();
   const { scenarios } = useScenarios();
   const { board, notice, dismissNotice, undo, canUndo } = useBoard();
-  const { openAssistant, scenarioId, setScenarioId, mode = 'explorer', customizeOpen = false, setCustomizeOpen, view, openView, closeView } = useUi();
+  const { openAssistant, prefillAssistant, showTests, scenarioId, setScenarioId, mode = 'explorer', customizeOpen = false, setCustomizeOpen, view, openView, closeView } = useUi();
+  const { items: allRows } = useExperiments();
+  const atm = useAtmosphere(allRows, meta);
+  const [customOn, setCustomOn] = useState(false); // "Custom" tab next to the presets: observed-data explorer
+  const observed = useMemo<ObservedFlame | undefined>(() => {
+    if (!customOn) return undefined;
+    const m = atm.result;
+    const caption = m.n === 0
+      ? 'No test within tolerance of these settings'
+      : `${m.byOutcome.extinction} of ${m.n} tests ended in extinction${m.meanRate != null ? ` · Observed mean burning rate ${m.meanRate.toFixed(2)} mm²/s (n = ${m.nRate})` : ''}${atm.state === 'small_n' ? ' · n < 5' : atm.state === 'mixed' ? ' · mixed outcomes' : ''}`;
+    return { state: atm.state, glow: atm.glow, k: m.byOutcome.extinction, n: m.n, atmosphere: fmtCrit(atm.filters.o2, atm.filters.pressure_psi), caption };
+  }, [customOn, atm.result, atm.state, atm.glow, atm.filters.o2, atm.filters.pressure_psi]);
   const [introOpen, setIntroOpen] = useState(readIntro);
   const [tour, setTour] = useState<number | null>(null);
   const [focus, setFocus] = useState(false); // hides the cards so the scene fills the screen
@@ -364,8 +376,8 @@ export function Console({ preset, assistantOpen = false }: { preset: TablePreset
 
   return (
     <header className="console-section" id="top">
-      <div className={`console-frame${focus ? ' is-focus' : ''}${customizeOpen ? ' is-editing' : ''}${assistantOpen ? ' is-assistant-open' : ''}${view && view !== 'overview' ? ' is-busy' : ''}${dockTab === 'explore' ? ' is-exploring' : ''}`}>
-        {current && <FlameScene scenario={current} mode={mode} />}
+      <div className={`console-frame${focus ? ' is-focus' : ''}${customizeOpen ? ' is-editing' : ''}${assistantOpen ? ' is-assistant-open' : ''}${view && view !== 'overview' ? ' is-busy' : ''}${dockTab === 'explore' ? ' is-exploring' : ''}${customOn && dockTab === 'scenarios' ? ' is-custom' : ''}`}>
+        {current && <FlameScene scenario={current} mode={mode} observed={observed} />}
         {customizeOpen && <div className="grid-overlay" aria-hidden="true" />}
 
         <button type="button" className="glass focus-btn" aria-pressed={focus} aria-keyshortcuts="F" onClick={() => setFocus((f) => !f)}
@@ -456,6 +468,18 @@ export function Console({ preset, assistantOpen = false }: { preset: TablePreset
           />
         )}
 
+        {/* ---- Custom atmosphere explorer (observed FLEX tests only) ---- */}
+        {customOn && dockTab === 'scenarios' && (!view || view === 'overview') && (
+          <AtmosphereExplorer
+            atm={atm}
+            scenarios={scenarios}
+            meta={meta}
+            onShowTests={(ids, label) => showTests({ ids, label })}
+            onAsk={(q) => (prefillAssistant ? prefillAssistant(q) : openAssistant())}
+            onClose={() => setCustomOn(false)}
+          />
+        )}
+
         {/* ---- Mission Dashboard Bottom Dock (Scenarios · Explore · Investigations + KPI Rings) ---- */}
         <div className="console-dock" role="region" aria-label="Atmosphere scenarios, test explorer and dataset coverage">
           <div className="dock-tabs" role="tablist" aria-label="Bottom dock mode">
@@ -500,7 +524,7 @@ export function Console({ preset, assistantOpen = false }: { preset: TablePreset
                     className={`dock-card${active ? ' on' : ''}`}
                     aria-pressed={active}
                     title={`${fmtCriterionO2(s)} · ${s.n_exact} exact · ${s.n_near} near`}
-                    onClick={() => setScenarioId?.(s.id as Scenario['id'])}
+                    onClick={() => { setScenarioId?.(s.id as Scenario['id']); if (customOn) atm.applyPreset(s); }}
                   >
                     <MiniFlameThumb o2={s.criteria.o2.value} />
                     <div className="dock-card-body">
@@ -519,6 +543,19 @@ export function Console({ preset, assistantOpen = false }: { preset: TablePreset
                   </button>
                 );
               })}
+              <button
+                type="button"
+                className={`dock-card ax-dock-card${customOn ? ' on' : ''}`}
+                aria-pressed={customOn}
+                title="Pick your own fuel, O₂, pressure and suppressant: shows the FLEX tests observed near those settings"
+                onClick={() => { setCustomOn((c) => !c); setDockTab('scenarios'); }}
+              >
+                <div className="dock-card-body">
+                  <h4>Custom</h4>
+                  <span className="dock-chip ok"><i aria-hidden="true" />Observed tests</span>
+                  <div className="dock-meta num"><span>sliders</span><b>{customOn ? atm.result.n : '—'}</b></div>
+                </div>
+              </button>
             </div>
           ) : (
             <div className="glass dock-cards dock-stats" role="group" aria-label="Investigations summary">

@@ -420,3 +420,12 @@ Yael pidió que Claude tomara las decisiones abiertas.
 2. `tests/test_ollama_integration.py` (`@pytest.mark.ollama`, se saltan sin Ollama) y `pytest.ini`.
 3. `README.md`, `docs/SETUP.md` §7 (comandos, variables, modelos, qué hacer sin Ollama), `docs/HANDOFF.md`, `docs/DECISIONES.md`.
 4. Estado final: 129 pytest + 8 saltadas, 45 Vitest, build del front y smoke e2e en verde. Revisión humana pendiente de todo el backend.
+
+## 2026-11-15 (28) — Explorador interactivo de atmósfera (frontend) — Claude (Opus 5.5, Claude Code)
+
+**Pedido (Baz):** pestaña "Custom" en el Overview para elegir combustible, O₂, presión y supresor, con la cámara respondiendo solo a pruebas FLEX observadas.
+
+1. `frontend/src/lib/explorer.ts`: `matchTests` (pura), condiciones probadas más cercanas, escala global de brillo, estado de la llama, valores probados para marcas de densidad y "snap".
+2. `frontend/src/sections/AtmosphereExplorer.tsx` (panel), `FlameScene.tsx` (prop opcional `observed`: brillo por escala global, parpadeo para resultados mixtos, apagado, gris n<5, trama vacía, anillo segmentado k de N), `Console.tsx` (pestaña Custom), `App.tsx`/`state/ui.tsx`/`Sidebar.tsx` (precargar pregunta sin enviar), estilos al final de `global.css` (sin tocar tokens), línea de método en `Sources.tsx`.
+3. Pruebas: `explorer.test.ts` (9, paridad con `scenarios.json`: Earth/ISS 49; lunar 0/17; resto 0) y `AtmosphereExplorer.test.tsx` (15). 69 Vitest en verde, build OK. Capturas de los 5 estados con playwright-core (instalado solo en el scratchpad, no es dependencia) en `docs/screenshots/`.
+4. Sin cambios en `public/data/*.json`, backend ni contrato. Revisión humana pendiente.

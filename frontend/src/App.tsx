@@ -122,6 +122,7 @@ function Page() {
   const [preset, setPreset] = useState<TablePreset | null>(null);
   const [open, setOpen] = useState(() => typeof window !== 'undefined' && window.location.hash === '#assistant');
   const [pending, setPending] = useState<{ token: number; question: string } | null>(null);
+  const [draft, setDraft] = useState<{ token: number; question: string } | null>(null);
   const [scenarioId, setScenarioId] = useState<Scenario['id']>(() => remembered('fif.scenario', SCENARIOS, 'lunar_challenge'));
   const [mode, setMode] = useState<ExplanationMode>(() => remembered('fif.mode', MODES, 'explorer'));
   useEffect(() => { try { window.localStorage.setItem('fif.scenario', scenarioId); window.localStorage.setItem('fif.mode', mode); } catch { /* private mode */ } }, [scenarioId, mode]);
@@ -142,6 +143,11 @@ function Page() {
     if (question) setPending({ token: Date.now(), question });
   }, []);
 
+  const prefillAssistant = useCallback((question: string) => {
+    setOpen(true);
+    setDraft({ token: Date.now(), question });
+  }, []);
+
   const { add, undo } = boardApi;
   const setExtraCard = useCallback<NonNullable<UiActions['setExtraCard']>>((card) => {
     if (!card) { undo(); return; }
@@ -151,8 +157,8 @@ function Page() {
   }, [add, undo, openView]);
 
   const actions = useMemo<UiActions>(
-    () => ({ showTests, openAssistant, scenarioId, setScenarioId, mode, setMode, customizeOpen, setCustomizeOpen, view, openView, closeView, setExtraCard }),
-    [showTests, openAssistant, scenarioId, mode, customizeOpen, view, openView, closeView, setExtraCard],
+    () => ({ showTests, openAssistant, prefillAssistant, scenarioId, setScenarioId, mode, setMode, customizeOpen, setCustomizeOpen, view, openView, closeView, setExtraCard }),
+    [showTests, openAssistant, prefillAssistant, scenarioId, mode, customizeOpen, view, openView, closeView, setExtraCard],
   );
 
   useEffect(() => {
@@ -183,7 +189,7 @@ function Page() {
               {state.status === 'error' && <div className="section"><ErrorState message={state.message} onRetry={retry} /></div>}
               {ready && <Console preset={preset} assistantOpen={open} />}
             </main>
-            {ready && <Sidebar open={open} onClose={() => setOpen(false)} pending={pending} />}
+            {ready && <Sidebar open={open} onClose={() => setOpen(false)} pending={pending} draft={draft} />}
           </div>
         </div>
       </UiContext.Provider>

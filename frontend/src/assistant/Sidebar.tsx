@@ -98,12 +98,13 @@ export interface SidebarProps {
   open: boolean;
   onClose: () => void;
   pending?: { token: number; question: string } | null; // a question sent from elsewhere on the page
+  draft?: { token: number; question: string } | null;   // a question typed into the box but NOT sent
   llmUrl?: string;
   fetchImpl?: typeof fetch;
   timeoutMs?: number;
 }
 
-export function Sidebar({ open, onClose, pending, llmUrl = ENV_URL, fetchImpl, timeoutMs }: SidebarProps) {
+export function Sidebar({ open, onClose, pending, draft, llmUrl = ENV_URL, fetchImpl, timeoutMs }: SidebarProps) {
   const data = useData();
   const { setScenarioId, setExtraCard } = useUi();
   const [level, setLevel] = useState<Level>('basic');
@@ -186,6 +187,7 @@ export function Sidebar({ open, onClose, pending, llmUrl = ENV_URL, fetchImpl, t
     if (open) input.current?.focus();
   }, [open]);
   useEffect(() => { if (pending) void send(pending.question); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [pending?.token]);
+  useEffect(() => { if (draft) { setText(draft.question); input.current?.focus(); } }, [draft?.token]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { const el = log.current; if (el && typeof el.scrollTo === 'function') el.scrollTo({ top: el.scrollHeight }); }, [turns]);
 
   const onSubmit = (e: FormEvent) => { e.preventDefault(); void send(text); };

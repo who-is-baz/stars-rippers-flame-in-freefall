@@ -14,6 +14,9 @@ Estudiantes de ITIID, Universidad Politécnica de Querétaro (UPQ). Mentora: Dra
 Documentación del equipo + **pipeline de datos PSI** (descarga reproducible, tablas procesadas, SQLite y módulo de consultas). Para empezar: [`docs/SETUP.md`](docs/SETUP.md).
 Las reglas 2026 sobre trabajo previo y uso de IA deben confirmarse en las guías oficiales (ver `docs/00-reglas-y-checklist.md`).
 
+**Explorador de atmósfera (Overview → pestaña Custom):** recupera las pruebas FLEX observadas dentro de ±0.01 O₂ y ±0.5 psi
+de los valores elegidos (combustible, O₂, presión, supresor) y muestra conteos y medias con su n; no interpola ni predice.
+
 ## Correr API + front (laptop del demo)
 ```bash
 source .venv/bin/activate && pip install -r requirements-dev.txt && python scripts/build_experiments.py

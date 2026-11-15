@@ -16,6 +16,9 @@ An interactive dashboard that ranks and explains NASA microgravity combustion ex
 - **Limitations:** Small sample ([N] experiments); exploratory, not official NASA guidance.
 - **What's next:** More experiments, uncertainty modelling, validation with domain experts.
 
+Explorer note (Methods): the "Custom" atmosphere explorer retrieves observed FLEX tests within ±0.01 O₂ and ±0.5 psi
+of the chosen settings and shows counts and means with n. It does not interpolate, extrapolate or forecast.
+
 ## Use of Artificial Intelligence (fill from docs/AI_USAGE_LOG.md)
 We used [tools/models] to [assist with code / text / data extraction]. All AI-generated code and extracted data were reviewed by team members. AI-generated media (if any) are watermarked. No NASA branding was used.
 

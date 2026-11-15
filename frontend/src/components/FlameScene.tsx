@@ -10,6 +10,12 @@ import { memo, useEffect, useRef, useState, type KeyboardEvent, type PointerEven
 import type { Scenario } from '../data/types';
 import type { ExplanationMode } from '../state/ui';
 import { fmtCriterionO2, fmtCriterionP } from '../lib/scenario';
+import type { FlameState } from '../lib/explorer';
+
+// Custom explorer ("observed" mode): the flame is driven only by matched FLEX tests (lib/explorer.ts).
+// glow = observed mean burning rate on the fixed GLOBAL FLEX scale (0–1, never rescaled per selection).
+export interface ObservedFlame { state: FlameState; glow: number | null; k: number; n: number; atmosphere: string; caption: string }
+const obsScale = (glow: number | null) => (glow == null ? 1 : Number((0.8 + 0.6 * glow).toFixed(3)));
 
 export type ZoomLevel = 1 | 2 | 3; // 1 = Chamber, 2 = Flame, 3 = Droplet
 
@@ -129,6 +135,14 @@ const Backdrop = memo(function Backdrop() {
           <stop offset="0.7" stopColor="#3E56C8" stopOpacity="0.38" />
           <stop offset="1" stopColor="#26324F" stopOpacity="0" />
         </radialGradient>
+        <radialGradient id="flameGradGrey" cx="50%" cy="50%" r="50%">
+          <stop offset="0" stopColor="#E6EAF0" />
+          <stop offset="0.4" stopColor="#8E96A0" stopOpacity="0.9" />
+          <stop offset="1" stopColor="#3A4048" stopOpacity="0" />
+        </radialGradient>
+        <pattern id="hatchPat" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <line x1="0" y1="0" x2="0" y2="14" stroke="#5B636D" strokeWidth="2" strokeOpacity="0.55" />
+        </pattern>
         <radialGradient id="haloGrad" cx="50%" cy="50%" r="50%">
           <stop offset="0" stopColor="#6F8CFF" stopOpacity="0.32" />
           <stop offset="1" stopColor="#6F8CFF" stopOpacity="0" />
@@ -196,7 +210,33 @@ const Backdrop = memo(function Backdrop() {
   );
 });
 
-const Chamber = memo(function Chamber({ flameScale, rimOpacity, showRuler }: { flameScale: number; rimOpacity: number; showRuler: boolean }) {
+// k of N segments around the flame (one per matched test; continuous arcs if N > 120).
+function OutcomeRing({ k, n }: { k: number; n: number }) {
+  const r = 150, cx = 800, cy = 480;
+  const arc = (a0: number, a1: number) => {
+    const p = (a: number) => `${cx + r * Math.sin(a)} ${cy - r * Math.cos(a)}`;
+    return `M ${p(a0)} A ${r} ${r} 0 ${a1 - a0 > Math.PI ? 1 : 0} 1 ${p(a1)}`;
+  };
+  if (n > 120) {
+    const a = (2 * Math.PI * k) / n;
+    return (
+      <g className="obs-ring" fill="none" strokeWidth="5">
+        <circle cx={cx} cy={cy} r={r} stroke="#3A4048" />
+        {k > 0 && <path d={k === n ? `M ${cx} ${cy - r} A ${r} ${r} 0 1 1 ${cx - 0.01} ${cy - r}` : arc(0, a)} stroke="#7FF5E1" />}
+      </g>
+    );
+  }
+  const step = (2 * Math.PI) / n, gap = Math.min(step * 0.25, 0.04);
+  return (
+    <g className="obs-ring" fill="none" strokeWidth="5" strokeLinecap="butt">
+      {Array.from({ length: n }, (_, i) => (
+        <path key={i} d={arc(i * step + gap / 2, (i + 1) * step - gap / 2)} stroke={i < k ? '#7FF5E1' : '#3A4048'} />
+      ))}
+    </g>
+  );
+}
+
+const Chamber = memo(function Chamber({ flameScale, rimOpacity, showRuler, obs }: { flameScale: number; rimOpacity: number; showRuler: boolean; obs?: ObservedFlame }) {
   return (
     <>
       <circle cx="800" cy="480" r="330" fill="url(#metalGrad)" />
@@ -225,14 +265,24 @@ const Chamber = memo(function Chamber({ flameScale, rimOpacity, showRuler }: { f
 
       {/* Quartz tether fiber + fuel droplet + spherical flame (the gradient is already soft: no blur filter) */}
       <line x1="800" y1="480" x2="800" y2="760" stroke="#8E96A0" strokeOpacity="0.55" strokeWidth="1.2" />
-      <g style={{ transformOrigin: '800px 480px', transform: `scale(${flameScale})`, transition: 'transform 0.6s var(--ease-out)' }}>
-        <circle className="flame-ring" cx="800" cy="480" r="118" fill="none" stroke="#D3DDFF" strokeWidth="2" />
-        <g className="flame-breath">
-          <circle cx="800" cy="480" r="200" fill="url(#haloGrad)" />
-          <circle cx="800" cy="480" r="118" fill="url(#flameGrad)" />
-          <circle cx="800" cy="480" r="74" fill="none" stroke="#D3DDFF" strokeOpacity={rimOpacity} />
+      {obs?.state === 'empty' ? (
+        <g className="obs-empty" data-obs-state="empty">
+          <circle cx="800" cy="480" r="150" fill="url(#hatchPat)" stroke="#5B636D" strokeDasharray="6 6" />
+          <text x="800" y="424" textAnchor="middle" fill="#C7CDD4" fontSize="15" fontFamily="var(--font-mono)">No test within tolerance</text>
+          <text x="800" y="446" textAnchor="middle" fill="#8E96A0" fontSize="12" fontFamily="var(--font-mono)">of these settings</text>
         </g>
-      </g>
+      ) : (
+        <g style={{ transformOrigin: '800px 480px', transform: `scale(${flameScale})`, transition: 'transform 0.6s var(--ease-out)' }}
+          className={obs ? `obs-flame obs-${obs.state}` : undefined} data-obs-state={obs?.state} data-obs-scale={obs ? flameScale : undefined}>
+          <circle className="flame-ring" cx="800" cy="480" r="118" fill="none" stroke="#D3DDFF" strokeWidth="2" />
+          <g className={!obs || obs.state === 'stable' ? 'flame-breath' : obs.state === 'mixed' ? 'obs-flicker' : undefined}>
+            <circle cx="800" cy="480" r="200" fill="url(#haloGrad)" />
+            <circle cx="800" cy="480" r="118" fill={obs?.state === 'small_n' ? 'url(#flameGradGrey)' : 'url(#flameGrad)'} />
+            <circle cx="800" cy="480" r="74" fill="none" stroke="#D3DDFF" strokeOpacity={rimOpacity} />
+          </g>
+        </g>
+      )}
+      {obs && obs.n > 0 && <OutcomeRing k={obs.k} n={obs.n} />}
       <circle cx="800" cy="480" r="11" fill="#0b0e14" stroke="#E6EAF0" strokeOpacity="0.7" />
 
       <g opacity={showRuler ? 1 : 0} style={{ transition: 'opacity 0.3s' }}>
@@ -246,7 +296,7 @@ const Chamber = memo(function Chamber({ flameScale, rimOpacity, showRuler }: { f
 });
 
 // Labels sit outside the card rails: the left one reads right-to-left from the line, the right one sits above it.
-const Callouts = memo(function Callouts({ scenario, mode, dim }: { scenario: Scenario; mode: ExplanationMode; dim: boolean }) {
+const Callouts = memo(function Callouts({ scenario, mode, dim, atmosphere }: { scenario: Scenario; mode: ExplanationMode; dim: boolean; atmosphere?: string }) {
   return (
     <g className="scene-callouts" opacity={dim ? 0.35 : 1} style={{ transition: 'opacity 0.24s' }}>
       <circle cx="574" cy="316" r="5.5" fill="rgba(127, 245, 225, 0.25)" stroke="#7FF5E1" strokeWidth="1.5" />
@@ -264,13 +314,13 @@ const Callouts = memo(function Callouts({ scenario, mode, dim }: { scenario: Sce
       <circle cx="1072" cy="196" r="2" fill="#F2F4F6" />
       <text x="1072" y="170" textAnchor="end" fill="#F2F4F6" fontSize="12" fontWeight="500" fontFamily="var(--font-mono)">Atmosphere</text>
       <text x="1072" y="185" textAnchor="end" fill="#8E96A0" fontSize="11" fontFamily="var(--font-mono)">
-        {fmtCriterionO2(scenario)} · {fmtCriterionP(scenario)}
+        {atmosphere ?? `${fmtCriterionO2(scenario)} · ${fmtCriterionP(scenario)}`}
       </text>
     </g>
   );
 });
 
-export const FlameScene = memo(function FlameScene({ scenario, mode = 'explorer' }: { scenario: Scenario; mode?: ExplanationMode }) {
+export const FlameScene = memo(function FlameScene({ scenario, mode = 'explorer', observed }: { scenario: Scenario; mode?: ExplanationMode; observed?: ObservedFlame }) {
   const svgRef = useRef<SVGSVGElement>(null);
   const worldRef = useRef<SVGGElement>(null);
   const rotRef = useRef<SVGGElement>(null);
@@ -283,8 +333,8 @@ export const FlameScene = memo(function FlameScene({ scenario, mode = 'explorer'
   // Illustrative flame scale from scenario O₂ & pressure (Earth 21% O₂ = 1.0x, Moon 30% = 1.18x, ...)
   const o2Val = scenario.criteria.o2.value;
   const pVal = scenario.criteria.pressure_psi.value;
-  const flameScale = Number(Math.min(1.42, Math.max(0.86, 0.78 + o2Val * 1.15)).toFixed(2));
-  const rimOpacity = Number(Math.min(0.75, Math.max(0.3, pVal / 22)).toFixed(2));
+  const flameScale = observed ? obsScale(observed.glow) : Number(Math.min(1.42, Math.max(0.86, 0.78 + o2Val * 1.15)).toFixed(2));
+  const rimOpacity = observed ? 0.5 : Number(Math.min(0.75, Math.max(0.3, pVal / 22)).toFixed(2));
 
   // Writes the transforms once per animation frame, no matter how many pointer events arrived.
   const paint = () => {
@@ -363,7 +413,7 @@ export const FlameScene = memo(function FlameScene({ scenario, mode = 'explorer'
         preserveAspectRatio="xMidYMid slice"
         tabIndex={0}
         role="img"
-        aria-label={`Microgravity combustion chamber illustration for ${scenario.label}. Drag to rotate, scroll or use plus and minus keys to zoom.`}
+        aria-label={`Microgravity combustion chamber illustration for ${observed ? `custom settings (${observed.atmosphere}): ${observed.caption}` : scenario.label}. Drag to rotate, scroll or use plus and minus keys to zoom.`}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
@@ -374,9 +424,9 @@ export const FlameScene = memo(function FlameScene({ scenario, mode = 'explorer'
         <Backdrop />
         <g ref={worldRef} transform={INITIAL_WORLD}>
           <g ref={rotRef} transform={INITIAL_ROT}>
-            <Chamber flameScale={flameScale} rimOpacity={rimOpacity} showRuler={level >= 2} />
+            <Chamber flameScale={flameScale} rimOpacity={rimOpacity} showRuler={level >= 2} obs={observed} />
           </g>
-          <Callouts scenario={scenario} mode={mode} dim={level !== 1} />
+          <Callouts scenario={scenario} mode={mode} dim={level !== 1} atmosphere={observed?.atmosphere} />
         </g>
       </svg>
 
@@ -396,6 +446,7 @@ export const FlameScene = memo(function FlameScene({ scenario, mode = 'explorer'
 
       <div className="scene-legend">
         <span>Illustration. Not a combustion simulation.</span>
+        {observed && <span className="obs-caption">{observed.caption}</span>}
         <span style={{ opacity: hintUsed ? 0.45 : 1, transition: 'opacity 0.3s' }}>drag to rotate · scroll to zoom</span>
       </div>
     </div>

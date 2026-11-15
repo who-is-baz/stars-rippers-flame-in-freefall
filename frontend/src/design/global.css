@@ -2117,3 +2117,66 @@ ul.plain { margin: 0; padding-left: 1.1em; display: grid; gap: var(--s-2); color
   color: var(--ink);
   font-weight: 500;
 }
+
+/* ---------- Custom atmosphere explorer (observed FLEX tests; not a simulation) ---------- */
+.ax-panel {
+  max-height: min(430px, calc(100% - 130px));
+  overflow: auto;
+  gap: 8px;
+}
+.ax-presets { display: flex; flex-wrap: wrap; gap: 6px; }
+.ax-preset {
+  display: inline-flex; align-items: baseline; gap: 6px;
+  padding: 3px 8px; border-radius: var(--r-md); border: 1px solid var(--hairline);
+  background: rgba(16, 19, 24, 0.65); color: var(--silver); font-size: var(--fs-xs); cursor: pointer; text-align: left;
+}
+.ax-preset[aria-pressed='true'] { border-color: var(--mint); color: var(--ink); }
+.ax-unverified { font-size: 10px; color: var(--caution); }
+.ax-body { display: grid; grid-template-columns: minmax(220px, 1fr) minmax(240px, 1.2fr); gap: 12px; }
+.ax-controls { display: flex; flex-direction: column; gap: 8px; }
+.ax-seg { border: 0; margin: 0; padding: 0; min-width: 0; }
+.ax-seg legend { font-size: var(--fs-xs); color: var(--ink-dim); margin-bottom: 3px; padding: 0; }
+.ax-slider-head { display: flex; justify-content: space-between; gap: 8px; font-size: var(--fs-xs); }
+.ax-slider-head label { color: var(--silver); }
+.ax-slider input[type='range'] { width: 100%; accent-color: var(--mint); margin: 2px 0 0; }
+.ax-slider input[type='range']:focus-visible { outline: 2px solid var(--mint); outline-offset: 2px; }
+.ax-density { position: relative; height: 8px; margin: 0 7px; }
+.ax-density i { position: absolute; top: 0; width: 2px; height: 8px; margin-left: -1px; background: var(--mint); border-radius: 1px; }
+.ax-range { display: flex; justify-content: space-between; font-size: 10px; color: var(--ink-dim); }
+.ax-snap { display: flex; align-items: center; gap: 6px; font-size: var(--fs-xs); color: var(--silver); }
+.ax-readout { display: flex; flex-direction: column; gap: 4px; font-size: var(--fs-xs); min-width: 0; }
+.ax-crit { color: var(--ink-dim); margin: 0; }
+.ax-big { margin: 0; font-size: var(--fs-sm); }
+.ax-big b { font-size: 1.4em; color: var(--ink); }
+.ax-state-mixed, .ax-state-small_n { color: var(--caution); }
+.ax-kv { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.ax-kv li { display: grid; grid-template-columns: 120px 1fr; gap: 6px; }
+.ax-kv li span { color: var(--ink-dim); }
+.ax-kv abbr { text-decoration: none; cursor: help; }
+.ax-note { margin: 0; color: var(--caution); }
+.ax-small { margin: 0; font-size: 10px; }
+.ax-empty { display: flex; flex-direction: column; gap: 4px; }
+.ax-empty p { margin: 0; }
+.ax-disclaimer { margin: 0; font-size: 10.5px; color: var(--ink-dim); border-top: 1px solid var(--hairline); padding-top: 5px; }
+.ax-dock-card .dock-card-body { padding-left: 4px; }
+.obs-caption { color: var(--silver); }
+
+/* Scene states. "mixed" flickers gently; reduced motion → static dimmer state. "out" is a static ember. */
+.obs-out { opacity: 0.16; }
+.obs-small_n { opacity: 0.7; }
+.obs-flicker { transform-origin: 800px 480px; animation: obsFlicker 2.6s ease-in-out infinite; }
+@keyframes obsFlicker { 0%, 100% { opacity: 1; } 35% { opacity: 0.72; } 55% { opacity: 0.9; } 70% { opacity: 0.66; } }
+@media (prefers-reduced-motion: reduce) {
+  .obs-flicker { animation: none; opacity: 0.8; }
+  .obs-flame { transition: none !important; }
+}
+@media (max-width: 860px) {
+  .ax-body { grid-template-columns: 1fr; }
+  .ax-panel { max-height: none; min-width: 0; }
+  .ax-kv li { grid-template-columns: 100px 1fr; }
+}
+/* Custom explorer open: lift the chamber so the flame stays visible above the panel; caption moves to the top. */
+@media (min-width: 1181px) {
+  .console-frame.is-custom .scene-svg { transform: translateY(-6%); transition: transform 0.4s var(--ease); }
+  .console-frame.is-custom .scene-legend { bottom: auto; top: 110px; }
+}

@@ -22,6 +22,8 @@ export type BoardCardType = 'burning_rate_line' | 'outcomes_bars' | 'coverage_he
 export interface UiActions {
   showTests: (req: TableRequest) => void;
   openAssistant: (question?: string) => void;
+  // Opens the assistant with the question typed in the box but NOT sent (the user reviews and sends it).
+  prefillAssistant?: (question: string) => void;
   scenarioId?: Scenario['id'];
   setScenarioId?: (id: Scenario['id']) => void;
   mode?: ExplanationMode;
