@@ -73,6 +73,8 @@ export function ExperimentTable({ preset }: { preset: TablePreset | null }) {
   useEffect(() => () => { try { if (window.location.hash.startsWith('#experiments')) window.history.replaceState(null, '', window.location.pathname + window.location.search); } catch { /* ignore */ } }, []);
 
   const ranked = useMemo(() => (atm ? rankByRelevance(items, atm, meta) : items.map((row) => ({ row, relevance: 'not_near' as const, dO2: 0, dPsi: null, distance: 0, n: 0, declared: true }))), [items, atm, meta]);
+  // counts per relevance level for the filter (over every test, before other filters)
+  const relCount = useMemo(() => { const c = { exact: 0, near: 0, not_near: 0, no_pressure: 0 } as Record<string, number>; for (const r of ranked) c[r.relevance] = (c[r.relevance] ?? 0) + 1; return c; }, [ranked]);
   const kinds = useMemo(() => [...new Set(items.filter((r) => !f.program || r.program === f.program).map(kindOf))].sort(), [items, f.program]);
   const filtered = useMemo(() => filterRanked(ranked, f, meta), [ranked, f, meta]);
   const rows = useMemo(() => orderRanked(filtered, sort, f.group), [filtered, sort, f.group]);
@@ -151,8 +153,8 @@ export function ExperimentTable({ preset }: { preset: TablePreset | null }) {
           </label>
           <label className="field">Relevance to this atmosphere
             <select value={f.relevance} onChange={(e) => set({ relevance: e.target.value as ExpFilters['relevance'] })}>
-              <option value="">All</option><option value="exact">Exact</option><option value="near">Near</option><option value="exact_near">Exact + near</option>
-              <option value="not_near">Not near</option><option value="no_pressure">No pressure recorded</option>
+              <option value="">All ({ranked.length})</option><option value="exact">Exact ({relCount.exact})</option><option value="near">Near ({relCount.near})</option><option value="exact_near">Exact + near ({relCount.exact + relCount.near})</option>
+              <option value="not_near">Not near ({relCount.not_near})</option><option value="no_pressure">No pressure recorded ({relCount.no_pressure})</option>
             </select>
           </label>
           <label className="field">Suppressant (FLEX)
