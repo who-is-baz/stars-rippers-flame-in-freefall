@@ -11,5 +11,6 @@ import '@fontsource/ibm-plex-mono/latin-500.css';
 import './design/tokens.css';
 import './design/global.css';
 import App from './App';
+import './intro'; // opening intro (match → light). Delete this one line to remove it; ?intro=off disables it at runtime.
 
 createRoot(document.getElementById('root')!).render(<StrictMode><App /></StrictMode>);
