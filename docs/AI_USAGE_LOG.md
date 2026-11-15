@@ -324,7 +324,16 @@ Yael pidió que Claude tomara las decisiones abiertas.
 5. Verificación hecha por la IA: `tsc`, 28 pruebas Vitest, build de producción y capturas en Chrome a 1440 px y 360 px. No se corrió Lighthouse ni lector de pantalla.
 6. Red: solo `npm install` de las dependencias aprobadas.
 
-## 2026-11-14 (16) — Referencia visual ejecutable, consola espacial v3 y gráficas SVG honestas
+## 2026-11-14 (16) — Referencia visual ejecutable y contexto de diseño para el equipo — Claude (Sonnet 5.5, claude.ai, Project del hackatón)
+
+**Pedido (Yael):** los compañeros recibieron las skills pero sus Claude generaban diseños distintos al aprobado; hace falta el mismo contexto para todos.
+
+1. Causa: las skills describen el diseño con texto; el diseño aprobado estaba solo en la vista previa HTML y en las imágenes.
+2. `docs/design/reference/flame-v3-reference.html` (HTML generado con IA, tres estados) y `docs/design/DESIGN_BRIEF.md` (fuente de verdad visual).
+3. `docs/prompts/00-contexto-companeros.md` (prompt de contexto para Claude Code y Claude web); el prompt 01 ahora exige leer la referencia.
+4. Se marcó como **ilustrativo** (no dato) la gráfica de líneas y el chat del copiloto de la referencia; las cifras de texto (403, 17/0, 8 gaps) salen de los JSON del 14 nov. Revisión humana pendiente.
+
+## 2026-11-14 (17) — Referencia visual ejecutable, consola espacial v3 y gráficas SVG honestas
 
 **Pedido (Jovanny / Yael):** aplicar la referencia visual aprobada (`flame-v3-reference.html`, `DESIGN_BRIEF.md`) y mejorar el frontend con la consola interactiva de combustión en microgravedad y las gráficas SVG honestas conectadas a `frontend/public/data/*.json`.
 
