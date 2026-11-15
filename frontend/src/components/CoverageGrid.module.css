@@ -1,0 +1,20 @@
+.grid { border-collapse: separate; border-spacing: 4px; width: 100%; table-layout: fixed; font-size: var(--fs-xs); }
+.caption { text-align: left; color: var(--ink); font-weight: 600; font-size: var(--fs-sm); padding-bottom: var(--s-2); }
+.fuelDot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: middle; }
+.grid th { color: var(--ink-dim); font-weight: 500; text-align: center; padding: 2px; }
+.grid th[scope='row'] { text-align: right; white-space: nowrap; width: 72px; }
+.grid td { padding: 0; }
+.cell {
+  display: flex; align-items: center; justify-content: center; gap: 3px; width: 100%; min-height: 44px; border-radius: var(--r-cell);
+  border: 1px solid var(--glass-border); color: var(--ink); font-size: var(--fs-sm); background: transparent; font-variant-numeric: tabular-nums;
+}
+button.cell:hover { border-color: rgba(255,255,255,.3); }
+.empty { color: var(--ink-dim); background: repeating-linear-gradient(135deg, var(--nodata) 0 5px, transparent 5px 10px) !important; }
+.small { outline: 2px solid var(--caution); outline-offset: -2px; }
+.small span { color: var(--caution); font-size: var(--fs-2xs); }
+.hl { box-shadow: 0 0 0 2px var(--mint); }
+.sel { box-shadow: 0 0 0 2px var(--ink), 0 0 0 4px var(--mint); }
+.mini { border-spacing: 2px; }
+.mini .cell { min-height: 22px; font-size: var(--fs-2xs); }
+.mini th { font-size: var(--fs-2xs); }
+.mini th[scope='row'] { width: 56px; }

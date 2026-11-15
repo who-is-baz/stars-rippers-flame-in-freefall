@@ -18,3 +18,19 @@ export const fmtGas = (f: number | null, name: 'CO₂' | 'He'): string =>
   f == null ? 'Not recorded' : `${trim(f * 100, 2)}% ${name}`;
 
 export const doiUrl = (doi: string): string => `https://doi.org/${doi}`;
+
+// Criterio de escenario en psi, con atm entre paréntesis: 10.2 → "10.2 psi (0.69 atm)".
+export const fmtPsiAtm = (psi: number): string => `${trim(psi, 1)} psi (${(psi / ATM_PSI).toFixed(2)} atm)`;
+export const fmtRange = (a: string, b: string): string => (a === b ? a : `${a}–${b}`);
+
+// Etiqueta de banda de O₂ del JSON → texto legible: "0.15-0.18" → "15–18% O₂", ">=0.24" → "≥24% O₂".
+export const fmtBand = (band: string): string => {
+  const pct = (x: string) => trim(parseFloat(x) * 100, 1);
+  if (band.startsWith('>=')) return `≥${pct(band.slice(2))}% O₂`;
+  if (band.startsWith('<')) return `<${pct(band.slice(1))}% O₂`;
+  const [a, b] = band.split('-');
+  return `${pct(a)}–${pct(b)}% O₂`;
+};
+// Rango de O₂ con una sola unidad: (0.136, 0.222) → "13.6–22.2% O₂".
+export const fmtO2Range = (a: number, b: number): string =>
+  a === b ? fmtO2(a) : `${trim(a * 100, 1)}–${trim(b * 100, 1)}% O₂`;

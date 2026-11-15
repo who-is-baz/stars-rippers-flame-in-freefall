@@ -36,3 +36,6 @@ a { color: var(--mint); }
     transition-duration: 0.01ms !important; scroll-behavior: auto !important;
   }
 }
+
+/* Decisión del equipo: heptano = --ember, metanol = --flame-blue; el gris queda solo para "sin dato". */
+:root { --fuel-methanol: var(--flame-blue); --fuel-heptane: var(--ember); }
