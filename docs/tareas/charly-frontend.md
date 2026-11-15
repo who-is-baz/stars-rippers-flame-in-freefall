@@ -20,8 +20,9 @@ Lee `docs/07-api-contract.md` y `docs/03-analisis-datos.md` (sobre todo "Reglas 
 - Accesibilidad: no usar solo el color; contraste suficiente; navegable con teclado.
 - Pensar en el demo de 30 s: ¿se entiende en una pantalla?
 
-## Skills sugeridas
-`frontend-design` (Anthropic), `baseline-ui` y `fixing-accessibility` (ibelick). Máximo 5–6 skills activas.
+## Skills y punto de partida
+Usa las cuatro skills del repo: `flame-design-system`, `flame-react-frontend`, `flame-data-viz` y `flame-dashboard-builder` (ganan sobre `frontend-design`). Opcional: `fixing-accessibility`. Máximo 5–6 skills activas.
+La base del proyecto se genera con `docs/prompts/01-maquetado-frontend.md`; las imágenes de referencia están en `docs/design/`. El reparto por paquetes (A–F) está en `flame-react-frontend` §8.
 
 ## Listo cuando
 Se puede hacer el recorrido del demo (cobertura → explorador → pregunta → cita) sin errores.
