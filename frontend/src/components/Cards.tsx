@@ -1,15 +1,17 @@
 // Board cards (widgets). One question, one view, one reading line, source + n (flame-dashboard-builder §2).
 // Every figure is read from the JSON files; the browser only counts and formats.
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { memo, useEffect, useRef, useState, type ReactNode } from 'react';
 import {
-  ArrowLeftRight, ArrowUpRight, ChevronDown, ChevronUp, Ellipsis, Flame, Info, Layers, Minimize2, Maximize2, Target, Trash2,
+  ArrowLeftRight, ArrowUpRight, ChevronDown, ChevronUp, Ellipsis, Flame, Info, Layers, Minimize2, Maximize2, Sparkles, Target, Trash2,
 } from 'lucide-react';
 import type { Fuel, Scenario } from '../data/types';
-import { useCoverage, useGaps, useMaterials, useMeta, useScenarios } from '../data/useData';
+import { useAnswers, useCoverage, useExperiments, useGaps, useMaterials, useMeta, useScenarios } from '../data/useData';
 import { useUi } from '../state/ui';
-import { cardMeta, sideOf, useBoard, type CardType } from '../state/board';
+import { cardMeta, sideOf, useBoard, type CardType, type ViewId } from '../state/board';
 import { Doi } from './ui';
 import { BurningRateChartSvg, CoverageRadarSvg, KpiRingSvg, MatchRingSvg, OutcomeBarsSvg, OutcomePills } from './charts';
+import { O2BandBars, OutcomesDonut, ScatterKey, TestsMixBars, TestsMixDonut, TestsScatterSvg, flexWithRate, type ColorBy } from './dataCharts';
+import { useCountUp } from '../lib/useCountUp';
 import { fmtCriterionO2, fmtCriterionP, fmtTolerance } from '../lib/scenario';
 import { isSmallN, MICROGRAVITY_NOTE } from '../lib/honesty';
 
@@ -77,6 +79,22 @@ const HOW: Record<CardType, { explorer: string; engineer: string }> = {
     explorer: 'What this data cannot tell us. Where there is no test, the answer is "No data", never an estimate.',
     engineer: 'First entries of gaps.json. The full list and the limitations that apply to every number are in the Gaps view.',
   },
+  tests_scatter: {
+    explorer: 'Each dot is one real FLEX test: how much oxygen it had (across) and how fast the fuel burned (up). No line is drawn through them.',
+    engineer: 'FLEX tests with a recorded burning rate K (mm²/s) vs O₂ fraction. Pressures and CO₂/He suppressants are mixed; hover a dot for its test ID.',
+  },
+  o2_bands: {
+    explorer: 'How many tests were run at each oxygen level, for each fuel. Bars with a warning have very few tests.',
+    engineer: 'FLEX row counts per O₂ band (meta.o2_bands) and fuel. n < min_n is outlined and marked. Counts only.',
+  },
+  tests_mix: {
+    explorer: 'How many tests of each kind are in this dashboard. FLEX burned fuel droplets; BASS-II burned small solid samples.',
+    engineer: 'Row counts from experiments.json by program and fuel. BASS-II is context only and is not compared with FLEX.',
+  },
+  answer: {
+    explorer: 'Ready-made answers written from the NASA data, each with its source. Open the SI assistant to ask your own question.',
+    engineer: 'Precomputed answers from answers.json (level Basic, no model). Citations list the query and DOI behind each figure.',
+  },
   kpi: {
     explorer: 'How much of the data is filled in: tests with a stated outcome and conditions that were actually tested.',
     engineer: 'BASS-II outcome-stated count (materials.json) and FLEX tested cells (coverage.json). Counts only.',
@@ -111,7 +129,9 @@ function CardMenu({ type }: { type: CardType }) {
       </button>
       {open && (
         <div className="cmenu-pop glass" role="menu">
-          <button type="button" role="menuitem" onClick={act(() => openView?.(cardMeta(type).view))}><Maximize2 size={13} aria-hidden="true" /> Open full view</button>
+          {cardMeta(type).view && (
+            <button type="button" role="menuitem" onClick={act(() => openView?.(cardMeta(type).view as ViewId))}><Maximize2 size={13} aria-hidden="true" /> Open full view</button>
+          )}
           <button type="button" role="menuitem" onClick={act(() => toggleCollapse(type))}>
             {collapsed ? <ChevronDown size={13} aria-hidden="true" /> : <Minimize2 size={13} aria-hidden="true" />} {collapsed ? 'Expand' : 'Collapse'}
           </button>
@@ -125,8 +145,8 @@ function CardMenu({ type }: { type: CardType }) {
   );
 }
 
-function Frame({ type, icon, children, src, n, warn, extra }: {
-  type: CardType; icon: ReactNode; children: ReactNode; src: ReactNode; n?: ReactNode; warn?: ReactNode; extra?: ReactNode;
+function Frame({ type, icon, children, src, n, warn, extra, swapKey }: {
+  type: CardType; icon: ReactNode; children: ReactNode; src: ReactNode; n?: ReactNode; warn?: ReactNode; extra?: ReactNode; swapKey?: string;
 }) {
   const { board } = useBoard();
   const { mode = 'explorer', openView } = useUi();
@@ -140,22 +160,22 @@ function Frame({ type, icon, children, src, n, warn, extra }: {
         <span className="wc-icon" aria-hidden="true">{icon}</span>
         <h2>{meta.title}</h2>
         {by === 'si' && <span className="bysi-badge">Added by SI</span>}
-        {!collapsed && extra}
         {!collapsed && (
           <button type="button" className="icon-btn" aria-label="How to read this card" aria-expanded={info} onClick={() => setInfo((v) => !v)}>
             <Info size={13} aria-hidden="true" />
           </button>
         )}
-        {!collapsed && (
-          <button type="button" className="icon-btn" aria-label="Open full view" onClick={() => openView?.(meta.view)}>
+        {!collapsed && meta.view && (
+          <button type="button" className="icon-btn" aria-label="Open full view" onClick={() => openView?.(meta.view as ViewId)}>
             <ArrowUpRight size={13} aria-hidden="true" />
           </button>
         )}
         <CardMenu type={type} />
       </div>
+      {!collapsed && extra && <div className="wc-tools">{extra}</div>}
       {!collapsed && (
         <>
-          {info ? <p className="wc-read">{HOW[type][mode]}</p> : children}
+          {info ? <p className="wc-read">{HOW[type][mode]}</p> : <div className="wc-body" key={swapKey}>{children}</div>}
           <div className="wc-ft num">
             <span className="src-pill">{src}</span>
             {warn ?? (n != null ? <span>{n}</span> : null)}
@@ -177,6 +197,7 @@ function useCurrent() {
 function MatchCard() {
   const meta = useMeta();
   const { current } = useCurrent();
+  const nearShown = useCountUp(current?.n_near ?? 0);
   const flex = meta.programs.find((p) => p.program === 'FLEX');
   const tol = fmtTolerance(meta.tolerance);
   if (!current) return null;
@@ -185,11 +206,11 @@ function MatchCard() {
     : current.n_near > 0 ? `No FLEX test sits exactly at ${fmtCriterionO2(current)} and ${fmtCriterionP(current)}; ${current.n_near} are within ${tol}.`
     : `No FLEX test matches this atmosphere, even within ${tol}.`;
   return (
-    <Frame type="scenario_match" icon={<Flame size={13} />} src={<>FLEX · {flex?.psi_id ?? 'PSI-69'} · <Doi doi={current.source_doi} /></>} n={`n = ${current.n_near || current.n_exact}`}>
+    <Frame type="scenario_match" swapKey={current.id} icon={<Flame size={13} />} src={<>FLEX · {flex?.psi_id ?? 'PSI-69'} · <Doi doi={current.source_doi} /></>} n={`n = ${current.n_near || current.n_exact}`}>
       <div className="ring-row">
         <MatchRingSvg exact={current.n_exact} near={current.n_near} total={flex?.n ?? 274} minN={meta.min_n} />
         <div>
-          <div className="wc-big num">{current.n_near} <small>{current.n_exact > 0 ? 'within tolerance' : 'near'}</small></div>
+          <div className="wc-big num">{nearShown} <small>{current.n_exact > 0 ? 'within tolerance' : 'near'}</small></div>
           <div className="dim num" style={{ fontSize: 'var(--fs-sm)' }}>{current.n_exact} exact {current.n_exact === 1 ? 'match' : 'matches'}</div>
         </div>
       </div>
@@ -206,7 +227,7 @@ function InspectorCard() {
   const count = current.n_near > 0 ? current.n_near : current.nearest?.n ?? 0;
   const label = `${SHORT_NAME[current.id]}: ${current.n_exact > 0 ? 'matching' : 'near-match'} tests`;
   return (
-    <Frame type="scenario_inspector" icon={<Target size={13} />} src={<>scenarios.json</>} n={`${String(idx + 1).padStart(2, '0')} of ${String(scenarios.length).padStart(2, '0')}`}
+    <Frame type="scenario_inspector" swapKey={current.id} icon={<Target size={13} />} src={<>scenarios.json</>} n={`${String(idx + 1).padStart(2, '0')} of ${String(scenarios.length).padStart(2, '0')}`}
       extra={!current.verified ? <span className="badge badge-caution">Unverified</span> : null}>
       <div className="insp-head">
         <MiniFlameThumb o2={current.criteria.o2.value} />
@@ -232,15 +253,26 @@ function InspectorCard() {
   );
 }
 
+function ViewToggle<T extends string>({ value, onChange, a, b, label }: { value: T; onChange: (v: T) => void; a: [T, string]; b: [T, string]; label: string }) {
+  return (
+    <div className="mini-seg" role="group" aria-label={label}>
+      <button type="button" aria-pressed={value === a[0]} onClick={() => onChange(a[0])}>{a[1]}</button>
+      <button type="button" aria-pressed={value === b[0]} onClick={() => onChange(b[0])}>{b[1]}</button>
+    </div>
+  );
+}
+
 function OutcomesCard() {
   const meta = useMeta();
   const { current } = useCurrent();
+  const [view, setView] = useState<'bars' | 'pie'>('bars');
   if (!current) return null;
   const out = current.n_near > 0 ? current.near.n_by_outcome : current.nearest?.n_by_outcome;
   const total = current.n_near || current.nearest?.n || 0;
   return (
-    <Frame type="outcomes" icon={<Layers size={13} />} src={<>FLEX · PSI-69</>} n={`n = ${total}`}>
-      {total > 0 ? <OutcomeBarsSvg outcomes={out} total={total} minN={meta.min_n} /> : <p className="nodata">No data for this atmosphere.</p>}
+    <Frame type="outcomes" swapKey={`${current.id}-${view}`} icon={<Layers size={13} />} src={<>FLEX · PSI-69</>} n={`n = ${total}`}
+      extra={<ViewToggle label="Chart type" value={view} onChange={setView} a={['bars', 'Bars']} b={['pie', 'Pie']} />}>
+      {total === 0 ? <p className="nodata">No data for this atmosphere.</p> : view === 'pie' ? <OutcomesDonut outcomes={out} total={total} /> : <OutcomeBarsSvg outcomes={out} total={total} minN={meta.min_n} />}
       <p className="wc-read">Observed outcomes near {SHORT_NAME[current.id]}. &ldquo;Disruption&rdquo; is not defined by the source.</p>
       <OutcomePills outcomes={out} />
     </Frame>
@@ -343,7 +375,77 @@ function KpiCard() {
   );
 }
 
-export function BoardCard({ type }: { type: CardType }) {
+function ScatterCard() {
+  const { items } = useExperiments();
+  const [by, setBy] = useState<ColorBy>('fuel');
+  const n = flexWithRate(items).length;
+  return (
+    <Frame type="tests_scatter" icon={<Target size={13} />} src={<>FLEX · PSI-69</>} n={`n = ${n} tests`}
+      extra={
+        <div className="mini-seg" role="group" aria-label="Color by">
+          <button type="button" aria-pressed={by === 'fuel'} onClick={() => setBy('fuel')}>Fuel</button>
+          <button type="button" aria-pressed={by === 'outcome'} onClick={() => setBy('outcome')}>Result</button>
+        </div>
+      }>
+      <ScatterKey by={by} />
+      <TestsScatterSvg rows={items} by={by} />
+      <p className="wc-read">One dot per test; no trend line.</p>
+    </Frame>
+  );
+}
+
+function MixCard() {
+  const { items } = useExperiments();
+  const meta = useMeta();
+  const [view, setView] = useState<'bars' | 'pie'>('pie');
+  return (
+    <Frame type="tests_mix" swapKey={view} icon={<Layers size={13} />} src={<>meta · experiments</>} n={`${items.length} rows · ${meta.programs.length} programs`}
+      extra={<ViewToggle label="Chart type" value={view} onChange={setView} a={['bars', 'Bars']} b={['pie', 'Pie']} />}>
+      {view === 'pie' ? <TestsMixDonut rows={items} /> : <TestsMixBars rows={items} />}
+      <p className="wc-read">BASS-II is shown for context and is not compared with FLEX.</p>
+    </Frame>
+  );
+}
+
+function O2BandsCard() {
+  const { items } = useExperiments();
+  const meta = useMeta();
+  return (
+    <Frame type="o2_bands" icon={<Layers size={13} />} src={<>FLEX · PSI-69</>} n={`min n = ${meta.min_n}`}>
+      <div className="chart-key">
+        <span><b style={{ background: 'var(--fuel-heptane)' }} /> Heptane</span>
+        <span><b style={{ background: 'var(--fuel-methanol)' }} /> Methanol</span>
+      </div>
+      <O2BandBars rows={items} bands={meta.o2_bands} minN={meta.min_n} />
+      <p className="wc-read">Outlined bars with ⚠ have fewer than {meta.min_n} tests.</p>
+    </Frame>
+  );
+}
+
+function AnswerCard() {
+  const { answers } = useAnswers();
+  const { openAssistant } = useUi();
+  const list = answers.filter((a) => a.question);
+  const [id, setId] = useState(list.find((a) => a.id === 'q06')?.id ?? list[0]?.id);
+  const a = list.find((x) => x.id === id) ?? list[0];
+  if (!a) return null;
+  const cite = a.citations[0];
+  const text = a.answer.length > 190 ? `${a.answer.slice(0, 187).trimEnd()}…` : a.answer;
+  return (
+    <Frame type="answer" swapKey={a.id} icon={<Sparkles size={13} />} src={cite ? <>Basic · <Doi doi={cite.source_doi} /></> : <>Basic · no model</>}
+      warn={a.no_data ? <span className="warn-text">No data</span> : undefined}>
+      <label className="sr-only" htmlFor="answer-pick">Choose a question</label>
+      <select id="answer-pick" className="answer-pick" value={a.id} onChange={(e) => setId(e.target.value)}>
+        {list.map((x) => <option key={x.id} value={x.id}>{x.question}</option>)}
+      </select>
+      <p className="wc-read answer-text">{text}</p>
+      {a.warnings && a.warnings.length > 0 && <p className="wc-read warn-text">⚠ {a.warnings[0]}</p>}
+      <button type="button" className="btn btn-sm btn-ghost" onClick={() => openAssistant(a.question)}>Full answer in the SI assistant →</button>
+    </Frame>
+  );
+}
+
+export const BoardCard = memo(function BoardCard({ type }: { type: CardType }) {
   switch (type) {
     case 'scenario_match': return <MatchCard />;
     case 'scenario_inspector': return <InspectorCard />;
@@ -353,5 +455,9 @@ export function BoardCard({ type }: { type: CardType }) {
     case 'materials': return <MaterialsCard />;
     case 'gaps': return <GapsCard />;
     case 'kpi': return <KpiCard />;
+    case 'tests_scatter': return <ScatterCard />;
+    case 'tests_mix': return <MixCard />;
+    case 'answer': return <AnswerCard />;
+    case 'o2_bands': return <O2BandsCard />;
   }
-}
+});

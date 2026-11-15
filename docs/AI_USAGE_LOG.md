@@ -340,3 +340,30 @@ Yael pidió que Claude tomara las decisiones abiertas.
 2. `components/Cards.tsx`, `components/Gallery.tsx`, `sections/Console.tsx`, `sections/Sources.tsx`: 8 tarjetas con menú ⋯ (mover, colapsar, quitar, abrir vista completa), drawer Customize, dock de atmósferas y paneles de vista completa (Explore, Coverage, Gaps, Scenarios, Fuels, Materials, Sources). Sustituye a `Hero.tsx` y a la página con scroll.
 3. Todas las cifras siguen saliendo de `public/data/*.json`; sin datos nuevos ni valores inventados. Pruebas: 35 en verde (se añadieron 7 sobre consola y almacenamiento).
 4. Sin cambios en datos, `src/`, `scripts/` ni `docs/07-api-contract.md`. Sin peticiones de red.
+
+## 2026-11-14 (18) — Panel SI a la derecha, ajuste de layouts y optimización de rendimiento — Claude (Sonnet 5.5, Claude Code)
+
+**Pedido (Carlos):** asistente de IA del lado derecho, revisar y limpiar distribuciones, y optimizar porque se sentía lenta.
+
+1. Panel SI Assistant flotante a la derecha y pestaña vertical en el borde derecho; columnas simétricas; ajustes para 1366, 1600 y 1920 px y pantallas bajas (capturas en Edge headless).
+2. Rendimiento: `FlameScene` escribe las transformaciones por `requestAnimationFrame` sin re-renderizar React; arte estático memoizado; se quitó el filtro de desenfoque de la llama, la animación continua del anillo y todos los `backdrop-filter`; vistas completas con `React.lazy`; tarjetas con `memo`; fuentes de Google sin bloquear el primer render. JS inicial: 257 kB → 212 kB.
+3. Sin cambios en datos, `src/`, `scripts/` ni contrato de API. 35 pruebas y build en verde. Revisión humana pendiente; no se midió con Lighthouse.
+
+## 2026-11-14 (19) — Menú More al frente, gráficas de datos nuevas y animaciones — Claude (Opus 5.5, Claude Code)
+
+**Pedido (Carlos):** que el menú More se vea sobre las demás ventanas, añadir gráficas con lo que falta del proyecto y animaciones que mejoren la experiencia.
+
+1. Causa del menú tapado: la barra superior (z-index 30) quedaba debajo de los paneles de la escena (hasta 45). Ahora la barra tiene z-index 100.
+2. Gráficas nuevas (`components/dataCharts.tsx`, `sections/DataCharts.tsx`): dispersión de las 258 pruebas FLEX con tasa de quemado (un punto por prueba, sin línea de ajuste), resultados por combustible (conteos apilados, sin porcentajes) y composición del conjunto de datos. Nueva pestaña "Charts" y tres tarjetas: `tests_scatter`, `tests_mix` y `answer` (respuestas precalculadas de `answers.json` con su DOI). Todas las cifras salen de `public/data/*.json`.
+3. Animaciones (CSS más un contador numérico): entrada escalonada de tarjetas, barras que crecen, puntos que aparecen, cambio suave al elegir atmósfera, menús y avisos con entrada corta, panel de vista y galería con deslizamiento, respiración suave de la llama (pausada con una vista abierta o al arrastrar). Respetan `prefers-reduced-motion`.
+4. Error corregido: varias acciones del tablero en el mismo instante (quitar o añadir varias tarjetas) perdían todas menos la última; ahora cada acción parte del estado más reciente. Prueba de regresión añadida. Preset Engineer reordenado para que quepa sin desbordar.
+5. Verificado por la IA: `tsc`, 36 pruebas Vitest, build y capturas con Edge controlado por CDP. Revisión humana pendiente.
+
+## 2026-11-14 (20) — Gráficas de pastel y barras, animaciones v2 y modo Focus — Claude (Opus 5.5, Claude Code)
+
+**Pedido (Carlos):** gráficas de barras, pastel y demás; mejorar las animaciones y el resto de la interfaz.
+
+1. Gráficas (`components/dataCharts.tsx`, `sections/DataCharts.tsx`): pastel (donut) con detalle al pasar el cursor, barras verticales de pruebas por nivel de oxígeno y combustible (n < 5 con contorno y ⚠), barras apiladas por presión, pastel de gases añadidos y tooltip propio en la dispersión. La vista Charts pasa a 6 gráficas con selector Barras/Pastel. Las tarjetas "How did those tests end?" y "What does the data set contain?" también cambian entre barras y pastel; nueva tarjeta "How many tests per oxygen level?". Solo conteos: sin porcentajes, promedios ni líneas de ajuste; todo sale de `experiments.json` y `coverage.json`.
+2. Animaciones v2: pastel que se dibuja, barras verticales con rebote, puntos que entran según su nivel de oxígeno, anillo que sale de la llama al cambiar de atmósfera, salida animada de las vistas, cambio de contenido al cambiar de vista, brillo en botones principales y menús con rebote. Respetan `prefers-reduced-motion`.
+3. Mejoras: modo Focus (tecla F o botón) que oculta las tarjetas; la atmósfera y el nivel Explorer/Engineer se recuerdan entre visitas (solo se aceptan valores conocidos).
+4. Verificado por la IA: `tsc`, 39 pruebas Vitest (3 nuevas sobre pastel, barras y dispersión), build y capturas con Edge. Revisión humana pendiente.

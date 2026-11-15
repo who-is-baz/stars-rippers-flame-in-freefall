@@ -1,8 +1,8 @@
 // The single-screen console: full-bleed scene + two card rails + atmosphere dock. Nothing scrolls here.
 // Everything else (table, coverage map, fuels, materials, scenarios, gaps, sources) opens as a full view
 // over the scene, so the whole project is reachable from one screen.
-import { useEffect, useState } from 'react';
-import { Compass, HelpCircle, Plus, RotateCcw, Sparkles, X } from 'lucide-react';
+import { lazy, Suspense, useEffect, useRef, useState, type CSSProperties } from 'react';
+import { Compass, Eye, EyeOff, HelpCircle, Plus, RotateCcw, Sparkles, X } from 'lucide-react';
 import type { Scenario } from '../data/types';
 import { useMeta, useScenarios } from '../data/useData';
 import { useUi, type TablePreset } from '../state/ui';
@@ -11,16 +11,20 @@ import { FlameScene } from '../components/FlameScene';
 import { BoardCard, SHORT_NAME } from '../components/Cards';
 import { Gallery } from '../components/Gallery';
 import { fmtTolerance, fmtCriterionO2 } from '../lib/scenario';
-import { ExperimentTable } from './ExperimentTable';
-import { CoverageMap } from './CoverageMap';
-import { FuelComparison } from './FuelComparison';
-import { Materials } from './Materials';
-import { ScenarioExplorer } from './ScenarioExplorer';
-import { Gaps } from './Gaps';
-import { Sources } from './Sources';
+import { Skeleton } from '../components/ui';
+
+// Full views are only needed when opened: they load on demand, keeping the first screen light.
+const ExperimentTable = lazy(() => import('./ExperimentTable').then((m) => ({ default: m.ExperimentTable })));
+const CoverageMap = lazy(() => import('./CoverageMap').then((m) => ({ default: m.CoverageMap })));
+const FuelComparison = lazy(() => import('./FuelComparison').then((m) => ({ default: m.FuelComparison })));
+const Materials = lazy(() => import('./Materials').then((m) => ({ default: m.Materials })));
+const ScenarioExplorer = lazy(() => import('./ScenarioExplorer').then((m) => ({ default: m.ScenarioExplorer })));
+const DataCharts = lazy(() => import('./DataCharts').then((m) => ({ default: m.DataCharts })));
+const Gaps = lazy(() => import('./Gaps').then((m) => ({ default: m.Gaps })));
+const Sources = lazy(() => import('./Sources').then((m) => ({ default: m.Sources })));
 
 export const VIEW_TITLE: Record<ViewId, string> = {
-  overview: 'Overview', explore: 'Experiment table', coverage: 'Coverage map', gaps: 'Gaps & limitations',
+  overview: 'Overview', explore: 'Experiment table', coverage: 'Coverage map', charts: 'Data charts', gaps: 'Gaps & limitations',
   scenarios: 'Scenario explorer', fuels: 'Fuel comparison', materials: 'Materials', sources: 'Sources & credits',
 };
 
@@ -28,21 +32,33 @@ const INTRO_KEY = 'fif.intro.hidden';
 const readIntro = () => { try { return window.localStorage.getItem(INTRO_KEY) !== '1'; } catch { return true; } };
 
 function ViewPanel({ view, preset, onClose }: { view: ViewId; preset: TablePreset | null; onClose: () => void }) {
+  // Closing plays a short exit animation first, then asks the parent to unmount the panel.
+  const [leaving, setLeaving] = useState(false);
+  const timer = useRef(0);
+  useEffect(() => () => window.clearTimeout(timer.current), []);
+  const close = () => {
+    if (leaving) return;
+    setLeaving(true);
+    timer.current = window.setTimeout(onClose, 170);
+  };
   return (
-    <section className="glass view-panel" role="dialog" aria-modal="false" aria-label={VIEW_TITLE[view]}>
+    <section className={`glass view-panel${leaving ? ' leaving' : ''}`} role="dialog" aria-modal="false" aria-label={VIEW_TITLE[view]}>
       <header className="view-bar">
-        <button type="button" className="btn btn-sm" onClick={onClose}>← Back to console</button>
+        <button type="button" className="btn btn-sm" onClick={close}>← Back to console</button>
         <span className="dim" style={{ fontSize: 'var(--fs-sm)' }}>{VIEW_TITLE[view]}</span>
-        <button type="button" className="icon-btn" aria-label="Close view" onClick={onClose}><X size={14} aria-hidden="true" /></button>
+        <button type="button" className="icon-btn" aria-label="Close view" onClick={close}><X size={14} aria-hidden="true" /></button>
       </header>
-      <div className="view-body">
+      <div className="view-body" key={view}>
+        <Suspense fallback={<div className="stack" style={{ padding: 24 }} role="status" aria-label="Loading view"><Skeleton h={22} w="260px" /><Skeleton h={220} /></div>}>
         {view === 'explore' && <ExperimentTable preset={preset} />}
         {view === 'coverage' && <CoverageMap />}
         {view === 'fuels' && <FuelComparison />}
         {view === 'materials' && <Materials />}
         {view === 'scenarios' && <ScenarioExplorer />}
+        {view === 'charts' && <DataCharts />}
         {view === 'gaps' && <Gaps />}
         {view === 'sources' && <Sources />}
+        </Suspense>
       </div>
     </section>
   );
@@ -55,6 +71,18 @@ export function Console({ preset }: { preset: TablePreset | null }) {
   const { openAssistant, scenarioId, setScenarioId, mode = 'explorer', customizeOpen = false, setCustomizeOpen, view, closeView } = useUi();
   const [introOpen, setIntroOpen] = useState(readIntro);
   const [tour, setTour] = useState<number | null>(null);
+  const [focus, setFocus] = useState(false); // hides the cards so the scene fills the screen
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const el = e.target as HTMLElement | null;
+      if (e.key.toLowerCase() !== 'f' || e.metaKey || e.ctrlKey || e.altKey) return;
+      if (el && (el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA' || el.isContentEditable)) return;
+      setFocus((f) => !f);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
   const activeId = scenarioId ?? 'lunar_challenge';
   const current = scenarios.find((s) => s.id === activeId) ?? scenarios[0];
@@ -76,9 +104,14 @@ export function Console({ preset }: { preset: TablePreset | null }) {
 
   return (
     <header className="console-section" id="top">
-      <div className={`console-frame${customizeOpen ? ' is-editing' : ''}`}>
+      <div className={`console-frame${focus ? ' is-focus' : ''}${customizeOpen ? ' is-editing' : ''}${view && view !== 'overview' ? ' is-busy' : ''}`}>
         {current && <FlameScene scenario={current} mode={mode} />}
         {customizeOpen && <div className="grid-overlay" aria-hidden="true" />}
+
+        <button type="button" className="glass focus-btn" aria-pressed={focus} aria-keyshortcuts="F" onClick={() => setFocus((f) => !f)}
+          title={focus ? 'Show the cards (F)' : 'Hide the cards (F)'}>
+          {focus ? <EyeOff size={14} aria-hidden="true" /> : <Eye size={14} aria-hidden="true" />} {focus ? 'Show cards' : 'Focus'}
+        </button>
 
         <span className="console-credit">Uses NASA PSI open data ({meta.license}). Not endorsed by NASA.</span>
 
@@ -112,7 +145,7 @@ export function Console({ preset }: { preset: TablePreset | null }) {
               <HelpCircle size={13} aria-hidden="true" /> What is this?
             </button>
           )}
-          {board.left.map((t) => <BoardCard key={t} type={t} />)}
+          {board.left.map((t, i) => <div className="rail-item" style={{ '--i': i } as CSSProperties} key={t}><BoardCard type={t} /></div>)}
           {customizeOpen && leftFree && (
             <p className="slot-hint"><Plus size={12} aria-hidden="true" /> {MAX_PER_SIDE.left - board.left.length} free slot(s) on this side</p>
           )}
@@ -121,7 +154,7 @@ export function Console({ preset }: { preset: TablePreset | null }) {
         {/* ---- right rail (the gallery takes its place while customizing) ---- */}
         {!customizeOpen && (
           <aside className="console-right" aria-label="Scenario inspector and coverage">
-            {board.right.map((t) => <BoardCard key={t} type={t} />)}
+            {board.right.map((t, i) => <div className="rail-item" style={{ '--i': i } as CSSProperties} key={t}><BoardCard type={t} /></div>)}
             {board.right.length === 0 && (
               <button type="button" className="slot-btn" onClick={() => setCustomizeOpen?.(true)}>+ Add a card</button>
             )}
@@ -137,7 +170,7 @@ export function Console({ preset }: { preset: TablePreset | null }) {
           <div className="tour-card" role="dialog" aria-label="30-second guided tour">
             {tour === 1 && <><b>1 · Pick an atmosphere</b><p>Each button below is the air a crew could breathe. The flame and the cards update.</p></>}
             {tour === 2 && <><b>2 · Check exact vs. near matches</b><p>Moon base air has 0 exact FLEX matches, but {scenarios.find((s) => s.id === 'lunar_challenge')?.n_near ?? 0} tests within {tol}. Every card shows its n and source.</p></>}
-            {tour === 3 && <><b>3 · Make it yours</b><p>Use Customize to add, move or remove cards, the top tabs to open the full data, or ask the SI assistant.</p></>}
+            {tour === 3 && <><b>3 · Make it yours</b><p>Use Customize to add, move or remove cards, the top tabs to open the full data, press F to hide the cards, or ask the SI assistant.</p></>}
             <div className="tour-foot">
               <button type="button" className="tour-skip" onClick={() => setTour(null)}>{tour} of 3 · Skip</button>
               <button type="button" className="tour-next" onClick={() => setTour(tour < 3 ? tour + 1 : null)}>{tour < 3 ? 'Next' : 'Finish'}</button>

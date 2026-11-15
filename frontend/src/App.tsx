@@ -13,6 +13,7 @@ const MAIN_TABS: { view: ViewId; label: string }[] = [
   { view: 'overview', label: 'Overview' },
   { view: 'explore', label: 'Explore' },
   { view: 'coverage', label: 'Coverage' },
+  { view: 'charts', label: 'Charts' },
   { view: 'gaps', label: 'Gaps' },
 ];
 const MORE_TABS: { view: ViewId; label: string }[] = [
@@ -32,6 +33,16 @@ const SI_CARD: Record<BoardCardType, CardType | 'table' | 'materials_view'> = {
   materials_bars: 'materials',
   tests_scatter: 'table',
 };
+
+const SCENARIOS: readonly Scenario['id'][] = ['earth_iss', 'lunar_challenge', 'lunar_nasa', 'exploration', 'suit'];
+const MODES: readonly ExplanationMode[] = ['explorer', 'engineer'];
+// Read a saved choice, accepting only values we know (storage can hold anything).
+function remembered<T extends string>(key: string, allowed: readonly T[], fallback: T): T {
+  try {
+    const v = window.localStorage.getItem(key);
+    return allowed.find((a) => a === v) ?? fallback;
+  } catch { return fallback; }
+}
 
 function BrandEmblem() {
   return (
@@ -136,8 +147,9 @@ function Page() {
   const [preset, setPreset] = useState<TablePreset | null>(null);
   const [open, setOpen] = useState(() => typeof window !== 'undefined' && window.location.hash === '#assistant');
   const [pending, setPending] = useState<{ token: number; question: string } | null>(null);
-  const [scenarioId, setScenarioId] = useState<Scenario['id']>('lunar_challenge');
-  const [mode, setMode] = useState<ExplanationMode>('explorer');
+  const [scenarioId, setScenarioId] = useState<Scenario['id']>(() => remembered('fif.scenario', SCENARIOS, 'lunar_challenge'));
+  const [mode, setMode] = useState<ExplanationMode>(() => remembered('fif.mode', MODES, 'explorer'));
+  useEffect(() => { try { window.localStorage.setItem('fif.scenario', scenarioId); window.localStorage.setItem('fif.mode', mode); } catch { /* private mode */ } }, [scenarioId, mode]);
   const [customizeOpen, setCustomizeOpen] = useState(false);
   const [view, setView] = useState<ViewId>('overview');
 

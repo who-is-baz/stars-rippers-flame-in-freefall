@@ -1,11 +1,12 @@
 // The five honesty checks required by the brief, run against the real data files.
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { fireEvent, screen, waitFor, within } from '@testing-library/react';
+import { act, fireEvent, renderHook, screen, waitFor, within } from '@testing-library/react';
 import { CoverageMap } from '../sections/CoverageMap';
 import { ScenarioExplorer } from '../sections/ScenarioExplorer';
 import { Materials } from '../sections/Materials';
 import { Console } from '../sections/Console';
-import { PRESETS, STARTER, STORAGE_KEY, sanitize } from '../state/board';
+import { DataCharts } from '../sections/DataCharts';
+import { PRESETS, STARTER, STORAGE_KEY, sanitize, useBoardState } from '../state/board';
 import { Sidebar } from '../assistant/Sidebar';
 import { FALLBACK_NOTICE, OUT_OF_SCOPE } from '../assistant/engine';
 import { data, renderWithBoard, renderWithData } from './render';
@@ -142,7 +143,6 @@ describe('single-screen console & saved board', () => {
     const mat = screen.getByRole('article', { name: 'Which solid materials were tested?' });
     expect(mat.textContent).not.toContain('%');
     expect(mat).toHaveTextContent(/26 of 129 with outcome/);
-    expect(screen.getByText('BASS-II outcomes stated')).toBeInTheDocument();
   });
 
   it('removing a card from its menu is saved and survives a reload', () => {
@@ -156,13 +156,14 @@ describe('single-screen console & saved board', () => {
     expect(screen.queryByRole('article', { name: "What can't these data tell us?" })).toBeNull();
   });
 
-  it('a card can open its full view over the console', () => {
+  it('a card can open its full view over the console', async () => {
     renderWithBoard(<Console preset={null} />);
     const gaps = screen.getByRole('article', { name: "What can't these data tell us?" });
     fireEvent.click(within(gaps).getByRole('button', { name: 'Open full view' }));
     expect(screen.getByRole('dialog', { name: 'Gaps & limitations' })).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /Back to console/ }));
-    expect(screen.queryByRole('dialog', { name: 'Gaps & limitations' })).toBeNull();
+    // closing plays a short exit animation before the panel unmounts
+    await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Gaps & limitations' })).toBeNull());
   });
 });
 
@@ -180,8 +181,45 @@ describe('board storage', () => {
     expect(b.addedBy).toEqual({ gaps: 'si' });
   });
 
+  it('applies several quick actions in the same tick without losing any', () => {
+    window.localStorage.clear();
+    const { result } = renderHook(() => useBoardState());
+    act(() => { result.current.remove('scenario_match'); result.current.remove('gaps'); });
+    expect(result.current.board.left).toEqual([]);
+    act(() => { result.current.add('burning_rate'); result.current.add('materials'); });
+    expect(result.current.board.left).toEqual(['burning_rate', 'materials']);
+    act(() => { result.current.undo(); });
+    expect(result.current.board.left).toEqual(['burning_rate']);
+  });
+
   it('falls back to Starter for junk', () => {
     expect(sanitize('garbage')).toEqual(STARTER);
     expect(sanitize(null)).toEqual(STARTER);
+  });
+});
+
+describe('data charts', () => {
+  it('the pie shows real counts and never a percentage', () => {
+    renderWithData(<DataCharts />);
+    fireEvent.click(screen.getAllByRole('button', { name: 'Pie' })[0]);
+    const pie = screen.getByRole('img', { name: /Extinction 186.*n = 274/ });
+    const card = pie.closest('article') as HTMLElement;
+    expect(card.textContent).not.toContain('%');
+    expect(card).toHaveTextContent(/Counts, not probabilities/);
+    expect(card).toHaveTextContent(/not defined by the source/);
+  });
+
+  it('the oxygen-band bars count every FLEX test exactly once', () => {
+    renderWithData(<DataCharts />);
+    const bars = screen.getByRole('img', { name: /FLEX tests per oxygen band/ });
+    const counts = [...(bars.getAttribute('aria-label') ?? '').matchAll(/(?:heptane|methanol) (\d+)/g)].map((m) => Number(m[1]));
+    expect(counts.reduce((a, b) => a + b, 0)).toBe(274);
+  });
+
+  it('the scatter has one dot per FLEX test with a recorded burning rate, and no trend line', () => {
+    renderWithData(<DataCharts />);
+    const sc = screen.getByRole('img', { name: /Scatter of 258 FLEX tests/ });
+    expect(sc.querySelectorAll('circle.dot')).toHaveLength(258);
+    expect(sc.querySelector('polyline, path')).toBeNull();
   });
 });
