@@ -1,0 +1,181 @@
+import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { Check, Copy, SendHorizontal, Sparkles, X } from 'lucide-react';
+import { useData } from '../data/useData';
+import { useUi } from '../state/ui';
+import { Badge, Doi, Skeleton, Warn } from '../components/ui';
+import { LEVELS, ask, type Level, type Reply } from './engine';
+
+const ENV_URL: string | undefined = import.meta.env.VITE_LLM_URL || undefined;
+const LOCAL_ONLY = 'Local AI — runs on the demo machine';
+
+interface Turn { id: number; question: string; reply: Reply | null; error: string | null }
+
+const replyAsText = (t: Turn): string => {
+  if (!t.reply) return t.question;
+  const cites = t.reply.citations.map((c) => `doi:${c.source_doi}${c.test_ids.length ? ` (tests: ${c.test_ids.join(', ')})` : ''}`);
+  return [`Q: ${t.question}`, `A: ${t.reply.text}`, ...t.reply.warnings.map((w) => `Warning: ${w}`), ...(cites.length ? [`Sources: ${cites.join('; ')}`] : [])].join('\n');
+};
+
+function ReplyCard({ turn }: { turn: Turn }) {
+  const { showTests } = useUi();
+  const [copied, setCopied] = useState(false);
+  const r = turn.reply;
+  if (turn.error) return <div className="msg-a" role="alert"><Warn>Something went wrong: {turn.error}. Please try again.</Warn></div>;
+  if (!r) {
+    return (
+      <div className="msg-a" role="status" aria-label="Looking up the answer">
+        <Skeleton h={12} w="90%" /><Skeleton h={12} w="70%" /><Skeleton h={12} w="40%" />
+      </div>
+    );
+  }
+  const copy = async () => {
+    try { await navigator.clipboard.writeText(replyAsText(turn)); setCopied(true); window.setTimeout(() => setCopied(false), 1600); } catch { setCopied(false); }
+  };
+  return (
+    <article className="msg-a" aria-label="Answer">
+      <div className="row">
+        <Badge>{LEVELS.find((l) => l.value === r.answeredBy)?.label ?? r.answeredBy}{r.aiText ? '' : ' · no model'}</Badge>
+        {r.noData && <Badge tone="caution">No data</Badge>}
+        {r.aiText && <Badge tone="info" title="Text written by a local language model. Check it against the citations.">AI-generated text</Badge>}
+      </div>
+      {r.notice && <Warn>{r.notice}</Warn>}
+      <p>{r.text}</p>
+      {r.outOfScope && <p className="dim">Try one of the suggested questions, or ask about a test ID, a fuel, an atmosphere or a material.</p>}
+      {r.warnings.map((w) => <Warn key={w}>{w}</Warn>)}
+      <div className="cites">
+        <span className="label">Citations (from the data files)</span>
+        {r.citations.length === 0 ? <span className="dim">None: this answer cites no dataset.</span> : (
+          <ul>
+            {r.citations.map((c, i) => (
+              <li key={`${c.source_doi}-${c.query}-${i}`}>
+                <Doi doi={c.source_doi} /> <span className="dim">· {c.query}</span>
+                {c.test_ids.length > 0 && (
+                  <details>
+                    <summary>{c.test_ids.length} test IDs</summary>
+                    <div className="ids mono">{c.test_ids.join(', ')}</div>
+                    <button type="button" className="btn btn-sm" style={{ marginTop: 6 }} onClick={() => showTests({ ids: c.test_ids, label: `Cited tests (${c.query})` })}>
+                      View in table
+                    </button>
+                  </details>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+        <span className="num">n = {r.n ?? 'stated in the answer text'}{r.n != null && ' cited tests'}</span>
+      </div>
+      <div>
+        <button type="button" className="btn btn-sm btn-ghost" onClick={copy}>
+          {copied ? <Check size={14} aria-hidden="true" /> : <Copy size={14} aria-hidden="true" />} {copied ? 'Copied' : 'Copy answer'}
+        </button>
+      </div>
+    </article>
+  );
+}
+
+export interface SidebarProps {
+  open: boolean;
+  onClose: () => void;
+  pending?: { token: number; question: string } | null; // a question sent from elsewhere on the page
+  llmUrl?: string;
+  fetchImpl?: typeof fetch;
+  timeoutMs?: number;
+}
+
+export function Sidebar({ open, onClose, pending, llmUrl = ENV_URL, fetchImpl, timeoutMs }: SidebarProps) {
+  const data = useData();
+  const [level, setLevel] = useState<Level>('basic');
+  const [turns, setTurns] = useState<Turn[]>([]);
+  const [text, setText] = useState('');
+  const [busy, setBusy] = useState(false);
+  const panel = useRef<HTMLElement>(null);
+  const input = useRef<HTMLInputElement>(null);
+  const log = useRef<HTMLDivElement>(null);
+  const nextId = useRef(1);
+
+  const send = async (question: string) => {
+    const q = question.trim();
+    if (!q || busy) return;
+    const id = nextId.current++;
+    setTurns((t) => [...t, { id, question: q, reply: null, error: null }]);
+    setText(''); setBusy(true);
+    try {
+      const reply = await ask(q, level, data, { url: llmUrl, fetchImpl, timeoutMs });
+      setTurns((t) => t.map((x) => (x.id === id ? { ...x, reply } : x)));
+    } catch (e) {
+      setTurns((t) => t.map((x) => (x.id === id ? { ...x, error: e instanceof Error ? e.message : 'unknown error' } : x)));
+    } finally { setBusy(false); }
+  };
+
+  // Closed panel is removed from the tab order and from assistive technology.
+  useEffect(() => {
+    panel.current?.toggleAttribute('inert', !open);
+    if (open) input.current?.focus();
+  }, [open]);
+  useEffect(() => { if (pending) void send(pending.question); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [pending?.token]);
+  useEffect(() => { const el = log.current; if (el && typeof el.scrollTo === 'function') el.scrollTo({ top: el.scrollHeight }); }, [turns]);
+
+  const onSubmit = (e: FormEvent) => { e.preventDefault(); void send(text); };
+
+  return (
+    <aside ref={panel} id="assistant" className="drawer" data-open={open} aria-label="SI Assistant" aria-hidden={!open}
+      onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }}>
+      <div className="drawer-head">
+        <div className="row" style={{ justifyContent: 'space-between' }}>
+          <h2><Sparkles size={15} aria-hidden="true" style={{ color: 'var(--flame)', verticalAlign: -2 }} /> SI Assistant</h2>
+          <button type="button" className="btn btn-sm btn-ghost" onClick={onClose} aria-label="Close assistant"><X size={16} aria-hidden="true" /></button>
+        </div>
+        <p>
+          SI (&ldquo;Super Intelligence&rdquo;, i.e. an AI/LLM assistant). It answers only from predefined queries over the PSI data on this page.
+          It does not calculate, predict or invent.
+        </p>
+        <div className="stack" style={{ gap: 6 }}>
+          <div className="seg" role="group" aria-label="Assistant level">
+            {LEVELS.map((l) => {
+              const locked = l.value !== 'basic' && !llmUrl;
+              return (
+                <button key={l.value} type="button" aria-pressed={level === l.value} disabled={locked} title={locked ? LOCAL_ONLY : undefined}
+                  onClick={() => setLevel(l.value)}>{l.label}</button>
+              );
+            })}
+          </div>
+          <span className="level-hint">
+            {llmUrl
+              ? 'Basic uses no model. Flash, Medium and Heavy use the local AI; if it does not answer in 15 s, Basic answers instead.'
+              : <>Basic uses no model: precomputed, sourced answers. Flash, Medium and Heavy: {LOCAL_ONLY}.</>}
+          </span>
+        </div>
+      </div>
+
+      <div className="drawer-body" ref={log} role="log" aria-live="polite" aria-label="Conversation history">
+        {turns.length === 0 && (
+          <div className="stack">
+            <p className="dim">Ask about the tests on this page. Every answer shows its sources, its n and its warnings. If the data does not cover it, the answer is &ldquo;No data&rdquo;.</p>
+          </div>
+        )}
+        {turns.map((t) => (
+          <div key={t.id} className="stack" style={{ gap: 8 }}>
+            <p className="msg-q">{t.question}</p>
+            <ReplyCard turn={t} />
+          </div>
+        ))}
+      </div>
+
+      <div className="drawer-foot">
+        <span className="label">Suggested questions</span>
+        <div className="suggest" style={{ maxHeight: turns.length ? 76 : 220, overflowY: 'auto' }}>
+          {data.answers.answers.map((a) => a.question && (
+            <button key={a.id ?? a.question} type="button" disabled={busy} onClick={() => void send(a.question ?? '')}>{a.question}</button>
+          ))}
+        </div>
+        <form className="ask" onSubmit={onSubmit}>
+          <label className="sr-only" htmlFor="assistant-q">Your question</label>
+          <input ref={input} id="assistant-q" value={text} onChange={(e) => setText(e.target.value)} placeholder="Ask about the PSI data on this page" autoComplete="off" />
+          <button type="submit" className="btn btn-primary" disabled={busy || text.trim() === ''} aria-label="Send question">
+            <SendHorizontal size={16} aria-hidden="true" />
+          </button>
+        </form>
+      </div>
+    </aside>
+  );
+}
