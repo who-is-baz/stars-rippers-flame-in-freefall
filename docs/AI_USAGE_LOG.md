@@ -303,3 +303,12 @@ Yael pidió que Claude tomara las decisiones abiertas.
 4. Cambio de contrato propuesto (PROVISIONAL): `POST /api/ask` devuelve `actions[]`. Requiere PR a `docs/07-api-contract.md`.
 5. Vista previa interactiva v3 (HTML de referencia, no es código del repo) publicada como artefacto privado; cifras de
    `scenarios.json`, `coverage.json` y `gaps.json`. Tipos TS de las skills compilan con `tsc --strict`.
+
+## 2026-11-14 (15) — Skills de frontend al repo y prompt del primer maquetado — Claude (Sonnet 5.5, claude.ai, Project del hackatón)
+
+**Pedido (Yael):** subir las skills al repo con varios commits y dejar un prompt para que Claude Code genere el primer avance del frontend.
+
+1. Rama `feat/yael-frontend-skills` con 11 commits: 4 skills, registro en `CLAUDE.md` y `docs/DECISIONES.md`, tarea de Charly, imágenes de referencia, prompt y bitácora. Cada commit lleva `AI-assisted: yes`.
+2. `docs/prompts/01-maquetado-frontend.md`: alcance de los paquetes A–D, reglas duras, plan de 16 commits y verificación. Texto generado por IA; revisión humana pendiente.
+3. `docs/design/*.png`: tres vistas de referencia generadas por IA a partir de las skills, sin logos ni marcas NASA.
+4. Sin cambios en datos, `src/`, `scripts/` ni `docs/07-api-contract.md`. Sin peticiones de red salvo `git clone` del repo.
