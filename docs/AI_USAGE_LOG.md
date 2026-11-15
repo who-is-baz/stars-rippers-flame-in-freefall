@@ -259,3 +259,47 @@ apruebe. Numerada (11) porque (9) y (10) ya existen en #29 y #30.
 4. Después se unió esta versión de #28 en `feat/baz-decisiones-y-datos` (#30) con merge, sin force push, y se
    regeneraron `frontend/public/data/*.json`.
 5. Commits con "AI-assisted: yes", sin trailer `Co-Authored-By`. Peticiones de red: solo GitHub (gh/git).
+
+## 2026-11-14 (12) — Skills de diseño y frontend React — Claude (Opus 5.5, claude.ai, Project del hackatón)
+
+**Pedido (Yael):** crear skills para diseñar el dashboard en React, más futurista y profesional que el prototipo,
+tomando como base la skill `frontend-design` (Anthropic), el repo UI UX Pro Max (nextlevelbuilder, licencia MIT) y una
+imagen de referencia de un dashboard estilo NASA. Solo skills: el diseño lo reparte el equipo.
+
+1. Nuevas: `.claude/skills/flame-design-system`, `flame-react-frontend`, `flame-data-viz` (generadas por IA, revisión
+   humana pendiente). Tokens y fuentes heredados del prototipo publicado (Michroma + Manrope, cian/llama).
+2. Tipos TypeScript escritos a partir de la forma real de `frontend/public/data/*.json` (generados el 14 nov 22:41 UTC);
+   compilan con `tsc --strict`. Contraste de colores calculado (texto ≥ 6:1 sobre el fondo).
+3. Cifras de ejemplo en las skills (17 pruebas cercanas al escenario lunar, 19 pruebas en una celda, etc.) verificadas
+   contra los JSON. Etiquetas de `qc_flags` redactadas a partir de `docs/data-dictionary.md`.
+4. De la imagen de referencia se toma solo la estructura; se excluyen logo/marca NASA y la tarjeta "Predictions".
+5. `CLAUDE.md`: lista de skills actualizada. Sin peticiones de red al repo; sin cambios en datos.
+## 2026-11-14 (13) — Skills de diseño v2 ("mission console") — Claude (Opus 5.5, claude.ai, Project del hackatón)
+
+**Pedido (Yael):** acercar el diseño a tres referencias de dashboards espaciales (objeto central a pantalla completa,
+paneles de vidrio, widgets circulares) manteniendo la interacción (arrastrar, zoom, hover).
+
+1. `flame-design-system` reescrita: paleta grafito + acento menta `#7FF5E1`, Sora + IBM Plex Mono (solo anotaciones),
+   layout de consola (riel izquierdo, inspector, dock, barra superior), contrato de interacción de la escena con zoom
+   semántico (Chamber / Flame / Droplet), vocabulario prohibido (risk, threat, safe, probability, impact zone).
+2. `flame-react-frontend`: decisión 2.5D vs React Three Fiber con un mismo contrato `<FlameScene>`; nuevos
+   componentes (ConsoleLayout, Inspector, Dock, RingGauge, MiniHistogram, CoverageRadar); paquetes C1/C2.
+3. `flame-data-viz` §3: inspector, radar de cobertura, dock y tabla de traducción honesta de cada widget de las
+   referencias. Nota: el histograma de q06 necesita un campo estructurado en `build_frontend_data.py`.
+4. Vista previa interactiva (HTML, no es código del repo) publicada como artefacto privado; cifras tomadas de los JSON.
+   Las referencias de imagen tienen logo NASA: no se copia.
+## 2026-11-14 (14) — Skills v3: primera vista amable, tablero personalizable y copiloto SI — Claude (Opus 5.5, claude.ai)
+
+**Pedido (Yael):** primera vista entendible para cualquier persona, tarjetas personalizables (estilo Power BI),
+especificación de animaciones/3D para construir y el diseño del copiloto SI (Ollama) que arma el tablero desde el chat.
+Yael pidió que Claude tomara las decisiones abiertas.
+
+1. Nueva skill `flame-dashboard-builder`: primera vista (1 frase + ≤3 tarjetas + tour de 3 pasos), anatomía de tarjeta
+   (pregunta, una vista, frase de lectura, fuente, n), catálogo de 11 tipos con `CardSpec`, modo Customize con galería,
+   presets y límite de 9 tarjetas, copiloto en drawer izquierdo con contrato de acciones validado con Zod y modo Low por reglas.
+2. Stack decidido en `flame-react-frontend`: R3F + drei (escena 3D, respaldo SVG), Motion, react-grid-layout, Recharts +
+   SVG propio, Zustand, Zod, Lucide. Pendiente registrar en `docs/DECISIONES.md` y revisar con `scope-guard`.
+3. `flame-design-system` y `flame-data-viz` compactadas; especificación de animaciones con valores; color por variable.
+4. Cambio de contrato propuesto (PROVISIONAL): `POST /api/ask` devuelve `actions[]`. Requiere PR a `docs/07-api-contract.md`.
+5. Vista previa interactiva v3 (HTML de referencia, no es código del repo) publicada como artefacto privado; cifras de
+   `scenarios.json`, `coverage.json` y `gaps.json`. Tipos TS de las skills compilan con `tsc --strict`.
