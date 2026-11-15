@@ -1,0 +1,83 @@
+"""Acceso a datos del backend: conexión de solo lectura, campos comunes y respuestas precalculadas.
+
+Todo pasa por src/psi_queries.py y src/scenarios.py (regla 4 de CLAUDE.md). Los textos de limitaciones y las
+respuestas del modo `low` se toman de scripts/build_frontend_data.py: así el backend y answers.json salen del
+mismo código (paridad por construcción, comprobada en tests/test_api_ask_low.py).
+"""
+from __future__ import annotations
+
+import os
+import sqlite3
+import sys
+from functools import lru_cache
+from typing import Iterable, Optional
+
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+for _p in (os.path.join(ROOT, "src"), os.path.join(ROOT, "scripts")):
+    if _p not in sys.path:
+        sys.path.insert(0, _p)
+
+import psi_queries as q  # noqa: E402
+import scenarios as sc  # noqa: E402
+import build_frontend_data as bfd  # noqa: E402
+
+LIMITATIONS = list(bfd.LIMITATIONS)
+DOI = dict(bfd.DOI)  # {"FLEX": ..., "BASS-II": ...}
+PROGRAM_OF_DOI = {v: k for k, v in DOI.items()}
+
+
+class DataUnavailable(RuntimeError):
+    """psi.sqlite no existe: la API responde 503 con el comando para regenerarla."""
+
+
+def connect(db_path: Optional[str] = None) -> sqlite3.Connection:
+    try:
+        return q.connect(db_path) if db_path else q.connect()
+    except FileNotFoundError as e:
+        raise DataUnavailable(f"{e}. Run: python scripts/build_experiments.py") from e
+
+
+def collect_dois(obj) -> list:
+    """Unión de los source_doi que aparezcan en una respuesta (texto o lista, a cualquier profundidad)."""
+    found = set()
+
+    def walk(x):
+        if isinstance(x, dict):
+            for k, v in x.items():
+                if k == "source_doi":
+                    if isinstance(v, str) and v:
+                        found.add(v)
+                    elif isinstance(v, list):
+                        found.update(d for d in v if isinstance(d, str) and d)
+                else:
+                    walk(v)
+        elif isinstance(x, list):
+            for v in x:
+                walk(v)
+
+    walk(obj)
+    return sorted(found)
+
+
+def envelope(payload: dict, extra_dois: Iterable[str] = ()) -> dict:
+    """Agrega los campos comunes del contrato: `sources` (DOIs) y `limitations` (inglés)."""
+    out = dict(payload)
+    out["sources"] = sorted(set(collect_dois(payload)) | set(extra_dois))
+    out["limitations"] = LIMITATIONS
+    return out
+
+
+@lru_cache(maxsize=4)
+def precomputed(db_path: Optional[str] = None) -> dict:
+    """Mismo cálculo que scripts/build_frontend_data.main(), sin escribir archivos."""
+    con = connect(db_path)
+    try:
+        items = bfd.load(con)
+        scen = bfd.build_scenarios(con)
+        coverage = bfd.build_coverage(items)
+        materials = bfd.build_materials(items)
+        gaps = bfd.build_gaps(items, coverage, scen)
+        answers = bfd.build_answers(items, scen, coverage, materials, gaps)
+        return {"answers": answers, "gaps": gaps, "scenarios": scen}
+    finally:
+        con.close()

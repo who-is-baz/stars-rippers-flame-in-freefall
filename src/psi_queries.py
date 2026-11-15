@@ -248,6 +248,60 @@ def list_experiments(con, program=None, fuel=None, o2_range: Range = None, press
     return {"total": total, "items": items}
 
 
+def get_experiment(con, test_id: str, program: Optional[str] = None) -> list:
+    """GET /compare (y /ask). Todas las filas con ese test_id (193F001 está repetido en FLEX). [] si no existe."""
+    w, a = _filters(program, None, None, None, "any")
+    rows = con.execute(f"SELECT * FROM experiments WHERE {w} AND test_id = ? ORDER BY program, test_id",
+                       a + [test_id]).fetchall()
+    out = []
+    for r in rows:
+        d = dict(r)
+        d["qc_flags"] = [f for f in (d["qc_flags"] or "").split(";") if f]
+        if LOW_CONFIDENCE_FLAG in d["qc_flags"]:
+            d["low_confidence_warning"] = LOW_CONFIDENCE_WARNING
+        out.append(d)
+    return out
+
+
+def query_test_ids(con, query: str, **kw) -> dict:
+    """test_id de las pruebas que entran en una consulta Q1–Q6 con esos parámetros, por DOI.
+
+    Lo usa /ask para las citas: el código (no el modelo) pone los test_id. Repite los filtros de cada consulta;
+    los valores por defecto son los de la función correspondiente. Devuelve {source_doi: [test_id, ...]}."""
+    if query not in ALL_QUERIES:
+        raise ValueError(f"query debe ser una de {sorted(ALL_QUERIES)}")
+    kw = dict(kw)
+    kw.pop("min_n", None)
+    o2, pr = kw.get("o2_range"), kw.get("pressure_range")
+    extra = ""
+    if query == "q1_extinction_rate_by_o2_pressure":
+        w, a = _filters(kw.get("program", "FLEX"), kw.get("fuel", "methanol"), o2, pr, kw.get("suppressant", "none"))
+        extra = " AND outcome IS NOT NULL"
+    elif query in ("q2_co2_effect", "q3_he_effect"):
+        supp = "co2" if query == "q2_co2_effect" else "he"
+        if "pressure_range" not in kw:
+            pr = (0.9, 1.1) if supp == "co2" else None
+        other = "he_fraction" if supp == "co2" else "co2_fraction"
+        w, a = _filters(kw.get("program", "FLEX"), kw.get("fuel"), o2, pr, "any")
+        extra = f" AND COALESCE({other},0)=0"
+    elif query == "q4_burning_rate_by_o2":
+        if "pressure_range" not in kw:
+            pr = (0.9, 1.1)
+        w, a = _filters(kw.get("program", "FLEX"), kw.get("fuel"), o2, pr, kw.get("suppressant", "none"))
+    elif query == "q5_extinction_diameter_by_pressure":
+        w, a = _filters(kw.get("program", "FLEX"), kw.get("fuel"), o2, pr, kw.get("suppressant", "any"))
+        extra = " AND outcome='extinction'"
+    else:  # q6
+        w, a = _filters("BASS-II", kw.get("material"), o2, None, "any")
+    out: dict = {}
+    for doi, tid in con.execute(f"SELECT source_doi, test_id FROM experiments WHERE {w}{extra} "
+                                "ORDER BY source_doi, test_id", a):
+        ids = out.setdefault(doi, [])
+        if not ids or ids[-1] != tid:
+            ids.append(tid)
+    return out
+
+
 def meta(con):
     """GET /meta. Valores válidos para los filtros y rangos de los datos (calculados, no fijos)."""
     progs = []

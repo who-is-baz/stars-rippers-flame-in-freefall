@@ -376,3 +376,12 @@ Yael pidió que Claude tomara las decisiones abiertas.
 2. Animaciones v2: pastel que se dibuja, barras verticales con rebote, puntos que entran según su nivel de oxígeno, anillo que sale de la llama al cambiar de atmósfera, salida animada de las vistas, cambio de contenido al cambiar de vista, brillo en botones principales y menús con rebote. Respetan `prefers-reduced-motion`.
 3. Mejoras: modo Focus (tecla F o botón) que oculta las tarjetas; la atmósfera y el nivel Explorer/Engineer se recuerdan entre visitas (solo se aceptan valores conocidos).
 4. Verificado por la IA: `tsc`, 39 pruebas Vitest (3 nuevas sobre pastel, barras y dispersión), build y capturas con Edge. Revisión humana pendiente.
+
+## 2026-11-15 (22) — Backend fase 1: API base — Claude (Opus 5.5, Claude Code)
+
+**Pedido (Baz):** construir el backend FastAPI completo y conectarlo al front, por fases.
+
+1. `src/backend/` (`app.py`, `config.py`, `data.py`): `/meta`, `/experiments`, `/coverage`, `/queries/{name}`, `/gaps`, `/compare`, con `sources` y `limitations`, CORS solo a `127.0.0.1:5173`/`localhost:5173` + `CORS_ORIGINS`, errores 400/404/503 y log por solicitud.
+2. `src/psi_queries.py`: nuevas `get_experiment` y `query_test_ids` (SQL solo en este archivo).
+3. `tests/test_api_base.py` (18 pruebas) + `tests/conftest.py`. Dependencias: fastapi, uvicorn, httpx (en `requirements.txt`).
+4. Verificado por la IA con pytest (49 en verde). Revisión humana pendiente.

@@ -1,6 +1,7 @@
 # 07 · Contrato de la API (alineado con `src/psi_queries.py`; pendiente de firma de Yael y Charly en #7)
 
-Base: `/api`. FastAPI + Pydantic genera el OpenAPI. Mientras el backend no esté, el frontend usa un **mock** servido desde
+Base: `/api`. FastAPI + Pydantic genera el OpenAPI (`/docs`). Implementación: `src/backend/` (`uvicorn backend.app:app --app-dir src`).
+Las mismas rutas responden también **sin** `/api` (alias oculto del OpenAPI) porque el frontend llama a `<VITE_LLM_URL>/ask`. Mientras el backend no esté, el frontend usa un **mock** servido desde
 `data/processed/experiments.csv` y `coverage_grid.json`.
 
 **Estándar de nombres:** los campos se llaman igual que en `src/psi_queries.py`, `experiments.csv` y `coverage_grid.json`.
@@ -33,16 +34,17 @@ Rango → tupla: `o2_min`/`o2_max` → `o2_range=(o2_min, o2_max)` y `pressure_m
 |---|---|---|---|---|
 | GET | `/meta` | `meta(con)` | — | `{programs:[{program, n, o2_min, o2_max, pressure_min, pressure_max, source_doi, materials, material_categories}], suppressants, outcomes, o2_bands, min_n, queries, source_doi}` |
 | GET | `/experiments` | `list_experiments(con, …)` | `program`, `fuel`, `o2_min`, `o2_max`, `pressure_min`, `pressure_max`, `suppressant`, `outcome`, `limit`, `offset` | `{total, items:[fila de experiments.csv]}`; en cada fila `qc_flags` es lista y, si aplica, `low_confidence_warning` |
-| GET | `/coverage` | `flex_coverage_grid(con)` | `fuel`, `suppressant` (la API filtra en memoria las celdas devueltas) | celdas, ver abajo |
+| GET | `/coverage` | `flex_coverage_grid(con)` | `fuel`, `suppressant` ∈ `none`,`co2`,`he`,`co2+he` (la API filtra en memoria las celdas devueltas) | `{program:"FLEX", cells:[…]}`, ver abajo |
 | GET | `/queries/q1_extinction_rate_by_o2_pressure` | Q1 `extinction_rate_by_o2_pressure` | `program`=FLEX, `fuel`=methanol, `o2_*`, `pressure_*`, `suppressant`=none | `{pressure_atm, o2_fraction, n, n_extinction, pct_extinction, …comunes}` |
 | GET | `/queries/q2_co2_effect` | Q2 `co2_effect` | `fuel`, `o2_*`, `pressure_*` (por defecto 0.9–1.1) | `{fuel, pressure_atm, co2_fraction, n, pct_extinction, avg_o2_fraction, avg_burning_rate_mm2_s, …comunes}` |
 | GET | `/queries/q3_he_effect` | Q3 `he_effect` | `fuel`, `o2_*`, `pressure_*` (por defecto todas) | igual que Q2 con `he_fraction` |
 | GET | `/queries/q4_burning_rate_by_o2` | Q4 `burning_rate_by_o2` | `fuel`, `o2_*`, `pressure_*` (por defecto 0.9–1.1), `suppressant`=none | `{fuel, o2_fraction, n, n_k, min_burning_rate_mm2_s, avg_burning_rate_mm2_s, max_burning_rate_mm2_s, …comunes}` |
 | GET | `/queries/q5_extinction_diameter_by_pressure` | Q5 `extinction_diameter_by_pressure` | `fuel`, `o2_*`, `pressure_*`, `suppressant`=any | `{fuel, pressure_atm, n, n_d, avg_extinction_diameter_mm, min_extinction_diameter_mm, max_extinction_diameter_mm, …comunes}` |
 | GET | `/queries/q6_bass2_outcomes_by_o2_band` | Q6 `bass2_outcomes_by_o2_band` | `material`, `o2_*` | `{o2_band, n, n_low_flow_extinction, n_blowoff, n_no_ignition_or_not_sustained, n_not_stated, pct_outcome_stated, …comunes}`. **Sin % de extinción.** |
+| GET | `/queries/{name}` | Q1–Q6 por nombre (forma real implementada) | los de cada fila de arriba; un parámetro que la consulta no acepta → 400 | `{query, params, rows:[…], sources, limitations}` |
 | GET | `/ranking` | **PROVISIONAL**: no hay función | `fuel`, `w_burning_rate`, `w_ext_diameter`, `w_confidence` | condiciones ordenadas con `score`, desglose por componente, `n`, `qc_flags` |
-| GET | `/compare` | **PROVISIONAL**: no hay función | `a`, `b` (`program` + `test_id`: 193F001 está repetido en FLEX) | dos filas de `/experiments` lado a lado + `same` y `different` |
-| GET | `/gaps` | **PROVISIONAL**: no hay función | — | "Qué falta": celdas con n=0 o n<5 y vacíos conocidos (p. ej. gravedad parcial), validados por Fer |
+| GET | `/compare` | `get_experiment(con, test_id, program)` | `a`, `b` = `test_id` o `PROGRAM:test_id` (193F001 está repetido en FLEX: vienen ambas filas) | `{a:[filas], b:[filas], same, different}` (`same`/`different` comparan la primera fila de cada lado); 404 si no existe |
+| GET | `/gaps` | `build_gaps` de `scripts/build_frontend_data.py` (mismo contenido que `gaps.json`) | — | `{gaps:[{id, text, evidence, source_doi}]}` |
 | POST | `/ask` | elige entre `ALL_QUERIES` (Q1–Q6) | `{question, level: "low"\|"medium"\|"high"}` | `{answer, citations:[{query, params, source_doi, test_ids}], tool_calls, no_data}`; `query` es la clave de `ALL_QUERIES` (p. ej. `q4_burning_rate_by_o2`) |
 
 "…comunes" = `n`, `qc_flags`, `source_doi`, y cuando aplica `pct_note`, `warning` y `low_confidence_warning`.
@@ -82,7 +84,9 @@ Motivo: la tabla del frontend necesita filtrar por resultado y paginar, y con la
 - **El modo `low` debe funcionar sin Ollama** (el enlace público no tendrá modelo local).
 
 ## Errores
-`400` parámetros inválidos: las funciones lanzan `ValueError` con el motivo y la API lo devuelve tal cual.
+`400` parámetros inválidos: las funciones lanzan `ValueError` con el motivo y la API lo devuelve tal cual (`{"detail": "…"}`).
+Los errores de validación de FastAPI/Pydantic (tipo, rango) también salen como `400`, no `422`.
+`503` también si falta `psi.sqlite` (el `detail` dice qué script correr).
 `404` test_id inexistente. `503` LLM no disponible (el cliente cae a `low`).
 
 ## Cambios a este contrato
