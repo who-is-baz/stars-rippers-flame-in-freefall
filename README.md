@@ -72,6 +72,19 @@ docs/              setup, data dictionary, API, data sources, AI use, challenge 
 
 Full statement: [`docs/AI_USAGE.md`](docs/AI_USAGE.md).
 
+## Accessibility
+
+- **Text size** control (A− / A / A+, remembered) that scales the whole interface; body text is 16 px and no label is
+  smaller than 14 px.
+- **Pause animations** button (remembered) that stops the flame, stars and particles; the site also follows the
+  system's reduced-motion setting.
+- Keyboard: "Skip to main content" link, visible focus ring, Ctrl K / ⌘K opens the assistant and Esc closes it.
+- Status labels carry text, not only colour (Exact / Near / Not near, "AI-extracted", "Unverified source"); the
+  flame scene has a text alternative and says it is not a simulation.
+- Checked with **axe-core** (WCAG 2.2 AA rules) in 31 views and states at 390 and 1280 px: 0 serious or critical
+  violations; **Lighthouse** mobile accessibility score 100. One theme (dark) for now; a light theme is not built yet.
+  Audit scripts: `scripts/check_a11y.mjs`, `scripts/check_english.mjs` (see [`docs/SETUP.md`](docs/SETUP.md)).
+
 ## Limits
 
 Microgravity on the ISS only (no partial-gravity data in PSI). FLEX extinction shares are descriptive, not probabilities.

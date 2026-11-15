@@ -47,3 +47,10 @@ insignia.
   model say "no model".
 - No NASA logos, flags or mission identifiers are used or modified by any generated content. Screenshots in
   `docs/screenshots/` are captures of the site itself.
+
+## Accessibility and English pass (15 Nov 2026)
+Claude (Claude Code) translated `docs/SETUP.md`, `docs/API.md` and `docs/data-dictionary.md` to English, wrote the
+English check, the axe accessibility audit and the exact-tests check (`scripts/check_*.mjs`), and added the text size
+control, the Pause animations button and the larger type. Everything was verified by the automated gate (pytest,
+vitest, build, `audit_numbers.py`, static-site check, English, accessibility and exact-tests checks); the team reviews
+the visual result. What did not fit is listed in `docs/maintenance/PENDIENTES_A11Y.md`.

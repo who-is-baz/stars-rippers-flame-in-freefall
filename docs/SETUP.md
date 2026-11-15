@@ -115,3 +115,13 @@ python -m pytest -m ollama -rs       # integration with a real Ollama
 python scripts/smoke_e2e.py          # starts API + front end and asks a question at each level
 (cd frontend && npm test)
 ```
+
+### Static-site audits (optional, need Chrome and `playwright-core` outside the repo)
+```bash
+npm i --prefix /tmp/pw playwright-core           # not a dependency of the repository
+(cd frontend/dist && python3 -m http.server 8099) &
+NODE_PATH=/tmp/pw/node_modules node scripts/check_static_site.mjs http://127.0.0.1:8099/   # console errors, overflow
+NODE_PATH=/tmp/pw/node_modules node scripts/check_english.mjs http://127.0.0.1:8099/       # all visible text in English
+NODE_PATH=/tmp/pw/node_modules node scripts/check_a11y.mjs http://127.0.0.1:8099/         # axe-core (npm i --prefix /tmp/pw axe-core)
+NODE_PATH=/tmp/pw/node_modules node scripts/check_exact_tests.mjs http://127.0.0.1:8099/  # exact / near tests are shown
+```

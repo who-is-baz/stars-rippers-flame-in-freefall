@@ -12,7 +12,7 @@ const { chromium } = require('playwright-core');
 const AXE = readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
 
 const url = process.argv[2] ?? 'http://127.0.0.1:8099/';
-const THEMES = (process.env.THEMES ?? 'dark,light').split(',');
+const THEMES = (process.env.THEMES ?? 'dark').split(','); // add 'light' once the light theme exists (docs/maintenance/PENDIENTES_A11Y.md)
 const WIDTHS = [390, 1280];
 const browser = await chromium.launch({ channel: 'chrome', headless: true });
 const failures = new Map();
