@@ -143,7 +143,7 @@ describe('Investigations view and card', () => {
     expect(await screen.findByRole('dialog', { name: 'Investigations & pillars' })).toBeInTheDocument();
     a.unmount();
     renderWithBoard(<><IndicatorsStrip /><Console preset={null} /></>);
-    fireEvent.click(screen.getAllByRole('button', { name: /open the investigations catalog/ })[0]);
+    fireEvent.click(screen.getAllByRole('button', { name: /Open the investigations catalog/i })[0]);
     expect(await screen.findByRole('dialog', { name: 'Investigations & pillars' })).toBeInTheDocument();
   });
 });

@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { fireEvent, screen, within } from '@testing-library/react';
 import { Console } from './Console';
 import { Sources } from './Sources';
+import { invDef } from './IndicatorsStrip';
 import { data, renderWithBoard, renderWithData } from '../test/render';
 import { DISCLAIMER_INTERPRETATION } from '../lib/interpretation';
 
@@ -17,7 +18,8 @@ describe('indicators strip', () => {
     renderWithBoard(<Console preset={null} />);
     const t = strip().textContent ?? '';
     expect(t).toMatch(/Tests403/);
-    expect(t).toMatch(/Investigations2/);
+    expect(t).toMatch(new RegExp(`Investigations${data.meta.programs.length} of ${data.investigations.investigations.length}`));
+    expect(t).toMatch(/Investigations2 of 20/);
     expect(t).toMatch(/Complete283 of 403/);
     expect(t).toMatch(/Partial120 of 403/);
     expect(t).toMatch(/26 AI-extracted/);
@@ -31,6 +33,18 @@ describe('indicators strip', () => {
     expect(defs).toHaveLength(6);
     for (const d of defs) { expect(d.length).toBeGreaterThan(30); expect(d).not.toMatch(FORBIDDEN); }
     expect(defs.join(' ')).toMatch(/not a safety score/);
+  });
+  it('Investigations: "2 of 20" read from meta.json and investigations.json, explained in the tooltip and the button label', () => {
+    renderWithBoard(<Console preset={null} />);
+    const expected = '2 of the 20 investigations named in the challenge text have test-level data here: FLEX (PSI-69) and BASS-II (PSI-25).';
+    expect(invDef(data.meta.programs, data.investigations.investigations.length)).toBe(expected);
+    expect(invDef([data.meta.programs[0]], 7)).toBe('1 of the 7 investigations named in the challenge text have test-level data here: FLEX (PSI-69).');
+    const box = [...strip().querySelectorAll('dl > div')].find((d) => d.querySelector('dt')?.textContent === 'Investigations')!;
+    expect(box.getAttribute('title')).toContain(expected);
+    const btn = within(box as HTMLElement).getByRole('button');
+    expect(btn.getAttribute('aria-label')).toContain(expected);
+    expect(btn.textContent).toBe('2 of 20');
+    expect(`${box.getAttribute('title')} ${btn.getAttribute('aria-label')}`).not.toMatch(FORBIDDEN);
   });
   it('coverage follows the selected scenario and the without-evidence count follows too', () => {
     renderWithBoard(<Console preset={null} />);
