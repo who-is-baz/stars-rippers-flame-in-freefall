@@ -340,3 +340,12 @@ Yael pidió que Claude tomara las decisiones abiertas.
 1. Se integraron `docs/design/reference/flame-v3-reference.html`, `docs/design/DESIGN_BRIEF.md`, `docs/prompts/00-contexto-companeros.md` y la actualización de `docs/prompts/01-maquetado-frontend.md`.
 2. En `frontend/src/`: paleta grafito + menta (`#7FF5E1`) y tipografía Sora + IBM Plex Mono en `tokens.css` y `global.css`; escena interactiva `<FlameScene>` (`src/components/FlameScene.tsx`) con rotación, zoom semántico (`Chamber · Flame · Droplet`) y anotaciones con líneas guía; gráficas SVG en `src/components/charts.tsx` (`MatchRingSvg`, `KpiRingSvg`, `BurningRateChartSvg` en modos barras y líneas con alerta `n < 5`, `CoverageRadarSvg`, `OutcomePills`, `OutcomeBarsSvg`, `Bass2CountBar` sin porcentajes); consola completa en `Hero.tsx`, galería Customize, tour de 3 pasos y drawer izquierdo del `SI Assistant` con adición automática de tarjetas.
 3. Todas las cifras provienen de `frontend/public/data/*.json`; 29 pruebas en Vitest y build de producción verificados. Revisión humana pendiente.
+
+## 2026-11-14 (17) — Consola de una sola pantalla con tablero guardable — Claude (Opus 5.5, Claude Code)
+
+**Pedido (Carlos):** todo en la pantalla principal sin saturar, sin scroll, con tarjetas que el usuario pueda guardar y menús; basado en la referencia v3 (patches 0001–0005, ya aplicados en el repo).
+
+1. `frontend/src/state/board.ts`: tablero por usuario (izquierda máx. 3, derecha máx. 2), presets, deshacer, guardado en `localStorage` con validación al leer. Código generado con IA; revisión humana pendiente.
+2. `components/Cards.tsx`, `components/Gallery.tsx`, `sections/Console.tsx`, `sections/Sources.tsx`: 8 tarjetas con menú ⋯ (mover, colapsar, quitar, abrir vista completa), drawer Customize, dock de atmósferas y paneles de vista completa (Explore, Coverage, Gaps, Scenarios, Fuels, Materials, Sources). Sustituye a `Hero.tsx` y a la página con scroll.
+3. Todas las cifras siguen saliendo de `public/data/*.json`; sin datos nuevos ni valores inventados. Pruebas: 35 en verde (se añadieron 7 sobre consola y almacenamiento).
+4. Sin cambios en datos, `src/`, `scripts/` ni `docs/07-api-contract.md`. Sin peticiones de red.
