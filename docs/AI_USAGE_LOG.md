@@ -312,3 +312,14 @@ Yael pidió que Claude tomara las decisiones abiertas.
 2. `docs/prompts/01-maquetado-frontend.md`: alcance de los paquetes A–D, reglas duras, plan de 16 commits y verificación. Texto generado por IA; revisión humana pendiente.
 3. `docs/design/*.png`: tres vistas de referencia generadas por IA a partir de las skills, sin logos ni marcas NASA.
 4. Sin cambios en datos, `src/`, `scripts/` ni `docs/07-api-contract.md`. Sin peticiones de red salvo `git clone` del repo.
+
+## 2026-11-14 · Frontend v2 de una página (Claude Code)
+
+**Pedido (Baz):** construir el dashboard completo según el brief de diseño (una página, estilo oscuro con vidrio, panel SI deslizable), sin romper las reglas de honestidad de los datos.
+
+1. Rama `feat/baz-front` (sobre `feat/baz-frontend-base`). Código generado por IA: `frontend/src/design/*`, `components/ui.tsx`, `sections/*`, `assistant/*`, `state/ui.tsx`, `lib/table.ts`, pruebas y `frontend/README.md`. Se reutilizan `src/data` y `src/lib` de la versión anterior (también asistidos por IA).
+2. Ninguna cifra fue escrita por la IA: todo se lee de `frontend/public/data/*.json`. Esa carpeta no se modificó. El navegador solo cuenta, filtra, ordena y da formato.
+3. Texto de interfaz en inglés redactado por IA (títulos, notas, avisos). Revisión humana pendiente.
+4. Sin imágenes generadas: el fondo es CSS. Sin logos ni marcas NASA.
+5. Verificación hecha por la IA: `tsc`, 28 pruebas Vitest, build de producción y capturas en Chrome a 1440 px y 360 px. No se corrió Lighthouse ni lector de pantalla.
+6. Red: solo `npm install` de las dependencias aprobadas.
