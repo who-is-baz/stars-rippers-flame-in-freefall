@@ -42,3 +42,14 @@ export const flagLabel = (flag: string): string => FLAGS[flag] ?? flag;
 // Lo extraído por IA lleva insignia hasta revisión humana.
 export const needsAiBadge = (row: Pick<ExperimentRow, 'outcome_source' | 'qc_flags'>): boolean =>
   row.outcome_source === 'ai_extracted' || row.qc_flags.includes('low_confidence');
+
+// Fixed texts (docs/07-api-contract.md and the team's honesty rules). Components import these; they never retype them.
+export const LOW_CONFIDENCE_WARNING =
+  'includes low-confidence AI-extracted outcomes (pending human review); show them with a warning';
+export const hasLowConfidence = (flags: string[]): boolean => flags.includes('low_confidence');
+export const DISRUPTION_SHORT = 'not defined by the source';
+export const DESCRIPTIVE_ONLY = 'mixed pressures/suppressants: descriptive only';
+export const CONFOUND_NOTE =
+  'CO₂ and He are confounded with O₂ in these tests (average O₂ differs between suppressant levels). Do not attribute a difference to a single factor.';
+export const NOT_STATED_NOTE = '"Not stated" means the source notes do not say. It does not mean the flame did not go out.';
+export const MICROGRAVITY_NOTE = 'All tests are microgravity tests on the ISS. No partial-gravity data in PSI.';
