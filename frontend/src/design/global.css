@@ -2180,3 +2180,20 @@ ul.plain { margin: 0; padding-left: 1.1em; display: grid; gap: var(--s-2); color
   .console-frame.is-custom .scene-svg { transform: translateY(-6%); transition: transform 0.4s var(--ease); }
   .console-frame.is-custom .scene-legend { bottom: auto; top: 110px; }
 }
+
+/* Mobile/tablet: the console grid must not grow to the dock row's min-content (6 preset cards × 166 px).
+   minmax(0, 1fr) + min-width: 0 keep every row inside the viewport; the dock cards scroll inside their own row. */
+@media (max-width: 1180px) {
+  .console-frame > * { min-width: 0; }
+  .console-dock, .dock-cards, .dock-explorer { max-width: 100%; }
+}
+@media (max-width: 860px) {
+  .console-frame,
+  .console-frame.is-assistant-open { grid-template-columns: minmax(0, 1fr); }
+  .dock-cards { scroll-snap-type: x proximity; }
+  .dock-card { scroll-snap-align: start; }
+}
+@media (max-width: 1180px) {
+  .scene-legend { white-space: normal; flex-wrap: wrap; justify-content: center; text-align: center; max-width: calc(100% - 24px); width: max-content; row-gap: 2px; }
+  .obs-caption { white-space: normal; }
+}
