@@ -392,3 +392,11 @@ Yael pidió que Claude tomara las decisiones abiertas.
 2. `src/backend/low.py`: enrutado por reglas (mismo orden que `engine.ts` del front, más español, trampas de seguridad/predicción, inyección y Q1/Q5/Q6 por palabra clave). Las 10 preguntas sugeridas devuelven exactamente `answers.json` (mismo código generador).
 3. `src/backend/assistant.py`: `POST /ask` con `meta {level, model, mode, ms, warnings}`, `test_ids` truncados a 20 + `test_ids_total`, pregunta ≤ 500 caracteres; log sin la pregunta (longitud + hash).
 4. `tests/test_api_ask_low.py` (30 pruebas, paridad incluida). 79 en verde. Revisión humana pendiente.
+
+## 2026-11-15 (24) — Backend fase 3: Ollama, /llm/status, medium/high con verificación — Claude (Opus 5.5, Claude Code)
+
+1. `src/backend/llm.py`: `OllamaClient` (httpx) con `format` = esquema JSON, `think:false` para Qwen3 si Ollama ≥ 0.9 (si no, `/no_think`), temperature 0, num_ctx 4096, stream false, keep_alive corto; fallos → 503.
+2. `src/backend/pipeline.py`: router (una herramienta en medium; hasta 3 pasos en high) con 1 reintento, redactor que solo ve el resultado de la herramienta (no la pregunta), reglas de guardia deterministas antes del modelo (inyección, seguridad, predicción, gravedad).
+3. `src/backend/verify.py`: números contra el resultado (tolerancia de redondeo), frases prohibidas, near≠lunar, n<5, inglés, ≤ 3 frases → si falla, plantilla (`mode: fallback`).
+4. `GET /llm/status` (Ollama vía `/api/tags`, timeout 1.5 s; caído → `available:false` con 200).
+5. `tests/test_api_ask_llm.py` + `tests/fake_llm.py`: 42 pruebas con Ollama MOCKEADO. 121 en verde. **No se probó con un modelo real**: Ollama 0.21.1 está instalado pero `~/.ollama` apunta a un disco no montado y no hay modelos. Revisión humana pendiente.

@@ -31,6 +31,7 @@ class Route:
     text: Optional[str] = None
     no_data: bool = False
     warnings: List[str] = field(default_factory=list)
+    guard: bool = False             # regla de seguridad: medium/high tampoco llaman al modelo
 
 
 # (regex, answer_id) — mismo orden y mismas expresiones que engine.ts, con equivalentes en español.
@@ -87,15 +88,15 @@ def _o2(text: str) -> dict:
 def route(question: str) -> Route:
     text = question.strip()
     if INJECTION_RE.search(text):
-        return Route("fixed", text=T.OUT_OF_SCOPE_TEXT, no_data=True)
+        return Route("fixed", text=T.OUT_OF_SCOPE_TEXT, no_data=True, guard=True)
     upper = text.upper()
     ids = {m.group(0) for m in TEST_ID_RE.finditer(upper)} | {m.group(1).upper() for m in TEST_WORD_RE.finditer(text)}
     if ids:
         return Route("tool", tool="get_experiment", args={"test_id": sorted(ids)[0]})
     if LIVE_RE.search(text):
-        return Route("fixed", text=LIVE_TEXT, no_data=True)
+        return Route("fixed", text=LIVE_TEXT, no_data=True, guard=True)
     if SAFETY_RE.search(text):
-        return Route("fixed", text=SAFETY_TEXT, no_data=True, warnings=[T.MICROGRAVITY_NOTE])
+        return Route("fixed", text=SAFETY_TEXT, no_data=True, warnings=[T.MICROGRAVITY_NOTE], guard=True)
     fuel = _fuel(text)
     # Consultas con parámetros, antes de las precalculadas genéricas.
     if re.search(r"extinction diameter|di[aá]metro de extinci[oó]n", text, re.I):

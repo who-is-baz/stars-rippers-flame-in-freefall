@@ -18,6 +18,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 from . import data, low
 from . import tools as T
 from .config import Settings
+from .llm import LlmUnavailable  # noqa: F401  (Ollama no responde / modelo no instalado → 503)
 
 log = logging.getLogger("flame.ask")
 MAX_QUESTION = 500
@@ -62,8 +63,6 @@ class AskResponse(BaseModel):
     meta: AskMeta
 
 
-class LlmUnavailable(RuntimeError):
-    """Ollama no responde, el modelo no está instalado o falló la llamada: 503."""
 
 
 def _dedupe(xs: List[str]) -> List[str]:
@@ -99,7 +98,8 @@ def answer_low(con, question: str, db_path: Optional[str] = None) -> dict:
 def result_from_tools(trs: List["T.ToolResult"], answer: str, extra_warnings: Optional[List[str]] = None) -> dict:
     """Arma citas, tool_calls, no_data y avisos desde los resultados (código, nunca el modelo)."""
     no_data = all(tr.no_data for tr in trs) if trs else True
-    cits = [c for tr in trs for c in tr.citations()] if not no_data else []
+    # Citas solo de resultados con pruebas (o de meta, que cita los dos DOI sin IDs).
+    cits = [c for tr in trs for c in tr.citations() if c["test_ids_total"] > 0 or tr.name == "meta"]
     if no_data and not answer.startswith(T.NO_DATA_TEXT):
         answer = T.NO_DATA_TEXT
     calls = [{"tool": tr.name, "args": tr.args, "no_data": tr.no_data} for tr in trs]
