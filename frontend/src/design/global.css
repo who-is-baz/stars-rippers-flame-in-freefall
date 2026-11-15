@@ -1,0 +1,38 @@
+/* Fuentes autoalojadas (sin CDN: debe verse igual en modo Offline). */
+@import '@fontsource/michroma/400.css';
+@import '@fontsource/manrope/400.css';
+@import '@fontsource/manrope/500.css';
+@import '@fontsource/manrope/600.css';
+
+/* Decisión del equipo: Michroma (marca/títulos) + Manrope (UI); sin monoespaciada.
+   Sobrescribe --font-ui / --font-mono de tokens.css. */
+:root {
+  --font-display: 'Michroma', 'Manrope', system-ui, sans-serif;
+  --font-ui: 'Manrope', system-ui, sans-serif;
+  --font-mono: var(--font-ui);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-padding-top: 72px; }
+body {
+  margin: 0; background: var(--space); color: var(--ink);
+  font-family: var(--font-ui); font-size: var(--fs-base); line-height: 1.5;
+  font-variant-numeric: tabular-nums; -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, p { margin: 0; }
+button { font: inherit; color: inherit; cursor: pointer; }
+a { color: var(--mint); }
+
+:focus-visible { outline: 2px solid var(--mint); outline-offset: 2px; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important; animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important; scroll-behavior: auto !important;
+  }
+}

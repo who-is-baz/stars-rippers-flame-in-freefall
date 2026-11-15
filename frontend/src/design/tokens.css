@@ -1,0 +1,31 @@
+/* Copiado tal cual de flame-design-system §2. Las fuentes se sobrescriben en global.css (ver DECISIONES.md). */
+:root{
+  color-scheme:dark;
+  /* superficies */
+  --space:#040506; --graphite-9:#0C0E11; --graphite-8:#15181C; --graphite-7:#1F2328; --graphite-5:#3A4048;
+  --silver:#C7CDD4; --ink:#F2F4F6; --ink-dim:#8E96A0; --ink-faint:#5B636D; /* faint: solo retícula, nunca texto */
+  --glass:linear-gradient(150deg,rgba(255,255,255,.10),rgba(255,255,255,.035) 55%,rgba(255,255,255,.02));
+  --glass-solid:rgba(14,16,19,.78); --glass-border:rgba(255,255,255,.10);
+  --glass-hi:inset 0 1px 0 rgba(255,255,255,.08); --blur:20px;
+  /* señales */
+  --mint:#7FF5E1; --mint-dim:rgba(127,245,225,.16); --on-mint:#052A24;   /* interacción, selección, foco, CTA */
+  --flame-core:#F4F7FF; --flame-blue:#6F8CFF; --ember:#FF8A3D;            /* solo visuales de combustión */
+  --caution:#FFD166;                                                      /* advertencias (siempre con ⚠ + texto) */
+  --nodata:#2A3037;                                                       /* sin datos (siempre rayado) */
+  /* series (color por variable; nunca hex libres) */
+  --fuel-heptane:#FF8A3D; --fuel-methanol:#A9B4C2;
+  --prog-flex:#7FF5E1; --prog-bass2:#C9A2FF;
+  --out-extinction:#9DB7FF; --out-disruption:#C9A2FF; --out-completion:#FFA36B;
+  --out-blowoff:#7FE0C2; --out-noflame:#8E96A0;
+  --seq-1:#26324F; --seq-2:#4A62B8; --seq-3:#8D8FD6; --seq-4:#E2A266; --seq-5:#FF8A3D;           /* burning rate */
+  --cov-1:rgba(127,245,225,.10); --cov-2:rgba(127,245,225,.22); --cov-3:rgba(127,245,225,.38); --cov-4:rgba(127,245,225,.58); /* n */
+  /* tipo */
+  --font-ui:'Sora','Manrope',system-ui,sans-serif; --font-mono:'IBM Plex Mono',ui-monospace,monospace;
+  --fs-2xs:10.5px; --fs-xs:11.5px; --fs-sm:12.5px; --fs-base:14px; --fs-md:16px; --fs-lg:20px; --fs-num:34px; --fs-num-xl:48px;
+  /* espacio, radios, capas */
+  --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:20px; --s-6:24px; --s-8:32px;
+  --r-frame:24px; --r-panel:16px; --r-inner:10px; --r-cell:4px; --r-pill:999px;
+  --z-scene:0; --z-grid:10; --z-nav:30; --z-drawer:40; --z-modal:50; --z-tooltip:60;
+  /* movimiento */
+  --t-fast:140ms; --t-base:240ms; --t-slow:420ms; --ease-out:cubic-bezier(.2,.8,.2,1);
+}
