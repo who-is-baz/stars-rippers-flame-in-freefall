@@ -16,3 +16,4 @@ export const useExperiments = () => useData().experiments;
 export const useGaps = () => useData().gaps;
 export const useMaterials = () => useData().materials;
 export const useAnswers = () => useData().answers;
+export const useInvestigations = () => useData().investigations;

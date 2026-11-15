@@ -1,12 +1,13 @@
 import { createContext, useEffect, useState, type ReactNode } from 'react';
 import type {
-  AirflowFile, AnswersFile, CoverageFile, ExperimentsFile, GapsFile, MaterialsFile, Meta, ScenariosFile,
+  AirflowFile, AnswersFile, CoverageFile, ExperimentsFile, GapsFile, InvestigationsFile, MaterialsFile, Meta, ScenariosFile,
 } from './types';
 import { loadStatic } from './source';
 
 export interface DataBundle {
   meta: Meta; scenarios: ScenariosFile; coverage: CoverageFile; experiments: ExperimentsFile;
   gaps: GapsFile; materials: MaterialsFile; answers: AnswersFile; airflow: AirflowFile;
+  investigations: InvestigationsFile;
 }
 export type DataState =
   | { status: 'loading' }
@@ -30,11 +31,12 @@ function assertShape(file: string, v: unknown, checks: Record<string, 'array' | 
 }
 
 async function loadAll(): Promise<DataBundle> {
-  const [meta, scenarios, coverage, experiments, gaps, materials, answers, airflow] = await Promise.all([
+  const [meta, scenarios, coverage, experiments, gaps, materials, answers, airflow, investigations] = await Promise.all([
     loadStatic<Meta>('meta.json'), loadStatic<ScenariosFile>('scenarios.json'),
     loadStatic<CoverageFile>('coverage.json'), loadStatic<ExperimentsFile>('experiments.json'),
     loadStatic<GapsFile>('gaps.json'), loadStatic<MaterialsFile>('materials.json'),
     loadStatic<AnswersFile>('answers.json'), loadStatic<AirflowFile>('airflow.json'),
+    loadStatic<InvestigationsFile>('investigations.json'),
   ]);
   assertShape('meta.json', meta, { license: 'string', min_n: 'number', programs: 'array', tolerance: 'object', limitations: 'array' });
   assertShape('scenarios.json', scenarios, { scenarios: 'array' });
@@ -44,7 +46,8 @@ async function loadAll(): Promise<DataBundle> {
   assertShape('materials.json', materials, { materials: 'array' });
   assertShape('answers.json', answers, { answers: 'array' });
   assertShape('airflow.json', airflow, { items: 'array', n_tests: 'number' });
-  return { meta, scenarios, coverage, experiments, gaps, materials, answers, airflow };
+  assertShape('investigations.json', investigations, { investigations: 'array', pillars: 'array', source: 'string', psi_search_base: 'string', earth_applications: 'object' });
+  return { meta, scenarios, coverage, experiments, gaps, materials, answers, airflow, investigations };
 }
 
 // Loaded once per page: every consumer shares this promise (module-level cache).

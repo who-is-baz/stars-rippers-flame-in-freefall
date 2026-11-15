@@ -17,7 +17,7 @@ export interface TablePreset {
 export type TableRequest = Omit<TablePreset, 'token'>;
 
 export type ExplanationMode = 'explorer' | 'engineer';
-export type BoardCardType = 'burning_rate_line' | 'outcomes_bars' | 'coverage_heatmap' | 'materials_bars' | 'tests_scatter';
+export type BoardCardType = 'burning_rate_line' | 'outcomes_bars' | 'coverage_heatmap' | 'materials_bars' | 'tests_scatter' | 'investigations_pillars';
 
 export interface UiActions {
   showTests: (req: TableRequest) => void;

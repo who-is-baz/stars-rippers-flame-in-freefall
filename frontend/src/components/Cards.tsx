@@ -5,7 +5,8 @@ import {
   ArrowLeftRight, ArrowUpRight, ChevronDown, ChevronUp, Ellipsis, Flame, Info, Layers, Minimize2, Maximize2, Sparkles, Target, Trash2,
 } from 'lucide-react';
 import type { Fuel, Scenario } from '../data/types';
-import { useAnswers, useCoverage, useExperiments, useGaps, useMaterials, useMeta, useScenarios } from '../data/useData';
+import { useAnswers, useCoverage, useExperiments, useGaps, useInvestigations, useMaterials, useMeta, useScenarios } from '../data/useData';
+import { ORDER_NOTE, pillarSummary } from '../lib/investigations';
 import { useUi } from '../state/ui';
 import { useCustom } from '../state/custom';
 import { useActiveAtmosphere } from '../state/atmosphere';
@@ -106,6 +107,10 @@ const HOW: Record<CardType, { explorer: string; engineer: string }> = {
   kpi: {
     explorer: 'How much of the data is filled in: tests with a stated outcome and conditions that were actually tested.',
     engineer: 'BASS-II outcome-stated count (materials.json) and FLEX tested cells (coverage.json). Counts only.',
+  },
+  investigations: {
+    explorer: 'NASA groups fire safety into prevention, detection and suppression. This shows which investigations the challenge text ties to each one and how many tests are processed here.',
+    engineer: 'Pillars and investigation names from investigations.json (official challenge text only); test counts from meta.json. Ordered by evidence available on this site, not a safety ranking.',
   },
 };
 
@@ -597,8 +602,30 @@ function AnswerCard() {
   );
 }
 
+function InvestigationsCard() {
+  const file = useInvestigations();
+  const meta = useMeta();
+  const { openView } = useUi();
+  const pillars = useMemo(() => pillarSummary(file, meta), [file, meta]);
+  return (
+    <Frame type="investigations" icon={<Layers size={13} />} src={<>Challenge text · meta.json</>} n={`${file.investigations.length} named`}>
+      <ul className="pillar-mini num">
+        {pillars.map((p) => (
+          <li key={p.id}>
+            <b>{p.label}</b>
+            <span>{p.processed.length > 0 ? p.processed.map((x) => `${x.name} · ${x.n} tests processed`).join(', ') : '0 processed here'}</span>
+          </li>
+        ))}
+      </ul>
+      <p className="wc-read">{ORDER_NOTE}</p>
+      <button type="button" className="btn btn-sm btn-ghost" onClick={() => openView?.('investigations')}>Open the catalog →</button>
+    </Frame>
+  );
+}
+
 export const BoardCard = memo(function BoardCard({ type }: { type: CardType }) {
   switch (type) {
+    case 'investigations': return <InvestigationsCard />;
     case 'scenario_match': return <MatchCard />;
     case 'scenario_inspector': return <InspectorCard />;
     case 'outcomes': return <OutcomesCard />;

@@ -28,14 +28,17 @@ const ScenarioExplorer = lazy(() => import('./ScenarioExplorer').then((m) => ({ 
 const DataCharts = lazy(() => import('./DataCharts').then((m) => ({ default: m.DataCharts })));
 const Gaps = lazy(() => import('./Gaps').then((m) => ({ default: m.Gaps })));
 const Sources = lazy(() => import('./Sources').then((m) => ({ default: m.Sources })));
+const Investigations = lazy(() => import('./Investigations').then((m) => ({ default: m.Investigations })));
 
 export const VIEW_TITLE: Record<ViewId, string> = {
   overview: 'Overview', explore: 'Experiments', coverage: 'Coverage map', charts: 'Data charts', gaps: 'Gaps & limitations',
   scenarios: 'Scenario explorer', fuels: 'Fuel comparison', materials: 'Materials', sources: 'Sources & credits',
+  investigations: 'Investigations & pillars',
 };
 
 const SUB_VIEWS: { id: ViewId; label: string }[] = [
   { id: 'explore', label: 'Experiments' },
+  { id: 'investigations', label: 'Investigations' },
   { id: 'charts', label: 'Charts' },
   { id: 'coverage', label: 'Coverage' },
   { id: 'scenarios', label: 'Scenarios' },
@@ -81,6 +84,7 @@ function ViewPanel({ view, preset, onSelectView, onClose }: { view: ViewId; pres
         {view === 'charts' && <DataCharts />}
         {view === 'gaps' && <Gaps />}
         {view === 'sources' && <Sources />}
+        {view === 'investigations' && <Investigations />}
         </Suspense>
       </div>
     </section>
@@ -260,10 +264,10 @@ export function Console({ preset, assistantOpen = false }: { preset: TablePreset
 
         {/* ---- Mission Dashboard Bottom Dock (Scenarios · Explore · Investigations + KPI Rings) ---- */}
         <div className="console-dock" role="region" aria-label="Atmosphere scenarios, test explorer and dataset coverage">
-          <div className="dock-tabs" role="group" aria-label="Dock: scenarios, and shortcuts to the Experiments view">
+          <div className="dock-tabs" role="group" aria-label="Dock: scenarios, and shortcuts to the Experiments and Investigations views">
             <button type="button" aria-pressed="true" className="on">Scenarios</button>
             <button type="button" onClick={() => openView?.('explore')}>Explore tests</button>
-            <button type="button" onClick={() => { try { window.history.replaceState(null, '', '#experiments?group=1'); } catch { /* ignore */ } openView?.('explore'); }}>Investigations</button>
+            <button type="button" onClick={() => openView?.('investigations')}>Investigations</button>
           </div>
 
           {(

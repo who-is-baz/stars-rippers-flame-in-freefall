@@ -1,0 +1,257 @@
+{
+ "note": "Catalog of the investigations named in the official NASA Space Apps challenge text (docs/08-reto-oficial.md). Each field holds only what that text says; a field the text does not state is \"not stated\". No test counts, DOIs or PSI ids are stored here: the two investigations with test-level data on this site take their count, PSI id and DOI from meta.json through \"program\".",
+ "source": "NASA Space Apps challenge text",
+ "curated_by": "team, from the challenge text (AI-assisted transcription, human-reviewable against docs/08-reto-oficial.md)",
+ "psi_search_base": "https://psi.nasa.gov/physci/repo/search?q=",
+ "pillars": [
+  {
+   "id": "prevention",
+   "label": "Prevention",
+   "what": "Material selection and flammability limits of solid materials",
+   "source": "NASA Space Apps challenge text"
+  },
+  {
+   "id": "detection",
+   "label": "Detection",
+   "what": "Smoke and aerosol measurement",
+   "source": "NASA Space Apps challenge text"
+  },
+  {
+   "id": "suppression",
+   "label": "Suppression",
+   "what": "Dilution of the chamber atmosphere with carbon dioxide and helium",
+   "source": "NASA Space Apps challenge text"
+  }
+ ],
+ "earth_applications": {
+  "text": "Fine-water-mist extinguishers developed for use on the ISS have practical applications on Earth, and NASA technology has similarly led to improvements in terrestrial smoke detection and firefighter gear, including protective clothing and air tanks.",
+  "source": "NASA Space Apps challenge text"
+ },
+ "investigations": [
+  {
+   "id": "bass",
+   "name": "BASS",
+   "full_name": "Burning and Suppression of Solids",
+   "pillar": "prevention",
+   "fuel": "solid",
+   "hardware": "MSG with flow duct",
+   "status": "in_psi",
+   "note": "Flammability of solid materials such as fabrics and plastics.",
+   "source": "NASA Space Apps challenge text"
+  },
+  {
+   "id": "bass2",
+   "name": "BASS-II",
+   "full_name": "Burning and Suppression of Solids",
+   "pillar": "prevention",
+   "fuel": "solid",
+   "hardware": "MSG with flow duct",
+   "status": "processed",
+   "program": "BASS-II",
+   "note": "Flammability of solid materials such as fabrics and plastics.",
+   "source": "NASA Space Apps challenge text"
+  },
+  {
+   "id": "saffire1",
+   "name": "Saffire-I",
+   "full_name": "Spacecraft Fire Safety Demonstration",
+   "pillar": "prevention",
+   "fuel": "solid",
+   "hardware": "not stated",
+   "status": "in_psi",
+   "note": "Flammability of solid materials such as fabrics and plastics.",
+   "source": "NASA Space Apps challenge text"
+  },
+  {
+   "id": "saffire2",
+   "name": "Saffire-II",
+   "full_name": "Spacecraft Fire Safety Demonstration",
+   "pillar": "prevention",
+   "fuel": "solid",
+   "hardware": "not stated",
+   "status": "in_psi",
+   "note": "Flammability of solid materials such as fabrics and plastics.",
+   "source": "NASA Space Apps challenge text"
+  },
+  {
+   "id": "saffire3",
+   "name": "Saffire-III",
+   "full_name": "Spacecraft Fire Safety Demonstration",
+   "pillar": "prevention",
+   "fuel": "solid",
+   "hardware": "not stated",
+   "status": "in_psi",
+   "note": "Flammability of solid materials such as fabrics and plastics.",
+   "source": "NASA Space Apps challenge text"
+  },
+  {
+   "id": "same",
+   "name": "SAME",
+   "full_name": "Smoke and Aerosol Measurement Experiment",
+   "pillar": "detection",
+   "fuel": "not stated",
+   "hardware": "not stated",
+   "status": "in_psi",
+   "note": "Fire detection tested in microgravity.",
+   "source": "NASA Space Apps challenge text"
+  },
+  {
+   "id": "same_r",
+   "name": "SAME-R",
+   "full_name": "Smoke and Aerosol Measurement Experiment",
+   "pillar": "detection",
+   "fuel": "not stated",
+   "hardware": "not stated",
+   "status": "in_psi",
+   "note": "Fire detection tested in microgravity.",
+   "source": "NASA Space Apps challenge text"
+  },
+  {
+   "id": "flex",
+   "name": "FLEX",
+   "full_name": "Flame Extinguishment Experiment",
+   "pillar": "suppression",
+   "fuel": "liquid droplets",
+   "hardware": "CIR with MDCA",
+   "status": "processed",
+   "program": "FLEX",
+   "note": "Suppression through dilution of the chamber atmosphere with carbon dioxide and helium.",
+   "source": "NASA Space Apps challenge text"
+  },
+  {
+   "id": "flex2",
+   "name": "FLEX-2",
+   "full_name": "not stated",
+   "pillar": "not stated",
+   "fuel": "liquid droplets",
+   "hardware": "CIR with MDCA",
+   "status": "in_psi",
+   "note": "Burning droplets of liquid fuel.",
+   "source": "NASA Space Apps challenge text"
+  },
+  {
+   "id": "cfi",
+   "name": "CFI",
+   "full_name": "Cool Flames Investigation",
+   "pillar": "not stated",
+   "fuel": "liquid droplets",
+   "hardware": "CIR with MDCA",
+   "status": "in_psi",
+   "note": "Burning droplets of liquid fuel.",
+   "source": "NASA Space Apps challenge text"
+  },
+  {
+   "id": "acme",
+   "name": "ACME",
+   "full_name": "Advanced Combustion via Microgravity Experiments",
+   "pillar": "not stated",
+   "fuel": "gaseous",
+   "hardware": "CIR with ACME hardware",
+   "status": "in_psi",
+   "note": "A project of six experiments with flames of gaseous fuels, all conducted with the same modular set of hardware.",
+   "source": "NASA Space Apps challenge text"
+  },
+  {
+   "id": "bre",
+   "name": "BRE",
+   "full_name": "Burning Rate Emulator",
+   "parent": "ACME",
+   "pillar": "prevention",
+   "fuel": "gaseous",
+   "hardware": "CIR with ACME hardware",
+   "status": "in_psi",
+   "note": "It burned gaseous fuels, as a study of materials flammability in still atmospheres as a function of material properties.",
+   "source": "NASA Space Apps challenge text"
+  },
+  {
+   "id": "cfi_g",
+   "name": "CFI-G",
+   "full_name": "Cool Flames Investigation with Gases",
+   "parent": "ACME",
+   "pillar": "not stated",
+   "fuel": "gaseous",
+   "hardware": "CIR with ACME hardware",
+   "status": "in_psi",
+   "note": "The text names it as the microgravity tests with the highest oxygen concentrations (inside-out flame from a spherical burner).",
+   "source": "NASA Space Apps challenge text"
+  },
+  {
+   "id": "efield",
+   "name": "E-FIELD Flames",
+   "full_name": "Electric-Field Effects on Laminar Diffusion Flames",
+   "parent": "ACME",
+   "pillar": "not stated",
+   "fuel": "gaseous",
+   "hardware": "CIR with ACME hardware",
+   "status": "in_psi",
+   "note": "Partial gravity was mimicked through the effect of the electric field on the ions that naturally occur in flames.",
+   "source": "NASA Space Apps challenge text"
+  },
+  {
+   "id": "spice",
+   "name": "SPICE",
+   "full_name": "Smoke Point In Co-flow Experiment",
+   "pillar": "not stated",
+   "fuel": "not stated",
+   "hardware": "MSG with flow duct",
+   "status": "in_psi",
+   "note": "The text says BASS, BASS-II, SPICE and SLICE collectively featured both solid and gaseous fuels; the flow duct was built for SPICE.",
+   "source": "NASA Space Apps challenge text"
+  },
+  {
+   "id": "slice",
+   "name": "SLICE",
+   "full_name": "Structure & Liftoff In Combustion Experiment",
+   "pillar": "not stated",
+   "fuel": "not stated",
+   "hardware": "MSG with flow duct",
+   "status": "in_psi",
+   "note": "The text says BASS, BASS-II, SPICE and SLICE collectively featured both solid and gaseous fuels.",
+   "source": "NASA Space Apps challenge text"
+  },
+  {
+   "id": "daft",
+   "name": "DAFT",
+   "full_name": "Dust and Aerosol Measurement Feasibility Test",
+   "pillar": "not stated",
+   "fuel": "not stated",
+   "hardware": "not stated",
+   "status": "in_psi",
+   "note": "Used one of the smoke-detection instruments of SAME and SAME-R to detect dust instead.",
+   "source": "NASA Space Apps challenge text"
+  },
+  {
+   "id": "daft2",
+   "name": "DAFT-2",
+   "full_name": "Dust and Aerosol Measurement Feasibility Test",
+   "pillar": "not stated",
+   "fuel": "not stated",
+   "hardware": "not stated",
+   "status": "in_psi",
+   "note": "Used one of the smoke-detection instruments of SAME and SAME-R to detect dust instead.",
+   "source": "NASA Space Apps challenge text"
+  },
+  {
+   "id": "luci",
+   "name": "LUCI",
+   "full_name": "Lunar-g Combustion Investigation",
+   "pillar": "not stated",
+   "fuel": "not stated",
+   "hardware": "not stated",
+   "status": "future",
+   "note": "Named as an expected future source of partial-gravity combustion data.",
+   "source": "NASA Space Apps challenge text"
+  },
+  {
+   "id": "fm2",
+   "name": "FM2",
+   "full_name": "Flammability of Materials on the Moon",
+   "pillar": "not stated",
+   "fuel": "not stated",
+   "hardware": "not stated",
+   "status": "future",
+   "note": "Named as an expected future source of partial-gravity combustion data.",
+   "source": "NASA Space Apps challenge text"
+  }
+ ]
+}

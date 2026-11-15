@@ -25,6 +25,7 @@ const SI_CARD: Record<BoardCardType, CardType | 'table' | 'materials_view'> = {
   coverage_heatmap: 'coverage',
   materials_bars: 'materials',
   tests_scatter: 'table',
+  investigations_pillars: 'investigations',
 };
 
 const SCENARIOS: readonly Scenario['id'][] = ['earth_iss', 'lunar_challenge', 'lunar_nasa', 'exploration', 'suit'];

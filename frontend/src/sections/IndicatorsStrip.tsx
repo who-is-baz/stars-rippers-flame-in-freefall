@@ -29,7 +29,7 @@ export function IndicatorsStrip() {
     <section className="ind-strip" aria-label="Dataset indicators">
       <dl className="ind-list num">
         <div title={DEF.tests}><dt>Tests</dt><dd>{comp.tests}</dd></div>
-        <div title={DEF.inv}><dt>Investigations</dt><dd>{meta.programs.length}</dd></div>
+        <div title={DEF.inv}><dt>Investigations</dt><dd><button type="button" className="ind-num-link" aria-label={`${meta.programs.length} investigations with test-level data: open the investigations catalog`} onClick={() => openView?.('investigations')}>{meta.programs.length}</button></dd></div>
         <div title={DEF.complete}><dt>Complete</dt><dd>{comp.complete} <small>of {comp.tests}</small><small className="ind-sub"> · {aiShown} AI-extracted</small></dd></div>
         <div title={DEF.partial}><dt>Partial</dt><dd>{comp.partial} <small>of {comp.tests}</small></dd></div>
         {cov && (

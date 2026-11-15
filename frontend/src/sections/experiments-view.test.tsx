@@ -97,9 +97,12 @@ describe('dock and navigation lead to the Experiments view (no duplicated explor
     fireEvent.click(screen.getByRole('button', { name: 'Explore tests' }));
     expect(await screen.findByRole('dialog', { name: 'Experiments' })).toBeInTheDocument();
   });
-  it('Investigations → grouped', async () => {
+  // The dock button now opens the investigations catalog first; the grouped table is one click further (same destination as before).
+  it('Investigations → catalog → grouped', async () => {
     renderWithBoard(<Console preset={null} />);
     fireEvent.click(screen.getByRole('button', { name: 'Investigations' }));
+    expect(await screen.findByRole('dialog', { name: 'Investigations & pillars' })).toBeInTheDocument();
+    fireEvent.click(await screen.findByRole('button', { name: 'Tests grouped by investigation' }));
     expect(await screen.findByRole('dialog', { name: 'Experiments' })).toBeInTheDocument();
     await waitFor(() => expect(document.querySelectorAll('tr.group-row').length).toBeGreaterThan(0));
   });

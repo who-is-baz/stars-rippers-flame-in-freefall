@@ -167,6 +167,11 @@ export function Sidebar({ open, onClose, pending, draft, llmUrl = ENV_URL, fetch
       setExtraCard?.({ type: 'burning_rate_line', addedBy: 'si', title });
       return title;
     }
+    if (/(investigations?\b|pillars?\b|\bprevention\b|\bdetection\b)/i.test(q)) {
+      const title = 'Investigations & fire-safety pillars';
+      setExtraCard?.({ type: 'investigations_pillars', addedBy: 'si', title });
+      return title;
+    }
     if (/(moon|lunar|habitat)/i.test(q)) {
       setScenarioId?.('lunar_challenge');
       const title = 'How did those tests end?';

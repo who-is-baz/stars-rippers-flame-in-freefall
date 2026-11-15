@@ -2391,3 +2391,22 @@ table.data tr.rel-near td:first-child { box-shadow: inset 3px 0 0 var(--flame-bl
 .next-tests { border-color: rgba(127, 245, 225, 0.28); }
 ol.next-tests-list { padding-left: 1.4em; color: var(--ink); font-size: var(--fs-sm); }
 .next-tests-note { margin: 0; padding-top: 8px; border-top: 1px solid var(--hairline); font-size: var(--fs-sm); color: var(--ink-2); line-height: 1.5; }
+
+/* ---------- investigations & fire-safety pillars ---------- */
+.pillar-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4); }
+.pillar-col { gap: var(--s-2); align-content: start; }
+.pillar-what { margin: 0; font-size: var(--fs-sm); color: var(--ink-2); line-height: 1.4; }
+.pillar-count { margin: 0; display: grid; gap: 2px; font-size: var(--fs-md); color: var(--ink); }
+.pillar-count b { color: var(--mint); font-weight: 600; }
+@media (max-width: 860px) { .pillar-grid { grid-template-columns: 1fr; } }
+table.inv-table th[scope='row'] { text-align: left; white-space: normal; min-width: 170px; }
+table.inv-table td { vertical-align: top; white-space: normal; }
+.inv-full { font-size: var(--fs-xs); font-weight: 400; line-height: 1.35; margin-top: 2px; }
+.inv-full a { color: var(--mint); }
+.inv-src { font-size: var(--fs-xs); line-height: 1.4; min-width: 220px; }
+.pillar-mini { list-style: none; margin: 0; padding: 0; display: grid; gap: 5px; font-size: var(--fs-xs); }
+.pillar-mini li { display: grid; grid-template-columns: 78px 1fr; gap: 8px; align-items: baseline; }
+.pillar-mini b { color: var(--mint); font-weight: 600; }
+.pillar-mini span { color: var(--ink); }
+.ind-num-link { background: none; border: 0; padding: 0; font: inherit; color: inherit; cursor: pointer; text-decoration: underline; text-decoration-color: var(--mint); text-underline-offset: 3px; }
+.ind-num-link:focus-visible { outline: 2px solid var(--mint); outline-offset: 2px; }

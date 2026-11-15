@@ -16,11 +16,12 @@ export type CardType =
   | 'tests_scatter'
   | 'tests_mix'
   | 'answer'
-  | 'o2_bands';
+  | 'o2_bands'
+  | 'investigations';
 
 export type Side = 'left' | 'right';
 export type AddedBy = 'preset' | 'user' | 'si';
-export type ViewId = 'overview' | 'explore' | 'coverage' | 'charts' | 'gaps' | 'scenarios' | 'fuels' | 'materials' | 'sources';
+export type ViewId = 'overview' | 'explore' | 'coverage' | 'charts' | 'gaps' | 'scenarios' | 'fuels' | 'materials' | 'sources' | 'investigations';
 
 export interface CardMeta {
   type: CardType;
@@ -45,6 +46,7 @@ export const CATALOG: CardMeta[] = [
   { type: 'tests_mix', title: 'What does the data set contain?', sub: 'Bars · FLEX + BASS-II', cat: 'Start here', side: 'right', view: 'charts' },
   { type: 'o2_bands', title: 'How many tests per oxygen level?', sub: 'Bars · FLEX · PSI-69', cat: 'Coverage & gaps', side: 'right', view: 'charts' },
   { type: 'answer', title: 'Quick answers, with sources', sub: 'Text · answers.json', cat: 'Start here', side: 'right', view: null },
+  { type: 'investigations', title: 'Investigations & fire-safety pillars', sub: 'Pillars · challenge text + meta', cat: 'Compare', side: 'left', view: 'investigations' },
 ];
 export const cardMeta = (t: CardType): CardMeta => CATALOG.find((c) => c.type === t) ?? CATALOG[0];
 
@@ -74,7 +76,8 @@ export const PRESETS: { id: PresetId; label: string; board: Board }[] = [
     id: 'full',
     label: 'Full (5)',
     board: {
-      left: ['scenario_match', 'burning_rate', 'gaps'],
+      // 'investigations' took the slot of 'gaps' (the headline above the console links to the gaps list): still 5 cards, within the slot limits
+      left: ['scenario_match', 'burning_rate', 'investigations'],
       right: ['scenario_inspector', 'coverage'],
       collapsed: [],
       addedBy: {},

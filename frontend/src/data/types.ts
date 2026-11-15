@@ -102,3 +102,19 @@ export interface AirflowFile {
   program: 'BASS-II'; source_doi: string; field: string; unit: string; extracted_by: 'AI'; note: string; n_tests: number;
   items: { test_id: string; air_speed_cm_s: number }[];
 }
+
+// investigations.json: catalog of the investigations named in the official challenge text. Only what that text says;
+// a field it does not state is "not stated". Counts, PSI ids and DOIs are NOT stored there: they come from meta.json via `program`.
+export type PillarId = 'prevention' | 'detection' | 'suppression';
+export type InvestigationStatus = 'processed' | 'in_psi' | 'future';
+export interface Investigation {
+  id: string; name: string; full_name: string; parent?: string;
+  pillar: PillarId | 'not stated'; fuel: string; hardware: string;
+  status: InvestigationStatus; program?: Program; note: string; source: string;
+}
+export interface InvestigationsFile {
+  note: string; source: string; curated_by: string; psi_search_base: string;
+  pillars: { id: PillarId; label: string; what: string; source: string }[];
+  earth_applications: { text: string; source: string };
+  investigations: Investigation[];
+}
