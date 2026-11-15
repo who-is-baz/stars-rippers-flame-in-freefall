@@ -11,7 +11,11 @@ Eres el desarrollador frontend de **Flame in Freefall** (NASA Space Apps 2026). 
 ejecutable** del dashboard en `frontend/`, sobre el que el equipo seguirá trabajando en paralelo.
 
 ### 0. Antes de escribir código
-1. Lee `CLAUDE.md`, `docs/03-analisis-datos.md`, `docs/07-api-contract.md`, `docs/tareas/charly-frontend.md`.
+1. Lee `CLAUDE.md`, `docs/design/DESIGN_BRIEF.md`, `docs/03-analisis-datos.md`, `docs/07-api-contract.md`, `docs/tareas/charly-frontend.md`.
+   **Mira con Read** `docs/design/v3_starter.png`, `v3_edit.png` y `v3_copilot.png` y abre `docs/design/reference/flame-v3-reference.html`:
+   es el diseño aprobado, y se reproduce 1:1 (estructura, paleta, tipografía, comportamiento de la escena). Antes de codificar,
+   describe en 8 líneas lo que ves; si no coincide con las imágenes, corrígete. La gráfica de líneas y el chat de la referencia
+   son ilustrativos: no son datos. (Contexto para compañeros: `docs/prompts/00-contexto-companeros.md`.)
 2. Carga y sigue las cuatro skills: `flame-react-frontend` (cómo se construye), `flame-design-system` (aspecto),
    `flame-data-viz` (datos honestos) y `flame-dashboard-builder` (tarjetas y primera vista). Ganan sobre `frontend-design`.
 3. Inspecciona `frontend/public/data/*.json`. **Las formas reales mandan** sobre cualquier suposición.
@@ -70,7 +74,7 @@ y el trailer final `AI-assisted: yes`.
 - `npm run build` sin errores TS; tests de `honesty.ts` pasando.
 - Ejecuta el recorrido: primera vista → cambiar a Moon base → abrir una tarjeta → mover una tarjeta → deshacer.
 - Revisa los checklists de `flame-design-system` §8 y `flame-data-viz` §7 y dime cuáles marcas y cuáles no.
-- Abre la app y compara contra la vista previa (`docs/design/v3_starter.png`, `v3_edit.png`, `v3_copilot.png`) solo en estructura; no copies marca NASA.
+- Abre la app y la referencia lado a lado a 1600×950 en los tres estados (Starter, Customize, Copiloto) y pasa el checklist de paridad de `docs/design/DESIGN_BRIEF.md` §9. Reporta cada diferencia.
 - Lista **lo que no quedó**, lo que supusiste y cualquier cifra que no pudiste rastrear a un JSON.
 
 ### 5. Si algo se complica

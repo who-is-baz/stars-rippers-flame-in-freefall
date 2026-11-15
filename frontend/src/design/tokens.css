@@ -1,83 +1,137 @@
 /* Design tokens: the ONLY place where raw colors, radii, blur, spacing and type sizes are defined.
-   Dark by default. Every component reads these variables. */
+   Approved v3 Space Console identity (graphite glass + single mint accent #7FF5E1; blue/ember reserved for flame & data series). */
 :root {
   color-scheme: dark;
 
-  /* surfaces */
-  --bg: #05070b;
-  --bg-raised: #0c0f15;
-  --bg-solid: #12161e; /* solid fallback when backdrop-filter is unavailable */
-  --glass: rgba(255, 255, 255, 0.045);
-  --glass-strong: rgba(255, 255, 255, 0.075);
-  --glass-chrome: rgba(10, 13, 19, 0.72);
-  --hairline: rgba(255, 255, 255, 0.1);
+  /* v3 core surfaces */
+  --space: #040506;
+  --graphite-9: #0C0E11;
+  --graphite-8: #15181C;
+  --graphite-7: #1F2328;
+  --graphite-5: #3A4048;
+  --silver: #C7CDD4;
+  --ink: #F2F4F6;
+  --ink-dim: #8E96A0;
+  --ink-faint: #5B636D; /* reticle & subtle grid only, never body text */
+
+  /* v3 graphite glass */
+  --glass: linear-gradient(150deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.035) 55%, rgba(255, 255, 255, 0.02));
+  --glass-solid: rgba(14, 16, 19, 0.78);
+  --glass-border: rgba(255, 255, 255, 0.10);
+  --glass-hi: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  --blur: 20px;
+
+  /* v3 signals: single mint UI accent + combustion/warning semantics */
+  --mint: #7FF5E1;
+  --mint-dim: rgba(127, 245, 225, 0.16);
+  --mint-rgb: 127, 245, 225;
+  --on-mint: #052A24;
+  --flame-core: #F4F7FF;
+  --flame-blue: #6F8CFF;
+  --ember: #FF8A3D;
+  --caution: #FFD166;
+  --nodata: #2A3037;
+
+  /* v3 data series tokens (never raw hex in components) */
+  --fuel-heptane: #FF8A3D;
+  --fuel-methanol: #A9B4C2;
+  --prog-flex: #7FF5E1;
+  --prog-bass2: #C9A2FF;
+  --out-extinction: #9DB7FF;
+  --out-disruption: #C9A2FF;
+  --out-completion: #FFA36B;
+  --out-blowoff: #7FE0C2;
+  --out-noflame: #8E96A0;
+  --seq-1: #26324F;
+  --seq-2: #4A62B8;
+  --seq-3: #8D8FD6;
+  --seq-4: #E2A266;
+  --seq-5: #FF8A3D;
+  --cov-1: rgba(127, 245, 225, 0.10);
+  --cov-2: rgba(127, 245, 225, 0.22);
+  --cov-3: rgba(127, 245, 225, 0.38);
+  --cov-4: rgba(127, 245, 225, 0.58);
+
+  /* backwards-compatible surface & text aliases */
+  --bg: var(--space);
+  --bg-raised: var(--graphite-9);
+  --bg-solid: var(--graphite-8);
+  --glass-strong: rgba(255, 255, 255, 0.08);
+  --glass-chrome: rgba(12, 14, 17, 0.82);
+  --hairline: var(--glass-border);
   --hairline-strong: rgba(255, 255, 255, 0.18);
+  --ink-2: var(--silver);
+  --ink-3: var(--ink-dim);
 
-  /* text (all AA on --bg and on glass) */
-  --ink: #f5f6f8;
-  --ink-2: #c3c8d1;
-  --ink-3: #a0a7b3;
+  /* map interactive accent aliases to mint */
+  --flame: var(--mint);
+  --flame-strong: #9ef9ea;
+  --flame-rgb: 127, 245, 225;
+  --on-flame: var(--on-mint);
 
-  /* the single accent: a warm flame glow */
-  --flame: #ffa24a;
-  --flame-strong: #ffb970;
-  --flame-rgb: 255, 162, 74;
-  --on-flame: #1c0f02;
-
-  /* semantic */
-  --caution: #ffd479;
-  --caution-bg: rgba(255, 212, 121, 0.1);
-  --caution-line: rgba(255, 212, 121, 0.35);
+  /* semantic statuses */
+  --caution-bg: rgba(255, 209, 102, 0.10);
+  --caution-line: rgba(255, 209, 102, 0.38);
   --muted-cell: #252a33; /* n < min_n */
   --nodata-cell: #14181f;
-  --info: #a9c4ff;
-  --info-bg: rgba(169, 196, 255, 0.1);
-  --focus: #ffd9a8;
+  --info: #9DB7FF;
+  --info-bg: rgba(157, 183, 255, 0.12);
+  --focus: var(--mint);
 
-  /* type */
-  --font-ui: 'Inter Variable', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
-  --font-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
-  --fs-xs: 0.75rem;
-  --fs-sm: 0.8125rem;
-  --fs-base: 0.9375rem;
-  --fs-md: 1.0625rem;
-  --fs-lg: 1.375rem;
-  --fs-xl: clamp(1.75rem, 1.2rem + 2vw, 2.5rem);
-  --fs-hero: clamp(2.5rem, 1.4rem + 6vw, 5.25rem);
-  --fs-stat: clamp(2rem, 1.4rem + 2.6vw, 3.25rem);
+  /* typography: Sora + IBM Plex Mono */
+  --font-ui: 'Sora', 'Inter Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
+  --fs-2xs: 0.65625rem; /* 10.5px */
+  --fs-xs: 0.71875rem;  /* 11.5px */
+  --fs-sm: 0.78125rem;  /* 12.5px */
+  --fs-base: 0.875rem;  /* 14px */
+  --fs-md: 1rem;        /* 16px */
+  --fs-lg: 1.25rem;     /* 20px */
+  --fs-num: 2.125rem;   /* 34px */
+  --fs-num-xl: 3rem;    /* 48px */
+  --fs-xl: clamp(1.5rem, 1.1rem + 1.6vw, 2.15rem);
+  --fs-hero: clamp(1.65rem, 1.2rem + 1.2vw, 2rem);
+  --fs-stat: clamp(1.85rem, 1.4rem + 2vw, 2.5rem);
 
   /* spacing */
   --s-1: 4px;
   --s-2: 8px;
   --s-3: 12px;
   --s-4: 16px;
-  --s-5: 24px;
-  --s-6: 32px;
-  --s-7: 48px;
-  --s-8: 72px;
-  --s-9: 112px;
-  --page: 1200px;
-  --gutter: clamp(16px, 4vw, 40px);
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-7: 36px;
+  --s-8: 56px;
+  --s-9: 84px;
+  --page: 1480px;
+  --gutter: clamp(14px, 2.5vw, 28px);
 
-  /* shape, depth */
+  /* radii & hierarchy */
+  --r-frame: 24px;
+  --r-panel: 16px;
+  --r-inner: 10px;
+  --r-cell: 4px;
   --r-sm: 8px;
-  --r-md: 14px;
-  --r-lg: 22px;
+  --r-md: 12px;
+  --r-lg: 16px;
   --r-pill: 999px;
-  --blur: 22px;
-  --shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset, 0 18px 50px -20px rgba(0, 0, 0, 0.7);
-  --shadow-pop: 0 30px 80px -20px rgba(0, 0, 0, 0.85);
+  --shadow: var(--glass-hi), 0 20px 50px rgba(0, 0, 0, 0.45);
+  --shadow-pop: 0 28px 70px rgba(0, 0, 0, 0.75);
 
   /* motion */
   --t-fast: 140ms;
-  --t-base: 260ms;
-  --t-slow: 520ms;
-  --ease: cubic-bezier(0.22, 0.8, 0.22, 1);
+  --t-base: 240ms;
+  --t-slow: 420ms;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease: var(--ease-out);
 
   /* layers */
+  --z-scene: 0;
+  --z-grid: 10;
   --z-nav: 30;
   --z-fab: 35;
   --z-drawer: 40;
+  --z-modal: 50;
   --z-tip: 60;
-  --drawer-w: min(440px, 100vw);
+  --drawer-w: min(400px, 100vw);
 }

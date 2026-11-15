@@ -4,6 +4,7 @@ import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { CoverageMap } from '../sections/CoverageMap';
 import { ScenarioExplorer } from '../sections/ScenarioExplorer';
 import { Materials } from '../sections/Materials';
+import { Hero } from '../sections/Hero';
 import { Sidebar } from '../assistant/Sidebar';
 import { FALLBACK_NOTICE, OUT_OF_SCOPE } from '../assistant/engine';
 import { data, renderWithData } from './render';
@@ -111,5 +112,22 @@ describe('assistant sidebar', () => {
     renderWithData(<Sidebar open onClose={() => {}} llmUrl={undefined} />);
     ask('Who won the football match?');
     await waitFor(() => expect(screen.getByText(OUT_OF_SCOPE)).toBeInTheDocument());
+  });
+});
+
+describe('space console hero & SVG charts', () => {
+  it('renders the microgravity combustion scene with honesty legend, Moon-base default, radar and KPI rings', () => {
+    renderWithData(<Hero />);
+    expect(screen.getByText('Illustration. Not a combustion simulation.')).toBeInTheDocument();
+    expect(screen.getByText('Near Moon-base air')).toBeInTheDocument();
+    expect(screen.getByText(/10 of 15 conditions tested/)).toBeInTheDocument();
+    expect(screen.getByText(/2 points with n < 5/)).toBeInTheDocument();
+    expect(screen.getByText('BASS-II outcomes stated')).toBeInTheDocument();
+    expect(screen.getByText('FLEX conditions tested')).toBeInTheDocument();
+
+    // Switching atmosphere in the dock updates the inspector
+    const earthBtn = screen.getByRole('button', { name: /Earth \/ ISS/ });
+    fireEvent.click(earthBtn);
+    expect(screen.getAllByText('49 tests').length).toBeGreaterThan(0);
   });
 });
