@@ -1,4 +1,4 @@
-// Copiado de flame-react-frontend §4 (verificado contra los JSON del 14 nov). No renombrar campos.
+// Types written from the real files in public/data (checked 2026-11-14). Do not rename fields.
 export type Program = 'FLEX' | 'BASS-II';
 export type Fuel = 'heptane' | 'methanol';
 export type Outcome =
@@ -11,7 +11,7 @@ export type PressureLevel = '~0.7 atm' | '~1.0 atm' | '>2 atm';
 
 export interface ProgramMeta { program: Program; psi_id: string; n: number; source_doi: string; what: string }
 export interface Meta {
-  title: string; generated_utc: string; license: string; n_tests: number;
+  title: string; generated_utc: string; generated_by: string; license: string; n_tests: number;
   programs: ProgramMeta[]; source_doi: string[];
   tolerance: { o2_fraction: number; pressure_psi: number };
   o2_bands: { label: O2Band; min_inclusive: number; max_exclusive: number }[];
@@ -29,11 +29,13 @@ export interface ExperimentRow {
   outcome: Outcome | null; outcome_source: OutcomeSource;
   extinction_diameter_mm: number | null; burning_rate_mm2_s: number | null;
   qc_flags: string[]; source_doi: string;
-  low_confidence_warning?: string;
+  // NOTE: `low_confidence_warning` (docs/07-api-contract.md) is NOT present in experiments.json;
+  // the UI derives it from the `low_confidence` qc flag (see lib/honesty.ts).
 }
 export interface ExperimentsFile { columns: string[]; total: number; items: ExperimentRow[] }
 
 export interface CoverageCell {
+  // TODO(contract): docs/07-api-contract.md names this `pressure_atm_level`; coverage.json ships `pressure_level`.
   fuel: Fuel; o2_band: O2Band; pressure_level: PressureLevel;
   n: number; status: CellStatus;
   n_by_suppressant: { none: number; co2: number; he: number };
@@ -91,6 +93,6 @@ export interface MaterialsFile {
 export interface Citation { query: string; params: Record<string, unknown>; source_doi: string; test_ids: string[] }
 export interface Answer {
   id?: string; question?: string; answer: string; citations: Citation[];
-  no_data: boolean; warnings?: string[]; level: 'low' | 'medium' | 'high'; tool_calls?: unknown[];
+  no_data: boolean; warnings?: string[]; level: string; tool_calls?: unknown[];
 }
 export interface AnswersFile { level: 'low'; note: string; answers: Answer[] }

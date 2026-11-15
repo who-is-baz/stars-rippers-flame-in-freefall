@@ -5,5 +5,3 @@ export const loadStatic = async <T,>(file: string): Promise<T> => {
   return (await res.json()) as T;
 };
 
-// VITE_API_URL es opcional y público; en el paquete A no se usa (todo sale de los JSON).
-export const API_URL = import.meta.env.VITE_API_URL as string | undefined;

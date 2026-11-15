@@ -14,6 +14,7 @@ export type DataState =
   | { status: 'ready'; data: DataBundle };
 
 export const DataContext = createContext<DataState>({ status: 'loading' });
+export const RetryContext = createContext<() => void>(() => {});
 
 // assertShape mínima: comprueba solo las claves que la UI necesita para no pintar una gráfica en blanco.
 // (Se evita zod: no está en la lista de dependencias autorizadas.)
@@ -45,15 +46,25 @@ async function loadAll(): Promise<DataBundle> {
   return { meta, scenarios, coverage, experiments, gaps, materials, answers };
 }
 
+// Loaded once per page: every consumer shares this promise (module-level cache).
+let cache: Promise<DataBundle> | null = null;
+export const loadDataOnce = (): Promise<DataBundle> => (cache ??= loadAll().catch((e: unknown) => { cache = null; throw e; }));
+
 export function DataProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<DataState>({ status: 'loading' });
+  const [attempt, setAttempt] = useState(0);
   useEffect(() => {
+    setState({ status: 'loading' });
     let alive = true;
-    loadAll().then(
+    loadDataOnce().then(
       (data) => alive && setState({ status: 'ready', data }),
       (e: unknown) => alive && setState({ status: 'error', message: e instanceof Error ? e.message : String(e) }),
     );
     return () => { alive = false; };
-  }, []);
-  return <DataContext.Provider value={state}>{children}</DataContext.Provider>;
+  }, [attempt]);
+  return (
+    <RetryContext.Provider value={() => setAttempt((a) => a + 1)}>
+      <DataContext.Provider value={state}>{children}</DataContext.Provider>
+    </RetryContext.Provider>
+  );
 }
