@@ -21,8 +21,13 @@ for (const url of urls) {
     page.on('response', (r) => { if (r.status() >= 400) problems.push(`HTTP ${r.status()}: ${r.url()}`); });
     page.on('request', (r) => { if (!r.url().startsWith(origin) && !r.url().startsWith('data:')) problems.push(`external request: ${r.url()}`); });
     const overflow = async (where) => {
-      // Real test: can the page be scrolled sideways? (scrollWidth alone over-reports when body clips overflow-x.)
-      const x = await page.evaluate(() => { window.scrollTo(9999, window.scrollY); const v = window.scrollX; window.scrollTo(0, window.scrollY); return v; });
+      // Can a USER scroll the page sideways? Only if the root's overflow-x is visible/auto/scroll (with hidden/clip the
+      // content past the edge is unreachable; window.scrollTo can still move it programmatically, so it is not tested).
+      const x = await page.evaluate(() => {
+        const ox = getComputedStyle(document.documentElement).overflowX, ob = getComputedStyle(document.body).overflowX;
+        if (['hidden', 'clip'].includes(ox) || (ox === 'visible' && ['hidden', 'clip'].includes(ob))) return 0;
+        window.scrollTo(9999, window.scrollY); const v = window.scrollX; window.scrollTo(0, window.scrollY); return v;
+      });
       if (x > 0) problems.push(`page scrolls horizontally at ${where}: ${x}px`);
       if (width <= 768) {
         const o = await page.evaluate(() => [document.documentElement.scrollWidth, window.innerWidth]);

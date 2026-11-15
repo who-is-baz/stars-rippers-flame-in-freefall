@@ -2211,3 +2211,12 @@ ul.plain { margin: 0; padding-left: 1.1em; display: grid; gap: var(--s-2); color
 @media (max-width: 1180px) {
   .view-panel { z-index: 120; }
 }
+
+/* Rail header: opaque buttons so decorative stars never show through them; wraps instead of piling up. */
+.rail-header { flex-wrap: wrap; gap: 6px; row-gap: 6px; }
+.rail-help { background: rgba(12, 14, 18, 0.9); border: 1px solid var(--glass-border); position: relative; z-index: 1; }
+.rail-eyebrow { background: rgba(12, 14, 18, 0.9); border-radius: var(--r-pill); padding: 2px 8px; }
+.slot-btn { background: rgba(12, 14, 18, 0.88); }
+
+/* The page itself never scrolls sideways (closed drawers and animated panels can transiently exceed the viewport). */
+html { overflow-x: clip; }
