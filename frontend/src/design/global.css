@@ -1953,10 +1953,6 @@ ul.plain { margin: 0; padding-left: 1.1em; display: grid; gap: var(--s-2); color
 @media (max-width: 760px) { .donut { grid-template-columns: 1fr; } }
 
 /* ---------- Twinkling & Drifting Starfield in FlameScene ---------- */
-@keyframes starTwinkle {
-  0%, 100% { opacity: 0.14; transform: scale(0.75); }
-  50% { opacity: 1; transform: scale(1.42); }
-}
 @keyframes starDrift1 {
   0%, 100% { transform: translate3d(0, 0, 0); }
   50% { transform: translate3d(-18px, -10px, 0); }
@@ -1969,46 +1965,6 @@ ul.plain { margin: 0; padding-left: 1.1em; display: grid; gap: var(--s-2); color
   0%, 100% { transform: translate3d(0, 0, 0); }
   50% { transform: translate3d(-12px, 12px, 0); }
 }
-@keyframes shootingStar1 {
-  0%, 72%, 100% { opacity: 0; transform: translate3d(-30px, -12px, 0) scaleX(0.4); }
-  78% { opacity: 0.9; }
-  88% { opacity: 0; transform: translate3d(140px, 52px, 0) scaleX(1.15); }
-}
-@keyframes shootingStar2 {
-  0%, 36%, 100% { opacity: 0; transform: translate3d(-24px, -10px, 0) scaleX(0.4); }
-  42% { opacity: 0.85; }
-  52% { opacity: 0; transform: translate3d(130px, 48px, 0) scaleX(1.1); }
-}
-.star-layer {
-  will-change: opacity, transform;
-  transform-box: fill-box;
-  transform-origin: center;
-}
-.star-t1 { animation: starTwinkle 1.8s ease-in-out infinite; }
-.star-t2 { animation: starTwinkle 2.5s ease-in-out 0.6s infinite; }
-.star-t3 { animation: starTwinkle 3.2s ease-in-out 1.3s infinite; }
-.star-t4 { animation: starTwinkle 2.1s ease-in-out 1.7s infinite; }
-.star-t5 { animation: starTwinkle 2.8s ease-in-out 0.9s infinite; }
-
-.star-drift-1 { animation: starDrift1 22s ease-in-out infinite; }
-.star-drift-2 { animation: starDrift2 28s ease-in-out infinite; }
-.star-drift-3 { animation: starDrift3 34s ease-in-out infinite; }
-.star-drift-bg { animation: starDrift1 44s linear infinite; }
-
-.shooting-star {
-  opacity: 0;
-  transform-box: fill-box;
-  transform-origin: left center;
-}
-.shooting-star-1 { animation: shootingStar1 9.5s ease-out infinite; }
-.shooting-star-2 { animation: shootingStar2 13.5s ease-out infinite; }
-
-.console-frame.is-busy .star-layer,
-.console-frame.is-busy .star-drift-1,
-.console-frame.is-busy .star-drift-2,
-.console-frame.is-busy .star-drift-3,
-.console-frame.is-busy .shooting-star,
-.scene-svg.drag .star-layer { animation-play-state: paused; }
 @media (max-width: 1320px) {
   .console-frame.is-assistant-open .console-dock,
   .console-frame.is-assistant-open .dock-explorer {
@@ -2444,3 +2400,30 @@ table.inv-table td { vertical-align: top; white-space: normal; }
 .fire .fire-shell { transform-box: fill-box; transform-origin: 50% 50%; animation: fireShell 3.6s ease-in-out infinite alternate; }
 @keyframes fireShell { 0% { transform: scale(0.93); opacity: 0.55; } 38% { transform: scale(1.04); opacity: 1; } 71% { transform: scale(0.99); opacity: 0.75; } 100% { transform: scale(1.07); opacity: 0.9; } }
 .fire .ft.fl { transform-origin: 50% 92%; }
+
+/* ---------- star field as compositor layers behind the scene SVG (transform / opacity only) ---------- */
+.scene-svg { position: relative; }
+.starfield { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.starfield svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.sf-layer { position: absolute; inset: 0; will-change: transform, opacity; }
+.sf-drift-bg { animation: starDrift1 44s linear infinite; }
+.sf-drift-1 { animation: starDrift1 22s ease-in-out infinite; }
+.sf-drift-2 { animation: starDrift2 28s ease-in-out infinite; }
+.sf-drift-3 { animation: starDrift3 34s ease-in-out infinite; }
+@keyframes sfTwinkle { 0%, 100% { opacity: 0.14; } 50% { opacity: 1; } }
+.sf-t1 { animation: sfTwinkle 1.8s ease-in-out infinite; }
+.sf-t2 { animation: sfTwinkle 2.5s ease-in-out 0.6s infinite; }
+.sf-t3 { animation: sfTwinkle 3.2s ease-in-out 1.3s infinite; }
+.sf-t4 { animation: sfTwinkle 2.1s ease-in-out 1.7s infinite; }
+.sf-t5 { animation: sfTwinkle 2.8s ease-in-out 0.9s infinite; }
+.sf-meteor { opacity: 0; }
+.sf-meteor-1 { animation: sfMeteor1 9.5s ease-out infinite; }
+.sf-meteor-2 { animation: sfMeteor2 13.5s ease-out infinite; }
+@keyframes sfMeteor1 { 0%, 72%, 100% { opacity: 0; transform: translate3d(-30px, -12px, 0); } 78% { opacity: 0.9; } 88% { opacity: 0; transform: translate3d(140px, 52px, 0); } }
+@keyframes sfMeteor2 { 0%, 36%, 100% { opacity: 0; transform: translate3d(-24px, -10px, 0); } 42% { opacity: 0.85; } 52% { opacity: 0; transform: translate3d(130px, 48px, 0); } }
+/* paused while the tab is hidden, while a full view is open (busy) or while dragging; phones: no twinkle, no meteors */
+.sf-paused .sf-layer, .console-frame.is-busy .sf-layer { animation-play-state: paused; }
+.sf-phone .sf-tw { animation: none; opacity: 0.75; will-change: auto; }
+@media (min-width: 1181px) {
+  .console-frame.is-custom .starfield { transform: translateY(-6%); transition: transform 0.4s var(--ease); }
+}
