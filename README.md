@@ -13,6 +13,7 @@ Intelligence", i.e. an AI/LLM) assistant answers only from these data and says "
 | Custom explorer: observed tests only | No test within tolerance |
 |---|---|
 | ![Custom explorer, mixed outcomes](docs/screenshots/explorer-mixed.png) | ![Custom explorer, no test](docs/screenshots/explorer-empty.png) |
+| ![Moon base atmosphere, microgravity flame](docs/screenshots/flame-moon.png) | ![Earth 1 g reference, illustration only](docs/screenshots/flame-earth-1g-reference.png) |
 
 ## Run it
 **1. Static site only (what is published; no backend, no AI model)**

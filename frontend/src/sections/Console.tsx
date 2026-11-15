@@ -330,7 +330,7 @@ export function Console({ preset, assistantOpen = false }: { preset: TablePreset
     const caption = m.n === 0
       ? 'No test within tolerance of these settings'
       : `${m.byOutcome.extinction} of ${m.n} tests ended in extinction${m.meanRate != null ? ` · Observed mean burning rate ${m.meanRate.toFixed(2)} mm²/s (n = ${m.nRate})` : ''}${atm.state === 'small_n' ? ' · n < 5' : atm.state === 'mixed' ? ' · mixed outcomes' : ''}`;
-    return { state: atm.state, glow: atm.glow, k: m.byOutcome.extinction, n: m.n, atmosphere: fmtCrit(atm.filters.o2, atm.filters.pressure_psi), caption };
+    return { state: atm.state, glow: atm.glow, k: m.byOutcome.extinction, n: m.n, atmosphere: fmtCrit(atm.filters.o2, atm.filters.pressure_psi), caption, o2: atm.filters.o2.value, psi: atm.filters.pressure_psi.value };
   }, [customOn, atm.result, atm.state, atm.glow, atm.filters.o2, atm.filters.pressure_psi]);
   const customState = useMemo<CustomState>(() => {
     if (!customOn) return { active: false, summary: null };

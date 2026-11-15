@@ -447,3 +447,10 @@ Yael pidió que Claude tomara las decisiones abiertas.
 4. Asistente: `scope.py` (negativa fija sin modelo), espejo generado para Basic, `tests/test_scope.py` y `scope.test.ts` con 78 casos compartidos.
 5. Datos: `scripts/audit_numbers.py` (182 comprobaciones, 0 discrepancias; detectó un "403 tests" escrito a mano que ahora se calcula) y 7 pruebas de reglas inmutables.
 6. Ollama sigue sin responder (disco no montado): no se corrió el benchmark ni las pruebas con modelo real. Revisión humana pendiente.
+
+## 2026-11-15 (31) — Asistente que responde sobre la página, cámara fija y llamas ilustrativas por escenario — Claude (Sonnet 5.5, Claude Code)
+
+1. **Bug:** 24 de 27 preguntas legítimas sobre la página caían en la negativa. Nueva categoría "about the site" (`about.py` + espejo generado en TypeScript): texto fijo, cifras de los datos, badge "About this site", negativa con 4 sugerencias clicables, tolerancia a errores y español. 213 casos compartidos entre backend y Basic (pytest 758, Vitest 316).
+2. **Cámara fija:** sin rotación por arrastre, sin zoom con rueda, sin botones +/−/reset; el scroll de la página funciona sobre la escena (verificado a 390/768/1280 px).
+3. **Llamas:** apariencia ilustrativa por O₂ y presión (`lib/flameLook.ts`), palito de fósforo, partículas de oxígeno por difusión, referencia "Earth 1 g (illustration)" con aviso obligatorio, atenuación sin pruebas y `prefers-reduced-motion`. Capturas en `docs/screenshots/flame-*.png` revisadas por la IA.
+4. Lighthouse móvil 95/100/100/100; Playwright estático raíz y subdirectorio: 0 errores. Revisión humana pendiente de los textos "about" y del aspecto de las llamas.

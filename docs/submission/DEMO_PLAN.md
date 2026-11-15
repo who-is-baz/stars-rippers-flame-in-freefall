@@ -30,14 +30,20 @@ not eligible for Global Judging. English on screen; spoken language may differ o
 
 Export at 1920×1080, 30 fps. **Check the final file length (must show ≤ 0:30 in the player) before uploading.**
 
+**Visuals (updated 15 Nov):** each scenario now has its own illustrative microgravity flame (round, faint, held by a match stick, oxygen
+drifting in from every side; warmer and fainter near air, brighter and whiter at ≥30% O₂): `docs/screenshots/flame-earth-iss.png`,
+`flame-moon.png`, `flame-lunar-habitat.png`, `flame-exploration.png`, `flame-spacesuit.png` (dimmed, "No matching tests — illustration only").
+`flame-earth-1g-reference.png` is the optional **Earth 1 g (illustration)** comparison with its mandatory note "Reference only. This dataset has no 1 g or
+partial-gravity tests." If you show it in the video, keep that note on screen. The camera is fixed (no rotation or wheel zoom).
+
 ## B. Alternative: 7 slides (including title)
 
 | # | Slide | Content (English, few words) | Image |
 |---|---|---|---|
 | 1 | Title | Flame in Freefall Explorer · Stars Rippers · team names · Challenge: Flame in Freefall · NASA Space Apps 2026 | `docs/screenshots/explorer-mixed.png` (cropped to the chamber) |
 | 2 | Problem | Moon habitats may use ≥30% O₂ at ≤10.2 psi. What do 403 NASA microgravity fire tests say about that air? | none / simple diagram |
-| 3 | What we built | One-page dashboard organised by atmosphere: scenarios, coverage map, table, fuels, materials, gaps, SI assistant | full Overview screenshot (take at 1600×1000) |
-| 4 | Key finding | Moon-base air: **0 exact, 17 near** tests (10.33–10.50 psi, 30–34% O₂; 15 disruption, 2 completion). Earth/ISS: 49. Coverage 20/30 cells | Overview with the Moon base card selected |
+| 3 | What we built | One-page dashboard organised by atmosphere: scenarios, coverage map, table, fuels, materials, gaps, SI assistant | `docs/screenshots/flame-earth-iss.png` (full Overview at 1600×1000) |
+| 4 | Key finding | Moon-base air: **0 exact, 17 near** tests (10.33–10.50 psi, 30–34% O₂; 15 disruption, 2 completion). Earth/ISS: 49. Coverage 20/30 cells | `docs/screenshots/flame-moon.png` |
 | 5 | Custom explorer | Retrieval, not simulation: mixed / all extinguished / n < 5 / no test | `explorer-out.png`, `explorer-small_n.png`, `explorer-empty.png` |
 | 6 | Honest SI | Answers only from the data with DOIs; "No data" for lunar gravity; code checks every number; optional local models | screenshot of the assistant answering the lunar-gravity question |
 | 7 | Limits & next | Microgravity only; no predictions; CO₂/He confounded; next: more PSI investigations, verified sources, real-model tests. Data CC0 · Code Apache-2.0 | `docs/screenshots/explorer-empty.png` or Gaps view |

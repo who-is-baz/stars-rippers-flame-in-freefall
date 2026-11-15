@@ -2,15 +2,17 @@
 // Driven by the active atmosphere scenario from scenarios.json (O₂ fraction scales flame radius & brightness).
 // No drag-to-rotate and no wheel zoom: the page keeps scrolling over the scene. The static artwork is memoized and
 // has no SVG filters, so changing a card never forces the whole scene to repaint.
-import { memo, useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import type { Scenario } from '../data/types';
 import type { ExplanationMode } from '../state/ui';
 import { fmtCriterionO2, fmtCriterionP } from '../lib/scenario';
 import type { FlameState } from '../lib/explorer';
+import { diffusionParticles, flameLook, particleCount, risingParticles, type FlameLook, type Particle } from '../lib/flameLook';
+import { LookDefs, MatchStick, NO_TESTS_NOTE, OneGFlame, Particles, REF_1G_NOTE, useIsPhone, usePageHidden, usePrefersReducedMotion } from './FlameArt';
 
 // Custom explorer ("observed" mode): the flame is driven only by matched FLEX tests (lib/explorer.ts).
 // glow = observed mean burning rate on the fixed GLOBAL FLEX scale (0–1, never rescaled per selection).
-export interface ObservedFlame { state: FlameState; glow: number | null; k: number; n: number; atmosphere: string; caption: string }
+export interface ObservedFlame { state: FlameState; glow: number | null; k: number; n: number; atmosphere: string; caption: string; o2?: number; psi?: number }
 const obsScale = (glow: number | null) => (glow == null ? 1 : Number((0.8 + 0.6 * glow).toFixed(3)));
 
 export type ZoomLevel = 1 | 2 | 3; // 1 = Chamber, 2 = Flame, 3 = Droplet
@@ -226,7 +228,10 @@ function OutcomeRing({ k, n }: { k: number; n: number }) {
   );
 }
 
-const Chamber = memo(function Chamber({ flameScale, rimOpacity, showRuler, obs }: { flameScale: number; rimOpacity: number; showRuler: boolean; obs?: ObservedFlame }) {
+interface ChamberArt { look: FlameLook; level: ZoomLevel; oneG: boolean; particles: Particle[]; animated: boolean; dim: boolean }
+const Chamber = memo(function Chamber({ flameScale, rimOpacity, obs, art }: { flameScale: number; rimOpacity: number; obs?: ObservedFlame; art: ChamberArt }) {
+  const { look, level, oneG, particles, animated, dim } = art;
+  const showRuler = level === 3;
   return (
     <>
       <circle cx="800" cy="480" r="330" fill="url(#metalGrad)" />
@@ -254,26 +259,29 @@ const Chamber = memo(function Chamber({ flameScale, rimOpacity, showRuler, obs }
       <circle cx="800" cy="480" r="252" fill="none" stroke="#C7CDD4" strokeOpacity="0.18" strokeDasharray="60 18 4 18" />
 
       {/* Quartz tether fiber + fuel droplet + spherical flame (the gradient is already soft: no blur filter) */}
-      <line x1="800" y1="480" x2="800" y2="760" stroke="#8E96A0" strokeOpacity="0.55" strokeWidth="1.2" />
-      {obs?.state === 'empty' ? (
+      <LookDefs look={look} />
+      {level === 3 ? <line x1="800" y1="480" x2="800" y2="760" stroke="#8E96A0" strokeOpacity="0.55" strokeWidth="1.2" /> : <MatchStick />}
+      {!(obs?.state === 'empty') && !(obs && (obs.state === 'out')) && <Particles list={particles} animated={animated} kind={oneG ? 'rising' : 'diffusion'} />}
+      {oneG ? <OneGFlame animated={animated} /> : obs?.state === 'empty' ? (
         <g className="obs-empty" data-obs-state="empty">
           <circle cx="800" cy="480" r="150" fill="url(#hatchPat)" stroke="#5B636D" strokeDasharray="6 6" />
           <text x="800" y="424" textAnchor="middle" fill="#C7CDD4" fontSize="15" fontFamily="var(--font-mono)">No test within tolerance</text>
           <text x="800" y="446" textAnchor="middle" fill="#8E96A0" fontSize="12" fontFamily="var(--font-mono)">of these settings</text>
         </g>
       ) : (
-        <g style={{ transformOrigin: '800px 480px', transform: `scale(${flameScale})`, transition: 'transform 0.6s var(--ease-out)' }}
-          className={obs ? `obs-flame obs-${obs.state}` : undefined} data-obs-state={obs?.state} data-obs-scale={obs ? flameScale : undefined}>
+        <g style={{ transformOrigin: '800px 480px', transform: `scale(${flameScale})`, transition: 'transform 0.6s var(--ease-out)', opacity: dim ? 0.35 : undefined }}
+          className={obs ? `obs-flame obs-${obs.state}` : undefined} data-obs-state={obs?.state} data-obs-scale={obs ? flameScale : undefined} data-flame="micro">
           <circle className="flame-ring" cx="800" cy="480" r="118" fill="none" stroke="#D3DDFF" strokeWidth="2" />
           <g className={!obs || obs.state === 'stable' ? 'flame-breath' : obs.state === 'mixed' ? 'obs-flicker' : undefined}>
-            <circle cx="800" cy="480" r="200" fill="url(#haloGrad)" />
-            <circle cx="800" cy="480" r="118" fill={obs?.state === 'small_n' ? 'url(#flameGradGrey)' : 'url(#flameGrad)'} />
+            <circle cx="800" cy="480" r={look.haloRadius} fill="url(#haloLook)" />
+            <circle cx="800" cy="480" r="118" fill={obs?.state === 'small_n' ? 'url(#flameGradGrey)' : 'url(#flameLook)'} />
             <circle cx="800" cy="480" r="74" fill="none" stroke="#D3DDFF" strokeOpacity={rimOpacity} />
           </g>
         </g>
       )}
-      {obs && obs.n > 0 && <OutcomeRing k={obs.k} n={obs.n} />}
-      <circle cx="800" cy="480" r="11" fill="#0b0e14" stroke="#E6EAF0" strokeOpacity="0.7" />
+      {obs && obs.n > 0 && !oneG && <OutcomeRing k={obs.k} n={obs.n} />}
+      {level === 3 && <circle cx="800" cy="480" r="11" fill="#0b0e14" stroke="#E6EAF0" strokeOpacity="0.7" />}
+      {dim && !oneG && <text x="800" y="700" textAnchor="middle" fill="#E6EAF0" fontSize="15" fontFamily="var(--font-mono)" stroke="#05070a" strokeWidth="7" paintOrder="stroke" strokeLinejoin="round" data-note="no-tests">{NO_TESTS_NOTE}</text>}
 
       <g opacity={showRuler ? 1 : 0} style={{ transition: 'opacity 0.3s' }}>
         <line x1="785" y1="502" x2="815" y2="502" stroke="#7FF5E1" strokeWidth="0.9" />
@@ -314,11 +322,22 @@ export const FlameScene = memo(function FlameScene({ scenario, mode = 'explorer'
   const svgRef = useRef<SVGSVGElement>(null);
   const worldRef = useRef<SVGGElement>(null);
   const [level, setLevel] = useState<ZoomLevel>(1);
+  const [oneG, setOneG] = useState(false);          // "Earth 1 g (illustration)": reference only, never tied to data
+  const reduced = usePrefersReducedMotion();
+  const hidden = usePageHidden();
+  const phone = useIsPhone();
 
   // Illustrative flame scale from scenario O₂ & pressure (Earth 21% O₂ = 1.0x, Moon 30% = 1.18x, ...)
   const o2Val = scenario.criteria.o2.value;
   const pVal = scenario.criteria.pressure_psi.value;
   const flameScale = observed ? obsScale(observed.glow) : Number(Math.min(1.42, Math.max(0.86, 0.78 + o2Val * 1.15)).toFixed(2));
+  // Illustrative look: colour by O₂, halo by pressure. In Custom, size and brightness still come from the observed data.
+  const lookO2 = observed?.o2 ?? o2Val, lookPsi = observed?.psi ?? pVal;
+  const noTests = !observed && scenario.n_exact === 0 && scenario.n_near === 0;
+  const look = useMemo(() => flameLook(lookO2, lookPsi), [lookO2, lookPsi]);
+  const nParticles = oneG ? (phone ? 8 : 16) : Math.max(4, Math.round(particleCount(lookO2, phone) * (noTests ? 0.4 : 1)));
+  const particles = useMemo(() => (oneG ? risingParticles(nParticles) : diffusionParticles(nParticles)), [oneG, nParticles]);
+  const art = useMemo(() => ({ look, level, oneG, particles, animated: !reduced && !hidden, dim: noTests }), [look, level, oneG, particles, reduced, hidden, noTests]);
   const rimOpacity = observed ? 0.5 : Number(Math.min(0.75, Math.max(0.3, pVal / 22)).toFixed(2));
 
   // Fixed camera: no drag-to-rotate and no wheel zoom (the page must keep scrolling over the scene). The three
@@ -356,9 +375,9 @@ export const FlameScene = memo(function FlameScene({ scenario, mode = 'explorer'
         <Backdrop />
         <g ref={worldRef} transform={INITIAL_WORLD}>
           <g>
-            <Chamber flameScale={flameScale} rimOpacity={rimOpacity} showRuler={level >= 2} obs={observed} />
+            <Chamber flameScale={flameScale} rimOpacity={rimOpacity} obs={observed} art={art} />
           </g>
-          <Callouts scenario={scenario} mode={mode} dim={level !== 1} atmosphere={observed?.atmosphere} />
+          <Callouts scenario={scenario} mode={mode} dim={level !== 1} atmosphere={oneG ? 'Earth 1 g (illustration)' : observed?.atmosphere} />
         </g>
       </svg>
 
@@ -370,9 +389,16 @@ export const FlameScene = memo(function FlameScene({ scenario, mode = 'explorer'
         ))}
       </div>
 
+      <button type="button" className="onegtoggle" aria-pressed={oneG} onClick={() => setOneG((v) => !v)}
+        title="Show the typical flame in normal gravity next to nothing from this dataset: a reference picture only">
+        Earth 1 g (illustration)
+      </button>
+      {oneG && <div className="ref-1g-note" role="note">{REF_1G_NOTE}</div>}
+
       <div className="scene-legend">
         <span>Illustration. Not a combustion simulation.</span>
-        {observed && <span className="obs-caption">{observed.caption}</span>}
+        {observed && !oneG && <span className="obs-caption">{observed.caption}</span>}
+        {observed && !oneG && <span className="obs-legend">Colour is illustrative (set by O₂); size and brightness come from the data.</span>}
       </div>
     </div>
   );

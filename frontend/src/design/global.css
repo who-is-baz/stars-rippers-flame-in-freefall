@@ -2220,3 +2220,40 @@ ul.plain { margin: 0; padding-left: 1.1em; display: grid; gap: var(--s-2); color
 
 /* The page itself never scrolls sideways (closed drawers and animated panels can transiently exceed the viewport). */
 html { overflow-x: clip; }
+
+/* ---------- Illustrative flames: oxygen particles, match stick, 1 g reference (decoration only) ---------- */
+.o2p { fill: #9FD8FF; opacity: 0; animation: o2drift var(--dur, 10s) linear var(--delay, 0s) infinite; }
+@keyframes o2drift {
+  0% { transform: translate(0, 0); opacity: 0; }
+  15% { opacity: 0.75; }
+  85% { opacity: 0.75; }
+  100% { transform: translate(var(--dx), var(--dy)); opacity: 0; }
+}
+.o2p-static { animation: none; opacity: 0.45; }
+.flame-1g { transform-origin: 800px 490px; animation: flame1g 1.4s ease-in-out infinite; }
+@keyframes flame1g { 0%, 100% { transform: scaleY(1) skewX(0deg); } 50% { transform: scaleY(1.05) skewX(1.6deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .o2p { animation: none; opacity: 0.45; }
+  .flame-1g, .flame-breath, .obs-flicker { animation: none; }
+}
+.console-frame.is-busy .o2p, .scene-svg.drag .o2p { animation-play-state: paused; }
+.onegtoggle {
+  position: absolute; bottom: 128px; left: 50%; transform: translateX(-50%); z-index: 8;
+  font: 400 11.5px var(--font-mono); color: var(--silver);
+  padding: 4px 12px; border-radius: var(--r-pill); border: 1px solid var(--glass-border);
+  background: rgba(12, 14, 18, 0.88); cursor: pointer;
+}
+.onegtoggle[aria-pressed='true'] { color: #fff; border-color: #FF9D4D; background: rgba(60, 28, 14, 0.9); }
+.onegtoggle:focus-visible { outline: 2px solid var(--mint); outline-offset: 2px; }
+.ref-1g-note {
+  position: absolute; bottom: 162px; left: 50%; transform: translateX(-50%); z-index: 8; max-width: calc(100% - 28px); text-align: center;
+  font: 400 12px var(--font-mono); color: #FFD9B8; background: rgba(40, 20, 10, 0.92);
+  border: 1px solid rgba(255, 157, 77, 0.5); border-radius: var(--r-md); padding: 5px 12px;
+}
+.obs-legend { color: var(--ink-dim); }
+.console-frame.is-busy .onegtoggle, .console-frame.is-busy .ref-1g-note,
+.console-frame.is-exploring .onegtoggle, .console-frame.is-exploring .ref-1g-note { opacity: 0; pointer-events: none; }
+@media (max-width: 1180px) { .onegtoggle { bottom: 52px; } .ref-1g-note { bottom: 86px; } }
+@media (min-width: 1181px) {
+  .console-frame.is-custom .scene-legend { white-space: normal; flex-wrap: wrap; justify-content: center; text-align: center; max-width: 480px; width: max-content; row-gap: 2px; }
+}
