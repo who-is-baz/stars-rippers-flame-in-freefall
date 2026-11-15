@@ -89,7 +89,7 @@ describe('assistant sidebar', () => {
     await waitFor(() => expect(screen.getByText(FALLBACK_NOTICE)).toBeInTheDocument());
     expect(fetchImpl).toHaveBeenCalledOnce();
     expect(screen.getByText(/None exactly \(0\)/)).toBeInTheDocument();      // the precomputed answer q03
-    expect(screen.getByText(/Basic · no model/)).toBeInTheDocument();
+    expect(screen.getByText(/Basic · fixed answer/)).toBeInTheDocument();
     expect(screen.queryByText('AI-generated text')).toBeNull();
   });
 

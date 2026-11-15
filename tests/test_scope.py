@@ -47,6 +47,7 @@ def test_scope_cases_without_model(case, level):
         assert b["answer"] == REFUSAL and b["no_data"] is True
         assert b["citations"] == [] and b["tool_calls"] == [] and llm.calls == []
         assert len(b["meta"]["suggestions"]) >= 3 and "What is this page?" in b["meta"]["suggestions"]
+        assert b["meta"]["kind"] == "out_of_scope" and b["meta"]["warnings"] == []
     elif case["expect"] == "about":
         # sobre la propia página: texto fijo, sin modelo, sin herramientas, cita una sección (no un dataset)
         assert r.status_code == 200, r.text
@@ -58,6 +59,9 @@ def test_scope_cases_without_model(case, level):
         assert "{" not in b["answer"], "marcador sin rellenar"
         if case["topic"] in ("greeting", "capabilities"):
             assert len(b["meta"]["suggestions"]) >= 3
+        if case["topic"] == "howto":  # tutorial / guide / first time: 3 pasos Y el botón Tour
+            assert "3 steps" in b["answer"] and "Tour" in b["answer"]
+        assert b["meta"]["warnings"] == [] and b["meta"]["mode"] == "low"  # una regla fija no es una advertencia
     elif case["expect"] == "no_data_safety":
         b = r.json()
         assert b["no_data"] is True and b["answer"].startswith("No data available for that question.") and llm.calls == []

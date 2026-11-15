@@ -125,9 +125,10 @@ TOPICS: List[Dict[str, str]] = [
      "re": r"\bhow (do|can|should|to) (i|we|you)\b.{0,10}\b(use|start|read|navigate|begin|operate|understand|interpret|get started)\b|\bhow to use\b|"
            r"\bhow (is|does|do|are) (this|it|that|the \w+( \w+)?).{0,6}\b(work|function|operate)\b|\bhow it work\b|\bhow is it work\b|\bhow (do|does) (this|it) work\b|"
            r"\bcomo (se )?(usa|uso|funciona|empiezo|navego|leo|se lee)\b|\bcomo funciona\b|\binstructions?\b|\btutorial\b|\bguide\b|\bgetting started\b|"
-           r"\bi do not (know|understand|get)\b|\b(new here|first time|beginner|newbie|i am lost|i am confused|confused|lost)\b|\bpara que sirve\b|\bexplain (how|this|the page|the site|the dashboard)\b|\bwalk me through\b|\bstep by step\b|\bpaso a paso\b|\bno entiendo\b|\bno se (como|que|usar)\b|\bhow (do|can) i\b.{0,20}\b(this|it|page|site|dashboard)\b",
+           r"\bi do not (know|understand|get)\b|\b(new here|first time|beginner|newbie|i am lost|i am confused|confused|lost)\b|\bprimera vez\b|\bguia\b|\bun tour\b|\bthe tour\b|\bpara que sirve\b|\bexplain (how|this|the page|the site|the dashboard)\b|\bwalk me through\b|\bstep by step\b|\bpaso a paso\b|\bno entiendo\b|\bno se (como|que|usar)\b|\bhow (do|can) i\b.{0,20}\b(this|it|page|site|dashboard)\b",
      "text": "How to use it in 3 steps: 1) Pick an atmosphere in the bottom dock (for example Earth / ISS or Moon base), or press Custom to set oxygen, pressure and fuel yourself. "
-             "2) Read the cards: each shows how many tests are near (n), how they ended, and its source. 3) Open Coverage or Gaps to see what is missing, or ask me about the data."},
+             "2) Read the cards: each shows how many tests are near (n), how they ended, and its source. 3) Open Coverage or Gaps to see what is missing, or ask me about the data. "
+             "New here? Press Tour (top left, under SI insights) for a short guided tour."},
     {"id": "capabilities", "section": "SI Assistant",
      "re": r"\bwhat can (i|you)\b.{0,15}\b(ask|do|answer|help|tell)\b|\bwhat (do|should) i (ask|do|try)\b|\bwhat to ask\b|\bhow can you help\b|\bcan you help\b|\bhelp me\b|\bi need help\b|\bnecesito ayuda\b|\bque puedo\b|\bque puedes\b|\bcomo me puedes ayudar\b|"
            r"\b(sample|example|suggested) questions?\b|\bexamples? of questions?\b|\bsuggest\w*\b|\bwhat (are )?you good (for|at)\b|\bwhat is your (purpose|job|role)\b",

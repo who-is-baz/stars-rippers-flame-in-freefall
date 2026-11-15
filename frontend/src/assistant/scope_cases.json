@@ -152,6 +152,46 @@
    "topic": "howto"
   },
   {
+   "q": "give me a tutorial",
+   "expect": "about",
+   "topic": "howto"
+  },
+  {
+   "q": "first time here",
+   "expect": "about",
+   "topic": "howto"
+  },
+  {
+   "q": "is there a guide?",
+   "expect": "about",
+   "topic": "howto"
+  },
+  {
+   "q": "show me a guide for beginners",
+   "expect": "about",
+   "topic": "howto"
+  },
+  {
+   "q": "primera vez aqui",
+   "expect": "about",
+   "topic": "howto"
+  },
+  {
+   "q": "dame una guia",
+   "expect": "about",
+   "topic": "howto"
+  },
+  {
+   "q": "i need a tutorial please",
+   "expect": "about",
+   "topic": "howto"
+  },
+  {
+   "q": "hows the tour",
+   "expect": "about",
+   "topic": "howto"
+  },
+  {
    "q": "walk me through it",
    "expect": "about",
    "topic": "howto"

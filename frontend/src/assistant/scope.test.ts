@@ -35,6 +35,8 @@ describe('Basic assistant scope (parity with the backend)', () => {
         expect(r.citations).toEqual([]);
         expect(r.section).toBeTruthy();
         expect(r.text).toBe(renderAbout((c as { topic: string }).topic, data).text); // right topic, figures from the data
+        if ((c as { topic: string }).topic === 'howto') { expect(r.text).toContain('3 steps'); expect(r.text).toContain('Tour'); }
+        expect(r.warnings).toEqual([]);
       } else if (c.expect === 'no_data_safety') {
         expect(r.text).toBe(SAFETY_TEXT);
         expect(r.noData).toBe(true);

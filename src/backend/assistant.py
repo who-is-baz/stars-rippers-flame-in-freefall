@@ -114,8 +114,9 @@ def answer_low(con, question: str, db_path: Optional[str] = None) -> dict:
                 "no_data": False, "warnings": [], "kind": "about", "section": about.section(r.about_id), "suggestions": sug}
     if r.kind == "fixed":
         from . import about, scope
+        refused = r.text == scope.REFUSAL_TEXT
         return {"answer": r.text, "citations": [], "tool_calls": [], "no_data": r.no_data, "warnings": r.warnings,
-                "suggestions": about.SUGGESTIONS if r.text == scope.REFUSAL_TEXT else []}
+                "suggestions": about.SUGGESTIONS if refused else [], **({"kind": "out_of_scope"} if refused else {})}
     if r.kind == "precomputed":
         ans = next(a for a in data.precomputed(db_path)["answers"]["answers"] if a["id"] == r.answer_id)
         return {"answer": ans["answer"], "citations": _cite_precomputed(ans["citations"]),

@@ -26,7 +26,7 @@ export const SAFETY_TEXT = 'No data available for that question. These data desc
 export const NO_LIVE_DATA = 'No data: these are archived ISS experiments; there is no live data on this page.';
 export const FALLBACK_NOTICE = 'Local AI did not respond. This answer comes from Basic mode (no model).';
 export const TEMPLATE_NOTICE = 'The local AI text did not pass verification; a fixed template built from the data is shown instead.';
-export const RULE_NOTICE = 'Answered by a fixed rule (no model call).';
+export const RULE_INFO = 'Answered by a fixed rule (no model call).';
 const envTimeout = Number(import.meta.env?.VITE_LLM_TIMEOUT_MS);
 export const TIMEOUT_MS = Number.isFinite(envTimeout) && envTimeout > 0 ? envTimeout : 15_000;
 
@@ -39,7 +39,10 @@ export interface Reply {
   n: number | null;          // number of cited tests, counted from the data (null when the answer cites no test list)
   answeredBy: Level;         // which level actually produced the text
   aiText: boolean;           // true only when a model wrote the text
-  notice?: string;
+  notice?: string;            // real warning (the model failed or its text was replaced)
+  info?: string;              // neutral note (e.g. a fixed rule answered): shown without the warning style
+  model?: string;             // model tag that wrote the text (only when aiText)
+  mode?: 'ollama' | 'fallback' | 'low';
   kind?: 'about';             // fixed answer about the page itself: cites a page section, not a dataset
   section?: string;
   suggestions?: string[];     // clickable example questions (refusal, greeting)
@@ -198,7 +201,9 @@ export async function ask(question: string, level: Level, data: DataBundle, opts
     const meta = (typeof body.meta === 'object' && body.meta !== null ? body.meta : {}) as Record<string, unknown>;
     const rawWarnings = Array.isArray(meta.warnings) ? meta.warnings : Array.isArray(body.warnings) ? body.warnings : [];
     const warnings = rawWarnings.filter((w): w is string => typeof w === 'string');
-    if (citations.length === 0 && body.no_data !== true) warnings.push('This answer came without a verifiable citation. Treat it as unverified.');
+    const isAbout = meta.kind === 'about';
+    // Only data answers need a citation; fixed answers about the page cite a section, and refusals say "No data" / "Out of scope".
+    if (citations.length === 0 && body.no_data !== true && !isAbout && body.answer !== OUT_OF_SCOPE) warnings.push('This answer came without a verifiable citation. Treat it as unverified.');
     // meta.mode: "ollama" = model text (verified), "fallback" = fixed template, "low" = fixed rule. No meta → treat as model text.
     const mode = typeof meta.mode === 'string' ? meta.mode : 'ollama';
     const kind = meta.kind === 'about' ? ('about' as const) : undefined;
@@ -208,7 +213,9 @@ export async function ask(question: string, level: Level, data: DataBundle, opts
       text: body.answer, citations, warnings, noData: body.no_data === true,
       outOfScope: body.answer.startsWith(OUT_OF_SCOPE),
       n: countCited(citations), answeredBy: level, aiText: mode === 'ollama',
-      ...(mode === 'fallback' ? { notice: TEMPLATE_NOTICE } : mode === 'low' ? { notice: RULE_NOTICE } : {}),
+      ...(mode === 'fallback' ? { notice: TEMPLATE_NOTICE } : mode === 'low' ? { info: RULE_INFO } : {}),
+      mode: mode === 'fallback' || mode === 'low' ? mode : ('ollama' as const),
+      model: typeof meta.model === 'string' && mode === 'ollama' ? meta.model : undefined,
     };
   } catch {
     return { ...answerBasic(question, data), notice: FALLBACK_NOTICE };

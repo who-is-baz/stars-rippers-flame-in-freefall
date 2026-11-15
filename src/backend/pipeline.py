@@ -160,8 +160,7 @@ def answer(llm, con, question: str, level: str, model: str, settings: Settings):
     r = low.route(question, settings.db_path or None)
     if r.guard or (r.kind == "precomputed" and r.answer_id == "q10"):
         out = answer_low(con, question, settings.db_path or None)
-        if out.get("kind") != "about":
-            out["warnings"] = out["warnings"] + ["Answered by a deterministic guard rule (no model call)."]
+        # respuesta fija sin modelo: no es una advertencia; el front lo indica con meta.mode == "low"
         return out, "low"
 
     t0 = time.perf_counter()

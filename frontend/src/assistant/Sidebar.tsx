@@ -24,6 +24,9 @@ const replyAsText = (t: Turn): string => {
   return [`Q: ${t.question}`, `A: ${t.reply.text}`, ...t.reply.warnings.map((w) => `Warning: ${w}`), ...(cites.length ? [`Sources: ${cites.join('; ')}`] : [])].join('\n');
 };
 
+// "<Level> · <model>" only for text a model wrote; "fallback" when its text was replaced by the template; otherwise a fixed answer.
+const suffixOf = (r: Reply): string => (r.aiText ? ` · ${r.model ?? 'AI'}` : r.mode === 'fallback' ? ' · fallback' : ' · fixed answer');
+
 function ReplyCard({ turn, onAsk }: { turn: Turn; onAsk: (q: string) => void }) {
   const { showTests } = useUi();
   const [copied, setCopied] = useState(false);
@@ -42,12 +45,14 @@ function ReplyCard({ turn, onAsk }: { turn: Turn; onAsk: (q: string) => void }) 
   return (
     <article className="msg-a" aria-label="Answer">
       <div className="row">
-        <Badge>{LEVELS.find((l) => l.value === r.answeredBy)?.label ?? r.answeredBy}{r.aiText ? '' : ' · no model'}</Badge>
+        <Badge>{LEVELS.find((l) => l.value === r.answeredBy)?.label ?? r.answeredBy}{suffixOf(r)}</Badge>
         {r.kind === 'about' && <Badge tone="info" title="Fixed answer about this page; no model and no dataset involved">About this site</Badge>}
-        {r.noData && r.kind !== 'about' && <Badge tone="caution">No data</Badge>}
+        {r.outOfScope && <Badge title="The question is not about the NASA PSI data or this page">Out of scope</Badge>}
+        {r.noData && r.kind !== 'about' && !r.outOfScope && <Badge tone="caution">No data</Badge>}
         {r.aiText && <Badge tone="info" title="Text written by a local language model. Check it against the citations.">AI-generated text</Badge>}
       </div>
       {r.notice && <Warn>{r.notice}</Warn>}
+      {r.info && <p className="dim" role="note" style={{ fontSize: 'var(--fs-xs)' }}>{r.info}</p>}
       {r.noData && !r.outOfScope && (
         <div className="co-act co-act-no" aria-hidden="true">
           <span>∅ No matching or live data</span>

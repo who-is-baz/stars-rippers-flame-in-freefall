@@ -96,7 +96,7 @@ def run_one(client: TestClient, model: str, item: dict) -> dict:
     b = r.json()
     calls = [c for c in b["tool_calls"] if c.get("tool") not in (None, "precomputed")]
     used = [c["tool"] for c in calls]
-    guard = any("deterministic guard" in w for w in b["meta"]["warnings"])
+    guard = b["meta"]["mode"] == "low" and not used  # regla fija: sin modelo ni herramientas
     if "(guard)" in item["tools"]:
         tool_ok = guard or used == ["none"]
         args_ok = tool_ok
