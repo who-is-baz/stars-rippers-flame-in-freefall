@@ -12,7 +12,7 @@ from typing import List, Optional, Tuple
 
 from pydantic import ValidationError
 
-from . import low, verify
+from . import low, scope, verify
 from . import tools as T
 from .config import Settings
 
@@ -155,6 +155,7 @@ def answer(llm, con, question: str, level: str, model: str, settings: Settings):
     """Devuelve (out, mode). LlmUnavailable se propaga (503)."""
     from .assistant import answer_low, result_from_tools
 
+    question = scope.normalize(question)  # el modelo solo ve la pregunta saneada
     # Defensa previa (determinista): trampas de seguridad/predicción, inyección y gravedad no llegan al modelo.
     r = low.route(question)
     if r.guard or (r.kind == "precomputed" and r.answer_id == "q10"):

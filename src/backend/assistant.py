@@ -6,8 +6,10 @@ el código. Si Ollama no está o falla en medium/high → 503 (el frontend cae a
 """
 from __future__ import annotations
 
+import collections
 import hashlib
 import logging
+import threading
 import time
 from typing import Any, Dict, List, Literal, Optional
 
@@ -22,6 +24,26 @@ from .llm import LlmUnavailable  # noqa: F401  (Ollama no responde / modelo no i
 
 log = logging.getLogger("flame.ask")
 MAX_QUESTION = 500
+
+
+class RateLimiter:
+    """Ventana deslizante de 60 s por IP, en memoria (el backend corre solo en la laptop del demo)."""
+
+    def __init__(self, per_min: int):
+        self.per_min, self.hits, self.lock = per_min, collections.defaultdict(collections.deque), threading.Lock()
+
+    def allow(self, ip: str) -> bool:
+        if self.per_min <= 0:
+            return True
+        now = time.monotonic()
+        with self.lock:
+            q = self.hits[ip]
+            while q and now - q[0] > 60:
+                q.popleft()
+            if len(q) >= self.per_min:
+                return False
+            q.append(now)
+            return True
 
 
 class AskRequest(BaseModel):
@@ -116,6 +138,8 @@ def get_llm(request: Request, settings: Settings):
 
 
 def register(router: APIRouter, settings: Settings) -> None:
+    limiter = RateLimiter(settings.ask_rate_per_min)
+
     @router.get("/llm/status")
     def llm_status(request: Request):
         llm = get_llm(request, settings)
@@ -126,6 +150,9 @@ def register(router: APIRouter, settings: Settings) -> None:
 
     @router.post("/ask", response_model=AskResponse)
     def ask(body: AskRequest, request: Request):
+        ip = request.client.host if request.client else "unknown"
+        if not limiter.allow(ip):
+            return JSONResponse({"detail": "Too many requests; wait a minute."}, status_code=429, headers={"Retry-After": "60"})
         t0 = time.perf_counter()
         fp = f"len={len(body.question)} sha={hashlib.sha256(body.question.encode()).hexdigest()[:8]}"
         if body.model is not None and body.model not in settings.allowed_models():

@@ -133,8 +133,8 @@ def test_unknown_args_are_dropped_with_warning():
 
 def test_router_none_is_out_of_scope_without_more_calls():
     c, llm = make([route("none")])
-    b = ask(c, "Who won the football match?")
-    assert b["answer"] == "That is not in the PSI data shown on this page." and b["no_data"] is True
+    b = ask(c, "Tell me about oxygen sensors used in hospitals")  # tema aparente, el router dice "none"
+    assert b["answer"] == "I can only answer questions about the NASA PSI combustion data shown on this site." and b["no_data"] is True
     assert len(llm.calls) == 1
 
 
@@ -202,7 +202,7 @@ def test_model_must_be_allowed():
 
 def test_qwen_router_schema_and_options():
     c, llm = make([route("none")])
-    ask(c, "football", model="qwen3:8b")
+    ask(c, "oxygen sensors in hospitals", model="qwen3:8b")
     sch = llm.calls[0]["schema"]
     assert "q1_extinction_rate_by_o2_pressure" in sch["properties"]["tool"]["enum"] and "none" in sch["properties"]["tool"]["enum"]
 
@@ -235,7 +235,7 @@ def test_high_max_three_steps_and_no_repeat():
     assert len(b["tool_calls"]) == 3 and b["meta"]["mode"] == "fallback"
     c2, llm2 = make([{"tool": "meta", "args": {}, "done": False}, {"tool": "meta", "args": {}, "done": False},
                      text("403 tests.")])
-    b2 = ask(c2, "overview", level="high")
+    b2 = ask(c2, "dataset overview", level="high")
     assert len(b2["tool_calls"]) == 1
 
 
@@ -271,7 +271,7 @@ def test_args_as_json_string_accepted():
 
 def test_high_later_step_invalid_keeps_first_result():
     c, _ = make([{"tool": "meta", "args": {}, "done": False}, "garbage", "garbage again", text("403 tests.")])
-    b = ask(c, "overview then more", level="high")
+    b = ask(c, "dataset overview then more", level="high")
     assert b["meta"]["mode"] == "ollama" and len(b["tool_calls"]) == 1
     assert any("later tool step" in w for w in b["meta"]["warnings"])
 

@@ -101,6 +101,11 @@ def create_app(settings: Optional[Settings] = None, llm=None) -> FastAPI:
         msgs = [f"{'.'.join(str(p) for p in err.get('loc', [])[1:]) or 'body'}: {err.get('msg')}" for err in e.errors()]
         return JSONResponse({"detail": "; ".join(msgs) or "invalid request"}, status_code=400)
 
+    @app.exception_handler(Exception)
+    async def _unexpected(request: Request, e: Exception):
+        log.error("unhandled %s on %s", type(e).__name__, request.url.path)  # sin traza ni detalle hacia el cliente
+        return JSONResponse({"detail": "Internal error."}, status_code=500)
+
     @app.exception_handler(data.DataUnavailable)
     async def _no_db(_, e: data.DataUnavailable):
         return JSONResponse({"detail": str(e)}, status_code=503)

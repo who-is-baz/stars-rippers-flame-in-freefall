@@ -19,7 +19,7 @@ q, sc = data.q, data.sc
 MAX_TEST_IDS = 20
 PSI_PER_ATM = sc.PSI_PER_ATM
 NO_DATA_TEXT = "No data available for that question."
-OUT_OF_SCOPE_TEXT = "That is not in the PSI data shown on this page."
+from .scope import REFUSAL_TEXT as OUT_OF_SCOPE_TEXT  # noqa: E402  (una sola definición)
 CONFOUND_NOTE = "CO2 and He are confounded with O2 in these tests; no effect can be attributed to a single gas."
 NOT_STATED_NOTE = ("BASS-II outcomes were extracted by AI from free-text notes; 'not_stated' does not mean "
                    "the flame did not go out. No extinction percentage is computed for BASS-II.")

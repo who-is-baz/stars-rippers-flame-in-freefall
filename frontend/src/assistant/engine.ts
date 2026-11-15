@@ -5,6 +5,7 @@
 import type { DataBundle } from '../data/DataProvider';
 import type { Citation, ExperimentRow } from '../data/types';
 import { fmtDiameter, fmtO2, fmtPressure, fmtRate } from '../lib/format';
+import { LIVE_RE, REFUSAL_TEXT, SAFETY_RE, classify, normalize } from './scope';
 import { DISRUPTION_SHORT, LOW_CONFIDENCE_WARNING, hasLowConfidence, outcomeLabel } from '../lib/honesty';
 
 export type Level = 'basic' | 'flash' | 'medium' | 'heavy';
@@ -20,7 +21,8 @@ export const LEVEL_TIER: Record<Level, Tier | null> = { basic: null, flash: 'fla
 export const DEFAULT_TAGS: Record<Tier, string> = { flash: 'llama3.2:3b', medium: 'qwen3:8b', heavy: 'qwen3:14b' };
 export const DEFAULT_API_URL = 'http://127.0.0.1:8000';
 
-export const OUT_OF_SCOPE = 'That is not in the PSI data shown on this page';
+export const OUT_OF_SCOPE = REFUSAL_TEXT; // one fixed refusal, same text as the backend (src/backend/scope.py)
+export const SAFETY_TEXT = 'No data available for that question. These data describe what happened in specific microgravity tests on the ISS; they do not rate how safe a material, fuel or atmosphere is, and they do not predict fires elsewhere.';
 export const NO_LIVE_DATA = 'No data: these are archived ISS experiments; there is no live data on this page.';
 export const FALLBACK_NOTICE = 'Local AI did not respond. This answer comes from Basic mode (no model).';
 export const TEMPLATE_NOTICE = 'The local AI text did not pass verification; a fixed template built from the data is shown instead.';
@@ -52,17 +54,17 @@ const countCited = (c: Citation[]): number | null => {
 
 // Order matters: specific topics first, the generic "how many tests" rule last.
 const RULES: { re: RegExp; id: string }[] = [
-  { re: /\b(today|right now|latest|live|real[- ]?time|currently)\b/i, id: 'live' },
-  { re: /(gravity|partial|mars|martian)/i, id: 'q10' },
-  { re: /(exploration|8\.2)/i, id: 'q04' },
-  { re: /(suit|\beva\b|4\.3)/i, id: 'q05' },
-  { re: /(moon|lunar|habitat)/i, id: 'q03' },
+  { re: /\b(today|right now|latest|live|real[- ]?time|currently|hoy|en vivo|ahora mismo)\b/i, id: 'live' },
+  { re: /(gravity|gravedad|partial|parcial|mars|martian|marte)/i, id: 'q10' },
+  { re: /(exploration|exploraci[oó]n|8\.2)/i, id: 'q04' },
+  { re: /(suit|traje|\beva\b|4\.3)/i, id: 'q05' },
+  { re: /(moon|lunar|luna|habitat|h[aá]bitat)/i, id: 'q03' },
   { re: /disrupt/i, id: 'q07' },
-  { re: /(co2|co₂|helium|\bhe\b|suppress|put out|extinguish)/i, id: 'q08' },
-  { re: /(heptane|methanol|faster|burn(ing)? rate|\bfuels?\b)/i, id: 'q06' },
-  { re: /(material|pmma|fabric|bass|solid|aramid|cotton|candle)/i, id: 'q09' },
-  { re: /(earth|\biss\b|cabin|sea level|14\.7)/i, id: 'q02' },
-  { re: /(how many|cover|experiments|dataset|tests)/i, id: 'q01' },
+  { re: /(co2|co₂|helium|helio|\bhe\b|suppress|supres|put out|extinguish|apaga|extingu)/i, id: 'q08' },
+  { re: /(heptane|methanol|heptano|metanol|faster|r[aá]pido|burn(ing)? rate|velocidad de quemado|\bfuels?\b|combustibles?)/i, id: 'q06' },
+  { re: /(material|pmma|fabric|tela|bass|solid|s[oó]lido|aramid|cotton|algod[oó]n|candle|vela)/i, id: 'q09' },
+  { re: /(earth|tierra|\biss\b|cabin|cabina|sea level|nivel del mar|14\.7)/i, id: 'q02' },
+  { re: /(how many|cu[aá]nt[oa]s|cover|experiments|experimentos|dataset|tests|pruebas)/i, id: 'q01' },
 ];
 
 const base = (text: string, extra: Partial<Reply> = {}): Reply => ({
@@ -102,9 +104,14 @@ function lookupTest(question: string, rows: ExperimentRow[]): Reply | null {
   return base(hits.map(describeRow).join(' '), { citations, warnings, n: hits.length });
 }
 
-export function answerBasic(question: string, data: DataBundle): Reply {
+export function answerBasic(rawQuestion: string, data: DataBundle): Reply {
+  const question = normalize(rawQuestion);
+  // Scope gate first (same rules as the backend): injection, jailbreak, other tasks and off-topic get one fixed refusal.
+  if (classify(question) !== 'in_scope') return base(OUT_OF_SCOPE, { outOfScope: true, noData: true });
   const test = lookupTest(question, data.experiments.items);
   if (test) return test;
+  if (LIVE_RE.test(question)) return base(NO_LIVE_DATA, { noData: true });
+  if (SAFETY_RE.test(question)) return base(SAFETY_TEXT, { noData: true, warnings: ['All tests are microgravity on the ISS; there is no partial-gravity or normal-gravity data.'] });
   const rule = RULES.find((r) => r.re.test(question));
   if (!rule) return base(OUT_OF_SCOPE, { outOfScope: true, noData: true });
   if (rule.id === 'live') return base(NO_LIVE_DATA, { noData: true });

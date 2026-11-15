@@ -10,6 +10,8 @@ import re
 from dataclasses import dataclass, field
 from typing import List, Optional
 
+from . import scope
+from .scope import LIVE_RE, SAFETY_RE  # noqa: F401
 from . import tools as T
 
 LIVE_TEXT = "No data: these are archived ISS experiments; there is no live data on this page."
@@ -47,12 +49,6 @@ PRECOMPUTED_RULES = [
     (re.compile(r"(earth|tierra|\biss\b|cabin|cabina|sea level|nivel del mar|14\.7)", re.I), "q02"),
     (re.compile(r"(how many|cu[aá]nt[oa]s|cover|experiments|experimentos|dataset|tests|pruebas)", re.I), "q01"),
 ]
-LIVE_RE = re.compile(r"\b(today|right now|latest|live|real[- ]?time|currently|hoy|en vivo|ahora mismo)\b", re.I)
-SAFETY_RE = re.compile(r"\b(safe|safer|safest|unsafe|seguro|segura|seguros|m[aá]s seguro|danger(ous)?|peligros[oa]|"
-                       r"predict|prediction|forecast|predecir|predicci[oó]n|will happen|would happen|pasar[ií]a)\b", re.I)
-INJECTION_RE = re.compile(r"(ignore (all |your |the |any )?(previous |prior )?(instructions|rules)|system prompt|"
-                          r"\bdrop\s+table\b|\bdelete\s+from\b|\bselect\s+.+\s+from\b|\binsert\s+into\b|jailbreak|"
-                          r"\bact as\b|developer mode|reveal (your|the) (prompt|instructions)|ignora (tus|las) instrucciones)", re.I)
 TEST_ID_RE = re.compile(r"\b(?=[A-Z0-9]*\d)(?=[A-Z0-9]*[A-Z])[A-Z0-9]{6,}\b")
 TEST_WORD_RE = re.compile(r"\b(?:test|prueba)\s+#?([A-Za-z0-9]{2,})\b", re.I)
 
@@ -86,9 +82,10 @@ def _o2(text: str) -> dict:
 
 
 def route(question: str) -> Route:
-    text = question.strip()
-    if INJECTION_RE.search(text):
-        return Route("fixed", text=T.OUT_OF_SCOPE_TEXT, no_data=True, guard=True)
+    text = scope.normalize(question)
+    kind = scope.classify(text)
+    if kind != "in_scope":  # inyección, jailbreak, tarea ajena o fuera de tema: negativa fija, sin modelo
+        return Route("fixed", text=scope.REFUSAL_TEXT, no_data=True, guard=True)
     upper = text.upper()
     ids = {m.group(0) for m in TEST_ID_RE.finditer(upper)} | {m.group(1).upper() for m in TEST_WORD_RE.finditer(text)}
     if ids:
@@ -110,4 +107,4 @@ def route(question: str) -> Route:
     for rx, answer_id in PRECOMPUTED_RULES:
         if rx.search(text):
             return Route("precomputed", answer_id=answer_id)
-    return Route("fixed", text=T.OUT_OF_SCOPE_TEXT, no_data=True)
+    return Route("fixed", text=scope.REFUSAL_TEXT, no_data=True)  # en alcance, sin regla: medium/high dejan decidir al router

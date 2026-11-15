@@ -78,7 +78,7 @@ def test_traps_are_no_data(client, question):
                                       "SELECT * FROM experiments"])
 def test_out_of_scope_and_injection(client, question):
     body = ask(client, question)
-    assert body["answer"] == "That is not in the PSI data shown on this page."
+    assert body["answer"] == "I can only answer questions about the NASA PSI combustion data shown on this site."
     assert body["no_data"] is True and body["tool_calls"] == []
 
 
