@@ -1,5 +1,0 @@
-.fig { margin: 0; display: flex; flex-direction: column; align-items: center; gap: var(--s-2); }
-.svg { width: 100%; max-width: 440px; height: auto; }
-.flame { transition: transform var(--t-slow) var(--ease-out), opacity var(--t-slow) var(--ease-out); }
-.note text { fill: var(--silver); font-size: 12px; font-family: var(--font-ui); }
-.cap { color: var(--ink-dim); font-size: var(--fs-xs); text-align: center; max-width: 44ch; }
