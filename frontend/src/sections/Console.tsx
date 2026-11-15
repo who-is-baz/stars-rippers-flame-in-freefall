@@ -12,9 +12,10 @@ import { BoardCard, MiniFlameThumb, SHORT_NAME } from '../components/Cards';
 import { KpiRingSvg } from '../components/charts';
 import { Gallery } from '../components/Gallery';
 import { fmtTolerance, fmtCriterionO2 } from '../lib/scenario';
-import { fmtO2, fmtPressure, fmtRate } from '../lib/format';
+import { fmtDiameter, fmtGas, fmtO2, fmtPressure, fmtRate } from '../lib/format';
 import { outcomeLabel } from '../lib/honesty';
-import { Skeleton } from '../components/ui';
+import { EMPTY_FILTERS, filterRows } from '../lib/table';
+import { Doi, QcChips, Skeleton } from '../components/ui';
 
 // Full views are only needed when opened: they load on demand, keeping the first screen light.
 const ExperimentTable = lazy(() => import('./ExperimentTable').then((m) => ({ default: m.ExperimentTable })));
@@ -96,56 +97,94 @@ function CompactExplorer({
   onClose: () => void;
 }) {
   const { items } = useExperiments();
+  const meta = useMeta();
+  const panelRef = useRef<HTMLElement>(null);
   const [scope, setScope] = useState<'scenario' | 'preset' | 'all' | 'FLEX' | 'BASS-II'>(() => (preset ? 'preset' : 'scenario'));
   const [q, setQ] = useState('');
   const [limit, setLimit] = useState(18);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   useEffect(() => {
     if (preset) {
       setScope('preset');
       setLimit(18);
+      setSelectedId(null);
+      try {
+        panelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } catch { /* test env */ }
     }
   }, [preset?.token]);
+
+  // When the user picks a different atmosphere in the bottom dock, update the explorer to that atmosphere
+  const prevScenarioId = useRef(scenario.id);
+  useEffect(() => {
+    if (prevScenarioId.current !== scenario.id) {
+      prevScenarioId.current = scenario.id;
+      setScope('scenario');
+      setSelectedId(null);
+    }
+  }, [scenario.id]);
 
   const scenarioIds = useMemo(() => {
     const list = scenario.n_near > 0 ? scenario.near.test_ids : scenario.nearest?.test_ids ?? [];
     return new Set(list);
   }, [scenario]);
 
-  const presetIds = useMemo(() => (preset?.ids ? new Set(preset.ids) : null), [preset]);
-
   const filtered = useMemo(() => {
+    let base = items;
+    if (scope === 'scenario') {
+      base = items.filter((r) => scenarioIds.has(r.test_id));
+    } else if (scope === 'preset' && preset) {
+      base = filterRows(
+        items,
+        {
+          ...EMPTY_FILTERS,
+          ids: preset.ids ?? null,
+          program: preset.program ?? '',
+          kind: preset.fuel ?? '',
+          o2Band: preset.o2Band ?? '',
+          pressure: preset.pressure ?? '',
+        },
+        meta,
+      );
+    } else if (scope === 'FLEX') {
+      base = items.filter((r) => r.program === 'FLEX');
+    } else if (scope === 'BASS-II') {
+      base = items.filter((r) => r.program === 'BASS-II');
+    }
+
     const query = q.trim().toLowerCase();
-    return items.filter((r) => {
-      if (scope === 'scenario' && !scenarioIds.has(r.test_id)) return false;
-      if (scope === 'preset' && preset) {
-        if (presetIds && !presetIds.has(r.test_id)) return false;
-        if (preset.program && r.program !== preset.program) return false;
-        if (preset.fuel && r.material_or_fuel !== preset.fuel) return false;
-      }
-      if (scope === 'FLEX' && r.program !== 'FLEX') return false;
-      if (scope === 'BASS-II' && r.program !== 'BASS-II') return false;
-      if (query) {
-        const hay = `${r.test_id} ${r.material_or_fuel} ${r.material_category ?? ''} ${r.program} ${r.outcome ?? ''}`.toLowerCase();
-        if (!hay.includes(query)) return false;
-      }
-      return true;
+    if (!query) return base;
+    return base.filter((r) => {
+      const hay = `${r.test_id} ${r.material_or_fuel} ${r.material_category ?? ''} ${r.program} ${r.outcome ?? ''}`.toLowerCase();
+      return hay.includes(query);
     });
-  }, [items, scope, scenarioIds, preset, presetIds, q]);
+  }, [items, scope, scenarioIds, preset, meta, q]);
 
   const shown = filtered.slice(0, limit);
   const scenarioCount = scenarioIds.size;
+  const activeRow = useMemo(
+    () => (selectedId ? filtered.find((r) => r.test_id === selectedId) ?? null : null),
+    [filtered, selectedId],
+  );
+
+  const activeTitle =
+    scope === 'preset' && preset?.label
+      ? preset.label
+      : scope === 'scenario'
+        ? `${SHORT_NAME[scenario.id]} · ${scenario.n_near > 0 ? 'near-match tests' : 'closest tested condition (not this scenario)'}`
+        : `${scope === 'all' ? 'All PSI' : scope} tests`;
 
   return (
-    <section className="glass dock-explorer" aria-label="Quick test explorer">
+    <section ref={panelRef} className="glass dock-explorer" aria-label="Quick test explorer">
       <header className="dock-exp-bar">
         <div className="row" style={{ gap: 6 }}>
-          <strong style={{ fontSize: 'var(--fs-sm)' }}>Explore tests</strong>
-          <span className="src-pill num">{filtered.length} shown</span>
+          <strong style={{ fontSize: 'var(--fs-sm)', color: 'var(--mint)' }}>{activeTitle}</strong>
+          <span className="src-pill num">{filtered.length} tests</span>
           <div className="mini-seg" role="group" aria-label="Filter test scope">
             {preset && (
               <button type="button" aria-pressed={scope === 'preset'} onClick={() => setScope('preset')}>
-                {preset.label ? preset.label.split(':')[0] : 'Selected'}
+                Consulted
               </button>
             )}
             <button type="button" aria-pressed={scope === 'scenario'} onClick={() => setScope('scenario')}>
@@ -182,39 +221,80 @@ function CompactExplorer({
         </div>
       </header>
 
-      <div className="mini-test-grid">
-        {shown.map((r, idx) => (
-          <div key={`${r.test_id}-${idx}`} className="mini-test-card">
-            <div className="mt-top">
-              <strong className="mono">{r.test_id}</strong>
-              <span className={`out-pill ${r.outcome ? `o-${r.outcome}` : ''}`}>
-                {r.outcome ? outcomeLabel(r.outcome) : 'not stated'}
-              </span>
+      {activeRow && (
+        <div className="exp-row-detail num" role="region" aria-label={`Details for test ${activeRow.test_id}`}>
+          <div className="row" style={{ justifyContent: 'space-between', width: '100%' }}>
+            <div className="row" style={{ gap: 10 }}>
+              <strong className="mono" style={{ color: 'var(--mint)' }}>{activeRow.test_id}</strong>
+              <span className="src-pill">{activeRow.program} · {activeRow.date || 'Date n/r'}</span>
+              <span>Fuel/Material: <b>{activeRow.material_or_fuel}</b> ({activeRow.material_category})</span>
+              <span>O₂: <b>{fmtO2(activeRow.o2_fraction)}</b></span>
+              <span>Pressure: <b>{fmtPressure(activeRow.pressure_atm)}</b></span>
+              {activeRow.program === 'FLEX' && (
+                <span>Suppressant: <b>{fmtGas(activeRow.co2_fraction, 'CO₂')} · {fmtGas(activeRow.he_fraction, 'He')}</b></span>
+              )}
+              <span>Outcome: <b>{outcomeLabel(activeRow.outcome)}</b> ({activeRow.outcome_source})</span>
+              {activeRow.burning_rate_mm2_s != null && <span>Burning rate: <b>{fmtRate(activeRow.burning_rate_mm2_s)}</b></span>}
+              {activeRow.outcome === 'extinction' && activeRow.extinction_diameter_mm != null && (
+                <span>Ext. diameter: <b>{fmtDiameter(activeRow.extinction_diameter_mm)}</b></span>
+              )}
+              <Doi doi={activeRow.source_doi} />
             </div>
-            <div className="mt-mid">
-              <span>
-                <i
-                  className="mt-dot"
-                  style={{
-                    background:
-                      r.material_or_fuel === 'heptane'
-                        ? 'var(--fuel-heptane)'
-                        : r.material_or_fuel === 'methanol'
-                          ? 'var(--fuel-methanol)'
-                          : 'var(--prog-bass2)',
-                  }}
-                />
-                {r.material_category ?? r.material_or_fuel}
-              </span>
-              <small className="dim">{r.program}</small>
-            </div>
-            <div className="mt-bot num">
-              <span>{fmtO2(r.o2_fraction)}</span>
-              <span>{r.pressure_atm != null ? fmtPressure(r.pressure_atm) : 'Pressure n/r'}</span>
-              {r.burning_rate_mm2_s != null && <span>{fmtRate(r.burning_rate_mm2_s)}</span>}
-            </div>
+            <button type="button" className="icon-btn" aria-label="Close test detail" onClick={() => setSelectedId(null)}>
+              <X size={12} aria-hidden="true" />
+            </button>
           </div>
-        ))}
+          {activeRow.qc_flags.length > 0 && (
+            <div className="row" style={{ marginTop: 4 }}>
+              <span className="dim">QC flags:</span>
+              <QcChips flags={activeRow.qc_flags} />
+            </div>
+          )}
+        </div>
+      )}
+
+      <div className="mini-test-grid">
+        {shown.map((r, idx) => {
+          const isSel = selectedId === r.test_id;
+          return (
+            <button
+              type="button"
+              key={`${r.test_id}-${idx}`}
+              className={`mini-test-card${isSel ? ' on' : ''}`}
+              aria-pressed={isSel}
+              onClick={() => setSelectedId((prev) => (prev === r.test_id ? null : r.test_id))}
+            >
+              <div className="mt-top">
+                <strong className="mono">{r.test_id}</strong>
+                <span className={`out-pill ${r.outcome ? `o-${r.outcome}` : ''}`}>
+                  {r.outcome ? outcomeLabel(r.outcome) : 'not stated'}
+                </span>
+              </div>
+              <div className="mt-mid">
+                <span>
+                  <i
+                    className="mt-dot"
+                    style={{
+                      background:
+                        r.material_or_fuel === 'heptane'
+                          ? 'var(--fuel-heptane)'
+                          : r.material_or_fuel === 'methanol'
+                            ? 'var(--fuel-methanol)'
+                            : 'var(--prog-bass2)',
+                    }}
+                  />
+                  {r.material_category ?? r.material_or_fuel}
+                </span>
+                <small className="dim">{r.program}</small>
+              </div>
+              <div className="mt-bot num">
+                <span>{fmtO2(r.o2_fraction)}</span>
+                <span>{r.pressure_atm != null ? fmtPressure(r.pressure_atm) : 'Pressure n/r'}</span>
+                {r.burning_rate_mm2_s != null && <span>{fmtRate(r.burning_rate_mm2_s)}</span>}
+              </div>
+            </button>
+          );
+        })}
         {shown.length === 0 && (
           <p className="dim" style={{ gridColumn: '1 / -1', padding: '12px 4px' }}>
             No tests match this filter. Try switching to &ldquo;All ({items.length})&rdquo;.
@@ -310,7 +390,10 @@ export function Console({ preset, assistantOpen = false }: { preset: TablePreset
             <span className="rail-eyebrow">
               <Sparkles size={13} color="var(--mint)" aria-hidden="true" /> SI insights
             </span>
-            <div className="row" style={{ gap: 6 }}>
+            <div className="row" style={{ gap: 5 }}>
+              <button type="button" className="rail-help" onClick={() => setCustomizeOpen?.(!customizeOpen)} aria-pressed={customizeOpen}>
+                <Plus size={12} aria-hidden="true" /> Cards
+              </button>
               <button type="button" className="rail-help" onClick={() => setTour(1)}>
                 <Compass size={12} aria-hidden="true" /> Tour
               </button>
@@ -330,8 +413,10 @@ export function Console({ preset, assistantOpen = false }: { preset: TablePreset
             </div>
           )}
           {board.left.map((t, i) => <div className="rail-item" style={{ '--i': i } as CSSProperties} key={t}><BoardCard type={t} /></div>)}
-          {customizeOpen && leftFree && (
-            <p className="slot-hint"><Plus size={12} aria-hidden="true" /> {MAX_PER_SIDE.left - board.left.length} free slot(s) on this side</p>
+          {leftFree && (
+            <button type="button" className="slot-btn slot-btn-sm" onClick={() => setCustomizeOpen?.(true)}>
+              + Add card ({MAX_PER_SIDE.left - board.left.length} free)
+            </button>
           )}
         </aside>
 
@@ -339,11 +424,10 @@ export function Console({ preset, assistantOpen = false }: { preset: TablePreset
         {!customizeOpen && (
           <aside className="console-right" aria-label="Scenario inspector and coverage">
             {board.right.map((t, i) => <div className="rail-item" style={{ '--i': i } as CSSProperties} key={t}><BoardCard type={t} /></div>)}
-            {board.right.length === 0 && (
-              <button type="button" className="slot-btn" onClick={() => setCustomizeOpen?.(true)}>+ Add a card</button>
-            )}
-            {customizeOpen && board.right.length > 0 && rightFree && (
-              <button type="button" className="slot-btn slot-btn-sm" onClick={() => setCustomizeOpen?.(true)}>+ Add a card</button>
+            {rightFree && (
+              <button type="button" className="slot-btn slot-btn-sm" onClick={() => setCustomizeOpen?.(true)}>
+                + Add card ({MAX_PER_SIDE.right - board.right.length} free)
+              </button>
             )}
           </aside>
         )}

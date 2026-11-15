@@ -160,7 +160,6 @@ function Frame({ type, icon, children, src, n, warn, extra, swapKey }: {
         <span className="wc-icon" aria-hidden="true">{icon}</span>
         <h2>{meta.title}</h2>
         {by === 'si' && <span className="bysi-badge">Added by SI</span>}
-        {!collapsed && extra}
         {!collapsed && (
           <button type="button" className="icon-btn" aria-label="How to read this card" aria-expanded={info} onClick={() => setInfo((v) => !v)}>
             <Info size={12} aria-hidden="true" />
@@ -175,6 +174,7 @@ function Frame({ type, icon, children, src, n, warn, extra, swapKey }: {
       </div>
       {!collapsed && (
         <>
+          {extra && <div className="wc-subbar">{extra}</div>}
           {info ? <p className="wc-read">{HOW[type][mode]}</p> : <div className="wc-body" key={swapKey}>{children}</div>}
           <div className="wc-ft num">
             <span className="src-pill">{src}</span>
@@ -197,34 +197,75 @@ function useCurrent() {
 function MatchCard() {
   const meta = useMeta();
   const { current } = useCurrent();
+  const [detail, setDetail] = useState<'ring' | 'fuel'>('ring');
   const nearShown = useCountUp(current?.n_near ?? 0);
   const flex = meta.programs.find((p) => p.program === 'FLEX');
   const tol = fmtTolerance(meta.tolerance);
   if (!current) return null;
+  const fuels = current.n_near > 0 ? current.near.n_by_fuel : current.nearest?.n_by_fuel;
   return (
-    <Frame type="scenario_match" swapKey={current.id} icon={<Flame size={13} />} src={<>FLEX · {flex?.psi_id ?? 'PSI-69'}</>} n={`Tol. ${tol}`}>
-      <div className="ring-row">
-        <MatchRingSvg exact={current.n_exact} near={current.n_near} total={flex?.n ?? 274} minN={meta.min_n} />
-        <div>
-          <div className="wc-big num">{nearShown} <small>{current.n_exact > 0 ? 'within tol.' : 'near'}</small></div>
-          <div className="dim num" style={{ fontSize: 'var(--fs-xs)' }}>{current.n_exact} exact {current.n_exact === 1 ? 'match' : 'matches'}</div>
+    <Frame type="scenario_match" swapKey={`${current.id}-${detail}`} icon={<Flame size={13} />} src={<>FLEX · {flex?.psi_id ?? 'PSI-69'}</>} n={`Tol. ${tol}`}
+      extra={<ViewToggle label="Match view" value={detail} onChange={setDetail} a={['ring', 'Ring']} b={['fuel', 'By fuel']} />}>
+      {detail === 'ring' ? (
+        <div className="ring-row">
+          <MatchRingSvg exact={current.n_exact} near={current.n_near} total={flex?.n ?? 274} minN={meta.min_n} />
+          <div>
+            <div className="wc-big num">{nearShown} <small>{current.n_exact > 0 ? 'within tol.' : 'near'}</small></div>
+            <div className="dim num" style={{ fontSize: 'var(--fs-xs)' }}>{current.n_exact} exact {current.n_exact === 1 ? 'match' : 'matches'}</div>
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="stack" style={{ gap: 6 }}>
+          <div className="dim num" style={{ fontSize: 'var(--fs-xs)' }}>
+            <strong style={{ color: 'var(--ink)' }}>{nearShown}</strong> near · <strong style={{ color: 'var(--ink)' }}>{current.n_exact}</strong> exact matches
+          </div>
+          <div className="outcome-pills num">
+            <span className="out-pill"><i style={{ background: 'var(--fuel-heptane)' }} />Heptane <b>{fuels?.heptane ?? 0}</b></span>
+            <span className="out-pill"><i style={{ background: 'var(--fuel-methanol)' }} />Methanol <b>{fuels?.methanol ?? 0}</b></span>
+          </div>
+        </div>
+      )}
     </Frame>
   );
 }
 
 function InspectorCard() {
-  const { showTests } = useUi();
+  const { showTests, openView } = useUi();
+  const { items } = useExperiments();
   const { current, idx, scenarios } = useCurrent();
+  const [showOutcomes, setShowOutcomes] = useState(false);
+  const [inlineOpen, setInlineOpen] = useState(false);
   if (!current) return null;
   const ids = current.n_near > 0 ? current.near.test_ids : current.nearest?.test_ids;
   const count = current.n_near > 0 ? current.n_near : current.nearest?.n ?? 0;
   const out = current.n_near > 0 ? current.near.n_by_outcome : current.nearest?.n_by_outcome;
   const label = `${SHORT_NAME[current.id]}: ${current.n_exact > 0 ? 'matching' : 'near-match'} tests`;
+  const idSet = new Set(ids ?? []);
+  const matchedRows = items.filter((r) => idSet.has(r.test_id));
+
+  const handleShowClick = () => {
+    if (!ids || count === 0) return;
+    const reqLabel = current.n_near > 0 ? label : `Closest tested condition to ${SHORT_NAME[current.id]} (not this scenario)`;
+    showTests({ ids, label: reqLabel });
+    setInlineOpen((v) => !v);
+  };
+
   return (
     <Frame type="scenario_inspector" swapKey={current.id} icon={<Target size={13} />} src={<>FLEX · PSI-69</>} n={`${String(idx + 1).padStart(2, '0')} / ${String(scenarios.length).padStart(2, '0')}`}
-      extra={!current.verified ? <span className="badge badge-caution">Unverified</span> : null}>
+      extra={
+        <>
+          {!current.verified && <span className="badge badge-caution">Unverified</span>}
+          <button
+            type="button"
+            className="rail-help"
+            style={{ padding: '2px 8px', fontSize: 10 }}
+            aria-pressed={showOutcomes}
+            onClick={() => setShowOutcomes((v) => !v)}
+          >
+            {showOutcomes ? 'Hide outcomes' : '+ Outcomes'}
+          </button>
+        </>
+      }>
       <div className="insp-head">
         <MiniFlameThumb o2={current.criteria.o2.value} />
         <div>
@@ -238,11 +279,36 @@ function InspectorCard() {
         <div><span>Earth ref.</span><b>21% · 14.7 psi</b></div>
         <div><span>Exact · Near</span><b className={current.n_near === 0 ? 'warn-text' : undefined}>{current.n_exact} · {current.n_near} tests</b></div>
       </div>
-      <OutcomePills outcomes={out} />
+      {showOutcomes && <OutcomePills outcomes={out} />}
       {ids && count > 0 ? (
-        <button type="button" className="cta-mint" onClick={() => showTests({ ids, label: current.n_near > 0 ? label : `Closest tested condition to ${SHORT_NAME[current.id]} (not this scenario)` })}>
-          Show {count} {current.n_exact === 0 ? 'closest ' : ''}tests{current.n_near === 0 ? ' (not this scenario)' : ''}
-        </button>
+        <>
+          <button type="button" className="cta-mint" aria-expanded={inlineOpen} onClick={handleShowClick}>
+            {inlineOpen ? 'Hide ' : 'Show '}{count} {current.n_exact === 0 ? 'closest ' : ''}tests{current.n_near === 0 ? ' (not this scenario)' : ''}
+          </button>
+          {inlineOpen && matchedRows.length > 0 && (
+            <div className="insp-inline-tests" role="region" aria-label="Consulted tests preview">
+              <div className="insp-inline-hd num">
+                <span>{matchedRows.length} tests ({current.n_near > 0 ? 'within tolerance' : 'closest condition'})</span>
+                <button type="button" className="toast-undo" onClick={() => openView?.('explore')}>Full table ↗</button>
+              </div>
+              <ul className="insp-inline-list num">
+                {matchedRows.slice(0, 6).map((r) => (
+                  <li key={r.test_id}>
+                    <b className="mono">{r.test_id}</b>
+                    <span>{r.material_or_fuel}</span>
+                    <span>{Math.round(r.o2_fraction * 100)}% O₂</span>
+                    <span className="dim">{r.outcome ?? 'n/s'}</span>
+                  </li>
+                ))}
+              </ul>
+              {matchedRows.length > 6 && (
+                <div className="dim num" style={{ fontSize: 10, textAlign: 'center', marginTop: 4 }}>
+                  + {matchedRows.length - 6} more shown in the center explorer panel
+                </div>
+              )}
+            </div>
+          )}
+        </>
       ) : (
         <p className="wc-read">No FLEX test is near this atmosphere. No data.</p>
       )}

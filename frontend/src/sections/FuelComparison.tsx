@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { CoverageCell, Fuel, PressureLevel } from '../data/types';
 import { useCoverage, useMeta } from '../data/useData';
-import { Badge, Dois, Note, Provisional, Section, Segmented } from '../components/ui';
+import { Badge, Dois, Provisional, Section, Segmented } from '../components/ui';
 import { BurningRateChartSvg } from '../components/charts';
 import { fmtBand, fmtDiameter, fmtRate } from '../lib/format';
 import { CONFOUND_NOTE, DESCRIPTIVE_ONLY, isSmallN } from '../lib/honesty';
@@ -33,74 +33,86 @@ export function FuelComparison() {
   const meta = useMeta();
   const [level, setLevel] = useState<PressureLevel>('~1.0 atm');
   const [metric, setMetric] = useState<Metric>('rate');
-  const [chartMode, setChartMode] = useState<'line' | 'bars'>('line');
+  const [chartMode, setChartMode] = useState<'line' | 'bars'>('bars');
+  const [display, setDisplay] = useState<'chart' | 'table' | 'both'>('chart');
   const find = (fuel: Fuel, band: string) => coverage.cells.find((c) => c.fuel === fuel && c.o2_band === band && c.pressure_level === level);
   const all = coverage.cells.map((c) => (metric === 'rate' ? c.avg_burning_rate_mm2_s : c.avg_extinction_diameter_mm)).filter((v): v is number => v != null);
   const max = Math.max(...all, Number.EPSILON);
   const dois = [...new Set(coverage.cells.flatMap((c) => c.source_doi))];
 
   return (
-    <Section id="fuels" eyebrow="Fuel comparison" title="Heptane and methanol, side by side" badge={<Provisional />}
-      lead={<>Mean burning rate and mean extinction diameter per tested condition, each with its own n. This is a description
-        of what was measured, not a ranking and not a forecast.</>}>
+    <Section id="fuels" eyebrow="Fuel comparison" title="Heptane vs. methanol across O₂ bands" badge={<Provisional />}
+      lead={<>Mean burning rate and extinction diameter per tested condition ({DESCRIPTIVE_ONLY}).</>}>
       <div className="stack">
         <div className="row" style={{ justifyContent: 'space-between' }}>
           <div className="row">
             <Segmented label="Measurement" value={metric} onChange={setMetric}
-              options={[{ value: 'rate', label: 'Mean burning rate' }, { value: 'diameter', label: 'Mean extinction diameter' }]} />
+              options={[{ value: 'rate', label: 'Burning rate' }, { value: 'diameter', label: 'Ext. diameter' }]} />
             <Segmented label="Pressure level" value={level} onChange={setLevel}
               options={meta.pressure_levels.map((p) => ({ value: p.label, label: p.label }))} />
           </div>
-          <Segmented label="Visual chart" value={chartMode} onChange={setChartMode}
-            options={[{ value: 'line', label: 'Line chart' }, { value: 'bars', label: 'Grouped bars' }]} />
-        </div>
-
-        {/* Visual SVG Chart paired with the semantic accessible table below */}
-        <div className="glass card stack">
-          <div className="row" style={{ justifyContent: 'space-between' }}>
-            <div className="chart-key" style={{ margin: 0 }}>
-              <span><b style={{ background: 'var(--fuel-heptane)' }} /> Heptane</span>
-              <span><b style={{ background: 'var(--fuel-methanol)' }} /> Methanol</span>
-              <span><b style={{ background: 'transparent', border: '1.5px solid var(--caution)' }} /> Small sample (n &lt; {meta.min_n})</span>
-            </div>
-            <span className="src-pill">FLEX · PSI-69 · {level}</span>
+          <div className="row">
+            {display !== 'table' && (
+              <Segmented label="Chart style" value={chartMode} onChange={setChartMode}
+                options={[{ value: 'bars', label: 'Bars' }, { value: 'line', label: 'Line' }]} />
+            )}
+            <Segmented label="Display" value={display} onChange={setDisplay}
+              options={[{ value: 'chart', label: 'Chart' }, { value: 'table', label: 'Table' }, { value: 'both', label: 'Both' }]} />
           </div>
-          <BurningRateChartSvg
-            cells={coverage.cells}
-            bands={meta.o2_bands}
-            pressureLevel={level}
-            metric={metric}
-            mode={chartMode}
-            minN={meta.min_n}
-          />
         </div>
 
-        <div className="glass card scroll-x">
-          <table className="data" data-testid="fuel-table">
-            <caption>
-              {metric === 'rate' ? 'Mean burning rate (mm²/s)' : 'Mean extinction diameter (mm), extinction tests only'} at {level} · FLEX ·{' '}
-              <strong>{DESCRIPTIVE_ONLY}</strong>
-            </caption>
-            <thead>
-              <tr>
-                <th scope="col">O₂ band</th>
-                {FUELS.map((f) => <th key={f} scope="col" style={{ textTransform: 'capitalize', width: '38%' }}>{f}</th>)}
-              </tr>
-            </thead>
-            <tbody>
-              {meta.o2_bands.map((b) => (
-                <tr key={b.label}>
-                  <th scope="row">{fmtBand(b.label)}</th>
-                  {FUELS.map((f) => <Value key={f} cell={find(f, b.label)} metric={metric} max={max} minN={meta.min_n} />)}
+        {display !== 'table' && (
+          <div className="glass card stack">
+            <div className="row" style={{ justifyContent: 'space-between' }}>
+              <div className="chart-key" style={{ margin: 0 }}>
+                <span><b style={{ background: 'var(--fuel-heptane)' }} /> Heptane</span>
+                <span><b style={{ background: 'var(--fuel-methanol)' }} /> Methanol</span>
+                <span><b style={{ background: 'transparent', border: '1.5px solid var(--caution)' }} /> Small sample (n &lt; {meta.min_n})</span>
+              </div>
+              <span className="src-pill">FLEX · PSI-69 · {level}</span>
+            </div>
+            <BurningRateChartSvg
+              cells={coverage.cells}
+              bands={meta.o2_bands}
+              pressureLevel={level}
+              metric={metric}
+              mode={chartMode}
+              minN={meta.min_n}
+            />
+          </div>
+        )}
+
+        {display !== 'chart' && (
+          <div className="glass card scroll-x">
+            <table className="data" data-testid="fuel-table">
+              <caption>
+                {metric === 'rate' ? 'Mean burning rate (mm²/s)' : 'Mean extinction diameter (mm), extinction tests only'} at {level} · FLEX ·{' '}
+                <strong>{DESCRIPTIVE_ONLY}</strong>
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">O₂ band</th>
+                  {FUELS.map((f) => <th key={f} scope="col" style={{ textTransform: 'capitalize', width: '38%' }}>{f}</th>)}
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <Note>
-          <strong>{DESCRIPTIVE_ONLY}.</strong> {coverage.note} {CONFOUND_NOTE} Bars share one scale across all pressure levels.
-          Source: coverage.json · <Dois dois={dois} />.
-        </Note>
+              </thead>
+              <tbody>
+                {meta.o2_bands.map((b) => (
+                  <tr key={b.label}>
+                    <th scope="row">{fmtBand(b.label)}</th>
+                    {FUELS.map((f) => <Value key={f} cell={find(f, b.label)} metric={metric} max={max} minN={meta.min_n} />)}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        <details className="glass compact-details">
+          <summary>Methodology &amp; confounding notes ({DESCRIPTIVE_ONLY})</summary>
+          <p style={{ marginTop: 8, fontSize: 'var(--fs-xs)', color: 'var(--ink-2)' }}>
+            {coverage.note} {CONFOUND_NOTE} Source: coverage.json · <Dois dois={dois} />.
+          </p>
+        </details>
       </div>
     </Section>
   );

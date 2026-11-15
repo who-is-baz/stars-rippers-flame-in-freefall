@@ -130,12 +130,6 @@ function Detail({ s, minN }: { s: Scenario; minN: number }) {
         </span>
       </div>
 
-      {s.quote && <blockquote className="quote">&ldquo;{s.quote}&rdquo;</blockquote>}
-      {s.note && (
-        <p className="dim" style={{ fontSize: 'var(--fs-sm)' }}>
-          {s.note}
-        </p>
-      )}
       <div className="grid-2">
         <MatchBox
           title="Exact match"
@@ -165,16 +159,29 @@ function Detail({ s, minN }: { s: Scenario; minN: number }) {
           they are not tests of this scenario.
         </Warn>
       )}
-      <p className="dim" style={{ fontSize: 'var(--fs-sm)' }}>
-        {s.bass2_o2_only && (
-          <>
-            BASS-II: {s.bass2_o2_only.n} tests match by O₂ only. {s.bass2_o2_only.note}{' '}
-          </>
-        )}
-        {s.excluded.length > 0 && (
-          <>Excluded: {s.excluded.map((e) => `${e.test_id} (${e.reason})`).join(', ')}.</>
-        )}
-      </p>
+      {(s.quote || s.note || s.bass2_o2_only || s.excluded.length > 0) && (
+        <details className="compact-details">
+          <summary>Source quote, BASS-II context &amp; excluded tests</summary>
+          <div className="stack" style={{ marginTop: 8, gap: 6 }}>
+            {s.quote && <blockquote className="quote">&ldquo;{s.quote}&rdquo;</blockquote>}
+            {s.note && (
+              <p className="dim" style={{ fontSize: 'var(--fs-xs)' }}>
+                {s.note}
+              </p>
+            )}
+            <p className="dim" style={{ fontSize: 'var(--fs-xs)' }}>
+              {s.bass2_o2_only && (
+                <>
+                  BASS-II: {s.bass2_o2_only.n} tests match by O₂ only. {s.bass2_o2_only.note}{' '}
+                </>
+              )}
+              {s.excluded.length > 0 && (
+                <>Excluded: {s.excluded.map((e) => `${e.test_id} (${e.reason})`).join(', ')}.</>
+              )}
+            </p>
+          </div>
+        </details>
+      )}
     </article>
   );
 }

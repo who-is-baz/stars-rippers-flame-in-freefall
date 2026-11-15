@@ -56,11 +56,21 @@ export interface Board {
   addedBy: Partial<Record<CardType, AddedBy>>;
 }
 
-export type PresetId = 'starter' | 'engineer' | 'moon';
+export type PresetId = 'starter' | 'full' | 'engineer' | 'moon';
 export const PRESETS: { id: PresetId; label: string; board: Board }[] = [
   {
     id: 'starter',
-    label: 'Starter',
+    label: 'Essential (3)',
+    board: {
+      left: ['scenario_match', 'gaps'],
+      right: ['scenario_inspector'],
+      collapsed: [],
+      addedBy: {},
+    },
+  },
+  {
+    id: 'full',
+    label: 'Full (5)',
     board: {
       left: ['scenario_match', 'burning_rate', 'gaps'],
       right: ['scenario_inspector', 'coverage'],
@@ -69,11 +79,11 @@ export const PRESETS: { id: PresetId; label: string; board: Board }[] = [
     },
   },
   { id: 'engineer', label: 'Engineer', board: { left: ['burning_rate', 'tests_scatter'], right: ['coverage', 'materials'], collapsed: [], addedBy: {} } },
-  { id: 'moon', label: 'Moon-base story', board: { left: ['scenario_match', 'outcomes', 'gaps'], right: ['scenario_inspector', 'coverage'], collapsed: [], addedBy: {} } },
+  { id: 'moon', label: 'Moon-base', board: { left: ['scenario_match', 'outcomes', 'gaps'], right: ['scenario_inspector', 'coverage'], collapsed: [], addedBy: {} } },
 ];
 export const STARTER: Board = PRESETS[0].board;
 
-export const STORAGE_KEY = 'fif.board.v2';
+export const STORAGE_KEY = 'fif.board.v3';
 const ALL = new Set<string>(CATALOG.map((c) => c.type));
 
 // Never trust what is in storage: drop unknown types, duplicates and anything over the slot limit.

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { CoverageCell, Fuel } from '../data/types';
 import { useCoverage, useMeta } from '../data/useData';
 import { useUi } from '../state/ui';
-import { Dois, Note, QcChips, Section, Segmented, Warn } from '../components/ui';
+import { Dois, QcChips, Section, Segmented, Warn } from '../components/ui';
 import { fmtBand, fmtDiameter, fmtRate } from '../lib/format';
 import { CONFOUND_NOTE, isSmallN } from '../lib/honesty';
 
@@ -60,28 +60,27 @@ function CellDetail({ cell, minN }: { cell: CoverageCell; minN: number }) {
         <div className="metric">
           <span className="label">Ended in extinction</span>
           <b className="num">{cell.pct_extinction == null ? 'No data' : `${cell.pct_extinction}%`}</b>
-          <small>{cell.n_extinction} of n = {cell.n} tests · {cell.pct_note ?? 'descriptive, not a probability'}</small>
+          <small>{cell.n_extinction} of n = {cell.n} · {cell.pct_note ?? 'descriptive, not a probability'}</small>
         </div>
         <div className="metric">
           <span className="label">Mean burning rate</span>
           <b className="num">{fmtRate(cell.avg_burning_rate_mm2_s)}</b>
-          <small>n = {cell.n_burning_rate} tests with a burning rate</small>
+          <small>n = {cell.n_burning_rate} tests</small>
         </div>
         <div className="metric">
           <span className="label">Mean extinction diameter</span>
           <b className="num">{fmtDiameter(cell.avg_extinction_diameter_mm)}</b>
-          <small>n = {cell.n_extinction_diameter} extinction tests with a diameter</small>
-        </div>
-        <div className="metric">
-          <span className="label">Suppressant mix (n)</span>
-          <b className="num" style={{ fontSize: 'var(--fs-md)' }}>none {sup.none} · CO₂ {sup.co2} · He {sup.he}</b>
-          <small>mixed inside this cell</small>
+          <small>n = {cell.n_extinction_diameter} tests</small>
         </div>
       </div>
-      <dl className="kv">
-        <dt>QC flags</dt><dd><QcChips flags={cell.qc_flags} /></dd>
-        <dt>Source</dt><dd><Dois dois={cell.source_doi} /> · coverage.json</dd>
-      </dl>
+      <details className="compact-details">
+        <summary>Technical details (suppressant mix, QC flags &amp; source)</summary>
+        <dl className="kv" style={{ marginTop: 10 }}>
+          <dt>Suppressant mix (n)</dt><dd className="num">none {sup.none} · CO₂ {sup.co2} · He {sup.he} (mixed inside cell)</dd>
+          <dt>QC flags</dt><dd><QcChips flags={cell.qc_flags} /></dd>
+          <dt>Source</dt><dd><Dois dois={cell.source_doi} /> · coverage.json</dd>
+        </dl>
+      </details>
     </div>
   );
 }
@@ -96,18 +95,27 @@ export function CoverageMap() {
   const maxN = Math.max(1, ...coverage.cells.map((c) => c.n));
   const current = selected ? byKey.get(selected) : undefined;
   const excluded = meta.excluded_from_pressure_views.map((e) => `${e.test_id} (${e.reason})`).join(', ');
+  const testedCount = cells.filter((c) => c.n > 0).length;
+  const emptyCount = cells.filter((c) => c.n === 0).length;
+  const smallCount = cells.filter((c) => c.n > 0 && isSmallN(c.n, meta.min_n)).length;
 
   return (
-    <Section id="coverage" eyebrow="Coverage map" title="Where the tests are, and where they are not"
-      lead={<>FLEX tests counted by O₂ band and pressure level, one fuel at a time. Colour shows only how many tests exist.
-        Select a cell for its details. {coverage.n_tests} tests in the grid{excluded && <>; excluded: {excluded}</>}.</>}>
+    <Section id="coverage" eyebrow="Coverage map" title="Where NASA tested — and where data is missing"
+      lead={<>Select any O₂ × pressure cell to inspect its tests. Colour shows sample size only ({coverage.n_tests} FLEX tests).</>}>
       <div className="stack">
-        <div className="row" style={{ justifyContent: 'space-between' }}>
-          <Segmented label="Fuel" value={fuel} options={FUELS} onChange={(f) => { setFuel(f); setSelected(null); }} />
+        <div className="row" style={{ justifyContent: 'space-between', gap: 12 }}>
+          <div className="row" style={{ gap: 10 }}>
+            <Segmented label="Fuel" value={fuel} options={FUELS} onChange={(f) => { setFuel(f); setSelected(null); }} />
+            <div className="outcome-pills num" style={{ margin: 0 }}>
+              <span className="out-pill"><i style={{ background: 'var(--mint)' }} />Tested <b>{testedCount}/{cells.length}</b></span>
+              <span className="out-pill"><i style={{ background: 'var(--caution)' }} />Small n (&lt;{meta.min_n}) <b>{smallCount}</b></span>
+              <span className="out-pill"><i style={{ background: 'var(--ink-dim)' }} />No data <b>{emptyCount}</b></span>
+            </div>
+          </div>
           <div className="legend" aria-hidden="true">
-            <span><i style={{ background: 'rgba(var(--flame-rgb), .12)' }} />fewer tests</span>
-            <span><i style={{ background: 'rgba(var(--flame-rgb), .47)' }} />more tests</span>
-            <span><i style={{ background: 'var(--muted-cell)' }} />n &lt; {meta.min_n} (warning)</span>
+            <span><i style={{ background: 'rgba(var(--flame-rgb), .12)' }} />fewer</span>
+            <span><i style={{ background: 'rgba(var(--flame-rgb), .47)' }} />more</span>
+            <span><i style={{ background: 'var(--muted-cell)' }} />⚠ n &lt; {meta.min_n}</span>
             <span><i style={{ background: 'var(--nodata-cell)' }} />No data</span>
           </div>
         </div>
@@ -142,8 +150,14 @@ export function CoverageMap() {
         </div>
         {current
           ? <CellDetail cell={current} minN={meta.min_n} />
-          : <p className="dim" aria-live="polite">Select a cell to see its tests, means and warnings.</p>}
-        <Note><strong>Reading O₂ bands:</strong> {CONFOUND_NOTE} {coverage.note}</Note>
+          : <p className="dim" style={{ fontSize: 'var(--fs-xs)' }} aria-live="polite">Click any cell above to inspect its extinction count, mean burning rate, and tests.</p>}
+        <details className="glass compact-details">
+          <summary>Methodology, confounding &amp; excluded tests</summary>
+          <p style={{ marginTop: 8, fontSize: 'var(--fs-xs)', color: 'var(--ink-2)' }}>
+            <strong>Reading O₂ bands:</strong> {CONFOUND_NOTE} {coverage.note}
+            {excluded && <> Excluded from pressure views: {excluded}.</>}
+          </p>
+        </details>
       </div>
     </Section>
   );
