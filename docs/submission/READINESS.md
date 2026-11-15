@@ -15,7 +15,7 @@
 | Site without backend (Basic only) | **PASS** | Production build, no `VITE_LLM_URL`: 0 console errors/warnings; 0 requests to :8000 or :11434; Flash/Medium/Heavy disabled with "Local AI — runs on the demo machine"; Basic answers the lunar-gravity trap with "No data". Only external requests: Google Fonts. |
 | Lighthouse (local `vite preview`, Lighthouse 12.8.2, system Chrome) | **PASS** | Mobile before → after: Performance 95→97, Accessibility 95→100, Best practices 93→100, SEO 91→100. Desktop: 100→98 (run-to-run noise), 100→100, 96→100, 91→100. |
 | Mobile without horizontal overflow | **PASS** | `scrollWidth == innerWidth` at 390 px and 768 px, default and Custom; no element wider than the viewport. |
-| Local AI models (Ollama) | **NOT RUN** | Ollama not reachable (`~/.ollama` points to an unmounted disk). Benchmark and `-m ollama` tests skipped; no claim of model quality is made anywhere. |
+| Local AI models (Ollama) | **PARTIAL** | Flash (llama3.2:3b) and Medium (qwen3:8b) ran on the demo laptop; 12-question benchmark and `-m ollama` tests pass for Flash. Heavy (qwen3:14b) not downloaded (17 GB free) → not evaluated. Qwen3 8B takes 10–33 s per answer here: use `VITE_LLM_TIMEOUT_MS=90000` and a warm-up question. `docs/bench/`. |
 
 ## Manual actions for Baz (most urgent first)
 0. **Decide on the team e-mail addresses visible in the public git history** (`docs/maintenance/SECURITY_REPORT.md`) and **revoke the `keygithub` token** if still active.

@@ -29,7 +29,7 @@ uvicorn backend.app:app --app-dir src --host 127.0.0.1 --port 8000      # OpenAP
 cd frontend && VITE_LLM_URL=http://127.0.0.1:8000 npm run dev           # http://127.0.0.1:5173
 ```
 **3. With local models (optional, Ollama)**: `ollama pull llama3.2:3b`, `ollama pull qwen3:8b`, `ollama pull qwen3:14b`; then **Connect local AI** in
-the SI panel. These models were **not run** in our tests (see `docs/HANDOFF.md`); without them the site works in Basic mode.
+the SI panel. Tested on the demo laptop (24 GB RAM, 4 GB GPU): `llama3.2:3b` (Flash) and `qwen3:8b` (Medium) ran; `qwen3:14b` (Heavy) was **not downloaded** (disk space) and was not evaluated. Results and limits: `docs/bench/RESUMEN.md`, `docs/bench/DIAGNOSTICO.md`. Without them the site works in Basic mode.
 Environment variables and troubleshooting: `docs/SETUP.md` §7.
 
 **Checks:** `python -m pytest` · `cd frontend && npm test && npm run build` · `python scripts/audit_numbers.py` ·

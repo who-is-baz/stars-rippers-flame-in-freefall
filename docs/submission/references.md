@@ -34,9 +34,9 @@ No space agency partner data were used. Everything we used is listed below, incl
 | Model / service | Used for | License / terms (as verified) |
 |---|---|---|
 | Anthropic Claude Opus 5.5 and Sonnet 5.5, via Claude Code and claude.ai | Code, documentation, design guidelines, design reference images, extraction rules for BASS-II notes, submission drafts | Commercial service under Anthropic's terms (not an open license) |
-| Llama 3.2 3B (Meta), via Ollama — "Flash" level | Optional local assistant; **configured, not run during the hackathon** | "Llama 3.2 Community License" (custom commercial license), per the Hugging Face model card meta-llama/Llama-3.2-3B-Instruct, checked 15 Nov 2026 |
-| Qwen3 8B (Alibaba Qwen), via Ollama — "Medium" level | Optional local assistant; **configured, not run** | "apache-2.0", per the Hugging Face model card Qwen/Qwen3-8B, checked 15 Nov 2026 |
-| Qwen3 14B (Alibaba Qwen), via Ollama — "Heavy" level | Optional local assistant; **configured, not run** | "apache-2.0", per the Hugging Face model card Qwen/Qwen3-14B, checked 15 Nov 2026 |
+| Llama 3.2 3B (Meta), via Ollama — "Flash" level | Optional local assistant; **ran on the demo laptop (12-question benchmark)** | "Llama 3.2 Community License" (custom commercial license), per the Hugging Face model card meta-llama/Llama-3.2-3B-Instruct, checked 15 Nov 2026 |
+| Qwen3 8B (Alibaba Qwen), via Ollama — "Medium" level | Optional local assistant; **ran on the demo laptop (12-question benchmark)** | "apache-2.0", per the Hugging Face model card Qwen/Qwen3-8B, checked 15 Nov 2026 |
+| Qwen3 14B (Alibaba Qwen), via Ollama — "Heavy" level | Optional local assistant; **not downloaded, not evaluated** | "apache-2.0", per the Hugging Face model card Qwen/Qwen3-14B, checked 15 Nov 2026 |
 
 The Ollama library pages for these models did not show a license; the licenses above come from the Hugging Face model
 cards. If Llama 3.2 is shown in the final demo, **MANUAL: read the Llama 3.2 Community License text for any attribution it

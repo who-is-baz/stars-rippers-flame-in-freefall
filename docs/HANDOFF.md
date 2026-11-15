@@ -18,7 +18,7 @@ citas y plantillas · `pipeline.py` medium/high · `verify.py` verificador · `l
 Nada a medias en el código.
 
 ## 3. Roto o pendiente (sin maquillar)
-- **No se probó ningún modelo real.** Ollama 0.21.1 está instalado, pero `~/.ollama` es un enlace a
+- **(Actualizado 15 nov 08:30: ya se probaron llama3.2:3b y qwen3:8b; ver `docs/bench/DIAGNOSTICO.md`.)** Antes: no se probó ningún modelo real. Ollama 0.21.1 está instalado, pero `~/.ollama` es un enlace a
   `/media/baz/Windows Extend/Local_AI/.ollama` (disco no montado): `ollama serve` falla con
   `could not create directory ~/.ollama: file exists`. Por eso `docs/bench/RESUMEN.md` dice "sin resultados" y las
   8 pruebas `-m ollama` se saltan. Todo lo de medium/high está probado con un cliente falso (`tests/fake_llm.py`).

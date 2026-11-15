@@ -44,8 +44,7 @@ then checks the text: every number must appear in the query result, and words su
 rejected, as are claims about the Moon, Mars or a single gas causing an effect. If the check fails, a fixed template
 built from the data is shown instead. Citations (DOI and test IDs) are always added by code, never by the model.
 
-**Honest status of the local AI:** the AI pipeline is tested with a simulated model (50 of our 129 automated Python tests). It has
-**not yet been run with a real local model** in our tests, because the models were not available on the test machine.
+**Honest status of the local AI:** the pipeline is tested with a simulated model (automated tests) and was run with two real local models on the demo laptop: Llama 3.2 3B and Qwen3 8B (12-question benchmark in `docs/bench/`). Qwen3 14B was not downloaded and is not evaluated. Model text is checked by code and, when it fails, a fixed template is shown; this does not guarantee that every sentence is correct.
 The public site does not depend on it.
 
 ## What it does not do (limitations)

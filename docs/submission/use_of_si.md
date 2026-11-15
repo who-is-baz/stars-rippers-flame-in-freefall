@@ -10,8 +10,7 @@ AI-assisted task is recorded in `docs/AI_USAGE_LOG.md` (one entry per task, 14â€
 - **Anthropic claude.ai** (Claude Opus 5.5 and Sonnet 5.5, in a team Project): design guidelines ("skills"), an HTML design
   reference, three design reference images and prompts for team members.
 - **Local LLMs through Ollama (optional feature of the product):** the assistant is configured for Llama 3.2 3B (Flash),
-  Qwen3 8B (Medium) and Qwen3 14B (Heavy). **We could not run these models during the hackathon** (they were not available
-  on our test machine); this part was tested only with a simulated model. The public site never uses a model.
+  Qwen3 8B (Medium) and Qwen3 14B (Heavy). **Flash (Llama 3.2 3B) and Medium (Qwen3 8B) were run on the demo laptop and benchmarked on 12 questions** (`docs/bench/RESUMEN.md`); **Heavy (Qwen3 14B) was not downloaded and was not evaluated.** Their text is checked by code (numbers must come from the data, forbidden claims are rejected) and often replaced by a fixed template; the log records what failed with the real models. The public site never uses a model.
 
 ## Where SI was used
 1. **Data pipeline (code by Claude Code, run and checked by the team lead):** finding the PSI download endpoints,
