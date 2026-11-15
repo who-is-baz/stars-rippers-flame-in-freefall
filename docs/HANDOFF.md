@@ -43,3 +43,11 @@ python scripts/bench_models.py      # actualiza docs/bench/ → decidir Flash/Me
 Todas en `docs/DECISIONES.md` (entradas del 2026-11-15): rutas `/api` + alias, `query_test_ids`, contrato aditivo
 (`model`, `meta`, `test_ids_total`, `/llm/status`), herramienta `scenario`, salida estructurada, tolerancia del
 verificador y reglas de guardia.
+
+---
+## Actualización 2026-11-15 ~01:50 · cierre de entrega (Baz con Claude)
+- Hecho (commits `b23e54c`…`dcb77cb`): inspector ligado a Custom, móvil sin desborde, Lighthouse móvil 97/100/100/100,
+  `/ranking` marcado post-hackathon, `LICENSE`, `THIRD_PARTY.md`, README con licencias e IA, `docs/submission/` completo.
+- Sigue sin probarse Ollama (disco no montado).
+- **Siguiente paso exacto:** `docs/submission/READINESS.md` → sección "Manual actions for Baz" (grabar demo, publicar sitio,
+  limpieza/secretos y repo público, pegar los 8 campos y enviar con ≥3 h de margen).
